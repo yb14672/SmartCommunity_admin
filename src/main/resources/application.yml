@@ -25,6 +25,6 @@ mybatis-plus:
     cache-enabled: false
 logging:
   level:
-    com.example.demo99.mapper: DEBUG
+    com.zy_admin.**.dao: DEBUG
 
 
