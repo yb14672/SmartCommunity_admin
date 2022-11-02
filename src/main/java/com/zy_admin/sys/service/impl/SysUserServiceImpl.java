@@ -1,0 +1,19 @@
+package com.zy_admin.sys.service.impl;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zy_admin.sys.dao.SysUserDao;
+import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.sys.service.SysUserService;
+import org.springframework.stereotype.Service;
+
+/**
+ * 用户信息表(SysUser)表服务实现类
+ *
+ * @author makejava
+ * @since 2022-11-01 19:49:42
+ */
+@Service("sysUserService")
+public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> implements SysUserService {
+
+}
+
