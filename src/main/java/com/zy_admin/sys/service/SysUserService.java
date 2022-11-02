@@ -10,6 +10,11 @@ import com.zy_admin.sys.entity.SysUser;
  * @since 2022-11-01 19:49:42
  */
 public interface SysUserService extends IService<SysUser> {
-
+    /**
+     * 登录
+     * @param user
+     * @return
+     */
+    SysUser login(SysUser user);
 }
 

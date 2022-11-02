@@ -11,5 +11,11 @@ import com.zy_admin.sys.entity.SysUser;
  */
 public interface SysUserDao extends BaseMapper<SysUser> {
 
+    /**
+     * 登录
+     * @param user
+     * @return
+     */
+    SysUser login(SysUser user);
 }
 

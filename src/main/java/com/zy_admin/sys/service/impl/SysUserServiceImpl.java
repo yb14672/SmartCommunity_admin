@@ -15,5 +15,9 @@ import org.springframework.stereotype.Service;
 @Service("sysUserService")
 public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> implements SysUserService {
 
+    @Override
+    public SysUser login(SysUser user) {
+        return this.baseMapper.login(user);
+    }
 }
 

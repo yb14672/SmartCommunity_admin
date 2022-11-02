@@ -40,6 +40,11 @@ public class SysUserController extends ApiController {
         return success(this.sysUserService.page(page, new QueryWrapper<>(sysUser)));
     }
 
+    @GetMapping("/login")
+    public R login(SysUser sysUser) {
+        return success(this.sysUserService.login(sysUser));
+    }
+
     /**
      * 通过主键查询单条数据
      *
