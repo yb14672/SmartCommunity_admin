@@ -19,5 +19,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     public SysUser login(SysUser user) {
         return this.baseMapper.login(user);
     }
+
+    @Override
+    public SysUser getUserById(String id){
+        return this.baseMapper.getUserById(id);
+    }
+
+    @Override
+    public int updateUser(SysUser user) {
+        return baseMapper.updateUser(user);
+    }
+
+    @Override
+    public int resetPwd(SysUser user) {
+        return baseMapper.resetPwd(user);
+    }
 }
 

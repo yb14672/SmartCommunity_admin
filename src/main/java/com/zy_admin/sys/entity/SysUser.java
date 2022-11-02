@@ -1,10 +1,15 @@
 package com.zy_admin.sys.entity;
 
-import java.util.Date;
-
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
-import java.io.Serializable;
+import java.util.Date;
+
+
+
+
+
+
+
 
 /**
  * 用户信息表(SysUser)表实体类
@@ -53,6 +58,11 @@ public class SysUser extends Model<SysUser> {
     //备注
     private String remark;
 
+    private SysRole sysRole;
+
+    private SysDept sysDept;
+
+    private SysPost sysPost;
 
     public Long getUserId() {
         return userId;
@@ -206,14 +216,55 @@ public class SysUser extends Model<SysUser> {
         this.remark = remark;
     }
 
-    /**
-     * 获取主键值
-     *
-     * @return 主键值
-     */
+    public SysRole getSysRole() {
+        return sysRole;
+    }
+
+    public void setSysRole(SysRole sysRole) {
+        this.sysRole = sysRole;
+    }
+
+    public SysDept getSysDept() {
+        return sysDept;
+    }
+
+    public void setSysDept(SysDept sysDept) {
+        this.sysDept = sysDept;
+    }
+
+    public SysPost getSysPost() {
+        return sysPost;
+    }
+
+    public void setSysPost(SysPost sysPost) {
+        this.sysPost = sysPost;
+    }
+
     @Override
-    protected Serializable pkVal() {
-        return this.userId;
+    public String toString() {
+        return "SysUser{" +
+                "userId=" + userId +
+                ", deptId=" + deptId +
+                ", userName='" + userName + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", userType='" + userType + '\'' +
+                ", email='" + email + '\'' +
+                ", phonenumber='" + phonenumber + '\'' +
+                ", sex='" + sex + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", password='" + password + '\'' +
+                ", status='" + status + '\'' +
+                ", delFlag='" + delFlag + '\'' +
+                ", loginIp='" + loginIp + '\'' +
+                ", loginDate=" + loginDate +
+                ", createBy='" + createBy + '\'' +
+                ", createTime=" + createTime +
+                ", updateBy='" + updateBy + '\'' +
+                ", updateTime=" + updateTime +
+                ", remark='" + remark + '\'' +
+                ", sysRole=" + sysRole +
+                ", sysDept=" + sysDept +
+                ", sysPost=" + sysPost +
+                '}';
     }
 }
-

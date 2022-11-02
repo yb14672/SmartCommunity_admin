@@ -22,8 +22,58 @@
         <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <association property="sysRole" javaType="com.zy_admin.sys.entity.SysRole" autoMapping="true">
+            <id column="role_id"  property="r.roleId" jdbcType="INTEGER"/>
+        </association>
+        <association property="sysDept" javaType="com.zy_admin.sys.entity.SysDept" autoMapping="true">
+            <id column="dept_id"  property="d.deptId" jdbcType="INTEGER"/>
+        </association>
+        <association property="sysPost" javaType="com.zy_admin.sys.entity.SysPost" autoMapping="true">
+            <id column="post_id"  property="p.postId" jdbcType="INTEGER"/>
+        </association>
     </resultMap>
+
+    <sql id="selectUserInfo">
+        select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark,
+               d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status,
+               r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status
+        from sys_user u
+                 left join sys_dept d on u.dept_id = d.dept_id
+                 left join sys_user_role ur on u.user_id = ur.user_id
+                 left join sys_role r on r.role_id = ur.role_id
+    </sql>
+
     <select id="login" resultType="com.zy_admin.sys.entity.SysUser">
         select * from sys_user where user_name=#{userName}
     </select>
+
+    <select id="getUserById" resultMap="SysUserMap">
+        <include refid="selectUserInfo"/>
+        where u.user_id = #{userId}
+    </select>
+
+    <update id="updateUser" parameterType="com.zy_admin.sys.entity.SysUser">
+        update sys_user
+        <set>
+            <if test="deptId != null and deptId != 0">dept_id = #{deptId},</if>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
+            <if test="email != null and email != ''">email = #{email},</if>
+            <if test="phonenumber != null and phonenumber != ''">phonenumber = #{phonenumber},</if>
+            <if test="sex != null and sex != ''">sex = #{sex},</if>
+            <if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="loginIp != null and loginIp != ''">login_ip = #{loginIp},</if>
+            <if test="loginDate != null">login_date = #{loginDate},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <update id="resetPwd" parameterType="com.zy_admin.sys.entity.SysUser">
+        update sys_user set password = #{password} where user_id = #{userId}
+    </update>
 </mapper>

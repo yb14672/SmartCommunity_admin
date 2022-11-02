@@ -78,6 +78,20 @@ public class SysUserController extends ApiController {
         return success(this.sysUserService.updateById(sysUser));
     }
 
+    public R getUserById(@RequestBody String userId) {
+        return success(this.sysUserService.getUserById(userId));
+    }
+
+    @PutMapping("/profile/updateUser")
+    public int updateUser(@RequestBody SysUser sysUser){
+        return this.sysUserService.updateUser(sysUser);
+    }
+
+    @PutMapping("/profile/resetPwd")
+    public int resetPwd(@RequestBody SysUser sysUser){
+        return this.sysUserService.resetPwd(sysUser);
+    }
+
     /**
      * 删除数据
      *

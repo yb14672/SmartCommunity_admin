@@ -17,5 +17,23 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @return
      */
     SysUser login(SysUser user);
+
+    SysUser getUserById(String id);
+
+    /**
+     * 修改用户信息
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    int updateUser(SysUser user);
+
+    /**
+     * 重置用户密码
+     *
+     * @param user 用户
+     * @return 结果
+     */
+    int resetPwd(SysUser user);
 }
 
