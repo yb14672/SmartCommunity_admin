@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> implements SysUserService {
 
     @Override
-    public SysUser login(SysUser user) {
-        return this.baseMapper.login(user);
+    public SysUser queryByName(String userName) {
+        return this.baseMapper.queryByName(userName);
     }
 
     @Override
@@ -28,11 +28,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Override
     public int updateUser(SysUser user) {
         return baseMapper.updateUser(user);
-    }
-
-    @Override
-    public int resetPwd(SysUser user) {
-        return baseMapper.resetPwd(user);
     }
 }
 

@@ -12,12 +12,17 @@ import com.zy_admin.sys.entity.SysUser;
 public interface SysUserDao extends BaseMapper<SysUser> {
 
     /**
-     * 登录
-     * @param user
+     * 根据账号查询用户
+     * @param userName
      * @return
      */
-    SysUser login(SysUser user);
+    SysUser queryByName(String userName);
 
+    /**
+     * 根据ID查询用户
+     * @param id
+     * @return
+     */
     SysUser getUserById(String id);
 
     /**
@@ -27,13 +32,5 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @return 结果
      */
     int updateUser(SysUser user);
-
-    /**
-     * 重置用户密码
-     *
-     * @param user 用户
-     * @return 结果
-     */
-    int resetPwd(SysUser user);
 }
 

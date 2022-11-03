@@ -22,15 +22,6 @@
         <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
-        <association property="sysRole" javaType="com.zy_admin.sys.entity.SysRole" autoMapping="true">
-            <id column="role_id"  property="r.roleId" jdbcType="INTEGER"/>
-        </association>
-        <association property="sysDept" javaType="com.zy_admin.sys.entity.SysDept" autoMapping="true">
-            <id column="dept_id"  property="d.deptId" jdbcType="INTEGER"/>
-        </association>
-        <association property="sysPost" javaType="com.zy_admin.sys.entity.SysPost" autoMapping="true">
-            <id column="post_id"  property="p.postId" jdbcType="INTEGER"/>
-        </association>
     </resultMap>
 
     <sql id="selectUserInfo">
@@ -43,13 +34,17 @@
                  left join sys_role r on r.role_id = ur.role_id
     </sql>
 
-    <select id="login" resultType="com.zy_admin.sys.entity.SysUser">
-        select * from sys_user where user_name=#{userName}
-    </select>
-
     <select id="getUserById" resultMap="SysUserMap">
         <include refid="selectUserInfo"/>
         where u.user_id = #{userId}
+    </select>
+
+    <!--查询单个-->
+    <select id="queryByName" resultMap="SysUserMap">
+        select
+            user_id, dept_id, user_name, nick_name, user_type, email, phonenumber, sex, avatar, password, status, del_flag, login_ip, login_date, create_by, create_time, update_by, update_time, remark
+        from sys_user
+        where user_name = #{userName}
     </select>
 
     <update id="updateUser" parameterType="com.zy_admin.sys.entity.SysUser">
@@ -71,9 +66,5 @@
             update_time = sysdate()
         </set>
         where user_id = #{userId}
-    </update>
-
-    <update id="resetPwd" parameterType="com.zy_admin.sys.entity.SysUser">
-        update sys_user set password = #{password} where user_id = #{userId}
     </update>
 </mapper>

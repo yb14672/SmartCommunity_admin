@@ -30,3 +30,7 @@ mybatis-plus:
 logging:
   level:
     com.example.demo.dao: DEBUG
+minio:
+  endpoint: http://192.168.31.194:9000
+  accesskey: minioadmin
+  secretKey: minioadmin

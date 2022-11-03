@@ -10,7 +10,6 @@ import com.zy_admin.sys.service.SysUserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -40,11 +39,6 @@ public class SysUserController extends ApiController {
         return success(this.sysUserService.page(page, new QueryWrapper<>(sysUser)));
     }
 
-    @GetMapping("/login")
-    public R login(SysUser sysUser) {
-        return success(this.sysUserService.login(sysUser));
-    }
-
     /**
      * 通过主键查询单条数据
      *
@@ -52,8 +46,19 @@ public class SysUserController extends ApiController {
      * @return 单条数据
      */
     @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
+    public R selectOne(@PathVariable String id) {
         return success(this.sysUserService.getById(id));
+    }
+
+    /**
+     * 通过账号查询单条数据
+     *
+     * @param name 主键
+     * @return 单条数据
+     */
+    @GetMapping("/name/{name}")
+    public R queryByName(@PathVariable String name) {
+        return success(this.sysUserService.queryByName(name));
     }
 
     /**
@@ -78,10 +83,6 @@ public class SysUserController extends ApiController {
         return success(this.sysUserService.updateById(sysUser));
     }
 
-    public R getUserById(@RequestBody String userId) {
-        return success(this.sysUserService.getUserById(userId));
-    }
-
     @PutMapping("/profile/updateUser")
     public int updateUser(@RequestBody SysUser sysUser){
         return this.sysUserService.updateUser(sysUser);
@@ -89,7 +90,7 @@ public class SysUserController extends ApiController {
 
     @PutMapping("/profile/resetPwd")
     public int resetPwd(@RequestBody SysUser sysUser){
-        return this.sysUserService.resetPwd(sysUser);
+        return this.sysUserService.updateUser(sysUser);
     }
 
     /**

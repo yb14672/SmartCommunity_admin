@@ -1,6 +1,9 @@
 package com.zy_admin.sys.entity;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -17,6 +20,9 @@ import java.util.Date;
  * @author makejava
  * @since 2022-11-01 19:49:42
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @SuppressWarnings("serial")
 public class SysUser extends Model<SysUser> {
     //用户ID
@@ -57,12 +63,6 @@ public class SysUser extends Model<SysUser> {
     private Date updateTime;
     //备注
     private String remark;
-
-    private SysRole sysRole;
-
-    private SysDept sysDept;
-
-    private SysPost sysPost;
 
     public Long getUserId() {
         return userId;
@@ -216,30 +216,6 @@ public class SysUser extends Model<SysUser> {
         this.remark = remark;
     }
 
-    public SysRole getSysRole() {
-        return sysRole;
-    }
-
-    public void setSysRole(SysRole sysRole) {
-        this.sysRole = sysRole;
-    }
-
-    public SysDept getSysDept() {
-        return sysDept;
-    }
-
-    public void setSysDept(SysDept sysDept) {
-        this.sysDept = sysDept;
-    }
-
-    public SysPost getSysPost() {
-        return sysPost;
-    }
-
-    public void setSysPost(SysPost sysPost) {
-        this.sysPost = sysPost;
-    }
-
     @Override
     public String toString() {
         return "SysUser{" +
@@ -262,9 +238,6 @@ public class SysUser extends Model<SysUser> {
                 ", updateBy='" + updateBy + '\'' +
                 ", updateTime=" + updateTime +
                 ", remark='" + remark + '\'' +
-                ", sysRole=" + sysRole +
-                ", sysDept=" + sysDept +
-                ", sysPost=" + sysPost +
                 '}';
     }
 }
