@@ -34,6 +34,8 @@ public enum ResultCode {
     USER_ACCOUNT_ALREADY_EXIST(2008, "账号已存在"),
     USER_ACCOUNT_USE_BY_OTHERS(2009, "账号下线"),
     USER_ACCOUNT_SAME_PASSWORD(2010,"新旧密码不能一致"),
+    USER_WRONG_ACCOUNT_OR_PASSWORD(2010, "账号或者密码不正确"),
+    USER_AVATAR_UPLOAD_FAILED(2011, "图片上传失败"),
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),

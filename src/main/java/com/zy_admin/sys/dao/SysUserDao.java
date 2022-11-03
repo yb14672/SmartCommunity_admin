@@ -3,6 +3,7 @@ package com.zy_admin.sys.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.sys.dto.SysUserDto;
 import com.zy_admin.sys.entity.SysUser;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * 用户信息表(SysUser)表数据库访问层
@@ -40,5 +41,9 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @return 结果
      */
     int updateUser(SysUser user);
+
+    @Select("select * from sys_user where user_name=#{userName} and password=#{password}")
+    SysUser login(SysUser sysUser);
+
 }
 

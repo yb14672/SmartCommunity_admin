@@ -22,6 +22,7 @@ import java.util.List;
 @Service("sysMenuService")
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> implements SysMenuService {
 
+
     @Override
     public Result getAllMenu() {
         Result result = new Result();

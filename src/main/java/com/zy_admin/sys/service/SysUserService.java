@@ -11,6 +11,14 @@ import com.zy_admin.util.Result;
  * @since 2022-11-01 19:49:42
  */
 public interface SysUserService extends IService<SysUser> {
+
+    /**
+     * 登录
+     * @param sysUser
+     * @return
+     */
+    Result login(SysUser sysUser);
+
     /**
      * 根据账号查询用户
      * @param userName
