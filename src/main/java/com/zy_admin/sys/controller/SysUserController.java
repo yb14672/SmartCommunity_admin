@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.Result;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -25,7 +26,7 @@ public class SysUserController extends ApiController {
     /**
      * 服务对象
      */
-    @Resource
+    @Autowired
     private SysUserService sysUserService;
 
     /**
@@ -42,8 +43,8 @@ public class SysUserController extends ApiController {
 
     /**
      * 根据ID获取用户信息
-     * @param userId
-     * @return
+     * @param userId 用户ID
+     * @return 查询的用户结果+http状态
      */
     @GetMapping("/personal")
     public Result personal(String userId){

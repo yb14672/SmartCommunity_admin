@@ -83,5 +83,14 @@ public class SysMenuController extends ApiController {
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.sysMenuService.removeByIds(idList));
     }
+
+    /**
+     * 获取所有菜单
+     * @return 菜单结果
+     */
+    @RequestMapping("/getMenus")
+    public R getMenuList(){
+        return success(this.sysMenuService.getAllMenu());
+    }
 }
 

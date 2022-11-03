@@ -8,12 +8,6 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 
-
-
-
-
-
-
 /**
  * 用户信息表(SysUser)表实体类
  *
