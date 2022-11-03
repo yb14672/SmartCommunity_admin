@@ -3,6 +3,7 @@ package com.zy_admin.sys.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.sys.entity.MenuTree;
 import com.zy_admin.sys.entity.SysMenu;
+import com.zy_admin.util.Result;
 
 import java.util.List;
 
@@ -17,6 +18,6 @@ public interface SysMenuService extends IService<SysMenu> {
      * 返回菜单树型结构
      * @return
      */
-    List<MenuTree> getAllMenu();
+    Result getAllMenu();
 }
 

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysMenu;
 import com.zy_admin.sys.service.SysMenuService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -89,8 +90,8 @@ public class SysMenuController extends ApiController {
      * @return 菜单结果
      */
     @RequestMapping("/getMenus")
-    public R getMenuList(){
-        return success(this.sysMenuService.getAllMenu());
+    public Result getMenuList(){
+        return this.sysMenuService.getAllMenu();
     }
 }
 
