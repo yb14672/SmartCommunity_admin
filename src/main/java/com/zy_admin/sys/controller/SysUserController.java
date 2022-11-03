@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysUserService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -40,14 +41,25 @@ public class SysUserController extends ApiController {
     }
 
     /**
+     * 根据ID获取用户信息
+     * @param userId
+     * @return
+     */
+    @GetMapping("/personal")
+    public Result personal(String userId){
+        Result personal = this.sysUserService.personal(userId);
+        return personal;
+    }
+
+    /**
      * 通过主键查询单条数据
      *
      * @param id 主键
      * @return 单条数据
      */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable String id) {
-        return success(this.sysUserService.getById(id));
+    @GetMapping("/id/{id}")
+    public Result selectOne(@PathVariable String id) {
+        return this.sysUserService.queryById(id);
     }
 
     /**
@@ -57,8 +69,28 @@ public class SysUserController extends ApiController {
      * @return 单条数据
      */
     @GetMapping("/name/{name}")
-    public R queryByName(@PathVariable String name) {
-        return success(this.sysUserService.queryByName(name));
+    public Result queryByName(@PathVariable String name) {
+        return this.sysUserService.queryByName(name);
+    }
+
+    /**
+     * 修改用户基本信息
+     * @param sysUser
+     * @return
+     */
+    @PutMapping("/updateUser")
+    public Result updateUser(@RequestBody SysUser sysUser){
+        return this.sysUserService.updateUser(sysUser);
+    }
+
+    /**
+     * 修改密码
+     * @param sysUser
+     * @return
+     */
+    @PutMapping("/resetPwd")
+    public Result resetPwd(@RequestBody SysUser sysUser){
+        return this.sysUserService.resetPwd(sysUser);
     }
 
     /**
@@ -81,16 +113,6 @@ public class SysUserController extends ApiController {
     @PutMapping
     public R update(@RequestBody SysUser sysUser) {
         return success(this.sysUserService.updateById(sysUser));
-    }
-
-    @PutMapping("/profile/updateUser")
-    public int updateUser(@RequestBody SysUser sysUser){
-        return this.sysUserService.updateUser(sysUser);
-    }
-
-    @PutMapping("/profile/resetPwd")
-    public int resetPwd(@RequestBody SysUser sysUser){
-        return this.sysUserService.updateUser(sysUser);
     }
 
     /**

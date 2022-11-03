@@ -2,7 +2,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy_admin.sys.dao.SysUserDao">
 
-    <resultMap type="com.zy_admin.sys.entity.SysUser" id="SysUserMap">
+    <resultMap type="com.zy_admin.sys.dto.SysUserDto" id="SysUserMap">
+        <association property="sysUser" javaType="com.zy_admin.sys.entity.SysUser" autoMapping="true">
+            <id column="user_id"  property="userId" jdbcType="INTEGER"/>
+        </association>
+        <association property="sysRole" javaType="com.zy_admin.sys.entity.SysRole" autoMapping="true">
+            <id column="role_id"  property="roleId" jdbcType="INTEGER"/>
+        </association>
+        <association property="sysDept" javaType="com.zy_admin.sys.entity.SysDept" autoMapping="true">
+            <id column="dept_id"  property="deptId" jdbcType="INTEGER"/>
+        </association>
+        <association property="sysPost" javaType="com.zy_admin.sys.entity.SysPost" autoMapping="true">
+            <id column="post_id"  property="postId" jdbcType="INTEGER"/>
+        </association>
+    </resultMap>
+
+    <!--    个人中心，七表联查-->
+    <select id="personal" resultMap="SysUserMap">
+        SELECT
+            *
+        FROM
+            sys_user u
+                LEFT JOIN sys_role_dept rd ON u.dept_id = rd.dept_id
+                LEFT JOIN sys_user_role ur on u.user_id = ur.user_id
+                LEFT JOIN sys_role r ON ur.role_id = r.role_id
+                LEFT JOIN sys_dept d on u.dept_id = d.dept_id
+                LEFT JOIN sys_user_post up on u.user_id = up.user_id
+                LEFT JOIN sys_post p on up.post_id = p.post_id
+        where u.user_id = #{userId}
+    </select>
+
+    <resultMap type="com.zy_admin.sys.entity.SysUser" id="SysUserMap1">
         <result property="userId" column="user_id" jdbcType="INTEGER"/>
         <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
         <result property="userName" column="user_name" jdbcType="VARCHAR"/>
@@ -34,13 +64,13 @@
                  left join sys_role r on r.role_id = ur.role_id
     </sql>
 
-    <select id="getUserById" resultMap="SysUserMap">
+    <select id="queryById" resultMap="SysUserMap1">
         <include refid="selectUserInfo"/>
         where u.user_id = #{userId}
     </select>
 
     <!--查询单个-->
-    <select id="queryByName" resultMap="SysUserMap">
+    <select id="queryByName" resultMap="SysUserMap1">
         select
             user_id, dept_id, user_name, nick_name, user_type, email, phonenumber, sex, avatar, password, status, del_flag, login_ip, login_date, create_by, create_time, update_by, update_time, remark
         from sys_user

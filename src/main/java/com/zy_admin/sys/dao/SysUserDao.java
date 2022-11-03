@@ -1,6 +1,7 @@
 package com.zy_admin.sys.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zy_admin.sys.dto.SysUserDto;
 import com.zy_admin.sys.entity.SysUser;
 
 /**
@@ -23,7 +24,14 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @param id
      * @return
      */
-    SysUser getUserById(String id);
+    SysUser queryById(String id);
+
+    /**
+     * 根据用户ID获取用户所有信息
+     * @param userId
+     * @return
+     */
+    SysUserDto personal(String userId);
 
     /**
      * 修改用户信息
