@@ -47,8 +47,7 @@ public class SysUserController extends ApiController {
      */
     @GetMapping("/personal")
     public Result personal(String userId){
-        Result personal = this.sysUserService.personal(userId);
-        return personal;
+        return this.sysUserService.personal(userId);
     }
 
     /**

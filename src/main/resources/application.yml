@@ -1,4 +1,9 @@
 spring:
+  # 配置文件上传大小限制
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -30,7 +35,14 @@ mybatis-plus:
 logging:
   level:
     com.example.demo.dao: DEBUG
+## minio 文件存储配置信息
+## minio的配置
 minio:
-  endpoint: http://192.168.31.194:9000
-  accesskey: minioadmin
+  # minio的地址
+  endpoint: http://192.168.31.218:9001
+  ## 登录账号
+  accessKey: minioadmin
+  ## 登录密码
   secretKey: minioadmin
+  ## 存储桶名称
+  bucketName: zy-community
