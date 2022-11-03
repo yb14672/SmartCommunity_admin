@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysUserService;
+import com.zy_admin.util.Result;
+import com.zy_admin.util.ResultCode;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,6 +29,8 @@ public class SysUserController extends ApiController {
      */
     @Resource
     private SysUserService sysUserService;
+
+    private ResultCode resultCode;
 
     /**
      * 分页查询所有数据
@@ -83,5 +87,14 @@ public class SysUserController extends ApiController {
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.sysUserService.removeByIds(idList));
     }
+
+    @PostMapping("/login")
+    public Result login(SysUser sysUser) {
+        Result result = sysUserService.login(sysUser);
+        return result;
+
+
+    }
 }
+
 

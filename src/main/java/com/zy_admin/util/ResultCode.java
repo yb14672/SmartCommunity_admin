@@ -1,5 +1,7 @@
 package com.zy_admin.util;
 
+import lombok.Data;
+
 /**
  * @Author yb14672
  * @Description: 返回码定义
@@ -10,6 +12,7 @@ package com.zy_admin.util;
  * #3001～3999 区间表示接口异常
  * @Date Create in
  */
+
 public enum ResultCode {
     /* 成功 */
     SUCCESS(200, "成功"),
@@ -33,6 +36,7 @@ public enum ResultCode {
     USER_ACCOUNT_NOT_EXIST(2007, "账号不存在"),
     USER_ACCOUNT_ALREADY_EXIST(2008, "账号已存在"),
     USER_ACCOUNT_USE_BY_OTHERS(2009, "账号下线"),
+    USER_WRONG_ACCOUNT_OR_PASSWORD(2010, "账号或者密码不正确"),
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
@@ -135,5 +139,13 @@ public enum ResultCode {
             }
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "ResultCode{" +
+                "code=" + code +
+                ", message='" + message + '\'' +
+                '}';
     }
 }
