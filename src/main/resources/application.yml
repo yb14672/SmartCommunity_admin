@@ -1,8 +1,13 @@
 spring:
+  # 配置文件上传大小限制
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/zy-community?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/zy-community?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
     username: root
     password: root
     hikari:
@@ -18,13 +23,25 @@ server:
   port: 8080
 
 mybatis-plus:
-  mapper-locations: classpath:mapper/*.xml
-  typeAliasesPackage: com.zy_admin.**.entity
+  # 如果是放在src/main/java目录下 classpath:/com/yourpackage/*/mapper/*Mapper.xml
+  # 如果是放在resource目录 classpath:/mapper/*Mapper.xml
+  mapper-locations: classpath:dao/*.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.example.demo.**.entity
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: false
 logging:
   level:
-    com.zy_admin.**.dao: DEBUG
-
-
+    com.example.demo.dao: DEBUG
+## minio 文件存储配置信息
+## minio的配置
+minio:
+  # minio的地址
+  endpoint: http://192.168.31.218:9001
+  ## 登录账号
+  accessKey: minioadmin
+  ## 登录密码
+  secretKey: minioadmin
+  ## 存储桶名称
+  bucketName: zy-community

@@ -1,10 +1,12 @@
 package com.zy_admin.sys.entity;
 
+import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-
-import java.io.Serializable;
 
 /**
  * 用户信息表(SysUser)表实体类
@@ -12,6 +14,9 @@ import java.io.Serializable;
  * @author makejava
  * @since 2022-11-01 19:49:42
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @SuppressWarnings("serial")
 public class SysUser extends Model<SysUser> {
     //用户ID
@@ -52,7 +57,6 @@ public class SysUser extends Model<SysUser> {
     private Date updateTime;
     //备注
     private String remark;
-
 
     public Long getUserId() {
         return userId;
@@ -206,14 +210,28 @@ public class SysUser extends Model<SysUser> {
         this.remark = remark;
     }
 
-    /**
-     * 获取主键值
-     *
-     * @return 主键值
-     */
     @Override
-    protected Serializable pkVal() {
-        return this.userId;
+    public String toString() {
+        return "SysUser{" +
+                "userId=" + userId +
+                ", deptId=" + deptId +
+                ", userName='" + userName + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", userType='" + userType + '\'' +
+                ", email='" + email + '\'' +
+                ", phonenumber='" + phonenumber + '\'' +
+                ", sex='" + sex + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", password='" + password + '\'' +
+                ", status='" + status + '\'' +
+                ", delFlag='" + delFlag + '\'' +
+                ", loginIp='" + loginIp + '\'' +
+                ", loginDate=" + loginDate +
+                ", createBy='" + createBy + '\'' +
+                ", createTime=" + createTime +
+                ", updateBy='" + updateBy + '\'' +
+                ", updateTime=" + updateTime +
+                ", remark='" + remark + '\'' +
+                '}';
     }
 }
-

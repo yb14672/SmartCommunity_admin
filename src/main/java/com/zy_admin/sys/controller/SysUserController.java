@@ -7,9 +7,12 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysUserService;
+import com.zy_admin.util.JwtUtils;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 
@@ -83,5 +86,65 @@ public class SysUserController extends ApiController {
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.sysUserService.removeByIds(idList));
     }
+
+    @PostMapping("/login")
+    public Result login(SysUser sysUser) {
+        Result result = sysUserService.login(sysUser);
+        return result;
+    }
+
+    /**
+     * 根据ID获取用户信息
+     * @param userId 用户ID
+     * @return 查询的用户结果+http状态
+     */
+    @GetMapping("/personal")
+    public Result personal(HttpServletRequest request){
+        String memberIdByJwtToken = JwtUtils.getMemberIdByJwtToken(request);
+        return this.sysUserService.personal(memberIdByJwtToken);
+    }
+
+    /**
+     * 通过主键查询单条数据
+     *
+     * @param id 主键
+     * @return 单条数据
+     */
+    @GetMapping("/id/{id}")
+    public Result selectOne(@PathVariable String id) {
+        return this.sysUserService.queryById(id);
+    }
+
+    /**
+     * 通过账号查询单条数据
+     *
+     * @param name 主键
+     * @return 单条数据
+     */
+    @GetMapping("/name/{name}")
+    public Result queryByName(@PathVariable String name) {
+        return this.sysUserService.queryByName(name);
+    }
+
+    /**
+     * 修改用户基本信息
+     * @param sysUser
+     * @return
+     */
+    @PutMapping("/updateUser")
+    public Result updateUser(@RequestBody SysUser sysUser){
+        return this.sysUserService.updateUser(sysUser);
+    }
+
+    /**
+     * 修改密码
+     * @param sysUser
+     * @return
+     */
+    @PutMapping("/resetPwd")
+    public Result resetPwd(@RequestBody SysUser sysUser){
+        return this.sysUserService.resetPwd(sysUser);
+    }
 }
+
 

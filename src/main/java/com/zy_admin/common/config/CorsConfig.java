@@ -1,4 +1,4 @@
-package com.zy_admin.common;
+package com.zy_admin.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
