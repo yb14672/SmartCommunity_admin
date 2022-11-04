@@ -7,11 +7,12 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysUserService;
+import com.zy_admin.util.JwtUtils;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 
@@ -98,8 +99,9 @@ public class SysUserController extends ApiController {
      * @return 查询的用户结果+http状态
      */
     @GetMapping("/personal")
-    public Result personal(String userId){
-        return this.sysUserService.personal(userId);
+    public Result personal(HttpServletRequest request){
+        String memberIdByJwtToken = JwtUtils.getMemberIdByJwtToken(request);
+        return this.sysUserService.personal(memberIdByJwtToken);
     }
 
     /**
@@ -144,5 +146,4 @@ public class SysUserController extends ApiController {
         return this.sysUserService.resetPwd(sysUser);
     }
 }
-
 

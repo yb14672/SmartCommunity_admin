@@ -7,7 +7,6 @@ import com.zy_admin.sys.entity.SysUser;
 
 public class SysUserDto {
     private SysRole sysRole;
-
     private SysDept sysDept;
 
     private SysPost sysPost;

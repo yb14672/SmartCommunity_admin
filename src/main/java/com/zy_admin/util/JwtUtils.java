@@ -1,8 +1,12 @@
 package com.zy_admin.util;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 public class JwtUtils {
@@ -32,5 +36,22 @@ public class JwtUtils {
                 .compact();
 
         return JwtToken;
+    }
+
+    /**
+     * 根据token获取会员id
+     * @param request Http请求对象
+     * @return 解析token后获得的用户id
+     */
+    public static String getMemberIdByJwtToken(HttpServletRequest request) {
+        String jwtToken = request.getHeader("token");
+        System.out.println(jwtToken);
+
+        if(StringUtils.isEmpty(jwtToken)) { return ""; }
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(jwtToken);
+        Claims claims = claimsJws.getBody();
+
+        System.out.println((String)claims.get("id"));
+        return (String)claims.get("id");
     }
 }
