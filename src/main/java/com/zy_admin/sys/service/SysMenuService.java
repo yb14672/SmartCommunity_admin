@@ -5,6 +5,7 @@ import com.zy_admin.sys.entity.MenuTree;
 import com.zy_admin.sys.entity.SysMenu;
 import com.zy_admin.util.Result;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -19,5 +20,76 @@ public interface SysMenuService extends IService<SysMenu> {
      * @return
      */
     Result getAllMenu();
+
+    /**
+     * 菜单管理获取列表
+     * @param menu
+     * @return
+     */
+    Result queryAllMenu(SysMenu menu);
+
+    /**
+     * 菜单的添加
+     * @param menu
+     * @return
+     */
+    Result insertMenu(SysMenu menu);
+
+    /**
+     * 菜单的修改
+     * @param menu
+     * @return
+     */
+    Result updateMenu(SysMenu menu);
+
+    /**
+     * 批量删除
+     * @param idList
+     * @return
+     */
+    Result deleteByIds(List<Long> idList);
+
+    /**
+     * 根据ID删除
+     * @param id
+     * @return
+     */
+    Result deteleById(Serializable id);
+
+    /**
+     * 校验菜单名称是否唯一
+     *
+     * @param menu 菜单信息
+     * @param type 判断是添加(0)还是修改(1)
+     * @return true--是唯一，反之
+     */
+    public Boolean checkMenuNameUnique(int type,SysMenu menu);
+
+    /**
+     * 校验菜单名称是否唯一
+     *
+     * @param menu 菜单信息
+     * @param type 判断是添加(0)还是修改(1)
+     * @return true--是唯一，反之
+     */
+    public Boolean checkPathUnique(int type,SysMenu menu);
+
+    /**
+     * 校验菜单名称是否唯一
+     *
+     * @param menu 菜单信息
+     * @param type 判断是添加(0)还是修改(1)
+     * @return true--是唯一，反之
+     */
+    public Boolean checkComponentUnique(int type,SysMenu menu);
+
+    /**
+     * 校验菜单名称是否唯一
+     *
+     * @param menu 菜单信息
+     * @param type 判断是添加(0)还是修改(1)
+     * @return true--是唯一，反之
+     */
+    public Boolean checkPermsUnique(int type,SysMenu menu);
 }
 

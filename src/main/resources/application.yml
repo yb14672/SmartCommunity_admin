@@ -33,7 +33,7 @@ mybatis-plus:
     cache-enabled: false
 logging:
   level:
-    com.example.demo.dao: DEBUG
+    com.zy_community.**.dao: DEBUG
 ## minio 文件存储配置信息
 ## minio的配置
 minio:

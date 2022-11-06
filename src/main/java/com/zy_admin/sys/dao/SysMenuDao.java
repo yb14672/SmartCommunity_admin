@@ -14,6 +14,37 @@ import java.util.List;
  */
 public interface SysMenuDao extends BaseMapper<SysMenu> {
 
+    /**
+     * 获取导航菜单列表
+     * @return
+     */
     List<MenuTree> getAllMenu();
+
+    /**
+     * 查询所有菜单
+     * @param menu
+     * @return
+     */
+    List<MenuTree> queryAllMenu(SysMenu menu);
+
+    /**
+     * 校验菜单名称是否唯一
+     *
+     * @param menu 菜单
+     * @return 结果
+     */
+    SysMenu checkMenuNameUnique(SysMenu menu);
+
+    /**
+     * 校验路由是否唯一
+     *
+     * @param menu 路由
+     * @return 结果
+     */
+    SysMenu checkPathUnique(SysMenu menu);
+
+    SysMenu checkComponentUnique(SysMenu menu);
+
+    SysMenu checkPermsUnique(SysMenu menu);
 }
 

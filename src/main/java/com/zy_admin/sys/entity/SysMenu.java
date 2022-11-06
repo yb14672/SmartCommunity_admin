@@ -2,7 +2,9 @@ package com.zy_admin.sys.entity;
 
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -13,8 +15,10 @@ import java.io.Serializable;
  * @since 2022-11-01 19:49:39
  */
 @SuppressWarnings("serial")
+
 public class SysMenu extends Model<SysMenu> {
     //菜单ID
+    @TableId
     private Long menuId;
     //菜单名称
     private String menuName;
@@ -43,14 +47,13 @@ public class SysMenu extends Model<SysMenu> {
     //创建者
     private String createBy;
     //创建时间
-    private Date createTime;
+    private String createTime;
     //更新者
     private String updateBy;
     //更新时间
-    private Date updateTime;
+    private String updateTime;
     //备注
     private String remark;
-
 
     public Long getMenuId() {
         return menuId;
@@ -164,11 +167,11 @@ public class SysMenu extends Model<SysMenu> {
         this.createBy = createBy;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
@@ -180,11 +183,11 @@ public class SysMenu extends Model<SysMenu> {
         this.updateBy = updateBy;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 

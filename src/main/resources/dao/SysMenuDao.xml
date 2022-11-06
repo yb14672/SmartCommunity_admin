@@ -262,7 +262,102 @@
     </delete>
 
     <select id="getAllMenu" resultType="com.zy_admin.sys.entity.MenuTree">
-        select * from sys_menu where menu_type = 'M' or menu_type = 'C' and status = 0 order by menu_id desc
+        select * from sys_menu where menu_type != 'F' and visible = 0 order by order_num desc
+    </select>
+
+    <select id="queryAllMenu" resultType="com.zy_admin.sys.entity.MenuTree">
+        select * from sys_menu
+        <where>
+            <if test="menuName != '' and menuName != null">
+                and menu_name like concat('%',#{menuName},'%')
+            </if>
+            <if test="visible != '' and visible != null">
+                and visible = #{visible}
+            </if>
+        </where>
+        order by order_num asc
+     </select>
+
+    <!--检查菜单名是否唯一-->
+    <select id="checkMenuNameUnique" parameterType="com.zy_admin.sys.entity.SysMenu" resultMap="SysMenuMap">
+        select menu_id,
+               menu_name,
+               parent_id,
+               order_num,
+               path,
+               component,
+               is_frame,
+               is_cache,
+               menu_type,
+               visible,
+               status,
+               ifnull(perms, '') as perms,
+               icon,
+               create_time
+        from sys_menu
+        where menu_name = #{menuName}
+          and parent_id = #{parentId} limit 1
+    </select>
+
+    <!--检查路由是否唯一-->
+    <select id="checkPathUnique" parameterType="com.zy_admin.sys.entity.SysMenu" resultMap="SysMenuMap">
+        select menu_id,
+               menu_name,
+               parent_id,
+               order_num,
+               path,
+               component,
+               is_frame,
+               is_cache,
+               menu_type,
+               visible,
+               status,
+               ifnull(perms, '') as perms,
+               icon,
+               create_time
+        from sys_menu
+        where path = #{path}
+          and parent_id = #{parentId} limit 1
+    </select>
+
+    <!--检查组件路径是否唯一-->
+    <select id="checkComponentUnique" parameterType="com.zy_admin.sys.entity.SysMenu" resultMap="SysMenuMap">
+        select menu_id,
+               menu_name,
+               parent_id,
+               order_num,
+               path,
+               component,
+               is_frame,
+               is_cache,
+               menu_type,
+               visible,
+               status,
+               ifnull(perms, '') as perms,
+               icon,
+               create_time
+        from sys_menu
+        where component = #{component} limit 1
+    </select>
+
+    <!--检查路由是否唯一-->
+    <select id="checkPermsUnique" parameterType="com.zy_admin.sys.entity.SysMenu" resultMap="SysMenuMap">
+        select menu_id,
+               menu_name,
+               parent_id,
+               order_num,
+               path,
+               component,
+               is_frame,
+               is_cache,
+               menu_type,
+               visible,
+               status,
+               ifnull(perms, '') as perms,
+               icon,
+               create_time
+        from sys_menu
+        where perms = #{perms} limit 1
     </select>
 </mapper>
 
