@@ -43,6 +43,15 @@ public class SysUserController extends ApiController {
         return success(this.sysUserService.page(page, new QueryWrapper<>(sysUser)));
     }
 
+    @GetMapping("/getAvatarById")
+    public Result getAvatarById(HttpServletRequest request){
+        String id = JwtUtils.getMemberIdByJwtToken(request);
+        Result avatarById = this.sysUserService.getAvatarById(id);
+        System.out.println(id);
+        System.out.println(avatarById);
+        return avatarById;
+    }
+
     /**
      * 通过主键查询单条数据
      *

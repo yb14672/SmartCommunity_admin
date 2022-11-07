@@ -13,6 +13,13 @@ import com.zy_admin.util.Result;
 public interface SysUserService extends IService<SysUser> {
 
     /**
+     * 查询头像
+     * @param userId
+     * @return
+     */
+    Result getAvatarById(String userId);
+
+    /**
      * 登录
      * @param sysUser
      * @return
