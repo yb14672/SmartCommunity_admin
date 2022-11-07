@@ -3,7 +3,6 @@ package com.zy_admin.sys.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.sys.entity.MenuTree;
 import com.zy_admin.sys.entity.SysMenu;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,44 +13,38 @@ import java.util.List;
  * @since 2022-11-01 19:49:39
  */
 public interface SysMenuDao extends BaseMapper<SysMenu> {
+
     /**
-     * 返回菜单树型结构--用于左侧菜单列表
-     *
+     * 获取导航菜单列表
      * @return
      */
     List<MenuTree> getAllMenu();
 
     /**
-     * 获取所有菜单--用于菜单管理
-     *
+     * 查询所有菜单
+     * @param menu
      * @return
      */
-    List<MenuTree> getMenu();
-
-    /**
-     * 新增菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    public SysMenu insertMenu(SysMenu menu);
+    List<MenuTree> queryAllMenu(SysMenu menu);
 
     /**
      * 校验菜单名称是否唯一
      *
-     * @param menuName 菜单名称
-     * @param parentId 父菜单ID
+     * @param menu 菜单
      * @return 结果
      */
-    public SysMenu checkMenuNameUnique(@Param("menuName") String menuName, @Param("parentId") Long parentId);
-
+    SysMenu checkMenuNameUnique(SysMenu menu);
 
     /**
-     * 修改菜单信息
+     * 校验路由是否唯一
      *
-     * @param menu 菜单信息
+     * @param menu 路由
      * @return 结果
      */
-    public int updateMenu(SysMenu menu);
+    SysMenu checkPathUnique(SysMenu menu);
+
+    SysMenu checkComponentUnique(SysMenu menu);
+
+    SysMenu checkPermsUnique(SysMenu menu);
 }
 

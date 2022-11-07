@@ -1,5 +1,6 @@
 package com.zy_admin.util;
 
+
 import com.zy_admin.sys.entity.MenuTree;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * @author xiaozhao
  */
-public class Tree {
+public class Tree1 {
 
     /**
      * 流程：数据库查出的菜单记录装在承载菜单的列表中
@@ -17,7 +18,7 @@ public class Tree {
      */
     private List<MenuTree> menuList = new ArrayList<>();
 
-    public Tree(List<MenuTree> menuList) {
+    public Tree1(List<MenuTree> menuList) {
         this.menuList = menuList;
     }
 
@@ -66,16 +67,16 @@ public class Tree {
      */
     private MenuTree buildChildren(MenuTree rootNode) {
         List<MenuTree> childrenTree = new ArrayList<>();
-//        for (MenuTree menu : menuList) {
-//            if (menu.getParentId().equals(rootNode.getMenuId())){
-//                childrenTree.add(buildChildren(menu));
-//            }
-//        }
-        for (int i = menuList.size() - 1;i >= 0; i--){
-            if (menuList.get(i).getParentId().equals(rootNode.getMenuId())){
-                childrenTree.add(buildChildren(menuList.get(i)));
+        for (MenuTree menu : menuList) {
+            if (menu.getParentId().equals(rootNode.getMenuId())){
+                childrenTree.add(buildChildren(menu));
             }
         }
+//        for (int i = menuList.size() - 1;i >= 0; i--){
+//            if (menuList.get(i).getParentId().equals(rootNode.getMenuId())){
+//                childrenTree.add(buildChildren(menuList.get(i)));
+//            }
+//        }
             rootNode.setChildren(childrenTree);
         return rootNode;
     }

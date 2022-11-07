@@ -95,7 +95,7 @@ public class SysUserController extends ApiController {
 
     /**
      * 根据ID获取用户信息
-     * @param userId 用户ID
+     * @param request 用户ID
      * @return 查询的用户结果+http状态
      */
     @GetMapping("/personal")
@@ -146,5 +146,4 @@ public class SysUserController extends ApiController {
         return this.sysUserService.resetPwd(sysUser);
     }
 }
-
 

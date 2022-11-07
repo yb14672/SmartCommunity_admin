@@ -2,6 +2,7 @@ package com.zy_admin.sys.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.sys.entity.SysDictData;
+import com.zy_admin.util.Result;
 
 /**
  * 字典数据表(SysDictData)表服务接口
@@ -11,5 +12,6 @@ import com.zy_admin.sys.entity.SysDictData;
  */
 public interface SysDictDataService extends IService<SysDictData> {
 
+    public Result getDict(String deptType);
 }
 

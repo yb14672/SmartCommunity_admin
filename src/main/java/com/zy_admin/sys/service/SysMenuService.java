@@ -1,8 +1,12 @@
 package com.zy_admin.sys.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zy_admin.sys.entity.MenuTree;
 import com.zy_admin.sys.entity.SysMenu;
 import com.zy_admin.util.Result;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * 菜单权限表(SysMenu)表服务接口
@@ -12,32 +16,45 @@ import com.zy_admin.util.Result;
  */
 public interface SysMenuService extends IService<SysMenu> {
     /**
-     * 返回菜单树型结构--用于左侧菜单列表
+     * 返回菜单树型结构
      * @return
      */
     Result getAllMenu();
 
     /**
-     * 获取所有菜单--用于菜单管理
+     * 菜单管理获取列表
+     * @param menu
      * @return
      */
-    Result getMenu();
+    Result queryAllMenu(SysMenu menu);
 
     /**
-     * 新增菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
+     * 菜单的添加
+     * @param menu
+     * @return
      */
-    public Result insertMenu(SysMenu menu);
+    Result insertMenu(SysMenu menu);
 
     /**
-     * 修改菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
+     * 菜单的修改
+     * @param menu
+     * @return
      */
-    public Result updateMenu(SysMenu menu);
+    Result updateMenu(SysMenu menu);
+
+    /**
+     * 批量删除
+     * @param idList
+     * @return
+     */
+    Result deleteByIds(List<Long> idList);
+
+    /**
+     * 根据ID删除
+     * @param id
+     * @return
+     */
+    Result deteleById(Serializable id);
 
     /**
      * 校验菜单名称是否唯一
@@ -47,5 +64,32 @@ public interface SysMenuService extends IService<SysMenu> {
      * @return true--是唯一，反之
      */
     public Boolean checkMenuNameUnique(int type,SysMenu menu);
+
+    /**
+     * 校验菜单名称是否唯一
+     *
+     * @param menu 菜单信息
+     * @param type 判断是添加(0)还是修改(1)
+     * @return true--是唯一，反之
+     */
+    public Boolean checkPathUnique(int type,SysMenu menu);
+
+    /**
+     * 校验菜单名称是否唯一
+     *
+     * @param menu 菜单信息
+     * @param type 判断是添加(0)还是修改(1)
+     * @return true--是唯一，反之
+     */
+    public Boolean checkComponentUnique(int type,SysMenu menu);
+
+    /**
+     * 校验菜单名称是否唯一
+     *
+     * @param menu 菜单信息
+     * @param type 判断是添加(0)还是修改(1)
+     * @return true--是唯一，反之
+     */
+    public Boolean checkPermsUnique(int type,SysMenu menu);
 }
 

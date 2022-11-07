@@ -6,12 +6,22 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysMenu;
+import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysMenuService;
+import com.zy_admin.sys.service.SysUserService;
+import com.zy_admin.util.JwtUtils;
 import com.zy_admin.util.Result;
+import com.zy_admin.util.ResultCode;
+import com.zy_admin.util.ResultTool;
+import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,6 +38,8 @@ public class SysMenuController extends ApiController {
      */
     @Resource
     private SysMenuService sysMenuService;
+    @Resource
+    private SysUserService sysUserService;
 
     /**
      * 分页查询所有数据
@@ -58,9 +70,20 @@ public class SysMenuController extends ApiController {
      * @param sysMenu 实体对象
      * @return 新增结果
      */
-    @PostMapping
-    public Result insert(@RequestBody SysMenu sysMenu) {
-        return this.sysMenuService.insertMenu(sysMenu);
+    @PostMapping("/addMenu")
+    public Result insert(@RequestBody SysMenu sysMenu, HttpServletRequest request) {
+        String userId = JwtUtils.getMemberIdByJwtToken(request);
+        Result result = this.sysUserService.queryById(userId);
+        try {
+            SysUser user = (SysUser) result.getData();
+            sysMenu.setCreateTime(LocalDateTime.now().toString());
+            sysMenu.setCreateBy(user.getUserName());
+            result=this.sysMenuService.insertMenu(sysMenu);
+        } catch (Exception e) {
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        }finally {
+            return result;
+        }
     }
 
     /**
@@ -70,24 +93,35 @@ public class SysMenuController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
-    public Result update(@RequestBody SysMenu sysMenu) {
-        return this.sysMenuService.updateMenu(sysMenu);
+    public R update(@RequestBody SysMenu sysMenu) {
+        return success(this.sysMenuService.updateById(sysMenu));
+    }
+    @DeleteMapping("/deleteById")
+    public Result deleteById(@RequestParam Serializable id) {
+        return this.sysMenuService.deteleById(id);
     }
 
     /**
-     * 删除数据
+     * 批量删除
      *
      * @param idList 主键结合
      * @return 删除结果
      */
     @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.sysMenuService.removeByIds(idList));
+    public Result deleteByIds(@RequestParam String[] idList) {
+        List<Long> idList1=new ArrayList<Long>();
+        for (String str : idList) {
+            idList1.add(Long.valueOf(str));
+            System.out.println(str);
+        }
+        Result result = this.sysMenuService.deleteByIds(idList1);
+        System.out.println(result);
+        return result;
     }
 
     /**
-     * 返回菜单树型结构--用于左侧菜单列表
-     * @return
+     * 获取所有菜单
+     * @return 菜单结果
      */
     @RequestMapping("/getMenus")
     public Result getMenuList(){
@@ -95,12 +129,19 @@ public class SysMenuController extends ApiController {
     }
 
     /**
-     * 获取所有菜单--用于菜单管理
+     * 菜单的条件搜索
+     * @param menu
      * @return
      */
-    @GetMapping("/getMenu")
-    public Result getMenu() {
-        return sysMenuService.getMenu();
+    @GetMapping("/queryMenus")
+    public Result queryAllMenu(SysMenu menu){
+        return this.sysMenuService.queryAllMenu(menu);
+    }
+
+    @PutMapping("/updateMenu")
+    public Result updateMenu(@RequestBody SysMenu sysMenu){
+        Result result = this.sysMenuService.updateMenu(sysMenu);
+        return result;
     }
 }
 
