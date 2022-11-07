@@ -59,8 +59,8 @@ public class SysMenuController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
-    public R insert(@RequestBody SysMenu sysMenu) {
-        return success(this.sysMenuService.save(sysMenu));
+    public Result insert(@RequestBody SysMenu sysMenu) {
+        return this.sysMenuService.insertMenu(sysMenu);
     }
 
     /**
@@ -70,8 +70,8 @@ public class SysMenuController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
-    public R update(@RequestBody SysMenu sysMenu) {
-        return success(this.sysMenuService.updateById(sysMenu));
+    public Result update(@RequestBody SysMenu sysMenu) {
+        return this.sysMenuService.updateMenu(sysMenu);
     }
 
     /**
@@ -86,12 +86,21 @@ public class SysMenuController extends ApiController {
     }
 
     /**
-     * 获取所有菜单
-     * @return 菜单结果
+     * 返回菜单树型结构--用于左侧菜单列表
+     * @return
      */
     @RequestMapping("/getMenus")
     public Result getMenuList(){
         return this.sysMenuService.getAllMenu();
+    }
+
+    /**
+     * 获取所有菜单--用于菜单管理
+     * @return
+     */
+    @GetMapping("/getMenu")
+    public Result getMenu() {
+        return sysMenuService.getMenu();
     }
 }
 

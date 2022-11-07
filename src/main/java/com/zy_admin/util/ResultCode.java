@@ -39,6 +39,7 @@ public enum ResultCode {
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
+    REPEAT_MENU(3002, "该菜单名称已存在"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

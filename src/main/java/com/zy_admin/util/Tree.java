@@ -1,6 +1,5 @@
 package com.zy_admin.util;
 
-
 import com.zy_admin.sys.entity.MenuTree;
 
 import java.util.ArrayList;
@@ -65,9 +64,14 @@ public class Tree {
      */
     private MenuTree buildChildren(MenuTree rootNode){
         List<MenuTree> childrenTree = new ArrayList<>();
-        for (MenuTree menu : menuList) {
-            if (menu.getParentId().equals(rootNode.getMenuId())){
-                childrenTree.add(buildChildren(menu));
+//        for (MenuTree menu : menuList) {
+//            if (menu.getParentId().equals(rootNode.getMenuId())){
+//                childrenTree.add(buildChildren(menu));
+//            }
+//        }
+        for (int i = menuList.size() - 1;i >= 0; i--){
+            if (menuList.get(i).getParentId().equals(rootNode.getMenuId())){
+                childrenTree.add(buildChildren(menuList.get(i)));
             }
         }
         rootNode.setChildren(childrenTree);

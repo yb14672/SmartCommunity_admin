@@ -25,8 +25,24 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="SysMenuMap">
-        select
-          menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark
+        select menu_id,
+               menu_name,
+               parent_id,
+               order_num,
+               path,
+               component,
+               is_frame,
+               is_cache,
+               menu_type,
+               visible,
+               status,
+               perms,
+               icon,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
         from sys_menu
         where menu_id = #{menuId}
     </select>
@@ -34,7 +50,8 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="SysMenuMap">
         select
-          menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark
+        menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status,
+        perms, icon, create_by, create_time, update_by, update_time, remark
         from sys_menu
         <where>
             <if test="menuId != null">
@@ -158,24 +175,65 @@
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" keyProperty="menuId" useGeneratedKeys="true">
-        insert into sys_menu(menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-        values (#{menuName}, #{parentId}, #{orderNum}, #{path}, #{component}, #{isFrame}, #{isCache}, #{menuType}, #{visible}, #{status}, #{perms}, #{icon}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    <insert id="insertMenu" keyProperty="menuId" useGeneratedKeys="true">
+        insert into sys_menu(
+        <if test="menuId != null and menuId != 0">menu_id,</if>
+        <if test="parentId != null and parentId != 0">parent_id,</if>
+        <if test="menuName != null and menuName != ''">menu_name,</if>
+        <if test="orderNum != null and orderNum != ''">order_num,</if>
+        <if test="path != null and path != ''">path,</if>
+        <if test="component != null and component != ''">component,</if>
+        <if test="isFrame != null and isFrame != ''">is_frame,</if>
+        <if test="isCache != null and isCache != ''">is_cache,</if>
+        <if test="menuType != null and menuType != ''">menu_type,</if>
+        <if test="visible != null">visible,</if>
+        <if test="status != null">status,</if>
+        <if test="perms !=null and perms != ''">perms,</if>
+        <if test="icon != null and icon != ''">icon,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        create_time
+        )values(
+        <if test="menuId != null and menuId != 0">#{menuId},</if>
+        <if test="parentId != null and parentId != 0">#{parentId},</if>
+        <if test="menuName != null and menuName != ''">#{menuName},</if>
+        <if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+        <if test="path != null and path != ''">#{path},</if>
+        <if test="component != null and component != ''">#{component},</if>
+        <if test="isFrame != null and isFrame != ''">#{isFrame},</if>
+        <if test="isCache != null and isCache != ''">#{isCache},</if>
+        <if test="menuType != null and menuType != ''">#{menuType},</if>
+        <if test="visible != null">#{visible},</if>
+        <if test="status != null">#{status},</if>
+        <if test="perms !=null and perms != ''">#{perms},</if>
+        <if test="icon != null and icon != ''">#{icon},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        sysdate()
+        )
     </insert>
 
     <insert id="insertBatch" keyProperty="menuId" useGeneratedKeys="true">
-        insert into sys_menu(menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+        insert into sys_menu(menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible,
+        status, perms, icon, create_by, create_time, update_by, update_time, remark)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.menuName}, #{entity.parentId}, #{entity.orderNum}, #{entity.path}, #{entity.component}, #{entity.isFrame}, #{entity.isCache}, #{entity.menuType}, #{entity.visible}, #{entity.status}, #{entity.perms}, #{entity.icon}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+            (#{entity.menuName}, #{entity.parentId}, #{entity.orderNum}, #{entity.path}, #{entity.component},
+            #{entity.isFrame}, #{entity.isCache}, #{entity.menuType}, #{entity.visible}, #{entity.status},
+            #{entity.perms}, #{entity.icon}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy},
+            #{entity.updateTime}, #{entity.remark})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="menuId" useGeneratedKeys="true">
-        insert into sys_menu(menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+        insert into sys_menu(menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible,
+        status, perms, icon, create_by, create_time, update_by, update_time, remark)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.menuName}, #{entity.parentId}, #{entity.orderNum}, #{entity.path}, #{entity.component}, #{entity.isFrame}, #{entity.isCache}, #{entity.menuType}, #{entity.visible}, #{entity.status}, #{entity.perms}, #{entity.icon}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+            (#{entity.menuName}, #{entity.parentId}, #{entity.orderNum}, #{entity.path}, #{entity.component},
+            #{entity.isFrame}, #{entity.isCache}, #{entity.menuType}, #{entity.visible}, #{entity.status},
+            #{entity.perms}, #{entity.icon}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy},
+            #{entity.updateTime}, #{entity.remark})
         </foreach>
         on duplicate key update
         menu_name = values(menu_name),
@@ -198,71 +256,68 @@
     </insert>
 
     <!--通过主键修改数据-->
-    <update id="update">
+    <update id="updateMenu">
         update sys_menu
         <set>
-            <if test="menuName != null and menuName != ''">
-                menu_name = #{menuName},
-            </if>
-            <if test="parentId != null">
-                parent_id = #{parentId},
-            </if>
-            <if test="orderNum != null">
-                order_num = #{orderNum},
-            </if>
-            <if test="path != null and path != ''">
-                path = #{path},
-            </if>
-            <if test="component != null and component != ''">
-                component = #{component},
-            </if>
-            <if test="isFrame != null">
-                is_frame = #{isFrame},
-            </if>
-            <if test="isCache != null">
-                is_cache = #{isCache},
-            </if>
-            <if test="menuType != null and menuType != ''">
-                menu_type = #{menuType},
-            </if>
-            <if test="visible != null and visible != ''">
-                visible = #{visible},
-            </if>
-            <if test="status != null and status != ''">
-                status = #{status},
-            </if>
-            <if test="perms != null and perms != ''">
-                perms = #{perms},
-            </if>
-            <if test="icon != null and icon != ''">
-                icon = #{icon},
-            </if>
-            <if test="createBy != null and createBy != ''">
-                create_by = #{createBy},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime},
-            </if>
-            <if test="updateBy != null and updateBy != ''">
-                update_by = #{updateBy},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime},
-            </if>
-            <if test="remark != null and remark != ''">
-                remark = #{remark},
-            </if>
+            <if test="menuName != null and menuName != ''">menu_name = #{menuName},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="orderNum != null and orderNum != ''">order_num = #{orderNum},</if>
+            <if test="path != null and path != ''">path = #{path},</if>
+            <if test="component != null and component != ''">component = #{component},</if>
+            <if test="isFrame != null and isFrame != ''">is_frame = #{isFrame},</if>
+            <if test="isCache != null and isCache != ''">is_cache = #{isCache},</if>
+            <if test="menuType != null and menuType != ''">menu_type = #{menuType},</if>
+            <if test="visible != null">visible = #{visible},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="perms !=null">perms = #{perms},</if>
+            <if test="icon !=null and icon != ''">icon = #{icon},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
         </set>
         where menu_id = #{menuId}
     </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from sys_menu where menu_id = #{menuId}
+        delete
+        from sys_menu
+        where menu_id = #{menuId}
     </delete>
 
+    <!--获取菜单列表-->
     <select id="getAllMenu" resultType="com.zy_admin.sys.entity.MenuTree">
-        select * from sys_menu where menu_type = 'M' or menu_type = 'C' and status = 0 order by menu_id desc
+        select *
+        from sys_menu
+        where menu_type = 'M'
+           or menu_type = 'C' and status = 0
+        order by menu_id desc
+    </select>
+    <!--获取所有菜单-->
+    <select id="getMenu" resultType="com.zy_admin.sys.entity.MenuTree">
+        select *
+        from sys_menu
+        order by menu_id
+    </select>
+    <!--检查菜单名是否唯一-->
+    <select id="checkMenuNameUnique" parameterType="com.zy_admin.sys.entity.SysMenu" resultMap="SysMenuMap">
+        select menu_id,
+               menu_name,
+               parent_id,
+               order_num,
+               path,
+               component,
+               is_frame,
+               is_cache,
+               menu_type,
+               visible,
+               status,
+               ifnull(perms, '') as perms,
+               icon,
+               create_time
+        from sys_menu
+        where menu_name = #{menuName}
+          and parent_id = #{parentId} limit 1
     </select>
 </mapper>
 
