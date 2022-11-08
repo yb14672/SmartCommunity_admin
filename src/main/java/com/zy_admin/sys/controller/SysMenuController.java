@@ -13,7 +13,6 @@ import com.zy_admin.util.JwtUtils;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
-import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -108,13 +106,13 @@ public class SysMenuController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
-    public Result deleteByIds(@RequestParam String[] idList) {
+    public Result deleteByIdList(@RequestParam String[] idList) {
         List<Long> idList1=new ArrayList<Long>();
         for (String str : idList) {
             idList1.add(Long.valueOf(str));
             System.out.println(str);
         }
-        Result result = this.sysMenuService.deleteByIds(idList1);
+        Result result = this.sysMenuService.deleteByIdList(idList1);
         System.out.println(result);
         return result;
     }

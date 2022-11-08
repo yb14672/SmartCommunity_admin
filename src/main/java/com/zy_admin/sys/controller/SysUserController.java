@@ -47,8 +47,6 @@ public class SysUserController extends ApiController {
     public Result getAvatarById(HttpServletRequest request){
         String id = JwtUtils.getMemberIdByJwtToken(request);
         Result avatarById = this.sysUserService.getAvatarById(id);
-        System.out.println(id);
-        System.out.println(avatarById);
         return avatarById;
     }
 

@@ -48,7 +48,7 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param idList
      * @return
      */
-    Result deleteByIds(List<Long> idList);
+    Result deleteByIdList(List<Long> idList);
 
     /**
      * 根据ID删除
