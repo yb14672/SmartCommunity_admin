@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.sys.dao.SysRoleMenuDao">
+
+    <resultMap type="com.zy_admin.sys.entity.SysRoleMenu" id="SysRoleMenuMap">
+        <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+        <result property="menuId" column="menu_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SysRoleMenuMap">
+        select role_id,
+               menu_id
+        from sys_role_menu
+        where role_id = #{roleId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SysRoleMenuMap">
+        select
+        role_id, menu_id
+        from sys_role_menu
+        <where>
+            <if test="roleId != null">
+                and role_id = #{roleId}
+            </if>
+            <if test="menuId != null">
+                and menu_id = #{menuId}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from sys_role_menu
+        <where>
+            <if test="roleId != null">
+                and role_id = #{roleId}
+            </if>
+            <if test="menuId != null">
+                and menu_id = #{menuId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="roleId" useGeneratedKeys="true">
+        insert into sys_role_menu()
+        values ()
+    </insert>
+
+    <insert id="insertBatch">
+        insert into sys_role_menu(role_id,menu_id)
+        values
+        <foreach collection="menuIdList" item="menuId" separator=",">
+            (#{id},#{menuId})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="roleId" useGeneratedKeys="true">
+        insert into sys_role_menu()
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            ()
+        </foreach>
+        on duplicate key update
+
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sys_role_menu
+        <set>
+        </set>
+        where role_id = #{roleId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from sys_role_menu
+        where role_id = #{roleId}
+    </delete>
+
+    <select id="getMenuIdsByRoleId" resultType="java.lang.Integer">
+        select menu_id
+        from sys_role_menu
+        where role_id = #{roleId}
+    </select>
+
+    <delete id="deleteByIdList">
+        delete from sys_role_menu where role_id in
+        <foreach collection="idList" item="role_id" separator="," open="(" close=")">
+            #{role_id}
+        </foreach>
+    </delete>
+</mapper>
+

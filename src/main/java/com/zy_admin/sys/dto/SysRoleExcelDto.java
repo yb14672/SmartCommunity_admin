@@ -1,4 +1,4 @@
-package com.zy_admin.sys.entity;
+package com.zy_admin.sys.dto;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
@@ -16,7 +16,7 @@ import java.util.Date;
  */
 @SuppressWarnings("serial")
 @Data
-public class SysRole extends Model<SysRole> {
+public class SysRoleExcelDto extends Model<SysRoleExcelDto> {
     /**
      * 角色ID
      */

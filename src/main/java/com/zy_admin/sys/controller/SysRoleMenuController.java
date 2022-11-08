@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysRoleMenu;
 import com.zy_admin.sys.service.SysRoleMenuService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -82,6 +83,11 @@ public class SysRoleMenuController extends ApiController {
     @DeleteMapping
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.sysRoleMenuService.removeByIds(idList));
+    }
+
+    @GetMapping("/getMenuIds")
+    public Result getMenuIds(String roleId){
+        return sysRoleMenuService.getMenuIdsByRoleId(roleId);
     }
 }
 
