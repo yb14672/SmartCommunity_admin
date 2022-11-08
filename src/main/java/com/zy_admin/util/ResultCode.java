@@ -42,6 +42,8 @@ public enum ResultCode {
     DELETE_FAIL(3002, "删除失败，请稍后再试"),
     REPEAT_MENUNAME(3003, "该菜单名称已存在"),
     REPEAT_MENUPATH(3004, "该路由已存在"),
+    REPEAT_ROLE_KEY(3005,"权限码存在"),
+    REPEAT_ROLE_NAME(3006,"角色名存在"),
 
 
     /* http自带请求码 */
