@@ -49,5 +49,7 @@ public interface SysMenuDao extends BaseMapper<SysMenu> {
     SysMenu checkPermsUnique(SysMenu menu);
 
     Integer hasChildByMenuId(Long menuId);
+
+    List<MenuTree> getMenuTree();
 }
 

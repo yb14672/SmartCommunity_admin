@@ -271,5 +271,22 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
         }
         return false;
     }
+
+    @Override
+    public Result getMenuTrees() {
+        Result result = new Result();
+        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        try {
+            List<MenuTree> menuTree = this.baseMapper.getMenuTree();
+            Tree1 tree = new Tree1(menuTree);
+            List<MenuTree> menuTrees = tree.buildTree();
+            System.out.println(menuTrees);
+            result.setData(menuTrees);
+            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            return result;
+        } catch (Exception e) {
+            return result;
+        }
+    }
 }
 

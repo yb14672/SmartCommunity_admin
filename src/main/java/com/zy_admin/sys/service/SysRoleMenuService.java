@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.sys.entity.SysRoleMenu;
 import com.zy_admin.util.Result;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -15,16 +16,16 @@ import java.util.List;
 public interface SysRoleMenuService extends IService<SysRoleMenu> {
 
     /**
-     *
+     * 获取角色新增修改时的菜单树
      * @param id
      * @return
      */
-    public Result getMenuIdsByRoleId(String id);
+    Result getMenuIdsByRoleId(String id);
 
     /**
-     * 批量删除角色权限
-     * @param idList 角色列表
-     * @return 影响的行数
+     * 单个删除和批量删除角色
+     * @param idList
+     * @return
      */
     int deleteByIdList(List<Integer> idList);
 }
