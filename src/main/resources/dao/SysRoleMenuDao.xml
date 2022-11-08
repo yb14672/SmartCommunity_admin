@@ -86,14 +86,14 @@
     </delete>
 
     <select id="getMenuIdsByRoleId" resultType="java.lang.Integer">
-        select menu_id
-        from sys_role_menu
-        where role_id = #{roleId}
+        select srm.menu_id
+        from sys_role_menu srm left join sys_menu sm on srm.menu_id = sm.menu_id
+        where role_id = #{roleId} and sm.status != '1'
     </select>
 
-    <delete id="deleteByIdList">
+    <delete id="deleteByIdList" parameterType="java.lang.Integer">
         delete from sys_role_menu where role_id in
-        <foreach collection="idList" item="role_id" separator="," open="(" close=")">
+        <foreach collection="idList" open="(" close=")" separator="," item="role_id">
             #{role_id}
         </foreach>
     </delete>

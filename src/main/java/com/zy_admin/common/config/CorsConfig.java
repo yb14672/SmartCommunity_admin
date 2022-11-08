@@ -3,6 +3,7 @@ package com.zy_admin.common.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * Time:2022/11/2 - 8:49
  * 全局跨域配置类wasd
  **/
+@EnableTransactionManagement
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 

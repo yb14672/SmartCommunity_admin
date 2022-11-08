@@ -398,5 +398,9 @@
         from sys_menu
         where perms = #{perms} limit 1
     </select>
+
+    <select id="getMenuTree" resultType="com.zy_admin.sys.entity.MenuTree">
+        select * from sys_menu where visible = '0' and status = '0' order by parent_id,order_num
+    </select>
 </mapper>
 
