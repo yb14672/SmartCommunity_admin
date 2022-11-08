@@ -43,8 +43,8 @@ public enum ResultCode {
     REPEAT_MENUNAME(3003, "该菜单名称已存在"),
     REPEAT_MENUPATH(3004, "该路由已存在"),
     MENU_HAVE_CHILDREN(3005, "该菜单有子集，若要删除请使用批量删除"),
-    REPEAT_ROLE_KEY(3006,"权限码存在"),
-    REPEAT_ROLE_NAME(3007,"角色名存在"),
+    REPEAT_ROLE_KEY(3006,"当前权限码已存在"),
+    REPEAT_ROLE_NAME(3007,"当前角色名已存在"),
 
 
     /* http自带请求码 */

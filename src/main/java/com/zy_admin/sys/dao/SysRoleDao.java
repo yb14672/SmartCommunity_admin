@@ -59,16 +59,35 @@ public interface SysRoleDao extends BaseMapper<SysRole> {
      * 所有用户获取excel
      * @return
      */
-
     List<SysRole> getRoleLists();
 
+    /**
+     * 添加角色及其权限
+     * @param RoleAndRoleMenu
+     * @return
+     */
     int insert(RoleAndRoleMenu RoleAndRoleMenu);
 
+    /**
+     * 修改角色及其权限
+     * @param RoleAndRoleMenu
+     * @return
+     */
     int updateRoleById(RoleAndRoleMenu RoleAndRoleMenu);
 
+    /**
+     * 价差角色名是否唯一
+     * @param roleName
+     * @return
+     */
     @Select("select * from sys_role where role_name = #{roleName} ")
     SysRole selectRoleName(String roleName);
 
+    /**
+     * 检查权限标识是否唯一
+     * @param roleKey
+     * @return
+     */
     @Select("select * from sys_role where role_key=#{roleKey}")
     SysRole selectRoleKey(String roleKey);
 }

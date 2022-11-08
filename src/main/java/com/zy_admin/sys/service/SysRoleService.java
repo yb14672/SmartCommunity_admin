@@ -17,7 +17,8 @@ import java.util.List;
  */
 public interface SysRoleService extends IService<SysRole> {
     /**
-     * 根据id列表删除
+     * 根据id列表查询
+     *
      * @param roleIds
      * @return
      */
@@ -25,22 +26,52 @@ public interface SysRoleService extends IService<SysRole> {
 
     /**
      * 获取所有角色
+     *
      * @return
      */
     List<SysRole> getRoleLists();
+
     /**
      * 根据ID集合批量删除
+     *
      * @param idList 角色ID列表
      * @return
      */
     Result deleteByIdList(List<Integer> idList);
 
+    /**
+     * 角色搜索并分页
+     *
+     * @param sysRole
+     * @param pageable
+     * @param startTime
+     * @param endTime
+     * @return
+     */
     Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime);
 
+    /**
+     * 添加角色及其权限
+     *
+     * @param roleAndRoleMenu
+     * @return
+     */
     Result insert(RoleAndRoleMenu roleAndRoleMenu);
 
+    /**
+     * 修改角色及其权限
+     *
+     * @param roleAndRoleMenu
+     * @return
+     */
     Result update(RoleAndRoleMenu roleAndRoleMenu);
 
+    /**
+     * 修改角色状态
+     *
+     * @param sysRole
+     * @return
+     */
     Result changeStatus(SysRole sysRole);
 }
 
