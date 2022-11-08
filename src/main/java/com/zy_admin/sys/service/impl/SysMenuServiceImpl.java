@@ -137,7 +137,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
     }
 
     @Override
-    public Result deleteByIds(List<Long> idList) {
+    public Result deleteByIdList(List<Long> idList) {
         Result result = new Result();
         int i = this.baseMapper.deleteBatchIds(idList);
         if (i >= 1) {

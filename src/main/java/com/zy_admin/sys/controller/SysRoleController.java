@@ -7,10 +7,12 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.service.SysRoleService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -80,8 +82,12 @@ public class SysRoleController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.sysRoleService.removeByIds(idList));
+    public Result delete(@RequestParam String[] idList) {
+        List<Integer> idList1 = new ArrayList<Integer>();
+        for (String str : idList) {
+            idList1.add(Integer.valueOf(str));
+        }
+        return this.sysRoleService.deleteByIdList(idList1);
     }
 }
 
