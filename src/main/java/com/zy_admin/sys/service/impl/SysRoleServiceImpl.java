@@ -39,11 +39,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class})
     public Result insert(RoleAndRoleMenu roleAndRoleMenu) {
         try {
-            long id = this.baseMapper.insert(roleAndRoleMenu.getSysRole()); //获取自增主键
-            sysRoleMenuDao.insertBatch(id,roleAndRoleMenu.getMenuIdList());
+            this.baseMapper.insert(roleAndRoleMenu);
+            sysRoleMenuDao.insertBatch(roleAndRoleMenu.getRoleId(),roleAndRoleMenu.getMenuIds());
             return new Result(null,ResultTool.fail(ResultCode.SUCCESS));
         } catch (Exception e) {
             e.printStackTrace();

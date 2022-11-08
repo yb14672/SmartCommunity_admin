@@ -131,7 +131,7 @@
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" keyProperty="roleId" useGeneratedKeys="true">
+    <insert id="insert" keyProperty="roleId" useGeneratedKeys="true" keyColumn="role_id">
         insert into sys_role(role_name, role_key, role_sort, data_scope, menu_check_strictly, dept_check_strictly, status, del_flag, create_by, create_time, update_by, update_time, remark)
         values (#{roleName}, #{roleKey}, #{roleSort}, #{dataScope}, #{menuCheckStrictly}, #{deptCheckStrictly}, #{status}, #{delFlag}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>

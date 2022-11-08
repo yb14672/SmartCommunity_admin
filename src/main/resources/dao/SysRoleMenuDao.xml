@@ -55,7 +55,7 @@
         insert into sys_role_menu(role_id,menu_id)
         values
         <foreach collection="menuIdList" item="menuId" separator=",">
-            (#{role_id},#{menuId})
+            (#{id},#{menuId})
         </foreach>
     </insert>
 

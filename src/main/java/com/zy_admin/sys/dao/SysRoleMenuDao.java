@@ -14,6 +14,11 @@ import java.util.List;
  */
 public interface SysRoleMenuDao extends BaseMapper<SysRoleMenu> {
 
-    void insertBatch(@Param("id") long id, @Param("menuIdList") List<Integer> menuIdList);
+    /**
+     * 批量新增权限菜单
+     * @param id
+     * @param menuIdList
+     */
+    void insertBatch(@Param("id") long id, @Param("menuIdList") int[] menuIdList);
 }
 

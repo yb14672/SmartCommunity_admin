@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -57,14 +58,15 @@ public class SysRoleController extends ApiController {
     /**
      * 新增数据
      *
-     * @param sysRole 实体对象
+     * @param RoleAndRoleMenu 实体对象
      * @return 新增结果
      */
     @PostMapping("/addRole")
-    public Result insert(RoleAndRoleMenu roleAndRoleMenu) {
-        System.out.println(roleAndRoleMenu);
-        return  this.sysRoleService.insert(roleAndRoleMenu);
-
+    public Result insert(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
+        roleAndRoleMenu.setCreateTime(LocalDateTime.now().toString());
+        Result insert = this.sysRoleService.insert(roleAndRoleMenu);
+        System.out.println(insert);
+        return insert;
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.zy_admin.sys.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.entity.SysRole;
 
 /**
@@ -10,6 +11,11 @@ import com.zy_admin.sys.entity.SysRole;
  * @since 2022-11-01 19:49:40
  */
 public interface SysRoleDao extends BaseMapper<SysRole> {
-    int insert(SysRole sysRole);
+    /**
+     * 新增角色
+     * @param RoleAndRoleMenu
+     * @return
+     */
+    int insert(RoleAndRoleMenu RoleAndRoleMenu);
 }
 
