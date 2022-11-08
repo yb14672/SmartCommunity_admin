@@ -29,7 +29,6 @@ public class Tree1 {
      */
     private List<MenuTree> getRootNode() {
         List<MenuTree> rootNode = new ArrayList<>();
-
         if (menuList.size() > 99) {
             for (MenuTree menu : menuList) {
                 if ("0".equals(menu.getParentId())) {
@@ -50,9 +49,7 @@ public class Tree1 {
                     if (f) {
                         rootNode.add(menuList.get(i));
                     }
-
                 }
-
             }
         }
 

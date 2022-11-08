@@ -14,6 +14,13 @@ import org.apache.ibatis.annotations.Select;
 public interface SysUserDao extends BaseMapper<SysUser> {
 
     /**
+     * 查询头像
+     * @param userId
+     * @return
+     */
+    String getAvatarById(String userId);
+
+    /**
      * 根据账号查询用户
      * @param userName
      * @return

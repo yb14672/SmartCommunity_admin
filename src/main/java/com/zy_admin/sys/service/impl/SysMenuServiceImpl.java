@@ -2,15 +2,12 @@ package com.zy_admin.sys.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.sys.dao.SysMenuDao;
-import com.zy_admin.sys.dao.SysUserDao;
-import com.zy_admin.sys.dto.SysUserDto;
 import com.zy_admin.sys.entity.MenuTree;
 import com.zy_admin.sys.entity.SysMenu;
 import com.zy_admin.sys.service.SysMenuService;
 import com.zy_admin.util.*;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
 
@@ -22,10 +19,8 @@ import java.util.List;
  */
 @Service("sysMenuService")
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> implements SysMenuService {
-
     @Resource
     private SysUserDao sysUserDao;
-
     @Override
     public Result getAllMenu(String userId) {
         Result result = new Result();

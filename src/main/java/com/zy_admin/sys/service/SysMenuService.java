@@ -1,7 +1,6 @@
 package com.zy_admin.sys.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zy_admin.sys.entity.MenuTree;
 import com.zy_admin.sys.entity.SysMenu;
 import com.zy_admin.util.Result;
 
@@ -15,6 +14,8 @@ import java.util.List;
  * @since 2022-11-01 19:49:39
  */
 public interface SysMenuService extends IService<SysMenu> {
+
+
     /**
      * 返回菜单树型结构
      * @return
@@ -47,7 +48,7 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param idList
      * @return
      */
-    Result deleteByIds(List<Long> idList);
+    Result deleteByIdList(List<Long> idList);
 
     /**
      * 根据ID删除

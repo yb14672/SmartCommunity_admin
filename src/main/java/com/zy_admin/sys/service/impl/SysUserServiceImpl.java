@@ -22,19 +22,47 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private SysUserDao sysUserDao;
 
     @Override
+    public Result getAvatarById(String userId) {
+        Result result = new Result();
+        try {
+            //判断传入的id是否为空
+            if (userId == null || userId.isEmpty()) {
+                result.setMeta(ResultTool.fail(ResultCode.USER_NOT_LOGIN));
+                return result;
+            }
+            String avatar = this.baseMapper.getAvatarById(userId);
+            if(avatar==null||avatar.isEmpty()){
+                result.setMeta(ResultTool.fail(ResultCode.PARAM_IS_BLANK));
+                return result;
+            }
+            result.setData(avatar);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.PARAM_IS_BLANK));
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.PARAM_TYPE_ERROR));
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        } finally {
+            return result;
+        }
+    }
+
+    @Override
     public Result login(SysUser sysUser) {
         SysUser user = sysUserDao.login(sysUser);
         String jwtToken = "";
-        if (user != null){
-            jwtToken =  JwtUtils.getJwtToken(user.getUserId() + "", user.getNickName());
-            if ("1".equals(user.getStatus()))
-            {
+        if (user != null) {
+            jwtToken = JwtUtils.getJwtToken(user.getUserId() + "", user.getNickName());
+            if ("1".equals(user.getStatus())) {
                 return new Result(jwtToken, ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED));
             }
-
-            return new Result(jwtToken,ResultTool.success(ResultCode.SUCCESS));
+            return new Result(jwtToken, ResultTool.success(ResultCode.SUCCESS));
         }
-        return new Result(jwtToken,ResultTool.fail(ResultCode.USER_WRONG_ACCOUNT_OR_PASSWORD));
+        return new Result(jwtToken, ResultTool.fail(ResultCode.USER_WRONG_ACCOUNT_OR_PASSWORD));
 
     }
 
@@ -96,10 +124,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Override
     public Result resetPwd(SysUser user) {
         //加密密码--未来写
-        SysUser sysUser = baseMapper.queryById(user.getUserId()+"");
+        SysUser sysUser = baseMapper.queryById(user.getUserId() + "");
         Result result = new Result();
         //判断旧密码是否一致
-        if(!sysUser.getPassword().equals(user.getPassword())){
+        if (!sysUser.getPassword().equals(user.getPassword())) {
             int i = baseMapper.updateUser(user);
             if (i == 1) {
                 result.setData("用户ID为" + user.getUserId() + "的信息修改成功");
@@ -107,7 +135,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             } else {
                 result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_NOT_EXIST));
             }
-        }else{
+        } else {
             result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_SAME_PASSWORD));
         }
         return result;
