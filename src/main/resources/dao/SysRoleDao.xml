@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.sys.dao.SysRoleDao">
+<!--批量查询所有未被删除的角色-->
+    <select id="getRoleLists" resultType="com.zy_admin.sys.entity.SysRole">
+        select * from sys_role where del_flag='0'
+    </select>
+<!--通过角色id数组-->
+    <select id="queryRoleById" resultType="com.zy_admin.sys.entity.SysRole">
+        select * from sys_role
+        <if test="list!=null">
+            where role_id in (
+            <foreach collection="list" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+    </select>
+</mapper>
