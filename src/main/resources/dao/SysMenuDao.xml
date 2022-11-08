@@ -25,8 +25,24 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="SysMenuMap">
-        select
-          menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark
+        select menu_id,
+               menu_name,
+               parent_id,
+               order_num,
+               path,
+               component,
+               is_frame,
+               is_cache,
+               menu_type,
+               visible,
+               status,
+               perms,
+               icon,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
         from sys_menu
         where menu_id = #{menuId}
     </select>
@@ -34,7 +50,8 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="SysMenuMap">
         select
-          menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark
+        menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status,
+        perms, icon, create_by, create_time, update_by, update_time, remark
         from sys_menu
         <where>
             <if test="menuId != null">
@@ -159,23 +176,34 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="menuId" useGeneratedKeys="true">
-        insert into sys_menu(menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-        values (#{menuName}, #{parentId}, #{orderNum}, #{path}, #{component}, #{isFrame}, #{isCache}, #{menuType}, #{visible}, #{status}, #{perms}, #{icon}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+        insert into sys_menu(menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible,
+                             status, perms, icon, create_by, create_time, update_by, update_time, remark)
+        values (#{menuName}, #{parentId}, #{orderNum}, #{path}, #{component}, #{isFrame}, #{isCache}, #{menuType},
+                #{visible}, #{status}, #{perms}, #{icon}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime},
+                #{remark})
     </insert>
 
     <insert id="insertBatch" keyProperty="menuId" useGeneratedKeys="true">
-        insert into sys_menu(menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+        insert into sys_menu(menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible,
+        status, perms, icon, create_by, create_time, update_by, update_time, remark)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.menuName}, #{entity.parentId}, #{entity.orderNum}, #{entity.path}, #{entity.component}, #{entity.isFrame}, #{entity.isCache}, #{entity.menuType}, #{entity.visible}, #{entity.status}, #{entity.perms}, #{entity.icon}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+            (#{entity.menuName}, #{entity.parentId}, #{entity.orderNum}, #{entity.path}, #{entity.component},
+            #{entity.isFrame}, #{entity.isCache}, #{entity.menuType}, #{entity.visible}, #{entity.status},
+            #{entity.perms}, #{entity.icon}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy},
+            #{entity.updateTime}, #{entity.remark})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="menuId" useGeneratedKeys="true">
-        insert into sys_menu(menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+        insert into sys_menu(menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible,
+        status, perms, icon, create_by, create_time, update_by, update_time, remark)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.menuName}, #{entity.parentId}, #{entity.orderNum}, #{entity.path}, #{entity.component}, #{entity.isFrame}, #{entity.isCache}, #{entity.menuType}, #{entity.visible}, #{entity.status}, #{entity.perms}, #{entity.icon}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+            (#{entity.menuName}, #{entity.parentId}, #{entity.orderNum}, #{entity.path}, #{entity.component},
+            #{entity.isFrame}, #{entity.isCache}, #{entity.menuType}, #{entity.visible}, #{entity.status},
+            #{entity.perms}, #{entity.icon}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy},
+            #{entity.updateTime}, #{entity.remark})
         </foreach>
         on duplicate key update
         menu_name = values(menu_name),
@@ -258,11 +286,22 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from sys_menu where menu_id = #{menuId}
+        delete
+        from sys_menu
+        where menu_id = #{menuId}
     </delete>
 
     <select id="getAllMenu" resultType="com.zy_admin.sys.entity.MenuTree">
-        select * from sys_menu where menu_type != 'F' and visible = 0 order by order_num desc
+        select *
+        from sys_menu
+        where menu_type != 'F' and visible = 0 and menu_id
+        <if test="roleId != 1">
+            in (select sm.menu_id from sys_menu sm left JOIN sys_role_menu srm on sm.menu_id = srm.menu_id
+            LEFT JOIN sys_role sr on srm.role_id = sr.role_id
+            LEFT JOIN sys_user_role sur on sur.role_id = sr.role_id
+            LEFT JOIN sys_user su on su.user_id = sur.user_id where su.user_id = #{userId})
+        </if>
+        order by order_num desc
     </select>
 
     <select id="queryAllMenu" resultType="com.zy_admin.sys.entity.MenuTree">
@@ -275,8 +314,8 @@
                 and visible = #{visible}
             </if>
         </where>
-        order by order_num asc
-     </select>
+        order by parent_id,order_num asc
+    </select>
 
     <!--检查菜单名是否唯一-->
     <select id="checkMenuNameUnique" parameterType="com.zy_admin.sys.entity.SysMenu" resultMap="SysMenuMap">
@@ -358,6 +397,10 @@
                create_time
         from sys_menu
         where perms = #{perms} limit 1
+    </select>
+    <!--根据菜单id查询是否有子集-->
+    <select id="hasChildByMenuId" resultType="Integer">
+        select count(1) from sys_menu where parent_id = #{menuId}
     </select>
 </mapper>
 

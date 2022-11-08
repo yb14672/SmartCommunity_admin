@@ -2,13 +2,15 @@ package com.zy_admin.sys.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.sys.dao.SysMenuDao;
+import com.zy_admin.sys.dao.SysUserDao;
+import com.zy_admin.sys.dto.SysUserDto;
 import com.zy_admin.sys.entity.MenuTree;
 import com.zy_admin.sys.entity.SysMenu;
 import com.zy_admin.sys.service.SysMenuService;
 import com.zy_admin.util.*;
 import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -20,11 +22,15 @@ import java.util.List;
 @Service("sysMenuService")
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> implements SysMenuService {
 
+    @Resource
+    private SysUserDao sysUserDao;
+
     @Override
-    public Result getAllMenu() {
+    public Result getAllMenu(String userId) {
         Result result = new Result();
         try {
-            List<MenuTree> menuList = this.baseMapper.getAllMenu();
+            SysUserDto userDto = sysUserDao.personal(userId);
+            List<MenuTree> menuList = this.baseMapper.getAllMenu(userId, userDto.getSysRole().getRoleId());
             Tree tree = new Tree(menuList);
             result.setData(tree.buildTree());
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
@@ -139,23 +145,45 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
     @Override
     public Result deleteByIdList(List<Long> idList) {
         Result result = new Result();
-        int i = this.baseMapper.deleteBatchIds(idList);
-        if (i >= 1) {
-            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        //若为一个即单删除，否则批量删除
+        if (idList.size() == 1) {
+            //判断是否有子集，若有则提示
+            Integer hasChildren = this.baseMapper.hasChildByMenuId(idList.get(0));
+            result.setMeta(ResultTool.fail(ResultCode.MENU_HAVE_CHILDREN));
+            //其子集小于1，则没有子集，执行删除
+            if (hasChildren < 1) {
+                int i = this.baseMapper.deleteBatchIds(idList);
+                if (i >= 1) {
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                } else {
+                    result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
+                }
+            }
         } else {
-            result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
+            int i = this.baseMapper.deleteBatchIds(idList);
+            if (i >= 1) {
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            } else {
+                result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
+            }
         }
         return result;
     }
 
     @Override
-    public Result deteleById(Serializable id) {
+    public Result deteleById(Long id) {
         Result result = new Result();
-        int i = this.baseMapper.deleteById(id);
-        if (i == 1) {
-            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-        } else {
-            result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
+        //判断是否有子集，若有则提示
+        Integer hasChildren = this.baseMapper.hasChildByMenuId(id);
+        result.setMeta(ResultTool.fail(ResultCode.MENU_HAVE_CHILDREN));
+        //其子集小于1，则没有子集，执行删除
+        if (hasChildren < 1) {
+            int i = this.baseMapper.deleteById(id);
+            if (i == 1) {
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            } else {
+                result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
+            }
         }
         return result;
     }

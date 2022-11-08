@@ -3,6 +3,7 @@ package com.zy_admin.sys.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.sys.entity.MenuTree;
 import com.zy_admin.sys.entity.SysMenu;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface SysMenuDao extends BaseMapper<SysMenu> {
      * 获取导航菜单列表
      * @return
      */
-    List<MenuTree> getAllMenu();
+    List<MenuTree> getAllMenu(@Param("userId") String userId, @Param("roleId") Long roleId);
 
     /**
      * 查询所有菜单
@@ -46,5 +47,7 @@ public interface SysMenuDao extends BaseMapper<SysMenu> {
     SysMenu checkComponentUnique(SysMenu menu);
 
     SysMenu checkPermsUnique(SysMenu menu);
+
+    Integer hasChildByMenuId(Long menuId);
 }
 

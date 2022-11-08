@@ -20,7 +20,7 @@ public interface SysMenuService extends IService<SysMenu> {
      * 返回菜单树型结构
      * @return
      */
-    Result getAllMenu();
+    Result getAllMenu(String id);
 
     /**
      * 菜单管理获取列表
@@ -55,7 +55,7 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param id
      * @return
      */
-    Result deteleById(Serializable id);
+    Result deteleById(Long id);
 
     /**
      * 校验菜单名称是否唯一
@@ -67,7 +67,7 @@ public interface SysMenuService extends IService<SysMenu> {
     public Boolean checkMenuNameUnique(int type,SysMenu menu);
 
     /**
-     * 校验菜单名称是否唯一
+     * 校验路由是否唯一
      *
      * @param menu 菜单信息
      * @param type 判断是添加(0)还是修改(1)
@@ -76,7 +76,7 @@ public interface SysMenuService extends IService<SysMenu> {
     public Boolean checkPathUnique(int type,SysMenu menu);
 
     /**
-     * 校验菜单名称是否唯一
+     * 校验权限标识是否唯一
      *
      * @param menu 菜单信息
      * @param type 判断是添加(0)还是修改(1)
@@ -85,7 +85,7 @@ public interface SysMenuService extends IService<SysMenu> {
     public Boolean checkComponentUnique(int type,SysMenu menu);
 
     /**
-     * 校验菜单名称是否唯一
+     * 校验组件路径是否唯一
      *
      * @param menu 菜单信息
      * @param type 判断是添加(0)还是修改(1)
