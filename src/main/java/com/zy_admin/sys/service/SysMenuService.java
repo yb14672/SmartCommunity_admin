@@ -19,7 +19,7 @@ public interface SysMenuService extends IService<SysMenu> {
      * 返回菜单树型结构
      * @return
      */
-    Result getAllMenu();
+    Result getAllMenu(String id);
 
     /**
      * 菜单管理获取列表

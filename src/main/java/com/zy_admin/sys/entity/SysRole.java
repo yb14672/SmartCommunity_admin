@@ -3,6 +3,7 @@ package com.zy_admin.sys.entity;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -13,6 +14,7 @@ import java.io.Serializable;
  * @since 2022-11-01 19:49:40
  */
 @SuppressWarnings("serial")
+@Data
 public class SysRole extends Model<SysRole> {
     //角色ID
     private Long roleId;

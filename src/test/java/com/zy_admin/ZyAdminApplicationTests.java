@@ -12,12 +12,9 @@ import java.util.List;
 
 @SpringBootTest
 class ZyAdminApplicationTests {
-    @Resource
-    SysMenuDao sysMenuDao;
+
     @Test
     void contextLoads() {
-        List<MenuTree> allMenu = sysMenuDao.getAllMenu();
-        System.out.println(allMenu);
     }
 
 }

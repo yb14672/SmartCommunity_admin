@@ -7,7 +7,7 @@
             <id column="user_id"  property="userId" jdbcType="INTEGER"/>
         </association>
         <association property="sysRole" javaType="com.zy_admin.sys.entity.SysRole" autoMapping="true">
-            <id column="role_id"  property="roleId" jdbcType="INTEGER"/>
+            <id column="rId"  property="roleId" jdbcType="INTEGER"/>
         </association>
         <association property="sysDept" javaType="com.zy_admin.sys.entity.SysDept" autoMapping="true">
             <id column="dept_id"  property="deptId" jdbcType="INTEGER"/>
@@ -20,7 +20,7 @@
     <!--    个人中心，七表联查-->
     <select id="personal" resultMap="SysUserMap">
         SELECT
-            *
+            *,r.role_id rId
         FROM
             sys_user u
                 LEFT JOIN sys_role_dept rd ON u.dept_id = rd.dept_id

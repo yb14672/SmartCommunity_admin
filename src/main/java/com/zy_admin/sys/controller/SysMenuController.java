@@ -124,8 +124,9 @@ public class SysMenuController extends ApiController {
      * @return 菜单结果
      */
     @RequestMapping("/getMenus")
-    public Result getMenuList(){
-        return this.sysMenuService.getAllMenu();
+    public Result getMenuList(HttpServletRequest request){
+        String userId = JwtUtils.getMemberIdByJwtToken(request);
+        return this.sysMenuService.getAllMenu(userId);
     }
 
     /**
@@ -138,6 +139,11 @@ public class SysMenuController extends ApiController {
         return this.sysMenuService.queryAllMenu(menu);
     }
 
+    /**
+     * 修改菜单
+     * @param sysMenu
+     * @return
+     */
     @PutMapping("/updateMenu")
     public Result updateMenu(@RequestBody SysMenu sysMenu){
         Result result = this.sysMenuService.updateMenu(sysMenu);
