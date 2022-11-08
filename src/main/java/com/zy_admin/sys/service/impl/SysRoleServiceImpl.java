@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,19 +85,50 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         return result;
     }
 
+    /**
+     * 新增角色
+     * @param roleAndRoleMenu
+     * @return
+     */
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result insert(RoleAndRoleMenu roleAndRoleMenu) {
-        try {
-            this.baseMapper.insert(roleAndRoleMenu);
-            if (roleAndRoleMenu.getMenuIds().length != 0) {
-                sysRoleMenuDao.insertBatch(roleAndRoleMenu.getRoleId(), roleAndRoleMenu.getMenuIds());
+        String roleName = roleAndRoleMenu.getRoleName();
+        String roleKey = roleAndRoleMenu.getRoleKey();
+        SysRole checkRoleName = this.baseMapper.selectRoleName(roleName);
+        SysRole checkRoleKey = this.baseMapper.selectRoleKey(roleKey);
+        System.out.println("N-----");
+        System.out.println(roleName);
+        System.out.println(checkRoleName);
+
+        System.out.println("K----");
+        System.out.println(roleKey);
+        System.out.println(checkRoleKey);
+
+        if (checkRoleName==null)
+        {
+            if (checkRoleKey==null)
+            {
+                try {
+                    this.baseMapper.insert(roleAndRoleMenu);
+                    if (roleAndRoleMenu.getMenuIds().length != 0) {
+                        sysRoleMenuDao.insertBatch(roleAndRoleMenu.getRoleId(), roleAndRoleMenu.getMenuIds());
+                    }
+                    return new Result(null, ResultTool.fail(ResultCode.SUCCESS));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+                }
+            }else {
+                return new Result(null,ResultTool.fail(ResultCode.REPEAT_ROLE_KEY));
             }
-            return new Result(null, ResultTool.fail(ResultCode.SUCCESS));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+
+        }else {
+            return new Result(null,ResultTool.fail(ResultCode.REPEAT_ROLE_NAME));
         }
+
+
     }
 
     @Override

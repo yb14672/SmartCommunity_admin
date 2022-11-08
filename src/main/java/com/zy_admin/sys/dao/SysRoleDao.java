@@ -5,6 +5,7 @@ import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.entity.SysRole;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,5 +65,11 @@ public interface SysRoleDao extends BaseMapper<SysRole> {
     int insert(RoleAndRoleMenu RoleAndRoleMenu);
 
     int updateRoleById(RoleAndRoleMenu RoleAndRoleMenu);
+
+    @Select("select * from sys_role where role_name = #{roleName} ")
+    SysRole selectRoleName(String roleName);
+
+    @Select("select * from sys_role where role_key=#{roleKey}")
+    SysRole selectRoleKey(String roleKey);
 }
 
