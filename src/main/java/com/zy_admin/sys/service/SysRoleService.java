@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.util.Result;
 
-import java.util.List;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +14,17 @@ import java.util.List;
  * @since 2022-11-01 19:49:40
  */
 public interface SysRoleService extends IService<SysRole> {
+    /**
+     * 根据id列表删除
+     * @param roleIds
+     * @return
+     */
     List<SysRole> queryRoleById(ArrayList<Integer> roleIds);
 
+    /**
+     * 获取所有角色
+     * @return
+     */
     List<SysRole> getRoleLists();
     /**
      * 根据ID集合批量删除

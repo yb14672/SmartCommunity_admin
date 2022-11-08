@@ -10,8 +10,12 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysRole;
+import com.zy_admin.sys.service.SysRoleMenuService;
 import com.zy_admin.sys.service.SysRoleService;
 import com.zy_admin.util.ExcelUtil;
+import com.zy_admin.util.Result;
+import com.zy_admin.util.ResultTool;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -36,6 +40,12 @@ public class SysRoleController extends ApiController {
      */
     @Resource
     SysRoleService sysRoleService;
+
+    /**
+     * 服务对象
+     */
+    @Resource
+    SysRoleMenuService sysRoleMenuService;
 
     /**
      * 用于批量导出角色列表数据
@@ -127,12 +137,26 @@ public class SysRoleController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @Transactional(rollbackFor = Exception.class)
     public Result delete(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<Integer>();
-        for (String str : idList) {
-            idList1.add(Integer.valueOf(str));
+        Result result = new Result();
+        result.setMeta(ResultTool.fail());
+        try {
+            for (String str : idList) {
+                idList1.add(Integer.valueOf(str));
+            }
+            result = this.sysRoleService.deleteByIdList(idList1);
+            int i = this.sysRoleMenuService.deleteByIdList(idList1);
+            if (i < 1) {
+                throw new Exception("删除失败");
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return this.sysRoleService.deleteByIdList(idList1);
+        return result;
     }
 }
 

@@ -9,7 +9,6 @@ import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,31 +20,36 @@ import java.util.List;
  */
 @Service("sysRoleService")
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> implements SysRoleService {
-    @Resource
-    SysRoleDao sysRoleDao;
 
     @Override
     public List<SysRole> queryRoleById(ArrayList<Integer> roleIds) {
         if (roleIds != null) {
             roleIds = roleIds.size() == 0 ? null : roleIds;
         }
-        return sysRoleDao.queryRoleById(roleIds);
+        return baseMapper.queryRoleById(roleIds);
     }
 
     @Override
     public List<SysRole> getRoleLists() {
-        return sysRoleDao.getRoleLists();
+        return baseMapper.getRoleLists();
     }
+
     @Override
     public Result deleteByIdList(List<Integer> idList) {
         Result result = new Result();
-        int i=this.baseMapper.deleteByIdList(idList);
-        result.setMeta(ResultTool.fail());
-        if(i>=1){
-            result.setData("删除成功，影响的行数："+i);
-            result.setMeta(ResultTool.success(ResultTool.success(ResultCode.SUCCESS)));
+        try {
+            //批量删除角色表
+            int i=this.baseMapper.deleteByIdList(idList);
+            result.setMeta(ResultTool.fail());
+            if(i>=1){
+                result.setData("删除成功，影响的行数："+i);
+                result.setMeta(ResultTool.success(ResultTool.success(ResultCode.SUCCESS)));
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
-        return result;
     }
 }
 
