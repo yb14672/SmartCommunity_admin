@@ -42,6 +42,7 @@ public enum ResultCode {
     DELETE_FAIL(3002, "删除失败，请稍后再试"),
     REPEAT_MENUNAME(3003, "该菜单名称已存在"),
     REPEAT_MENUPATH(3004, "该路由已存在"),
+    MENU_HAVE_CHILDREN(3005, "该菜单有子集，若要删除请使用批量删除"),
 
 
     /* http自带请求码 */

@@ -36,7 +36,7 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuDao, SysRoleM
 
     @Override
     public int deleteByIdList(List<Integer> idList) {
-        return this.baseMapper.deleteBatchIds(idList);
+        return this.baseMapper.deleteByIdList(idList);
     }
 }
 

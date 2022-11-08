@@ -398,5 +398,9 @@
         from sys_menu
         where perms = #{perms} limit 1
     </select>
+    <!--根据菜单id查询是否有子集-->
+    <select id="hasChildByMenuId" resultType="Integer">
+        select count(1) from sys_menu where parent_id = #{menuId}
+    </select>
 </mapper>
 

@@ -95,8 +95,8 @@ public class SysMenuController extends ApiController {
         return success(this.sysMenuService.updateById(sysMenu));
     }
     @DeleteMapping("/deleteById")
-    public Result deleteById(@RequestParam Serializable id) {
-        return this.sysMenuService.deteleById(id);
+    public Result deleteById(@RequestParam String id) {
+        return this.sysMenuService.deteleById(Long.valueOf(id));
     }
 
     /**
@@ -110,7 +110,6 @@ public class SysMenuController extends ApiController {
         List<Long> idList1=new ArrayList<Long>();
         for (String str : idList) {
             idList1.add(Long.valueOf(str));
-            System.out.println(str);
         }
         Result result = this.sysMenuService.deleteByIdList(idList1);
         System.out.println(result);
