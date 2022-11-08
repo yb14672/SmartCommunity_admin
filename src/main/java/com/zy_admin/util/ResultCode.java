@@ -39,6 +39,10 @@ public enum ResultCode {
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
+    DELETE_FAIL(3002, "删除失败，请稍后再试"),
+    REPEAT_MENUNAME(3003, "该菜单名称已存在"),
+    REPEAT_MENUPATH(3004, "该路由已存在"),
+
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),
