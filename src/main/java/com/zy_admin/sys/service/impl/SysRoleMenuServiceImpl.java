@@ -1,89 +1,42 @@
 package com.zy_admin.sys.service.impl;
 
-import com.zy_admin.sys.entity.SysRoleMenu;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.sys.dao.SysRoleMenuDao;
+import com.zy_admin.sys.entity.SysRoleMenu;
 import com.zy_admin.sys.service.SysRoleMenuService;
+import com.zy_admin.util.Result;
+import com.zy_admin.util.ResultCode;
+import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * 角色和菜单关联表(SysRoleMenu)表服务实现类
  *
  * @author makejava
- * @since 2022-11-08 14:56:27
+ * @since 2022-11-01 19:49:42
  */
 @Service("sysRoleMenuService")
-public class SysRoleMenuServiceImpl implements SysRoleMenuService {
-    @Resource
-    private SysRoleMenuDao sysRoleMenuDao;
+public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuDao, SysRoleMenu> implements SysRoleMenuService {
 
-    /**
-     * 通过ID查询单条数据
-     *
-     * @param roleId 主键
-     * @return 实例对象
-     */
     @Override
-    public SysRoleMenu queryById(Long roleId) {
-        return this.sysRoleMenuDao.queryById(roleId);
-    }
-
-    /**
-     * 分页查询
-     *
-     * @param sysRoleMenu 筛选条件
-     * @param pageRequest 分页对象
-     * @return 查询结果
-     */
-    @Override
-    public Page<SysRoleMenu> queryByPage(SysRoleMenu sysRoleMenu, PageRequest pageRequest) {
-        long total = this.sysRoleMenuDao.count(sysRoleMenu);
-        return new PageImpl<>(this.sysRoleMenuDao.queryAllByLimit(sysRoleMenu, pageRequest), pageRequest, total);
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param sysRoleMenu 实例对象
-     * @return 实例对象
-     */
-    @Override
-    public SysRoleMenu insert(SysRoleMenu sysRoleMenu) {
-        this.sysRoleMenuDao.insert(sysRoleMenu);
-        return sysRoleMenu;
-    }
-
-    /**
-     * 修改数据
-     *
-     * @param sysRoleMenu 实例对象
-     * @return 实例对象
-     */
-    @Override
-    public SysRoleMenu update(SysRoleMenu sysRoleMenu) {
-        this.sysRoleMenuDao.update(sysRoleMenu);
-        return this.queryById(sysRoleMenu.getRoleId());
-    }
-
-    /**
-     * 通过主键删除数据
-     *
-     * @param roleId 主键
-     * @return 是否成功
-     */
-    @Override
-    public boolean deleteById(Long roleId) {
-        return this.sysRoleMenuDao.deleteById(roleId) > 0;
+    public Result getMenuIdsByRoleId(String id) {
+        Result result = new Result();
+        try{
+            List<Integer> menuIds = this.baseMapper.getMenuIdsByRoleId(id);
+            result.setData(menuIds);
+            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            return result;
+        }catch (Exception e){
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        return result;
+        }
     }
 
     @Override
     public int deleteByIdList(List<Integer> idList) {
-        if()
-        return 0;
+        return this.baseMapper.deleteBatchIds(idList);
     }
 }
+

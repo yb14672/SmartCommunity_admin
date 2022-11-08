@@ -1,23 +1,28 @@
 package com.zy_admin.sys.controller;
 
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.api.ApiController;
+import com.baomidou.mybatisplus.extension.api.R;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysRoleMenu;
 import com.zy_admin.sys.service.SysRoleMenuService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * 角色和菜单关联表(SysRoleMenu)表控制层
  *
  * @author makejava
- * @since 2022-11-08 14:56:26
+ * @since 2022-11-01 19:49:41
  */
 @RestController
 @RequestMapping("sysRoleMenu")
-public class SysRoleMenuController {
+public class SysRoleMenuController extends ApiController {
     /**
      * 服务对象
      */
@@ -25,15 +30,15 @@ public class SysRoleMenuController {
     private SysRoleMenuService sysRoleMenuService;
 
     /**
-     * 分页查询
+     * 分页查询所有数据
      *
-     * @param sysRoleMenu 筛选条件
-     * @param pageRequest 分页对象
-     * @return 查询结果
+     * @param page        分页对象
+     * @param sysRoleMenu 查询实体
+     * @return 所有数据
      */
     @GetMapping
-    public ResponseEntity<Page<SysRoleMenu>> queryByPage(SysRoleMenu sysRoleMenu, PageRequest pageRequest) {
-        return ResponseEntity.ok(this.sysRoleMenuService.queryByPage(sysRoleMenu, pageRequest));
+    public R selectAll(Page<SysRoleMenu> page, SysRoleMenu sysRoleMenu) {
+        return success(this.sysRoleMenuService.page(page, new QueryWrapper<>(sysRoleMenu)));
     }
 
     /**
@@ -43,42 +48,46 @@ public class SysRoleMenuController {
      * @return 单条数据
      */
     @GetMapping("{id}")
-    public ResponseEntity<SysRoleMenu> queryById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(this.sysRoleMenuService.queryById(id));
+    public R selectOne(@PathVariable Serializable id) {
+        return success(this.sysRoleMenuService.getById(id));
     }
 
     /**
      * 新增数据
      *
-     * @param sysRoleMenu 实体
+     * @param sysRoleMenu 实体对象
      * @return 新增结果
      */
     @PostMapping
-    public ResponseEntity<SysRoleMenu> add(SysRoleMenu sysRoleMenu) {
-        return ResponseEntity.ok(this.sysRoleMenuService.insert(sysRoleMenu));
+    public R insert(@RequestBody SysRoleMenu sysRoleMenu) {
+        return success(this.sysRoleMenuService.save(sysRoleMenu));
     }
 
     /**
-     * 编辑数据
+     * 修改数据
      *
-     * @param sysRoleMenu 实体
-     * @return 编辑结果
+     * @param sysRoleMenu 实体对象
+     * @return 修改结果
      */
     @PutMapping
-    public ResponseEntity<SysRoleMenu> edit(SysRoleMenu sysRoleMenu) {
-        return ResponseEntity.ok(this.sysRoleMenuService.update(sysRoleMenu));
+    public R update(@RequestBody SysRoleMenu sysRoleMenu) {
+        return success(this.sysRoleMenuService.updateById(sysRoleMenu));
     }
 
     /**
      * 删除数据
      *
-     * @param id 主键
-     * @return 删除是否成功
+     * @param idList 主键结合
+     * @return 删除结果
      */
     @DeleteMapping
-    public ResponseEntity<Boolean> deleteById(Long id) {
-        return ResponseEntity.ok(this.sysRoleMenuService.deleteById(id));
+    public R delete(@RequestParam("idList") List<Long> idList) {
+        return success(this.sysRoleMenuService.removeByIds(idList));
     }
 
+    @GetMapping("/getMenuIds")
+    public Result getMenuIds(String roleId){
+        return sysRoleMenuService.getMenuIdsByRoleId(roleId);
+    }
 }
 
