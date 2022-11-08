@@ -9,6 +9,8 @@ import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +21,21 @@ import java.util.List;
  */
 @Service("sysRoleService")
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> implements SysRoleService {
+    @Resource
+    SysRoleDao sysRoleDao;
 
+    @Override
+    public List<SysRole> queryRoleById(ArrayList<Integer> roleIds) {
+        if (roleIds != null) {
+            roleIds = roleIds.size() == 0 ? null : roleIds;
+        }
+        return sysRoleDao.queryRoleById(roleIds);
+    }
+
+    @Override
+    public List<SysRole> getRoleLists() {
+        return sysRoleDao.getRoleLists();
+    }
     @Override
     public Result deleteByIdList(List<Integer> idList) {
         Result result = new Result();

@@ -6,6 +6,9 @@ import com.zy_admin.util.Result;
 
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 角色信息表(SysRole)表服务接口
  *
@@ -13,7 +16,9 @@ import java.util.List;
  * @since 2022-11-01 19:49:40
  */
 public interface SysRoleService extends IService<SysRole> {
+    List<SysRole> queryRoleById(ArrayList<Integer> roleIds);
 
+    List<SysRole> getRoleLists();
     /**
      * 根据ID集合批量删除
      * @param idList 角色ID列表
