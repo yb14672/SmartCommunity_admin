@@ -5,8 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.entity.SysRole;
+import com.zy_admin.sys.entity.SysRoleMenu;
 import com.zy_admin.sys.service.SysRoleService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -57,9 +60,11 @@ public class SysRoleController extends ApiController {
      * @param sysRole 实体对象
      * @return 新增结果
      */
-    @PostMapping
-    public R insert(@RequestBody SysRole sysRole) {
-        return success(this.sysRoleService.save(sysRole));
+    @PostMapping("/addRole")
+    public Result insert(RoleAndRoleMenu roleAndRoleMenu) {
+        System.out.println(roleAndRoleMenu);
+        return  this.sysRoleService.insert(roleAndRoleMenu);
+
     }
 
     /**

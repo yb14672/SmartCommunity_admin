@@ -10,6 +10,6 @@ import com.zy_admin.sys.entity.SysRole;
  * @since 2022-11-01 19:49:40
  */
 public interface SysRoleDao extends BaseMapper<SysRole> {
-
+    int insert(SysRole sysRole);
 }
 
