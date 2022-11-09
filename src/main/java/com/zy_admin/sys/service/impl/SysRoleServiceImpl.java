@@ -94,13 +94,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result insert(RoleAndRoleMenu roleAndRoleMenu) {
-        //判断角色名和权限标识是否重复
-        String roleName = roleAndRoleMenu.getRoleName();
-        String roleKey = roleAndRoleMenu.getRoleKey();
-        SysRole checkRoleName = this.baseMapper.selectRoleName(roleName);
-        SysRole checkRoleKey = this.baseMapper.selectRoleKey(roleKey);
-        if (checkRoleName == null) {
-            if (checkRoleKey == null) {
+        if (checkRoleNameUnique(0,roleAndRoleMenu)) {
+            if (checkRoleNameUnique(0,roleAndRoleMenu)) {
                 try {
                     //插入角色
                     this.baseMapper.insert(roleAndRoleMenu);
@@ -125,12 +120,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
     @Transactional(rollbackFor = Exception.class)
     public Result update(RoleAndRoleMenu roleAndRoleMenu) {
         Result result = new Result();
-        String roleName = roleAndRoleMenu.getRoleName();
-        String roleKey = roleAndRoleMenu.getRoleKey();
-        SysRole checkRoleName = this.baseMapper.selectRoleName(roleName);
-        SysRole checkRoleKey = this.baseMapper.selectRoleKey(roleKey);
-        if (checkRoleName == null) {
-            if (checkRoleKey == null) {
+        if (checkRoleNameUnique(1,roleAndRoleMenu)) {
+            if (checkRoleKeyUnique(1,roleAndRoleMenu)) {
                 try {
                     //更新角色
                     int i = this.baseMapper.updateRoleById(roleAndRoleMenu);
@@ -154,6 +145,48 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         } else {
             return new Result(null, ResultTool.fail(ResultCode.REPEAT_ROLE_NAME));
         }
+    }
+
+    @Override
+    public Boolean checkRoleNameUnique(int type, RoleAndRoleMenu roleAndRoleMenu){
+        SysRole sysRole = this.baseMapper.selectRoleName(roleAndRoleMenu.getRoleName());
+        //添加时--必须为空
+        if (type == 0) {
+            if (sysRole == null || sysRole.getRoleId() == null) {
+                return true;
+            }
+        } else {
+            //修改时--先判断是否为空，为空则不重名，即唯一
+            if (sysRole == null || sysRole.getRoleId() == null) {
+                return true;
+                //判断ID是否一致，若否，则重名，即不唯一
+            } else if (!sysRole.getRoleId().equals(roleAndRoleMenu.getRoleId())) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean checkRoleKeyUnique(int type, RoleAndRoleMenu roleAndRoleMenu){
+        SysRole sysRole = this.baseMapper.selectRoleKey(roleAndRoleMenu.getRoleKey());
+        //添加时--必须为空
+        if (type == 0) {
+            if (sysRole == null || sysRole.getRoleId() == null) {
+                return true;
+            }
+        } else {
+            //修改时--先判断是否为空，为空则不重名，即唯一
+            if (sysRole == null || sysRole.getRoleId() == null) {
+                return true;
+                //判断ID是否一致，若否，则重名，即不唯一
+            } else if (!sysRole.getRoleId().equals(roleAndRoleMenu.getRoleId())) {
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override

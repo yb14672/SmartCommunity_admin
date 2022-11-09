@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.sys.dao.SysDeptDao">
+
+    <insert id="insertDept" parameterType="com.zy_admin.sys.entity.SysDept">
+        insert into sys_dept(
+        <if test="deptId != null and deptId != 0">dept_id,</if>
+        <if test="parentId != null and parentId != 0">parent_id,</if>
+        <if test="deptName != null and deptName != ''">dept_name,</if>
+        <if test="ancestors != null and ancestors != ''">ancestors,</if>
+        <if test="orderNum != null and orderNum != ''">order_num,</if>
+        <if test="leader != null and leader != ''">leader,</if>
+        <if test="phone != null and phone != ''">phone,</if>
+        <if test="email != null and email != ''">email,</if>
+        <if test="status != null">status,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        create_time )values(
+        <if test="deptId != null and deptId != 0">#{deptId},</if>
+        <if test="parentId != null and parentId != 0">#{parentId},</if>
+        <if test="deptName != null and deptName != ''">#{deptName},</if>
+        <if test="ancestors != null and ancestors != ''">#{ancestors},</if>
+        <if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+        <if test="leader != null and leader != ''">#{leader},</if>
+        <if test="phone != null and phone != ''">#{phone},</if>
+        <if test="email != null and email != ''">#{email},</if>
+        <if test="status != null">#{status},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        sysdate()
+        )
+    </insert>
+
+    <update id="updateDept" parameterType="com.zy_admin.sys.entity.SysDept">
+        update sys_dept
+        <set>
+            <if test="parentId != null and parentId != 0">parent_id = #{parentId},</if>
+            <if test="deptName != null and deptName != ''">dept_name = #{deptName},</if>
+            <if test="ancestors != null and ancestors != ''">ancestors = #{ancestors},</if>
+            <if test="orderNum != null and orderNum != ''">order_num = #{orderNum},</if>
+            <if test="leader != null">leader = #{leader},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where dept_id = #{deptId}
+    </update>
+
+    <delete id="deleteDeptById">
+        update sys_dept set del_flag = '2' where dept_id = #{deptId}
+    </delete>
+
+    <sql id="selectDeptVo">
+        select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status, d.del_flag, d.create_by, d.create_time
+        from sys_dept d
+    </sql>
+
+    <select id="selectDeptList" resultType="com.zy_admin.sys.entity.SysDept">
+        <include refid="selectDeptVo"/>
+        where d.del_flag = '0'
+        <if test="parentId != null and parentId != 0">
+            AND parent_id = #{parentId}
+        </if>
+        <if test="deptName != null and deptName != ''">
+            AND dept_name like concat('%', #{deptName}, '%')
+        </if>
+        <if test="status != null and status != ''">
+            AND status = #{status}
+        </if>
+        order by d.parent_id, d.order_num
+    </select>
+
+    <select id="checkName" resultType="com.zy_admin.sys.entity.SysDept">
+        <include refid="selectDeptVo"/>
+        where dept_name=#{deptName} and parent_id = #{parentId}
+    </select>
+
+    <select id="getDict" resultType="com.zy_admin.sys.entity.SysDictData">
+        select * from sys_dict_type t left join sys_dict_data d on t.dict_type = d.dict_type where dict_id = #{dictId}
+    </select>
+
+    <select id="getDeptListByDeptId" resultType="com.zy_admin.sys.entity.SysDept">
+        select * from sys_dept where del_flag = '0' and parent_id = #{parentId}
+    </select>
+
+    <select id="selectUserByDeptId" resultType="com.zy_admin.sys.entity.SysUser">
+        select * from sys_user where dept_id = #{deptId}
+    </select>
+
+    <select id="getDeptById" resultType="com.zy_admin.sys.entity.SysDept">
+        select * from sys_dept where dept_id = #{deptId}
+    </select>
+
+</mapper>
