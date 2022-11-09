@@ -10,6 +10,11 @@ import com.zy_admin.sys.entity.SysDictType;
  * @since 2022-11-01 19:49:35
  */
 public interface SysDictTypeDao extends BaseMapper<SysDictType> {
-
+    /**
+     * 根据ID查询字典类型
+     * @param id
+     * @return
+     */
+    SysDictType queryById(String id);
 }
 

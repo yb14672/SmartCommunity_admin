@@ -1,7 +1,5 @@
 package com.zy_admin.sys.controller;
 
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -21,7 +19,7 @@ import java.util.List;
  * @since 2022-11-01 19:49:34
  */
 @RestController
-@RequestMapping("sysDictData")
+@RequestMapping("/sysDictData")
 public class SysDictDataController extends ApiController {
     /**
      * 服务对象
@@ -36,9 +34,9 @@ public class SysDictDataController extends ApiController {
      * @param sysDictData 查询实体
      * @return 所有数据
      */
-    @GetMapping
-    public R selectAll(Page<SysDictData> page, SysDictData sysDictData) {
-        return success(this.sysDictDataService.page(page, new QueryWrapper<>(sysDictData)));
+    @GetMapping()
+    public Result selectAll(SysDictData sysDictData, Page page) {
+        return this.sysDictDataService.selectDictDataLimit(sysDictData,page);
     }
 
     /**

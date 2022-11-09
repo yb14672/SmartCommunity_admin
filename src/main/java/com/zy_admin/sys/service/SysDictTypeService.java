@@ -2,6 +2,7 @@ package com.zy_admin.sys.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.sys.entity.SysDictType;
+import com.zy_admin.util.Result;
 
 /**
  * 字典类型表(SysDictType)表服务接口
@@ -11,5 +12,11 @@ import com.zy_admin.sys.entity.SysDictType;
  */
 public interface SysDictTypeService extends IService<SysDictType> {
 
+    /**
+     * 根据ID字典类型
+     * @param id
+     * @return
+     */
+    Result getDictTypeById(String id);
 }
 

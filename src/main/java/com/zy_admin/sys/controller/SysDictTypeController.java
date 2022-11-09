@@ -7,10 +7,10 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -46,9 +46,9 @@ public class SysDictTypeController extends ApiController {
      * @param id 主键
      * @return 单条数据
      */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.sysDictTypeService.getById(id));
+    @GetMapping("/{id}")
+    public Result selectOne(@PathVariable String id) {
+        return this.sysDictTypeService.getDictTypeById(id);
     }
 
     /**

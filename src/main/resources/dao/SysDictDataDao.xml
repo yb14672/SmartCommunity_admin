@@ -218,7 +218,7 @@
     </delete>
 
     <select id="getDict" resultType="com.zy_admin.sys.entity.SysDictData">
-        select dict_label,dict_value from sys_dict_data where dict_type = #{dictType}
+        select * from sys_dict_data where dict_type = #{dictType}
     </select>
 </mapper>
 
