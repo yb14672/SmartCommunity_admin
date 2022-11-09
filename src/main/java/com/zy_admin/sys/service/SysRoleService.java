@@ -73,5 +73,21 @@ public interface SysRoleService extends IService<SysRole> {
      * @return
      */
     Result changeStatus(SysRole sysRole);
+
+    /**
+     * 检查角色名是否唯一
+     * @param type
+     * @param roleAndRoleMenu
+     * @return
+     */
+    Boolean checkRoleNameUnique(int type,RoleAndRoleMenu roleAndRoleMenu);
+
+    /**
+     * 检查角色名是否唯一
+     * @param type
+     * @param roleAndRoleMenu
+     * @return
+     */
+    Boolean checkRoleKeyUnique(int type,RoleAndRoleMenu roleAndRoleMenu);
 }
 
