@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.sys.dao.SysDictDataDao;
 import com.zy_admin.sys.entity.SysDictData;
 import com.zy_admin.sys.service.SysDictDataService;
-import com.zy_admin.util.JsonResult;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;

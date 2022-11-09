@@ -10,7 +10,6 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.entity.SysRole;
-import com.zy_admin.sys.entity.SysRoleMenu;
 import com.zy_admin.sys.service.SysRoleMenuService;
 import com.zy_admin.sys.service.SysRoleService;
 import com.zy_admin.util.ExcelUtil;
@@ -46,13 +45,13 @@ public class SysRoleController extends ApiController {
 
     @Resource
     SysRoleMenuService sysRoleMenuService;
+
     /**
      * 用于批量导出角色列表数据
      *
      * @param roleIds
      * @param response
      */
-
     @PostMapping("/getExcel")
     public void getExcel(@RequestBody ArrayList<Integer> roleIds, HttpServletResponse response) throws IOException {
         List<SysRole> sysRoles = new ArrayList<>();
@@ -85,16 +84,17 @@ public class SysRoleController extends ApiController {
      * 分页查询所有数据
      *
      * @param pageable 分页对象
-     * @param sysRole 查询实体
+     * @param sysRole  查询实体
      * @return 所有数据
      */
     @GetMapping("/selectRoleByLimit")
-    public Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime){
+    public Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime) {
         System.out.println(sysRole);
-        Result result = sysRoleService.selectRoleByLimit(sysRole, pageable,startTime,endTime);
+        Result result = sysRoleService.selectRoleByLimit(sysRole, pageable, startTime, endTime);
         System.out.println(result);
         return result;
     }
+
     /**
      * 通过主键查询单条数据
      *
@@ -125,7 +125,6 @@ public class SysRoleController extends ApiController {
      */
     @PutMapping
     public Result update(@RequestBody SysRole sysRole) {
-        System.out.println(sysRole);
         return this.sysRoleService.changeStatus(sysRole);
     }
 
@@ -144,6 +143,10 @@ public class SysRoleController extends ApiController {
         try {
             for (String str : idList) {
                 idList1.add(Integer.valueOf(str));
+                if("1".equals(str)){
+                    result.setMeta(ResultTool.fail(ResultCode.ADMIN_NOT_ALLOWED_DELETE));
+                    return result;
+                }
             }
             //修改角色表
             result = this.sysRoleService.deleteByIdList(idList1);
@@ -157,6 +160,12 @@ public class SysRoleController extends ApiController {
         return result;
     }
 
+    /**
+     * 添加角色及其权限
+     *
+     * @param roleAndRoleMenu
+     * @return
+     */
     @PostMapping("/addRole")
     public Result insert(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
         roleAndRoleMenu.setCreateTime(LocalDateTime.now().toString());
@@ -168,8 +177,14 @@ public class SysRoleController extends ApiController {
         return insert;
     }
 
+    /**
+     * 修改角色及其权限
+     *
+     * @param roleAndRoleMenu
+     * @return
+     */
     @PutMapping("/updateRole")
-    public Result update(@RequestBody RoleAndRoleMenu roleAndRoleMenu){
+    public Result update(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
         roleAndRoleMenu.setDeptCheckStrictly(null);
         roleAndRoleMenu.setMenuCheckStrictly(null);
         return sysRoleService.update(roleAndRoleMenu);

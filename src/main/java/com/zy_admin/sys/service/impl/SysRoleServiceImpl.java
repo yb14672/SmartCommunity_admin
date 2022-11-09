@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,6 +86,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
 
     /**
      * 新增角色
+     *
      * @param roleAndRoleMenu
      * @return
      */
@@ -94,24 +94,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result insert(RoleAndRoleMenu roleAndRoleMenu) {
-        String roleName = roleAndRoleMenu.getRoleName();
-        String roleKey = roleAndRoleMenu.getRoleKey();
-        SysRole checkRoleName = this.baseMapper.selectRoleName(roleName);
-        SysRole checkRoleKey = this.baseMapper.selectRoleKey(roleKey);
-        System.out.println("N-----");
-        System.out.println(roleName);
-        System.out.println(checkRoleName);
-
-        System.out.println("K----");
-        System.out.println(roleKey);
-        System.out.println(checkRoleKey);
-
-        if (checkRoleName==null)
-        {
-            if (checkRoleKey==null)
-            {
+        if (checkRoleNameUnique(0,roleAndRoleMenu)) {
+            if (checkRoleNameUnique(0,roleAndRoleMenu)) {
                 try {
+                    //插入角色
                     this.baseMapper.insert(roleAndRoleMenu);
+                    //判断是否有权限，有则插入
                     if (roleAndRoleMenu.getMenuIds().length != 0) {
                         sysRoleMenuDao.insertBatch(roleAndRoleMenu.getRoleId(), roleAndRoleMenu.getMenuIds());
                     }
@@ -120,32 +108,85 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
                     e.printStackTrace();
                     return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
                 }
-            }else {
-                return new Result(null,ResultTool.fail(ResultCode.REPEAT_ROLE_KEY));
+            } else {
+                return new Result(null, ResultTool.fail(ResultCode.REPEAT_ROLE_KEY));
             }
-
-        }else {
-            return new Result(null,ResultTool.fail(ResultCode.REPEAT_ROLE_NAME));
+        } else {
+            return new Result(null, ResultTool.fail(ResultCode.REPEAT_ROLE_NAME));
         }
-
-
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result update(RoleAndRoleMenu roleAndRoleMenu) {
         Result result = new Result();
-        int i = this.baseMapper.updateRoleById(roleAndRoleMenu);
-        if (i == 1) {
-            sysRoleMenuDao.deleteById(roleAndRoleMenu.getRoleId());
-            if (roleAndRoleMenu.getMenuIds().length != 0) {
-                sysRoleMenuDao.insertBatch(roleAndRoleMenu.getRoleId(), roleAndRoleMenu.getMenuIds());
+        if (checkRoleNameUnique(1,roleAndRoleMenu)) {
+            if (checkRoleKeyUnique(1,roleAndRoleMenu)) {
+                try {
+                    //更新角色
+                    int i = this.baseMapper.updateRoleById(roleAndRoleMenu);
+                    if (i == 1) {
+                        //判断是否有权限，有则更改
+                        if (roleAndRoleMenu.getMenuIds().length != 0) {
+                            sysRoleMenuDao.deleteById(roleAndRoleMenu.getRoleId());
+                            sysRoleMenuDao.insertBatch(roleAndRoleMenu.getRoleId(), roleAndRoleMenu.getMenuIds());
+                        }
+                        result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                        return result;
+                    }
+                    return new Result(null, ResultTool.fail(ResultCode.SUCCESS));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+                }
+            } else {
+                return new Result(null, ResultTool.fail(ResultCode.REPEAT_ROLE_KEY));
             }
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
-            return result;
+        } else {
+            return new Result(null, ResultTool.fail(ResultCode.REPEAT_ROLE_NAME));
         }
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
-        return result;
+    }
+
+    @Override
+    public Boolean checkRoleNameUnique(int type, RoleAndRoleMenu roleAndRoleMenu){
+        SysRole sysRole = this.baseMapper.selectRoleName(roleAndRoleMenu.getRoleName());
+        //添加时--必须为空
+        if (type == 0) {
+            if (sysRole == null || sysRole.getRoleId() == null) {
+                return true;
+            }
+        } else {
+            //修改时--先判断是否为空，为空则不重名，即唯一
+            if (sysRole == null || sysRole.getRoleId() == null) {
+                return true;
+                //判断ID是否一致，若否，则重名，即不唯一
+            } else if (!sysRole.getRoleId().equals(roleAndRoleMenu.getRoleId())) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean checkRoleKeyUnique(int type, RoleAndRoleMenu roleAndRoleMenu){
+        SysRole sysRole = this.baseMapper.selectRoleKey(roleAndRoleMenu.getRoleKey());
+        //添加时--必须为空
+        if (type == 0) {
+            if (sysRole == null || sysRole.getRoleId() == null) {
+                return true;
+            }
+        } else {
+            //修改时--先判断是否为空，为空则不重名，即唯一
+            if (sysRole == null || sysRole.getRoleId() == null) {
+                return true;
+                //判断ID是否一致，若否，则重名，即不唯一
+            } else if (!sysRole.getRoleId().equals(roleAndRoleMenu.getRoleId())) {
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
