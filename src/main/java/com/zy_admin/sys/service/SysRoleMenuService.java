@@ -15,8 +15,18 @@ import java.util.List;
  */
 public interface SysRoleMenuService extends IService<SysRoleMenu> {
 
-    public Result getMenuIdsByRoleId(String id);
+    /**
+     * 获取角色新增修改时的菜单树
+     * @param id
+     * @return
+     */
+    Result getMenuIdsByRoleId(String id);
 
+    /**
+     * 单个删除和批量删除角色
+     * @param idList
+     * @return
+     */
     int deleteByIdList(List<Integer> idList);
 }
 

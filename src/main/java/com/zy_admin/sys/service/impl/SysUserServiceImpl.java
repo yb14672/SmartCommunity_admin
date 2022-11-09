@@ -32,7 +32,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             }
             String avatar = this.baseMapper.getAvatarById(userId);
             if(avatar==null||avatar.isEmpty()){
-                result.setMeta(ResultTool.fail(ResultCode.PARAM_IS_BLANK));
+                result.setMeta(ResultTool.fail(ResultCode.USER_AVATAR_NULL));
                 return result;
             }
             result.setData(avatar);

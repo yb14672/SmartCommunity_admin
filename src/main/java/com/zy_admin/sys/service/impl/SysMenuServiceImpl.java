@@ -11,7 +11,6 @@ import com.zy_admin.util.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -25,14 +24,17 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
 
     @Resource
     private SysUserDao sysUserDao;
+
     @Override
     public Result getAllMenu(String userId) {
         Result result = new Result();
         try {
             SysUserDto userDto = sysUserDao.personal(userId);
-            List<MenuTree> menuList = this.baseMapper.getAllMenu(userId,userDto.getSysRole().getRoleId());
-            Tree tree = new Tree(menuList);
-            result.setData(tree.buildTree());
+            if (!"1".equals(userDto.getSysRole().getStatus())||!"2".equals(userDto.getSysRole().getDelFlag())) {
+                List<MenuTree> menuList = this.baseMapper.getAllMenu(userId, userDto.getSysRole().getRoleId());
+                Tree tree = new Tree(menuList);
+                result.setData(tree.buildTree());
+            }
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
@@ -145,23 +147,45 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
     @Override
     public Result deleteByIdList(List<Long> idList) {
         Result result = new Result();
-        int i = this.baseMapper.deleteBatchIds(idList);
-        if (i >= 1) {
-            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        //若为一个即单删除，否则批量删除
+        if (idList.size() == 1) {
+            //判断是否有子集，若有则提示
+            Integer hasChildren = this.baseMapper.hasChildByMenuId(idList.get(0));
+            result.setMeta(ResultTool.fail(ResultCode.MENU_HAVE_CHILDREN));
+            //其子集小于1，则没有子集，执行删除
+            if (hasChildren < 1) {
+                int i = this.baseMapper.deleteBatchIds(idList);
+                if (i >= 1) {
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                } else {
+                    result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
+                }
+            }
         } else {
-            result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
+            int i = this.baseMapper.deleteBatchIds(idList);
+            if (i >= 1) {
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            } else {
+                result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
+            }
         }
         return result;
     }
 
     @Override
-    public Result deteleById(Serializable id) {
+    public Result deteleById(Long id) {
         Result result = new Result();
-        int i = this.baseMapper.deleteById(id);
-        if (i == 1) {
-            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-        } else {
-            result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
+        //判断是否有子集，若有则提示
+        Integer hasChildren = this.baseMapper.hasChildByMenuId(id);
+        result.setMeta(ResultTool.fail(ResultCode.MENU_HAVE_CHILDREN));
+        //其子集小于1，则没有子集，执行删除
+        if (hasChildren < 1) {
+            int i = this.baseMapper.deleteById(id);
+            if (i == 1) {
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            } else {
+                result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
+            }
         }
         return result;
     }
@@ -248,6 +272,23 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Result getMenuTrees() {
+        Result result = new Result();
+        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        try {
+            List<MenuTree> menuTree = this.baseMapper.getMenuTree();
+            Tree1 tree = new Tree1(menuTree);
+            List<MenuTree> menuTrees = tree.buildTree();
+            System.out.println(menuTrees);
+            result.setData(menuTrees);
+            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            return result;
+        } catch (Exception e) {
+            return result;
+        }
     }
 }
 

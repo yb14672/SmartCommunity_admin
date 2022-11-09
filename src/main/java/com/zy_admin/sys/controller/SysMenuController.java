@@ -94,9 +94,15 @@ public class SysMenuController extends ApiController {
     public R update(@RequestBody SysMenu sysMenu) {
         return success(this.sysMenuService.updateById(sysMenu));
     }
+
+    /**
+     * id删除菜单
+     * @param id
+     * @return
+     */
     @DeleteMapping("/deleteById")
-    public Result deleteById(@RequestParam Serializable id) {
-        return this.sysMenuService.deteleById(id);
+    public Result deleteById(@RequestParam String id) {
+        return this.sysMenuService.deteleById(Long.valueOf(id));
     }
 
     /**
@@ -110,7 +116,6 @@ public class SysMenuController extends ApiController {
         List<Long> idList1=new ArrayList<Long>();
         for (String str : idList) {
             idList1.add(Long.valueOf(str));
-            System.out.println(str);
         }
         Result result = this.sysMenuService.deleteByIdList(idList1);
         System.out.println(result);
@@ -126,7 +131,6 @@ public class SysMenuController extends ApiController {
         String userId = JwtUtils.getMemberIdByJwtToken(request);
         return this.sysMenuService.getAllMenu(userId);
     }
-
     /**
      * 菜单的条件搜索
      * @param menu
@@ -146,6 +150,11 @@ public class SysMenuController extends ApiController {
     public Result updateMenu(@RequestBody SysMenu sysMenu){
         Result result = this.sysMenuService.updateMenu(sysMenu);
         return result;
+    }
+
+    @GetMapping("/getMenuTree")
+    public Result getMenuTree(){
+        return this.sysMenuService.getMenuTrees();
     }
 }
 

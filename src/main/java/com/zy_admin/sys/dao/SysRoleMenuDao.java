@@ -14,8 +14,25 @@ import java.util.List;
  */
 public interface SysRoleMenuDao extends BaseMapper<SysRoleMenu> {
 
+    /**
+     * 批量新增
+     * @param id
+     * @param menuIdList
+     */
     void insertBatch(@Param("id") long id, @Param("menuIdList") int[] menuIdList);
 
+    /**
+     * 根据角色获取权限菜单
+     * @param roleId
+     * @return
+     */
     List<Integer> getMenuIdsByRoleId(String roleId);
+
+    /**
+     * 单个和批量删除
+     * @param idList
+     * @return
+     */
+    int deleteByIdList(@Param("idList") List<Integer> idList);
 }
 

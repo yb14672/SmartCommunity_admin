@@ -55,7 +55,7 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param id
      * @return
      */
-    Result deteleById(Serializable id);
+    Result deteleById(Long id);
 
     /**
      * 校验菜单名称是否唯一
@@ -64,33 +64,39 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param type 判断是添加(0)还是修改(1)
      * @return true--是唯一，反之
      */
-    public Boolean checkMenuNameUnique(int type,SysMenu menu);
+    Boolean checkMenuNameUnique(int type,SysMenu menu);
 
     /**
-     * 校验菜单名称是否唯一
+     * 校验路由是否唯一
      *
      * @param menu 菜单信息
      * @param type 判断是添加(0)还是修改(1)
      * @return true--是唯一，反之
      */
-    public Boolean checkPathUnique(int type,SysMenu menu);
+    Boolean checkPathUnique(int type,SysMenu menu);
 
     /**
-     * 校验菜单名称是否唯一
+     * 校验权限标识是否唯一
      *
      * @param menu 菜单信息
      * @param type 判断是添加(0)还是修改(1)
      * @return true--是唯一，反之
      */
-    public Boolean checkComponentUnique(int type,SysMenu menu);
+    Boolean checkComponentUnique(int type,SysMenu menu);
 
     /**
-     * 校验菜单名称是否唯一
+     * 校验组件路径是否唯一
      *
      * @param menu 菜单信息
      * @param type 判断是添加(0)还是修改(1)
      * @return true--是唯一，反之
      */
-    public Boolean checkPermsUnique(int type,SysMenu menu);
+    Boolean checkPermsUnique(int type,SysMenu menu);
+
+    /**
+     * 查询菜单树
+     * @return
+     */
+    Result getMenuTrees();
 }
 
