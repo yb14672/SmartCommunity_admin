@@ -36,6 +36,7 @@ public enum ResultCode {
     USER_ACCOUNT_SAME_PASSWORD(2010,"新旧密码不能一致"),
     USER_WRONG_ACCOUNT_OR_PASSWORD(2010, "账号或者密码不正确"),
     USER_AVATAR_UPLOAD_FAILED(2011, "图片上传失败"),
+    USER_AVATAR_NULL(2012,"没有头像，记得上传哦"),
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
