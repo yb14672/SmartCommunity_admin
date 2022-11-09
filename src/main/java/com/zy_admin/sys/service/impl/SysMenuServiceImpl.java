@@ -30,9 +30,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
         Result result = new Result();
         try {
             SysUserDto userDto = sysUserDao.personal(userId);
-            List<MenuTree> menuList = this.baseMapper.getAllMenu(userId, userDto.getSysRole().getRoleId());
-            Tree tree = new Tree(menuList);
-            result.setData(tree.buildTree());
+            if (!"1".equals(userDto.getSysRole().getStatus())||!"2".equals(userDto.getSysRole().getDelFlag())) {
+                List<MenuTree> menuList = this.baseMapper.getAllMenu(userId, userDto.getSysRole().getRoleId());
+                Tree tree = new Tree(menuList);
+                result.setData(tree.buildTree());
+            }
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
