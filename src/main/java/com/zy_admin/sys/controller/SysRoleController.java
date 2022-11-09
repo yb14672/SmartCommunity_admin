@@ -89,7 +89,8 @@ public class SysRoleController extends ApiController {
      */
     @GetMapping("/selectRoleByLimit")
     public Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime) {
-        System.out.println(sysRole);
+        System.out.println(startTime);
+        System.out.println(endTime);
         Result result = sysRoleService.selectRoleByLimit(sysRole, pageable, startTime, endTime);
         System.out.println(result);
         return result;
