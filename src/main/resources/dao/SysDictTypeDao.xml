@@ -17,7 +17,7 @@
     <!--查询单个-->
     <select id="queryById" resultMap="SysDictTypeMap">
         select
-          dict_id, dict_name, dict_type, status, create_by, create_time, update_by, update_time, remark
+            dict_id, dict_name, dict_type, status, create_by, create_time, update_by, update_time, remark
         from sys_dict_type
         where dict_id = #{dictId}
     </select>
@@ -164,6 +164,14 @@
     <!--通过主键删除-->
     <delete id="deleteById">
         delete from sys_dict_type where dict_id = #{dictId}
+    </delete>
+
+    <!--删除多个-->
+    <delete id="deleteByIdList" parameterType="integer">
+        delete from sys_dict_type where dict_id in
+        <foreach collection="idList" item="dict_id" separator="," open="(" close=")">
+            #{dictId}
+        </foreach>
     </delete>
 
 </mapper>

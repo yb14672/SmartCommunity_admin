@@ -49,6 +49,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
         queryWrapper.eq(StringUtils.isNotEmpty(sysDictData.getDictType()),SysDictData::getDictType,sysDictData.getDictType());
         queryWrapper.like(StringUtils.isNotEmpty(sysDictData.getDictLabel()),SysDictData::getDictLabel,sysDictData.getDictLabel());
         queryWrapper.eq(StringUtils.isNotEmpty(sysDictData.getStatus()),SysDictData::getStatus,sysDictData.getStatus());
+        queryWrapper.orderByAsc(SysDictData::getDictSort);
         Page page1 = this.baseMapper.selectPage(page, queryWrapper);
         if(page1.getSize() > 0){
             result.setData(page1);

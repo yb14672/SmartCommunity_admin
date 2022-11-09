@@ -48,6 +48,8 @@ public enum ResultCode {
     REPEAT_ROLE_NAME(3007,"当前角色名已存在"),
     ADMIN_NOT_ALLOWED_DELETE(3008,"不允许删除管理员"),
     PARENT_CLASS_CANNOT_BE_ITSELF(3009,"修改时父类不能是自己"),
+    REPEAT_DICT_NAME(3010,"字典名重复" ),
+    REPEAT_DICT_TYPE(3011,"字典类型重复" ),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),
