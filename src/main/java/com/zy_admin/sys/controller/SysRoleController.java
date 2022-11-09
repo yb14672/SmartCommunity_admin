@@ -125,7 +125,6 @@ public class SysRoleController extends ApiController {
      */
     @PutMapping
     public Result update(@RequestBody SysRole sysRole) {
-        System.out.println(sysRole);
         return this.sysRoleService.changeStatus(sysRole);
     }
 
@@ -144,6 +143,10 @@ public class SysRoleController extends ApiController {
         try {
             for (String str : idList) {
                 idList1.add(Integer.valueOf(str));
+                if("1".equals(str)){
+                    result.setMeta(ResultTool.fail(ResultCode.ADMIN_NOT_ALLOWED_DELETE));
+                    return result;
+                }
             }
             //修改角色表
             result = this.sysRoleService.deleteByIdList(idList1);

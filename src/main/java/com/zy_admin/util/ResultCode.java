@@ -45,7 +45,7 @@ public enum ResultCode {
     MENU_HAVE_CHILDREN(3005, "该菜单有子集，若要删除请使用批量删除"),
     REPEAT_ROLE_KEY(3006,"当前权限码已存在"),
     REPEAT_ROLE_NAME(3007,"当前角色名已存在"),
-
+    ADMIN_NOT_ALLOWED_DELETE(3008,"不允许删除管理员"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),
