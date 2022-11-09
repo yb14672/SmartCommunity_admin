@@ -80,7 +80,7 @@ public interface SysRoleService extends IService<SysRole> {
      * @param roleAndRoleMenu
      * @return
      */
-    Boolean checkRoleNameUnique(int type, RoleAndRoleMenu roleAndRoleMenu);
+    Boolean checkRoleNameUnique(int type,RoleAndRoleMenu roleAndRoleMenu);
 
     /**
      * 检查角色名是否唯一
@@ -88,6 +88,6 @@ public interface SysRoleService extends IService<SysRole> {
      * @param roleAndRoleMenu
      * @return
      */
-    Boolean checkRoleKeyUnique(int type, RoleAndRoleMenu roleAndRoleMenu);
+    Boolean checkRoleKeyUnique(int type,RoleAndRoleMenu roleAndRoleMenu);
 }
 

@@ -89,7 +89,8 @@ public class SysRoleController extends ApiController {
      */
     @GetMapping("/selectRoleByLimit")
     public Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime) {
-        System.out.println(sysRole);
+        System.out.println(startTime);
+        System.out.println(endTime);
         Result result = sysRoleService.selectRoleByLimit(sysRole, pageable, startTime, endTime);
         System.out.println(result);
         return result;
@@ -125,7 +126,6 @@ public class SysRoleController extends ApiController {
      */
     @PutMapping
     public Result update(@RequestBody SysRole sysRole) {
-        System.out.println(sysRole);
         return this.sysRoleService.changeStatus(sysRole);
     }
 
@@ -144,6 +144,10 @@ public class SysRoleController extends ApiController {
         try {
             for (String str : idList) {
                 idList1.add(Integer.valueOf(str));
+                if("1".equals(str)){
+                    result.setMeta(ResultTool.fail(ResultCode.ADMIN_NOT_ALLOWED_DELETE));
+                    return result;
+                }
             }
             //修改角色表
             result = this.sysRoleService.deleteByIdList(idList1);

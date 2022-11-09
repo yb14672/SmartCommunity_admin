@@ -126,9 +126,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
                     //更新角色
                     int i = this.baseMapper.updateRoleById(roleAndRoleMenu);
                     if (i == 1) {
+                        sysRoleMenuDao.deleteById(roleAndRoleMenu.getRoleId());
                         //判断是否有权限，有则更改
                         if (roleAndRoleMenu.getMenuIds().length != 0) {
-                            sysRoleMenuDao.deleteById(roleAndRoleMenu.getRoleId());
                             sysRoleMenuDao.insertBatch(roleAndRoleMenu.getRoleId(), roleAndRoleMenu.getMenuIds());
                         }
                         result.setMeta(ResultTool.fail(ResultCode.SUCCESS));

@@ -36,6 +36,7 @@ public enum ResultCode {
     USER_ACCOUNT_SAME_PASSWORD(2010,"新旧密码不能一致"),
     USER_WRONG_ACCOUNT_OR_PASSWORD(2010, "账号或者密码不正确"),
     USER_AVATAR_UPLOAD_FAILED(2011, "图片上传失败"),
+    USER_AVATAR_NULL(2012,"没有头像，记得上传哦"),
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
@@ -45,7 +46,8 @@ public enum ResultCode {
     MENU_HAVE_CHILDREN(3005, "该菜单有子集，若要删除请使用批量删除"),
     REPEAT_ROLE_KEY(3006,"当前权限码已存在"),
     REPEAT_ROLE_NAME(3007,"当前角色名已存在"),
-
+    ADMIN_NOT_ALLOWED_DELETE(3008,"不允许删除管理员"),
+    PARENT_CLASS_CANNOT_BE_ITSELF(3009,"修改时父类不能是自己"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

@@ -11,6 +11,7 @@ import com.zy_admin.util.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -30,9 +31,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
         Result result = new Result();
         try {
             SysUserDto userDto = sysUserDao.personal(userId);
-            List<MenuTree> menuList = this.baseMapper.getAllMenu(userId, userDto.getSysRole().getRoleId());
-            Tree tree = new Tree(menuList);
-            result.setData(tree.buildTree());
+            if (!"1".equals(userDto.getSysRole().getStatus())||!"2".equals(userDto.getSysRole().getDelFlag())) {
+                List<MenuTree> menuList = this.baseMapper.getAllMenu(userId, userDto.getSysRole().getRoleId());
+                Tree tree = new Tree(menuList);
+                result.setData(tree.buildTree());
+            }
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
@@ -104,29 +107,35 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
     public Result updateMenu(SysMenu menu) {
         Result result = new Result();
         try {
-            //因为菜单名为必填字段，所以判断是否为空
-            if (menu.getMenuName() == null || "".equals(menu.getMenuName())) {
-                result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
-                return result;
-            } else {
-                //判断菜单名称是否唯一
-                if (checkMenuNameUnique(1, menu)) {
-                    //当路由不为空时判断其路由是否重复
-                    if (!"".equals(menu.getPath()) || !"#".equals(menu.getPath())) {
-                        //不唯一即false，因此不唯一时提示并返回
-                        if (!checkPathUnique(1, menu)) {
-                            result.setMeta(ResultTool.fail(ResultCode.REPEAT_MENUPATH));
-                            return result;
-                        }
-                    }
-                } else {
-                    result.setMeta(ResultTool.fail(ResultCode.REPEAT_MENUNAME));
+            //判断菜单的父类是否自己
+            if(!menu.getParentId().equals(menu.getMenuId())){
+                //因为菜单名为必填字段，所以判断是否为空
+                if (menu.getMenuName() == null || "".equals(menu.getMenuName())) {
+                    result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
                     return result;
+                } else {
+                    //判断菜单名称是否唯一
+                    if (checkMenuNameUnique(1, menu)) {
+                        //当路由不为空时判断其路由是否重复
+                        if (!"".equals(menu.getPath()) || !"#".equals(menu.getPath())) {
+                            //不唯一即false，因此不唯一时提示并返回
+                            if (!checkPathUnique(1, menu)) {
+                                result.setMeta(ResultTool.fail(ResultCode.REPEAT_MENUPATH));
+                                return result;
+                            }
+                        }
+                    } else {
+                        result.setMeta(ResultTool.fail(ResultCode.REPEAT_MENUNAME));
+                        return result;
+                    }
                 }
-            }
-            int i = this.baseMapper.updateById(menu);
-            if (i == 1) {
-                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                menu.setUpdateTime(LocalDateTime.now().toString());
+                int i = this.baseMapper.updateById(menu);
+                if (i == 1) {
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                }
+            }else{
+                result.setMeta(ResultTool.fail(ResultCode.PARENT_CLASS_CANNOT_BE_ITSELF));
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
