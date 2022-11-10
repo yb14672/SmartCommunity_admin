@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.sys.dao.SysDictTypeDao">
+
+    <resultMap type="com.zy_admin.sys.entity.SysDictType" id="SysDictTypeMap">
+        <result property="dictId" column="dict_id" jdbcType="INTEGER"/>
+        <result property="dictName" column="dict_name" jdbcType="VARCHAR"/>
+        <result property="dictType" column="dict_type" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SysDictTypeMap">
+        select
+            dict_id, dict_name, dict_type, status, create_by, create_time, update_by, update_time, remark
+        from sys_dict_type
+        where dict_id = #{dictId}
+    </select>
+
+    <!--分页查询-->
+    <select id="selectDictByLimit" resultMap="SysDictTypeMap" parameterType="com.zy_admin.sys.entity.SysDictType">
+        select
+        dict_id, dict_name, dict_type, status, create_by, create_time, update_by, update_time, remark
+        from sys_dict_type
+        <where>
+            <if test="sysDict.dictId != null">
+                and dict_id = #{sysDict.dictId}
+            </if>
+            <if test="sysDict.dictName != null and sysDict.dictName != ''">
+                and dict_name like concat('%',#{sysDict.dictName},'%')
+            </if>
+            <if test="sysDict.dictType != null and sysDict.dictType != ''">
+                and dict_type like concat('%',#{sysDict.dictType},'%')
+            </if>
+            <if test="sysDict.status != null and sysDict.status != ''">
+                and status = #{sysDict.status}
+            </if>
+            <if test="sysDict.createBy != null and sysDict.createBy != ''">
+                and create_by = #{sysDict.createBy}
+            </if>
+            <if test="startTime != null">
+                and create_time between #{startTime} and #{endTime}
+            </if>
+            <if test="sysDict.updateBy != null and sysDict.updateBy != ''">
+                and update_by = #{sysDict.updateBy}
+            </if>
+            <if test="sysDict.updateTime != null">
+                and update_time = #{sysDict.updateTime}
+            </if>
+            <if test="sysDict.remark != null and remark != ''">
+                and remark = #{sysDict.remark}
+            </if>
+        </where>
+        <if test="pageable.pageSize!=0">
+            limit #{pageable.index} ,#{pageable.pageSize}
+        </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from sys_dict_type
+        <where>
+            <if test="sysDict.dictId != null">
+                and dict_id = #{sysDict.dictId}
+            </if>
+            <if test="sysDict.dictName != null and sysDict.dictName != ''">
+                and dict_name = #{sysDict.dictName}
+            </if>
+            <if test="sysDict.dictType != null and sysDict.dictType != ''">
+                and dict_type = #{sysDict.dictType}
+            </if>
+            <if test="sysDict.status != null and sysDict.status != ''">
+                and status = #{sysDict.status}
+            </if>
+            <if test="sysDict.createBy != null and sysDict.createBy != ''">
+                and create_by = #{sysDict.createBy}
+            </if>
+            <if test="startTime != null">
+                and create_time between #{startTime} and #{endTime}
+            </if>
+            <if test="sysDict.updateBy != null and sysDict.updateBy != ''">
+                and update_by = #{sysDict.updateBy}
+            </if>
+            <if test="sysDict.updateTime != null">
+                and update_time = #{sysDict.updateTime}
+            </if>
+            <if test="sysDict.remark != null and remark != ''">
+                and remark = #{sysDict.remark}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="dictId" useGeneratedKeys="true">
+        insert into sys_dict_type(dict_name, dict_type, status, create_by, create_time, update_by, update_time, remark)
+        values (#{dictName}, #{dictType}, #{status}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="dictId" useGeneratedKeys="true">
+        insert into sys_dict_type(dict_name, dict_type, status, create_by, create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.dictName}, #{entity.dictType}, #{entity.status}, #{entity.createBy}, #{entity.createTime},
+            #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="dictId" useGeneratedKeys="true">
+        insert into sys_dict_type(dict_name, dict_type, status, create_by, create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.dictName}, #{entity.dictType}, #{entity.status}, #{entity.createBy}, #{entity.createTime},
+            #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+        on duplicate key update
+        dict_name = values(dict_name),
+        dict_type = values(dict_type),
+        status = values(status),
+        create_by = values(create_by),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        remark = values(remark)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sys_dict_type
+        <set>
+            <if test="dictName != null and dictName != ''">
+                dict_name = #{dictName},
+            </if>
+            <if test="dictType != null and dictType != ''">
+                dict_type = #{dictType},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where dict_id = #{dictId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sys_dict_type where dict_id = #{dictId}
+    </delete>
+
+    <!--删除多个-->
+    <delete id="deleteByIdList" parameterType="integer">
+        delete from sys_dict_type where dict_id in
+        <foreach collection="idList" item="dict_id" separator="," open="(" close=")">
+            #{dictId}
+        </foreach>
+    </delete>
+
+</mapper>
+

@@ -28,7 +28,6 @@ public class Tree {
      */
     private List<MenuTree> getRootNode() {
         List<MenuTree> rootNode = new ArrayList<>();
-
         if (menuList.size() > 99) {
             for (MenuTree menu : menuList) {
                 if ("0".equals(menu.getParentId())) {
@@ -49,12 +48,9 @@ public class Tree {
                     if (f) {
                         rootNode.add(menuList.get(i));
                     }
-
                 }
-
             }
         }
-
         return rootNode;
     }
 
@@ -71,12 +67,12 @@ public class Tree {
 //                childrenTree.add(buildChildren(menu));
 //            }
 //        }
-        for (int i = menuList.size() - 1;i >= 0; i--){
-            if (menuList.get(i).getParentId().equals(rootNode.getMenuId())){
+        for (int i = menuList.size() - 1; i >= 0; i--) {
+            if (menuList.get(i).getParentId().equals(rootNode.getMenuId())) {
                 childrenTree.add(buildChildren(menuList.get(i)));
             }
         }
-            rootNode.setChildren(childrenTree);
+        rootNode.setChildren(childrenTree);
         return rootNode;
     }
 

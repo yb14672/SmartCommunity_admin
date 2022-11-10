@@ -43,6 +43,11 @@ public class SysUserController extends ApiController {
         return success(this.sysUserService.page(page, new QueryWrapper<>(sysUser)));
     }
 
+    /**
+     * 根据用户ID获取头像
+     * @param request
+     * @return
+     */
     @GetMapping("/getAvatarById")
     public Result getAvatarById(HttpServletRequest request){
         String id = JwtUtils.getMemberIdByJwtToken(request);
@@ -94,6 +99,11 @@ public class SysUserController extends ApiController {
         return success(this.sysUserService.removeByIds(idList));
     }
 
+    /**
+     * 登录
+     * @param sysUser
+     * @return
+     */
     @PostMapping("/login")
     public Result login(SysUser sysUser) {
         Result result = sysUserService.login(sysUser);

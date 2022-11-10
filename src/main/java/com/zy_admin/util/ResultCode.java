@@ -50,6 +50,10 @@ public enum ResultCode {
     PARENT_CLASS_CANNOT_BE_ITSELF(3009,"修改时父类不能是自己"),
     REPEAT_POST_CODE(3010,"岗位编码重复"),
     REPEAT_POST_NAME(3011,"岗位名称重复"),
+    REPEAT_DICT_NAME(3012,"字典名重复" ),
+    REPEAT_DICT_TYPE(3013,"字典类型重复" ),
+    REPEAT_DICT_DATA_LABEL(3014,"数据标签重复" ),
+    REPEAT_DICT_DATA_VALUE(3015,"数据键值重复" ),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

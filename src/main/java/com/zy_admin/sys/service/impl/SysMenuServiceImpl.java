@@ -71,11 +71,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
                 return result;
             } else {
                 //判断菜单名称是否唯一
-                if (checkMenuNameUnique(1, menu)) {
+                if (checkMenuNameUnique(0, menu)) {
                     //当路由不为空时判断其路由是否重复
                     if (!"".equals(menu.getPath()) || !"#".equals(menu.getPath())) {
                         //不唯一即false，因此不唯一时提示并返回
-                        if (!checkPathUnique(1, menu)) {
+                        if (!checkPathUnique(0, menu)) {
                             result.setMeta(ResultTool.fail(ResultCode.REPEAT_MENUPATH));
                             return result;
                         }

@@ -21,8 +21,20 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="SysDictDataMap">
-        select
-          dict_code, dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, update_by, update_time, remark
+        select dict_code,
+               dict_sort,
+               dict_label,
+               dict_value,
+               dict_type,
+               css_class,
+               list_class,
+               is_default,
+               status,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
         from sys_dict_data
         where dict_code = #{dictCode}
     </select>
@@ -30,7 +42,8 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="SysDictDataMap">
         select
-          dict_code, dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, update_by, update_time, remark
+        dict_code, dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by,
+        create_time, update_by, update_time, remark
         from sys_dict_data
         <where>
             <if test="dictCode != null">
@@ -131,23 +144,31 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="dictCode" useGeneratedKeys="true">
-        insert into sys_dict_data(dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, update_by, update_time, remark)
-        values (#{dictSort}, #{dictLabel}, #{dictValue}, #{dictType}, #{cssClass}, #{listClass}, #{isDefault}, #{status}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+        insert into sys_dict_data(dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default,
+                                  status, create_by, create_time, update_by, update_time, remark)
+        values (#{dictSort}, #{dictLabel}, #{dictValue}, #{dictType}, #{cssClass}, #{listClass}, #{isDefault},
+                #{status}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <insert id="insertBatch" keyProperty="dictCode" useGeneratedKeys="true">
-        insert into sys_dict_data(dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, update_by, update_time, remark)
+        insert into sys_dict_data(dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default,
+        status, create_by, create_time, update_by, update_time, remark)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.dictSort}, #{entity.dictLabel}, #{entity.dictValue}, #{entity.dictType}, #{entity.cssClass}, #{entity.listClass}, #{entity.isDefault}, #{entity.status}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+            (#{entity.dictSort}, #{entity.dictLabel}, #{entity.dictValue}, #{entity.dictType}, #{entity.cssClass},
+            #{entity.listClass}, #{entity.isDefault}, #{entity.status}, #{entity.createBy}, #{entity.createTime},
+            #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="dictCode" useGeneratedKeys="true">
-        insert into sys_dict_data(dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, create_by, create_time, update_by, update_time, remark)
+        insert into sys_dict_data(dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default,
+        status, create_by, create_time, update_by, update_time, remark)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.dictSort}, #{entity.dictLabel}, #{entity.dictValue}, #{entity.dictType}, #{entity.cssClass}, #{entity.listClass}, #{entity.isDefault}, #{entity.status}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+            (#{entity.dictSort}, #{entity.dictLabel}, #{entity.dictValue}, #{entity.dictType}, #{entity.cssClass},
+            #{entity.listClass}, #{entity.isDefault}, #{entity.status}, #{entity.createBy}, #{entity.createTime},
+            #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
         </foreach>
         on duplicate key update
         dict_sort = values(dict_sort),
@@ -166,7 +187,7 @@
     </insert>
 
     <!--通过主键修改数据-->
-    <update id="update">
+    <update id="updateDictDataById">
         update sys_dict_data
         <set>
             <if test="dictSort != null">
@@ -213,12 +234,77 @@
     </update>
 
     <!--通过主键删除-->
-    <delete id="deleteById">
-        delete from sys_dict_data where dict_code = #{dictCode}
+    <delete id="deleteDictDataByIds">
+        delete
+        from sys_dict_data
+        where dict_code in
+        <foreach collection="idList" item="dict_code" separator="," open="(" close=")">
+            #{dict_code}
+        </foreach>
     </delete>
-
+    <!--获取对应类型的所有数据-->
     <select id="getDict" resultType="com.zy_admin.sys.entity.SysDictData">
-        select dict_label,dict_value from sys_dict_data where dict_type = #{dictType}
+        select *
+        from sys_dict_data
+        where dict_type = #{dictType}
+    </select>
+    <!--检查数据标签是否唯一-->
+    <select id="checkDictLabelUnique" resultMap="SysDictDataMap">
+        select *
+        from sys_dict_data
+        where dict_type = #{dictType}
+          and dict_label = #{dictLabel}
+    </select>
+    <!--检查数据键值是否唯一-->
+    <select id="checkDictValueUnique" resultMap="SysDictDataMap">
+        select *
+        from sys_dict_data
+        where dict_type = #{dictType}
+          and dict_value = #{dictValue}
+    </select>
+
+    <select id="getDictDataById" resultMap="SysDictDataMap">
+        select *
+        from sys_dict_data
+        where dict_code = #{id}
+    </select>
+
+
+    <resultMap type="com.zy_admin.sys.dto.DataDictExcelDto" id="DataDictExcelDtoMap">
+        <result property="dictCode" column="dict_code" jdbcType="INTEGER"/>
+        <result property="dictSort" column="dict_sort" jdbcType="INTEGER"/>
+        <result property="dictLabel" column="dict_label" jdbcType="VARCHAR"/>
+        <result property="dictValue" column="dict_value" jdbcType="VARCHAR"/>
+        <result property="dictType" column="dict_type" jdbcType="VARCHAR"/>
+        <result property="cssClass" column="css_class" jdbcType="VARCHAR"/>
+        <result property="listClass" column="list_class" jdbcType="VARCHAR"/>
+        <result property="isDefault" column="is_default" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="dictName" column="dict_name" jdbcType="VARCHAR"/>
+    </resultMap>
+    <!--查询所有字典-->
+    <select id="getDictList" resultMap="SysDictDataMap">
+        select dd.*, dt.dict_name
+        from sys_dict_data dd
+                 LEFT JOIN sys_dict_type dt ON dd.dict_type = dt.dict_type
+        WHERE dd.dict_type = #{dictType}
+    </select>
+
+    <!--查询指定字典数据-->
+    <select id="getDictListById" resultMap="SysDictDataMap">
+        select dd.*, dt.dict_name
+        from sys_dict_data dd
+                 LEFT JOIN sys_dict_type dt ON dd.dict_type = dt.dict_type
+        WHERE dd.dict_code IN
+        <foreach collection="idList" item="dict_code" separator="," open="(" close=")">
+            #{dict_code}
+        </foreach>
     </select>
 </mapper>
+
 

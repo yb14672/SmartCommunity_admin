@@ -1,16 +1,15 @@
 package com.zy_admin.sys.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -29,15 +28,47 @@ public class SysDictTypeController extends ApiController {
     private SysDictTypeService sysDictTypeService;
 
     /**
-     * 分页查询所有数据
+     * 修改
+     * @return
+     */
+    @PutMapping("/updateDict")
+    public Result updateDict(@RequestBody SysDictType sysDictType){
+        return sysDictTypeService.updateDict(sysDictType);
+    }
+    /**
+     * 新增字典
+     * @param sysDictType
+     * @return
+     */
+    @PostMapping("/addSysDict")
+    public Result insertDictType(@RequestBody SysDictType sysDictType){
+        System.out.println(sysDictType);
+        //sysDictType.setCreateTime(LocalDateTime.now().toString());
+        return this.sysDictTypeService.insertOrUpdateBatch(sysDictType);
+    }
+
+
+    /**
+     * 分页查询
+     * @param sysDictType
+     * @param pageable
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @GetMapping("/selectDictByLimit")
+    public Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime){
+        return sysDictTypeService.selectDictByLimit(sysDictType, pageable,startTime,endTime);
+    }
+
+    /**
+     * 查询所有数据
      *
-     * @param page        分页对象
-     * @param sysDictType 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<SysDictType> page, SysDictType sysDictType) {
-        return success(this.sysDictTypeService.page(page, new QueryWrapper<>(sysDictType)));
+    public Result selectAll() {
+        return this.sysDictTypeService.selectDictAll();
     }
 
     /**
@@ -46,9 +77,9 @@ public class SysDictTypeController extends ApiController {
      * @param id 主键
      * @return 单条数据
      */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.sysDictTypeService.getById(id));
+    @GetMapping("/{id}")
+    public Result selectOne(@PathVariable String id) {
+        return this.sysDictTypeService.getDictTypeById(id);
     }
 
     /**
