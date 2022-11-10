@@ -95,7 +95,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
     @Transactional(rollbackFor = Exception.class)
     public Result insert(RoleAndRoleMenu roleAndRoleMenu) {
         if (checkRoleNameUnique(0,roleAndRoleMenu)) {
-            if (checkRoleNameUnique(0,roleAndRoleMenu)) {
+            if (checkRoleKeyUnique(0,roleAndRoleMenu)) {
                 try {
                     //插入角色
                     this.baseMapper.insert(roleAndRoleMenu);

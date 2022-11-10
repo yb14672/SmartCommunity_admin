@@ -1,10 +1,8 @@
 package com.zy_admin.sys.entity;
 
-import java.util.Date;
-
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
-import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 字典类型表(SysDictType)表实体类
@@ -25,7 +23,7 @@ public class SysDictType extends Model<SysDictType> {
     //创建者
     private String createBy;
     //创建时间
-    private Date createTime;
+    private String createTime;
     //更新者
     private String updateBy;
     //更新时间
@@ -33,6 +31,20 @@ public class SysDictType extends Model<SysDictType> {
     //备注
     private String remark;
 
+    public SysDictType(Long dictId, String dictName, String dictType, String status, String createBy, String createTime, String updateBy, Date updateTime, String remark) {
+        this.dictId = dictId;
+        this.dictName = dictName;
+        this.dictType = dictType;
+        this.status = status;
+        this.createBy = createBy;
+        this.createTime = createTime;
+        this.updateBy = updateBy;
+        this.updateTime = updateTime;
+        this.remark = remark;
+    }
+
+    public SysDictType() {
+    }
 
     public Long getDictId() {
         return dictId;
@@ -74,11 +86,11 @@ public class SysDictType extends Model<SysDictType> {
         this.createBy = createBy;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
@@ -106,14 +118,19 @@ public class SysDictType extends Model<SysDictType> {
         this.remark = remark;
     }
 
-    /**
-     * 获取主键值
-     *
-     * @return 主键值
-     */
     @Override
-    protected Serializable pkVal() {
-        return this.dictId;
+    public String toString() {
+        return "SysDictType{" +
+                "dictId=" + dictId +
+                ", dictName='" + dictName + '\'' +
+                ", dictType='" + dictType + '\'' +
+                ", status='" + status + '\'' +
+                ", createBy='" + createBy + '\'' +
+                ", createTime='" + createTime + '\'' +
+                ", updateBy='" + updateBy + '\'' +
+                ", updateTime=" + updateTime +
+                ", remark='" + remark + '\'' +
+                '}';
     }
 }
 
