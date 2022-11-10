@@ -92,7 +92,7 @@ public class SysRoleController extends ApiController {
         System.out.println(startTime);
         System.out.println(endTime);
         Result result = sysRoleService.selectRoleByLimit(sysRole, pageable, startTime, endTime);
-        System.out.println(result);
+        System.out.println(result.toString());
         return result;
     }
 

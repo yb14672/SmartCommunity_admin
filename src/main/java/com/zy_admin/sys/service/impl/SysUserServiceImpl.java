@@ -140,5 +140,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         }
         return result;
     }
+
+    @Override
+    public SysUser getUserById(String userId) {
+        return this.baseMapper.getUserById(userId);
+    }
 }
 

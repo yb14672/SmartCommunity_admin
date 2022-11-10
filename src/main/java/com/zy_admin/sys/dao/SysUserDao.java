@@ -52,5 +52,8 @@ public interface SysUserDao extends BaseMapper<SysUser> {
     @Select("select * from sys_user where user_name=#{userName} and password=#{password}")
     SysUser login(SysUser sysUser);
 
+    @Select("select * from sys_user where user_id=#{id}" )
+    SysUser getUserById(String id);
+
 }
 

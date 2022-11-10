@@ -62,5 +62,8 @@ public interface SysUserService extends IService<SysUser> {
      * @return 结果
      */
     Result resetPwd(SysUser user);
+
+
+    SysUser getUserById(String id);
 }
 
