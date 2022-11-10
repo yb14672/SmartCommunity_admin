@@ -91,4 +91,10 @@
 <!--查询父级id-->
     <select id="getDeptById" resultType="com.zy_admin.sys.entity.SysDept">
         select * from sys_dept where dept_id = #{deptId}
-    </select></mapper>
+    </select>
+    <!--查询子级id集合-->
+    <select id="getDeptIdList" resultType="java.lang.Long">
+        select dept_id from sys_dept where parent_id = #{deptId}
+    </select>
+</mapper>
+

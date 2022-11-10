@@ -105,6 +105,14 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
         System.out.println(sysDept);
         Result result = new Result();
         try {
+            List<Long> deptIdList = this.sysDeptDao.getDeptIdList(sysDept.getDeptId());
+            //判断修改的的父级是否为自己的子级
+            for (Long deptId : deptIdList) {
+                if (sysDept.getParentId().equals(deptId)){
+                    result.setMeta(ResultTool.fail(ResultCode.DEPTID_NOT_ITEM));
+                    return result;
+                }
+            }
             //判断菜单的父类是否自己
             if (!sysDept.getParentId().equals(sysDept.getDeptId())) {
                 //因为菜单名为必填字段，所以判断是否为空

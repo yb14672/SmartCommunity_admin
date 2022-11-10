@@ -70,10 +70,10 @@
                 and dict_id = #{sysDict.dictId}
             </if>
             <if test="sysDict.dictName != null and sysDict.dictName != ''">
-                and dict_name = #{sysDict.dictName}
+                and dict_name like concat('%',#{sysDict.dictName},'%')
             </if>
             <if test="sysDict.dictType != null and sysDict.dictType != ''">
-                and dict_type = #{sysDict.dictType}
+                and dict_type like concat('%',#{sysDict.dictType},'%')
             </if>
             <if test="sysDict.status != null and sysDict.status != ''">
                 and status = #{sysDict.status}
