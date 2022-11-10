@@ -22,6 +22,7 @@ public enum ResultCode {
     PARAM_IS_BLANK(1002, "参数为空"),
     PARAM_TYPE_ERROR(1003, "参数类型错误"),
     PARAM_NOT_COMPLETE(1004, "参数缺失"),
+    NO_CHANGE_IN_PARAMETER(1005,"参数没有变化"),
 
     /* 用户错误 */
     USER_NOT_LOGIN(2001, "用户未登录"),

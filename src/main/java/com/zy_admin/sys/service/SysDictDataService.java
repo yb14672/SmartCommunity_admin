@@ -82,5 +82,14 @@ public interface SysDictDataService extends IService<SysDictData> {
      * @return
      */
     List<DataDictExcelDto> getDictListById(ArrayList<Integer> idList);
+
+    /**
+     * 检查两个data是否一致
+     *
+     * @param updateData
+     * @param originalData
+     * @return
+     */
+    Boolean checkEquals(SysDictData updateData, SysDictData originalData);
 }
 
