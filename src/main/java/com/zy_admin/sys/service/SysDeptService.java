@@ -10,6 +10,10 @@ import com.zy_admin.sys.entity.SysDept;
  * @since 2022-11-01 19:49:34
  */
 public interface SysDeptService extends IService<SysDept> {
+//    部门的树结构所有数据
+//    Result getDeptTree();
 
+//    删除
+//    Result deleteByIdList(List<Integer> idList);
 }
 

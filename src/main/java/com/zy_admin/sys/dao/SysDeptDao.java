@@ -11,5 +11,13 @@ import com.zy_admin.sys.entity.SysDept;
  */
 public interface SysDeptDao extends BaseMapper<SysDept> {
 
+//    查所有
+//    List<DeptTree> getDeptTree();
+
+//    删除
+//    int deleteByIdList(@Param("idList") List<Integer> idList);
+
+//    判断下面有没有子集
+//    Integer hasChildDept(long DeptId);
 }
 

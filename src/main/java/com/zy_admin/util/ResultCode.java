@@ -52,6 +52,8 @@ public enum ResultCode {
     REPEAT_DICT_TYPE(3011,"字典类型重复" ),
     REPEAT_DICT_DATA_LABEL(3012,"数据标签重复" ),
     REPEAT_DICT_DATA_VALUE(3013,"数据键值重复" ),
+    DICT_HAVE_CHILDREN(3014, "该字典有子集，若要删除请使用批量删除"),
+    DEPT_HAVE_CHILDREN(3015, "该部门有子集，若要删除请使用批量删除"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),
