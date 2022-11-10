@@ -12,11 +12,11 @@
         <if test="status != null">
             and status =#{status}
         </if>
-        order by parent_id,order_num desc
+        order by parent_id,order_num asc
     </select>
     <!--部门名查重-->
     <select id="checkDeptNameUnique" resultType="com.zy_admin.sys.entity.SysDept">
-        select * from sys_dept where dept_name=#{deptName} and parent_id=#{parentId} limit 1
+        select * from sys_dept where dept_name=#{deptName} and del_flag != 2 and parent_id=#{parentId} limit 1
     </select>
     <!--新增部门 useGeneratedKeys(主键回显)-->
     <insert id="insertDept" keyProperty="deptId" useGeneratedKeys="true"

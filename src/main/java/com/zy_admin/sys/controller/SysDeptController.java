@@ -5,11 +5,7 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDeptService;
-import com.zy_admin.sys.service.SysUserService;
-import com.zy_admin.util.JwtUtils;
-import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
-import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +31,7 @@ public class SysDeptController extends ApiController {
     @Resource
     private SysDeptService sysDeptService;
     @Resource
-    private SysUserService sysUserService;
+    private RequestUtil requestUtil;
 
 
     /**
@@ -57,12 +53,12 @@ public class SysDeptController extends ApiController {
      */
     @PostMapping("/insertDept")
     public Result insertDept(@RequestBody SysDept sysDept, HttpServletRequest request) {
+        Result result = new Result();
         //从token获值
         System.out.println(sysDept);
         String userId = JwtUtils.getMemberIdByJwtToken(request);
-        Result result = this.sysUserService.queryById(userId);
         try {
-            SysUser user = (SysUser) result.getData();
+            SysUser user = requestUtil.getUser(request);
             sysDept.setDelFlag("0");
             sysDept.setStatus("0");
             sysDept.setCreateTime(LocalDateTime.now().toString());
@@ -71,7 +67,7 @@ public class SysDeptController extends ApiController {
         } catch (Exception e) {
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
         }
-            return result;
+        return result;
     }
 
     /**
@@ -81,7 +77,7 @@ public class SysDeptController extends ApiController {
      * @return 修改结果
      */
     @PutMapping("/updateDept")
-    public Result updateDept(@RequestBody SysDept sysDept){
+    public Result updateDept(@RequestBody SysDept sysDept) {
         return this.sysDeptService.updateDept(sysDept);
     }
 
@@ -99,23 +95,19 @@ public class SysDeptController extends ApiController {
      */
     @DeleteMapping("/deleteDept")
     @Transactional(rollbackFor = Exception.class)
-    public Result deleteDept(@RequestParam String[] idList){
+    public Result deleteDept(@RequestParam String[] idList) {
         System.out.println(Arrays.toString(idList));
         List<Integer> idList1 = new ArrayList<Integer>();
         Result result = new Result();
         result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
-            for (String str : idList){
-//                把选中的id传到集合里面
+            for (String str : idList) {
+                //把选中的id传到集合里面
                 idList1.add(Integer.valueOf(str));
-                if("1".equals(str)){
-                    result.setMeta(ResultTool.fail(ResultCode.ADMIN_NOT_ALLOWED_DELETE));
-                    return result;
-                }
                 //修改字典表
                 result = this.sysDeptService.deleteDept(idList1);
             }
-        }catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();

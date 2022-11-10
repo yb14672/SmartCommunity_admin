@@ -53,7 +53,7 @@ public enum ResultCode {
     REPEAT_DICT_DATA_LABEL(3012,"数据标签重复" ),
     REPEAT_DICT_DATA_VALUE(3013,"数据键值重复" ),
     DICT_HAVE_CHILDREN(3014, "该字典有子集，若要删除请使用批量删除"),
-    DEPT_HAVE_CHILDREN(3015, "该部门有子集，若要删除请使用批量删除"),
+    DEPT_HAVE_CHILDREN(3015, "该部门有子集，不允许删除"),
     REPEAT_DEPTNAME(3016, "该部门名已存在"),
     DEPT_HAVE_USER(3017, "该部门有用户，不允许删除"),
 
