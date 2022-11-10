@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +29,6 @@ public interface SysDictTypeService extends IService<SysDictType> {
      * @return
      */
     List<SysDictType> getDictLists();
-    //    分页查询
-    Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime);
 
     /**
      * 根据ID字典类型
@@ -64,15 +61,13 @@ public interface SysDictTypeService extends IService<SysDictType> {
      * @return
      */
     Result updateDict(SysDictType sysDictType);
-//    新增
-    Result insertOrUpdateBatch(SysDictType sysDictType);
 
-//    修改
-    Result updateDict(SysDictType sysDictType);
-
-//    删除
+    /**
+     * 删除
+     * @param idList
+     * @return
+     */
     Result deleteByIdList(List<Integer> idList);
-}
 
     /**
      * 查询所有字典类型

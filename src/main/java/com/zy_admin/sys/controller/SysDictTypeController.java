@@ -5,15 +5,11 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.zy_admin.common.Pageable;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
-import com.zy_admin.util.Result;
 import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultCode;
@@ -24,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -79,7 +74,11 @@ public class SysDictTypeController extends ApiController {
 
     }
 
-//    删除
+    /**
+     * 删除
+     * @param idList
+     * @return
+     */
     @DeleteMapping()
     @Transactional(rollbackFor = Exception.class)
     public Result delete(@RequestParam String[] idList){
@@ -88,7 +87,7 @@ public class SysDictTypeController extends ApiController {
         result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             for (String str : idList) {
-//                把删除选上的id添加到idlist1的集合里
+                //把删除选上的id添加到idlist1的集合里
                 idList1.add(Integer.valueOf(str));
             }
             //修改字典表
@@ -116,7 +115,6 @@ public class SysDictTypeController extends ApiController {
      */
     @PostMapping("/addSysDict")
     public Result insertDictType(@RequestBody SysDictType sysDictType){
-        System.out.println(sysDictType);
         sysDictType.setCreateTime(LocalDateTime.now().toString());
         return this.sysDictTypeService.insertOrUpdateBatch(sysDictType);
     }
@@ -132,44 +130,8 @@ public class SysDictTypeController extends ApiController {
      */
     @GetMapping("/selectDictByLimit")
     public Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime){
-        System.out.println(sysDictType);
         Result result = sysDictTypeService.selectDictByLimit(sysDictType, pageable,startTime,endTime);
-        System.out.println(result);
         return result;
-    }
-
-    /**
-     * 修改
-     * @return
-     */
-    @PutMapping("/updateDict")
-    public Result updateDict(@RequestBody SysDictType sysDictType){
-        return sysDictTypeService.updateDict(sysDictType);
-    }
-    /**
-     * 新增字典
-     * @param sysDictType
-     * @return
-     */
-    @PostMapping("/addSysDict")
-    public Result insertDictType(@RequestBody SysDictType sysDictType){
-        System.out.println(sysDictType);
-        //sysDictType.setCreateTime(LocalDateTime.now().toString());
-        return this.sysDictTypeService.insertOrUpdateBatch(sysDictType);
-    }
-
-
-    /**
-     * 分页查询
-     * @param sysDictType
-     * @param pageable
-     * @param startTime
-     * @param endTime
-     * @return
-     */
-    @GetMapping("/selectDictByLimit")
-    public Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime){
-        return sysDictTypeService.selectDictByLimit(sysDictType, pageable,startTime,endTime);
     }
 
     /**
