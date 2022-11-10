@@ -1,8 +1,7 @@
 package com.zy_admin.sys.entity;
 
-import java.util.Date;
-
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -13,6 +12,7 @@ import java.io.Serializable;
  * @since 2022-11-01 19:49:34
  */
 @SuppressWarnings("serial")
+@Data
 public class SysDept extends Model<SysDept> {
     //部门id
     private Long deptId;
@@ -37,11 +37,11 @@ public class SysDept extends Model<SysDept> {
     //创建者
     private String createBy;
     //创建时间
-    private Date createTime;
+    private String createTime;
     //更新者
     private String updateBy;
     //更新时间
-    private Date updateTime;
+    private String updateTime;
 
 
     public Long getDeptId() {
@@ -132,11 +132,11 @@ public class SysDept extends Model<SysDept> {
         this.createBy = createBy;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
@@ -148,11 +148,11 @@ public class SysDept extends Model<SysDept> {
         this.updateBy = updateBy;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 
