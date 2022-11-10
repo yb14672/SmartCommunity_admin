@@ -8,9 +8,9 @@
         <result property="dictType" column="dict_type" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="VARCHAR"/>
         <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
-        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="VARCHAR"/>
         <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
-        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="VARCHAR"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -97,7 +97,26 @@
     </select>
     <select id="hasChildDict" resultType="java.lang.Integer">
         SELECT count(*) FROM sys_dict_type dt right JOIN sys_dict_data dd on dt.dict_type = dd.dict_type
-        where dict_id = #{dictId}
+        where dict_id in
+        <foreach collection="idList" item="dict_id" separator="," open="(" close=")">
+            #{dict_id}
+        </foreach>
+    </select>
+
+<!--    勾选的导出-->
+    <select id="queryDictById" resultType="com.zy_admin.sys.entity.SysDictType">
+        select * from sys_dict_type
+        <if test="list!=null">
+            where dict_id in (
+            <foreach collection="list" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+    </select>
+<!--    所有的导出-->
+    <select id="getDictLists" resultType="com.zy_admin.sys.entity.SysDictType">
+        select * from sys_dict_type
     </select>
 
     <!--新增所有列-->

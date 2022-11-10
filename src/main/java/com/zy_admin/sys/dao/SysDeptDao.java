@@ -2,9 +2,6 @@ package com.zy_admin.sys.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.sys.entity.SysDept;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
  * 部门表(SysDept)表数据库访问层
@@ -15,9 +12,12 @@ import java.util.List;
 public interface SysDeptDao extends BaseMapper<SysDept> {
 
 //    查所有
-    List<SysDept> selectAllSysDept();
+//    List<DeptTree> getDeptTree();
 
 //    删除
-    int deleteByIdList(@Param("idList") List<Integer> idList);
+//    int deleteByIdList(@Param("idList") List<Integer> idList);
+
+//    判断下面有没有子集
+//    Integer hasChildDept(long DeptId);
 }
 

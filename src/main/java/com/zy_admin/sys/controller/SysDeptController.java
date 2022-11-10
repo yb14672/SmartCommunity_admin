@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.service.SysDeptService;
-import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -29,12 +28,37 @@ public class SysDeptController extends ApiController {
     @Resource
     private SysDeptService sysDeptService;
 
-//    查询所有
-    @GetMapping("/selectAllSysDept")
-    public Result selectAllSysDept(){
-        Result result = sysDeptService.selectAllSysDept();
-        return result;
-    }
+//    树结构
+//    @GetMapping("/getDeptTree")
+//    public Result getMenuTree(){
+//        return this.sysDeptService.getDeptTree();
+//    }
+
+//    删除部门
+//    @DeleteMapping()
+//    @Transactional(rollbackFor = Exception.class)
+//    public Result delete(@RequestParam String[] idList){
+//        List<Integer> idList1 = new ArrayList<Integer>();
+//        Result result = new Result();
+//        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+//        try {
+//            for (String str : idList){
+////                把选中的id传到集合里面
+//                idList1.add(Integer.valueOf(str));
+//                if("1".equals(str)){
+//                    result.setMeta(ResultTool.fail(ResultCode.ADMIN_NOT_ALLOWED_DELETE));
+//                    return result;
+//                }
+//                //修改字典表
+//                result = this.sysDeptService.deleteByIdList(idList1);
+//            }
+//        }catch (NumberFormatException e) {
+//            e.printStackTrace();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return result;
+//    }
 
     /**
      * 分页查询所有数据

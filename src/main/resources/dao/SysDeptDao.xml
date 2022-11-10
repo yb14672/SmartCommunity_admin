@@ -134,6 +134,10 @@
         LEFT JOIN sys_role_dept rd on d.dept_id = rd.dept_id
         LEFT JOIN sys_role r on rd.role_id = r.role_id
     </select>
+<!--    查询所有的树结构-->
+    <select id="getDeptTree" resultType="com.zy_admin.sys.entity.DeptTree">
+        select * from sys_dept where status = '0' order by parent_id,order_num
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="deptId" useGeneratedKeys="true">
@@ -228,6 +232,11 @@
         <foreach collection="idList" item="dept_id" separator="," open="(" close=")">
             #{dept_id}
         </foreach>
+    </delete>
+<!--    判断下面有没有子集-->
+    <delete id="hasChildDept">
+       SELECT count(*)  FROM sys_dept where dept_id = #{deptId}
+        or parent_id =  #{deptId}
     </delete>
 
 </mapper>

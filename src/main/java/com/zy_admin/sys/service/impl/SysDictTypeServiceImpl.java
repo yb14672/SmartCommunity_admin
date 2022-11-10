@@ -12,6 +12,8 @@ import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +24,32 @@ import java.util.List;
  */
 @Service("sysDictTypeService")
 public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictType> implements SysDictTypeService {
+
+    @Resource
+    private SysDictTypeDao sysDictTypeDao;
+
+    /**
+     * 导出选中的部分
+     * @param dictIds
+     * @return
+     */
+    @Override
+    public List<SysDictType> queryDictById(ArrayList<Integer> dictIds) {
+//        如果有选中列表，就执行导出多个
+        if (dictIds!=null){
+            dictIds = dictIds.size()==0 ? null : dictIds;
+        }
+        return sysDictTypeDao.queryDictById(dictIds);
+    }
+
+    /**
+     * 默认导出全部
+     * @return
+     */
+    @Override
+    public List<SysDictType> getDictLists() {
+        return sysDictTypeDao.getDictLists();
+    }
 
     /**
      * 分页加查询
@@ -121,10 +149,12 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
     @Override
     public Result deleteByIdList(List<Integer> idList) {
         Result result = new Result();
-//        判断是不是单个
+        System.out.println("删除数量"+idList.size());
+//        判断是单个
         if (idList.size()==1){
 //            查当前的有没有子集 hasChildDict返回的是子集的数量
-            Integer hasChildDict = this.baseMapper.hasChildDict(idList.get(0));
+            Integer hasChildDict = this.baseMapper.hasChildDict(idList);
+            System.out.println("单个删除子集数量"+hasChildDict);
 //            小于1说明没有子集，就可以删
             if (hasChildDict<1){
                 int i = this.baseMapper.deleteByIdList(idList);
@@ -136,11 +166,18 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
             }
 //            多个就是批量删除
         }else {
-            int i = this.baseMapper.deleteByIdList(idList);
-            if (i >= 1) {
-                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-            } else {
-                result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
+            // 是多个就判断下面有没有子集
+            Integer childs = this.baseMapper.hasChildDict(idList);
+            if (childs<1){
+                int i = this.baseMapper.deleteByIdList(idList);
+                System.out.println("多个删除子集数量"+i);
+                if (i >= 1) {
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                } else {
+                    result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
+                }
+            }else {
+                result.setMeta(ResultTool.fail(ResultCode.DICT_HAVE_CHILDREN));
             }
         }
         return result;

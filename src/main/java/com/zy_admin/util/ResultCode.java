@@ -51,6 +51,7 @@ public enum ResultCode {
     ADMIN_NOT_ALLOWED_DELETE(3010,"不允许删除管理员"),
     PARENT_CLASS_CANNOT_BE_ITSELF(3011,"修改时父类不能是自己"),
     DICT_HAVE_CHILDREN(3012, "该字典有子集，若要删除请使用批量删除"),
+    DEPT_HAVE_CHILDREN(3013, "该部门有子集，若要删除请使用批量删除"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

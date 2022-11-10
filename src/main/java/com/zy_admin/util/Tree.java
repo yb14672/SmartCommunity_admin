@@ -1,5 +1,6 @@
 package com.zy_admin.util;
 
+
 import com.zy_admin.sys.entity.MenuTree;
 
 import java.util.ArrayList;
@@ -35,12 +36,12 @@ public class Tree {
                 }
             }
         } else {
-            for (int i = menuList.size() - 1; i >= 0; i--) {
+            for (int i = 0; i <=menuList.size() - 1 ; i++) {
                 if (menuList.get(i).getParentId().equals("0")) {
                     rootNode.add(menuList.get(i));
                 } else {
                     boolean f = true;
-                    for (int j = menuList.size() - 1; j >= 0; j--) {
+                    for (int j = 0; j <= menuList.size()-1; j++) {
                         if (menuList.get(i).getParentId().equals(menuList.get(j).getMenuId())) {
                             f = false;
                         }
@@ -51,6 +52,7 @@ public class Tree {
                 }
             }
         }
+
         return rootNode;
     }
 
@@ -62,14 +64,9 @@ public class Tree {
      */
     private MenuTree buildChildren(MenuTree rootNode) {
         List<MenuTree> childrenTree = new ArrayList<>();
-//        for (MenuTree menu : menuList) {
-//            if (menu.getParentId().equals(rootNode.getMenuId())){
-//                childrenTree.add(buildChildren(menu));
-//            }
-//        }
-        for (int i = menuList.size() - 1; i >= 0; i--) {
-            if (menuList.get(i).getParentId().equals(rootNode.getMenuId())) {
-                childrenTree.add(buildChildren(menuList.get(i)));
+        for (MenuTree menu : menuList) {
+            if (menu.getParentId().equals(rootNode.getMenuId())){
+                childrenTree.add(buildChildren(menu));
             }
         }
         rootNode.setChildren(childrenTree);

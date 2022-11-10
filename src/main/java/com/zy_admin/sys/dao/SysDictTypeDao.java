@@ -6,6 +6,7 @@ import com.zy_admin.sys.entity.SysDictType;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,6 +53,19 @@ public interface SysDictTypeDao extends BaseMapper<SysDictType> {
     SysDictType selectSysDictByType(String SysDictType);
 
 //    判断下面有没有子集
-    Integer hasChildDict(long DictId);
+    Integer hasChildDict(@Param("idList") List<Integer> DictIds);
+
+    /**
+     * 勾选用户获取excel
+     * @param dictIds
+     * @return
+     */
+    List<SysDictType> queryDictById(@Param("list") ArrayList<Integer> dictIds);
+
+    /**
+     * 所有用户获取excel
+     * @return
+     */
+    List<SysDictType> getDictLists();
 }
 
