@@ -24,7 +24,7 @@ public interface SysRoleDao extends BaseMapper<SysRole> {
      * @param endTime
      * @return
      */
-    Long count(@Param("sysRole") SysRole sysRole,@Param("startTime")String startTime,@Param("endTime")String endTime);
+    Long count(@Param("sysRole") SysRole sysRole, @Param("startTime") String startTime, @Param("endTime") String endTime);
 
     /**
      * 修改用户
@@ -41,7 +41,7 @@ public interface SysRoleDao extends BaseMapper<SysRole> {
      * @param endTime
      * @return
      */
-    List<SysRole> selectRoleByLimit(@Param("sysRole") SysRole sysRole, @Param("pageable") Pageable pageable, @Param("startTime")String startTime, @Param("endTime")String endTime);
+    List<SysRole> selectRoleByLimit(@Param("sysRole") SysRole sysRole, @Param("pageable") Pageable pageable, @Param("startTime") String startTime, @Param("endTime") String endTime);
     /**
      * 勾选用户获取excel
      * @param roleIds

@@ -1,16 +1,23 @@
 package com.zy_admin.sys.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.baomidou.mybatisplus.extension.api.R;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysDept;
+import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDeptService;
+import com.zy_admin.sys.service.SysUserService;
+import com.zy_admin.util.JwtUtils;
+import com.zy_admin.util.Result;
+import com.zy_admin.util.ResultCode;
+import com.zy_admin.util.ResultTool;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.Serializable;
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,60 +34,19 @@ public class SysDeptController extends ApiController {
      */
     @Resource
     private SysDeptService sysDeptService;
+    @Resource
+    private SysUserService sysUserService;
 
-//    树结构
-//    @GetMapping("/getDeptTree")
-//    public Result getMenuTree(){
-//        return this.sysDeptService.getDeptTree();
-//    }
-
-//    删除部门
-//    @DeleteMapping()
-//    @Transactional(rollbackFor = Exception.class)
-//    public Result delete(@RequestParam String[] idList){
-//        List<Integer> idList1 = new ArrayList<Integer>();
-//        Result result = new Result();
-//        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
-//        try {
-//            for (String str : idList){
-////                把选中的id传到集合里面
-//                idList1.add(Integer.valueOf(str));
-//                if("1".equals(str)){
-//                    result.setMeta(ResultTool.fail(ResultCode.ADMIN_NOT_ALLOWED_DELETE));
-//                    return result;
-//                }
-//                //修改字典表
-//                result = this.sysDeptService.deleteByIdList(idList1);
-//            }
-//        }catch (NumberFormatException e) {
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return result;
-//    }
 
     /**
-     * 分页查询所有数据
+     * 通过条件搜索数据
      *
-     * @param page    分页对象
-     * @param sysDept 查询实体
-     * @return 所有数据
+     * @param sysDept
+     * @return
      */
-    @GetMapping
-    public R selectAll(Page<SysDept> page, SysDept sysDept) {
-        return success(this.sysDeptService.page(page, new QueryWrapper<>(sysDept)));
-    }
-
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.sysDeptService.getById(id));
+    @GetMapping("/getDeptList")
+    public Result getDeptList(SysDept sysDept) {
+        return sysDeptService.getDeptList(sysDept);
     }
 
     /**
@@ -89,9 +55,23 @@ public class SysDeptController extends ApiController {
      * @param sysDept 实体对象
      * @return 新增结果
      */
-    @PostMapping
-    public R insert(@RequestBody SysDept sysDept) {
-        return success(this.sysDeptService.save(sysDept));
+    @PostMapping("/insertDept")
+    public Result insertDept(@RequestBody SysDept sysDept, HttpServletRequest request) {
+        //从token获值
+        System.out.println(sysDept);
+        String userId = JwtUtils.getMemberIdByJwtToken(request);
+        Result result = this.sysUserService.queryById(userId);
+        try {
+            SysUser user = (SysUser) result.getData();
+            sysDept.setDelFlag("0");
+            sysDept.setStatus("0");
+            sysDept.setCreateTime(LocalDateTime.now().toString());
+            sysDept.setCreateBy(user.getUserName());
+            result = this.sysDeptService.insertDept(sysDept);
+        } catch (Exception e) {
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        }
+            return result;
     }
 
     /**
@@ -100,9 +80,9 @@ public class SysDeptController extends ApiController {
      * @param sysDept 实体对象
      * @return 修改结果
      */
-    @PutMapping
-    public R update(@RequestBody SysDept sysDept) {
-        return success(this.sysDeptService.updateById(sysDept));
+    @PutMapping("/updateDept")
+    public Result updateDept(@RequestBody SysDept sysDept){
+        return this.sysDeptService.updateDept(sysDept);
     }
 
     /**
@@ -111,9 +91,36 @@ public class SysDeptController extends ApiController {
      * @param idList 主键结合
      * @return 删除结果
      */
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.sysDeptService.removeByIds(idList));
+    /**
+     * 删除数据
+     *
+     * @param idList 主键结合
+     * @return 删除结果
+     */
+    @DeleteMapping("/deleteDept")
+    @Transactional(rollbackFor = Exception.class)
+    public Result deleteDept(@RequestParam String[] idList){
+        System.out.println(Arrays.toString(idList));
+        List<Integer> idList1 = new ArrayList<Integer>();
+        Result result = new Result();
+        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        try {
+            for (String str : idList){
+//                把选中的id传到集合里面
+                idList1.add(Integer.valueOf(str));
+                if("1".equals(str)){
+                    result.setMeta(ResultTool.fail(ResultCode.ADMIN_NOT_ALLOWED_DELETE));
+                    return result;
+                }
+                //修改字典表
+                result = this.sysDeptService.deleteDept(idList1);
+            }
+        }catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }
 
