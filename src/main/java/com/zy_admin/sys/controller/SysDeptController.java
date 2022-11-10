@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.service.SysDeptService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,6 +28,13 @@ public class SysDeptController extends ApiController {
      */
     @Resource
     private SysDeptService sysDeptService;
+
+//    查询所有
+    @GetMapping("/selectAllSysDept")
+    public Result selectAllSysDept(){
+        Result result = sysDeptService.selectAllSysDept();
+        return result;
+    }
 
     /**
      * 分页查询所有数据

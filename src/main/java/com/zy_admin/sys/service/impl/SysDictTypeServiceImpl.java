@@ -110,10 +110,10 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
                     return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
                 }
             }else {
-                return new Result(null, ResultTool.fail(ResultCode.REPEAT_DICT_NAME));
+                return new Result(null, ResultTool.fail(ResultCode.REPEAT_DICT_TYPE));
             }
         }else {
-            return new Result(null, ResultTool.fail(ResultCode.REPEAT_DICT_TYPE));
+            return new Result(null, ResultTool.fail(ResultCode.REPEAT_DICT_NAME));
         }
     }
 
@@ -143,9 +143,6 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
                 result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
             }
         }
-
-
-
         return result;
     }
 
