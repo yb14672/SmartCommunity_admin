@@ -78,8 +78,8 @@ public interface SysPostDao extends BaseMapper<SysPost> {
      * 查询用户岗位表中的岗位ID
      * @return
      */
-    @Select("select post_id from sys_user_post")
-    List<Integer> getPostIdFromUserPost();
+
+    List<Integer> getPostIdFromUserPost(@Param("ids") List<Integer> ids);
 
 
     /**

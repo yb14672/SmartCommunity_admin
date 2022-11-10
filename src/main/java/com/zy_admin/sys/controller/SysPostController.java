@@ -16,6 +16,7 @@ import com.zy_admin.sys.service.SysPostService;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.JwtUtils;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +46,8 @@ public class SysPostController extends ApiController {
     private SysPostService sysPostService;
     @Resource
     private SysUserService sysUserService;
+    @Resource
+    private RequestUtil requestUtil;
 
     /**
      * 分页查询所有数据
@@ -121,7 +124,7 @@ public class SysPostController extends ApiController {
     public Result addPost(HttpServletRequest request, @RequestBody SysPost sysPost)
     {
         String id = JwtUtils.getMemberIdByJwtToken(request);
-        SysUser user = this.sysUserService.getUserById(id);
+        SysUser user = this.requestUtil.getUser(request);
         sysPost.setCreateTime(LocalDateTime.now().toString());
         sysPost.setCreateBy(user.getUserName());
         Result result = this.sysPostService.addPost(sysPost);
@@ -132,7 +135,7 @@ public class SysPostController extends ApiController {
     @PostMapping("/updatePost")
     public Result updatePost(HttpServletRequest request, @RequestBody SysPost sysPost){
         String id = JwtUtils.getMemberIdByJwtToken(request);
-        SysUser user = this.sysUserService.getUserById(id);
+        SysUser user = this.requestUtil.getUser(request);
         sysPost.setUpdateBy(user.getUserName());
         sysPost.setUpdateTime(LocalDateTime.now().toString());
         return this.sysPostService.update(sysPost);

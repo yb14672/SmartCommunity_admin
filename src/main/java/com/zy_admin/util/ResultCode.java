@@ -54,6 +54,7 @@ public enum ResultCode {
     REPEAT_DICT_TYPE(3013,"字典类型重复" ),
     REPEAT_DICT_DATA_LABEL(3014,"数据标签重复" ),
     REPEAT_DICT_DATA_VALUE(3015,"数据键值重复" ),
+    DEPT_ASSIGNED(3016,"部门已被分配，不允许删除" ),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

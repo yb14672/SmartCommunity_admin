@@ -205,6 +205,14 @@
         select * from sys_post
     </select>
 
+    <select id="getPostIdFromUserPost" resultType="integer">
+        select post_id from sys_user_post WHERE post_id in
+        <foreach collection="ids" item="post_id" separator="," open="(" close=")">
+            #{post_id}
+        </foreach>
+        order by post_id asc
+    </select>
+
 
 </mapper>
 

@@ -163,22 +163,14 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
     @Override
     public Result deletePost(List<Integer> ids) {
         Result result = new Result();
-        List<Integer> postIds = sysPostDao.getPostIdFromUserPost();
-        for (int i = 0; i <ids.size() ; i++) {
-            for (int j = 0; j <postIds.size() ; j++) {
-                if (ids.get(i).equals(postIds.get(j)))
-                {
-                    result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
-                }else {
-                    int deletePost = this.baseMapper.deletePost(ids);
-                    if(deletePost>=1){
-                        result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
-                    }
-                }
-            }
+        List<Integer> postIds = sysPostDao.getPostIdFromUserPost(ids);
+        if (postIds.size()>0) {
+            result.setMeta(ResultTool.fail(ResultCode.DEPT_ASSIGNED));
+        }else {
+            this.baseMapper.deletePost(ids);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
-
     }
 
 

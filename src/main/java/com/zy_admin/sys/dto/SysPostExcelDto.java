@@ -1,6 +1,7 @@
 package com.zy_admin.sys.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SysPostExcelDto {
+public class SysPostExcelDto  extends Model<SysPostExcelDto> {
 
     //岗位ID
     @ExcelProperty("岗位ID")
@@ -43,7 +44,5 @@ public class SysPostExcelDto {
     //备注
     @ExcelProperty("备注")
     private String remark;
-
-
 
 }
