@@ -29,49 +29,29 @@ public interface SysDictTypeService extends IService<SysDictType> {
      * @return
      */
     List<SysDictType> getDictLists();
+    //    分页查询
+    Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime);
 
     /**
-     * 根据ID字典类型
+     * 查詢所有字典
+     * @return
+     */
+    Result selectDictAll();
+
+//    新增
+    Result insertOrUpdateBatch(SysDictType sysDictType);
+
+//    修改
+    Result updateDict(SysDictType sysDictType);
+
+//    删除
+    Result deleteByIdList(List<Integer> idList);
+
+    /**
+     * 根據id查詢字典類型
      * @param id
      * @return
      */
     Result getDictTypeById(String id);
-
-    /**
-     * 分页查询所有数据
-     *
-     * @param pageable    分页对象
-     * @param sysDictType 查询实体
-     * @param startTime   开始时间
-     * @param endTime     结束时间
-     * @return 所有数据
-     */
-    Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime);
-
-    /**
-     * 新增字典类型
-     * @param sysDictType
-     * @return
-     */
-    Result insertOrUpdateBatch(SysDictType sysDictType);
-
-    /**
-     * 修改字典类型
-     * @param sysDictType
-     * @return
-     */
-    Result updateDict(SysDictType sysDictType);
-
-    /**
-     * 删除
-     * @param idList
-     * @return
-     */
-    Result deleteByIdList(List<Integer> idList);
-
-    /**
-     * 查询所有字典类型
-     * @return
-     */
-    Result selectDictAll();
 }
+

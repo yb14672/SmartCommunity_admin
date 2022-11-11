@@ -3,7 +3,7 @@ package com.zy_admin.sys.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dao.SysDictTypeDao;
-import com.zy_admin.sys.dto.SysDictDto;
+import com.zy_admin.sys.dto.SysDicDto;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
 import com.zy_admin.util.Result;
@@ -12,6 +12,7 @@ import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +25,38 @@ import java.util.List;
 @Service("sysDictTypeService")
 public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictType> implements SysDictTypeService {
 
+    @Resource
+    private SysDictTypeDao sysDictTypeDao;
+
+    /**
+     * 导出选中的部分
+     * @param dictIds
+     * @return
+     */
     @Override
-    public Result getDictTypeById(String id) {
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
-        SysDictType sysDictType = this.baseMapper.queryById(id);
-        if (sysDictType != null || sysDictType.getDictId() != null) {
-            result.setData(sysDictType);
+    public List<SysDictType> queryDictById(ArrayList<Integer> dictIds) {
+//        如果有选中列表，就执行导出多个
+        if (dictIds!=null){
+            dictIds = dictIds.size()==0 ? null : dictIds;
+        }
+        return sysDictTypeDao.queryDictById(dictIds);
+    }
+
+    /**
+     * 默认导出全部
+     * @return
+     */
+    @Override
+    public List<SysDictType> getDictLists() {
+        return sysDictTypeDao.getDictLists();
+    }
+
+    @Override
+    public Result selectDictAll() {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<SysDictType> sysDictTypeList = this.baseMapper.selectDictAll();
+        if(!sysDictTypeList.isEmpty()||sysDictTypeList.size() > 0) {
+            result.setData(sysDictTypeList);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
@@ -38,7 +64,6 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
 
     /**
      * 分页加查询
-     *
      * @param sysDictType
      * @param pageable
      * @param startTime
@@ -66,18 +91,17 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         }
         pageable.setTotal(total);
         List<SysDictType> sysDictTypeList = this.baseMapper.selectDictByLimit(sysDictType, pageable, startTime, endTime);
-        //封装一个dto，把对象和分页放进去
-        SysDictDto sysDicDto = new SysDictDto(sysDictTypeList, startTime, endTime, pageable);
-        //存到data数据里面
+//        封装一个dto，把对象和分页放进去
+        SysDicDto sysDicDto = new SysDicDto(sysDictTypeList, startTime, endTime, pageable);
+//        存到data数据里面
         result.setData(sysDicDto);
-        //返回信号
+//        返回信号
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
 
     /**
      * 新增
-     *
      * @return
      */
     @Override
@@ -85,21 +109,21 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
     public Result insertOrUpdateBatch(SysDictType sysDictType) {
         Result result = new Result();
         result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
-        //判断字典名称唯一
-        if (selectSysDictByName(0, sysDictType)) {
-        //判断字典类型唯一
-            if (selectSysDictByType(0, sysDictType)) {
+//        判断字典名称唯一
+        if (selectSysDictByName(0,sysDictType)){
+//            判断字典类型唯一
+            if (selectSysDictByType(0,sysDictType)){
                 try {
-                    //新增字典
+//                    新增字典
                     int sysDictType1 = this.baseMapper.insert(sysDictType);
                     result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
-                } catch (Exception e) {
+                }catch (Exception e){
                     return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
                 }
-            } else {
+            }else {
                 result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_TYPE));
             }
-        } else {
+        }else {
             result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_NAME));
         }
         return result;
@@ -107,130 +131,46 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
 
     /**
      * 修改字典
-     *
      * @param sysDictType
      * @return
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result updateDict(SysDictType sysDictType) {
+        SysDictType sysDictType1 = this.baseMapper.queryById(sysDictType.getDictId()+"");
         Result result = new Result();
-        //type为1是修改
-        if (selectSysDictByName(1, sysDictType)) {
-            if (selectSysDictByType(1, sysDictType)) {
+//        type为1是修改
+        if (selectSysDictByName(1,sysDictType)){
+            if (selectSysDictByType(1,sysDictType)){
                 try {
                     int update = this.baseMapper.update(sysDictType);
+                    this.baseMapper.updateDictDataByDictType(sysDictType1.getDictType(),sysDictType.getDictType());
                     return new Result(null, ResultTool.fail(ResultCode.SUCCESS));
-                } catch (Exception e) {
+                }catch (Exception e){
                     e.printStackTrace();
                     return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
                 }
-            } else {
-                result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_NAME));
+            }else {
+                return new Result(null, ResultTool.fail(ResultCode.REPEAT_DICT_TYPE));
             }
-        } else {
-            result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_TYPE));
+        }else {
+            return new Result(null, ResultTool.fail(ResultCode.REPEAT_DICT_NAME));
         }
-        return result;
     }
 
     @Override
-    public Result selectDictAll() {
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        List<SysDictType> sysDictTypeList = this.baseMapper.selectDictAll();
-        if(!sysDictTypeList.isEmpty()||sysDictTypeList.size() > 0) {
-            result.setData(sysDictTypeList);
+    public Result getDictTypeById(String id) {
+        Result result = new Result();
+        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        SysDictType sysDictType = this.baseMapper.queryById(id);
+        if (sysDictType != null || sysDictType.getDictId() != null) {
+            result.setData(sysDictType);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
     }
 
-    /**
-     * 判断name是否重复
-     *
-     * @param type
-     * @param sysDictType
-     * @return
-     */
-    public boolean selectSysDictByName(int type, SysDictType sysDictType) {
-        SysDictType sysDictType1 = this.baseMapper.selectSysDictByName(sysDictType.getDictName());
-        //类型为0是新增
-        if (type == 0) {
-            //判断是否为空
-            if (sysDictType1 == null || sysDictType1.getDictId() == null) {
-                return true;
-            }
-        } else {
-            //修改
-            if (sysDictType1 == null || sysDictType1.getDictId() == null) {
-                return true;
-            //判断他的名字是否唯一
-            } else if (!sysDictType1.getDictId().equals(sysDictType.getDictId())) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 判断type是否重复
-     *
-     * @param type
-     * @param sysDictType
-     * @return
-     */
-    public boolean selectSysDictByType(int type, SysDictType sysDictType) {
-        SysDictType sysDictType1 = this.baseMapper.selectSysDictByType(sysDictType.getDictType());
-        //类型为0是新增
-        if (type == 0) {
-            //判断是否为空
-            if (sysDictType1 == null || sysDictType1.getDictId() == null) {
-                return true;
-            }
-        } else {
-            //修改
-            if (sysDictType1 == null || sysDictType1.getDictId() == null) {
-                return true;
-            //判断他的类型是否唯一
-            } else if (!sysDictType1.getDictId().equals(sysDictType.getDictId())) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 导出选中的部分
-     * @param dictIds
-     * @return
-     */
-    @Override
-    public List<SysDictType> queryDictById(ArrayList<Integer> dictIds) {
-//        如果有选中列表，就执行导出多个
-        if (dictIds!=null){
-            dictIds = dictIds.size()==0 ? null : dictIds;
-        }
-        return baseMapper.queryDictById(dictIds);
-    }
-
-    /**
-     * 默认导出全部
-     * @return
-     */
-    @Override
-    public List<SysDictType> getDictLists() {
-        return baseMapper.getDictLists();
-    }
-
-    /**
-     * 批量删除
-     * @param idList
-     * @return
-     */
+//    批量删除
     @Override
     public Result deleteByIdList(List<Integer> idList) {
         Result result = new Result();
@@ -268,5 +208,50 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         return result;
     }
 
+    //    判断name是否重复
+    public boolean selectSysDictByName(int type,SysDictType sysDictType){
+        SysDictType sysDictType1 = this.baseMapper.selectSysDictByName(sysDictType.getDictName());
+//        类型为0是新增
+        if (type==0){
+//            判断是否为空
+            if (sysDictType1 == null || sysDictType1.getDictId() == null){
+                return true;
+            }
+        }else {
+//            修改
+            if (sysDictType1 == null || sysDictType1.getDictId() == null){
+                return true;
+//                判断他的名字是否唯一
+            }else if (!sysDictType1.getDictId().equals(sysDictType.getDictId())){
+                return false;
+            }else {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //    判断type是否重复
+    public boolean selectSysDictByType(int type,SysDictType sysDictType){
+        SysDictType sysDictType1 = this.baseMapper.selectSysDictByType(sysDictType.getDictType());
+//        类型为0是新增
+        if (type==0){
+//            判断是否为空
+            if (sysDictType1 == null || sysDictType1.getDictId() == null){
+                return true;
+            }
+        }else {
+//            修改
+            if (sysDictType1 == null || sysDictType1.getDictId() == null){
+                return true;
+//                判断他的类型是否唯一
+            }else if (!sysDictType1.getDictId().equals(sysDictType.getDictId())){
+                return false;
+            }else {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
