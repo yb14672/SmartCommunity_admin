@@ -44,8 +44,8 @@ public interface SysDictTypeDao extends BaseMapper<SysDictType> {
 //    根据对象获取id
     SysDictType queryById(long id);
 
-//    修改状态
-    void updateDictDataByDictType(@Param("dictType") String dictType,@Param("newDictType") String newDictType);
+//    修改类型
+    void updateDictDataByDictType(@Param("dictType") String dictType,@Param("sysDictType") SysDictType sysDictType);
 
 //    删除多个
     int deleteByIdList(@Param("idList") List<Integer> idList);

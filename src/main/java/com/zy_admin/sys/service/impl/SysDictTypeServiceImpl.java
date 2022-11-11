@@ -126,6 +126,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result updateDict(SysDictType sysDictType) {
+//        根据id获取到的对象
         SysDictType sysDictType1 = this.baseMapper.queryById(sysDictType.getDictId());
         Result result = new Result();
 //        type为1是修改
