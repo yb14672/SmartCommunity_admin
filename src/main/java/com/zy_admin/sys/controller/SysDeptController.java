@@ -56,7 +56,6 @@ public class SysDeptController extends ApiController {
         Result result = new Result();
         //从token获值
         System.out.println(sysDept);
-        String userId = JwtUtils.getMemberIdByJwtToken(request);
         try {
             SysUser user = requestUtil.getUser(request);
             sysDept.setDelFlag("0");
@@ -77,7 +76,10 @@ public class SysDeptController extends ApiController {
      * @return 修改结果
      */
     @PutMapping("/updateDept")
-    public Result updateDept(@RequestBody SysDept sysDept) {
+    public Result updateDept(@RequestBody SysDept sysDept, HttpServletRequest request) {
+        SysUser user = requestUtil.getUser(request);
+        sysDept.setUpdateBy(user.getUserName());
+        sysDept.setUpdateTime(LocalDateTime.now().toString());
         return this.sysDeptService.updateDept(sysDept);
     }
 

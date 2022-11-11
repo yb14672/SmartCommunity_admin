@@ -221,8 +221,12 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
      * @return
      */
     private String ancestors(SysDept sysdept) {
-        SysDept parentDept = this.sysDeptDao.getDeptById(sysdept.getParentId());
-        return parentDept.getAncestors() + "," + parentDept.getDeptId();
+        Long parentId = sysdept.getParentId();
+        if (parentId != 0) {
+            SysDept parentDept = this.sysDeptDao.getDeptById(parentId);
+            return parentDept.getAncestors() + "," + parentDept.getDeptId();
+        }
+        return "0";
     }
 }
 

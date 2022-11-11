@@ -70,6 +70,6 @@ public interface SysDictDataDao extends BaseMapper<SysDictData> {
      * @param idList
      * @return
      */
-    List<DataDictExcelDto> getDictListById(ArrayList<Integer> idList);
+    List<DataDictExcelDto> getDictListById(@Param("idList") ArrayList<Integer> idList);
 }
 

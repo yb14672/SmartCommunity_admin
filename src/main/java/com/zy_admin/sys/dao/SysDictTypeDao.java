@@ -33,65 +33,34 @@ public interface SysDictTypeDao extends BaseMapper<SysDictType> {
      * @param endTime
      * @return
      */
-    Long count(@Param("sysDict")SysDictType sysDictType,@Param("startTime")String startTime,@Param("endTime")String endTime);
+    Long count(@Param("sysDict") SysDictType sysDictType, @Param("startTime") String startTime, @Param("endTime") String endTime);
 
-    /**
-     * 判断下面有没有子集
-     * @param DictIds
-     * @return
-     */
-    Integer hasChildDict(@Param("idList") List<Integer> DictIds);
-    /**
-     * 根据ID查询字典类型
-     * @param id
-     * @return
-     */
-    SysDictType queryById(String id);
-
-    /**
-     * 新增
-     * @param sysDictType
-     * @return
-     */
-    @Override
+//    新增
     int insert(SysDictType sysDictType);
 
-    /**
-     * 修改
-     * @param sysDictType
-     * @return
-     */
+//    修改
     int update(SysDictType sysDictType);
 
-    /**
-     * 删除多个
-     * @param idList
-     * @return
-     */
+//    根据对象获取id
+    SysDictType queryById(String id);
+
+//    修改状态
+    void updateDictDataByDictType(@Param("dictType") String dictType, @Param("newDictType") String newDictType);
+
+//    删除多个
     int deleteByIdList(@Param("idList") List<Integer> idList);
 
-    /**
-     * 查询name是否重复
-     * @param SysDictName
-     * @return
-     */
+//    查询name是否重复
     @Select("select * from sys_dict_type where dict_name = #{dictName}")
     SysDictType selectSysDictByName(String SysDictName);
 
-    /**
-     * 查询type是否重复
-     * @param SysDictType
-     * @return
-     */
+//    查询type是否重复
     @Select("select * from sys_dict_type where dict_type = #{dictType}")
     SysDictType selectSysDictByType(String SysDictType);
 
-    /**
-     * 查询所有字典类型
-     * @return
-     */
-    @Select("select * from sys_dict_type")
-    List<SysDictType> selectDictAll();
+//    判断下面有没有子集
+    Integer hasChildDict(@Param("idList") List<Integer> DictIds);
+
     /**
      * 勾选用户获取excel
      * @param dictIds
@@ -104,5 +73,8 @@ public interface SysDictTypeDao extends BaseMapper<SysDictType> {
      * @return
      */
     List<SysDictType> getDictLists();
+
+    @Select("select * from sys_dict_type")
+    List<SysDictType> selectDictAll();
 }
 

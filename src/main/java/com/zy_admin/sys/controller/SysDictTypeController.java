@@ -74,11 +74,7 @@ public class SysDictTypeController extends ApiController {
 
     }
 
-    /**
-     * 删除
-     * @param idList
-     * @return
-     */
+//    删除
     @DeleteMapping()
     @Transactional(rollbackFor = Exception.class)
     public Result delete(@RequestParam String[] idList){
@@ -87,7 +83,7 @@ public class SysDictTypeController extends ApiController {
         result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             for (String str : idList) {
-                //把删除选上的id添加到idlist1的集合里
+//                把删除选上的id添加到idlist1的集合里
                 idList1.add(Integer.valueOf(str));
             }
             //修改字典表
@@ -115,6 +111,7 @@ public class SysDictTypeController extends ApiController {
      */
     @PostMapping("/addSysDict")
     public Result insertDictType(@RequestBody SysDictType sysDictType){
+        System.out.println(sysDictType);
         sysDictType.setCreateTime(LocalDateTime.now().toString());
         return this.sysDictTypeService.insertOrUpdateBatch(sysDictType);
     }
@@ -130,12 +127,15 @@ public class SysDictTypeController extends ApiController {
      */
     @GetMapping("/selectDictByLimit")
     public Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime){
+        System.out.println(sysDictType);
+        System.out.println(pageable);
         Result result = sysDictTypeService.selectDictByLimit(sysDictType, pageable,startTime,endTime);
+        System.out.println(result);
         return result;
     }
 
     /**
-     * 查询所有数据
+     * 分页查询所有数据
      *
      * @return 所有数据
      */

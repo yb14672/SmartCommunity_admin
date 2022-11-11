@@ -8,9 +8,9 @@
         <result property="dictType" column="dict_type" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="VARCHAR"/>
         <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
-        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="VARCHAR"/>
         <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
-        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="VARCHAR"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -28,7 +28,7 @@
         dict_id, dict_name, dict_type, status, create_by, create_time, update_by, update_time, remark
         from sys_dict_type
         <where>
-            <if test="sysDict.dictId != null">
+            <if test="sysDict.dictId != null and sysDict.dictId!=''">
                 and dict_id = #{sysDict.dictId}
             </if>
             <if test="sysDict.dictName != null and sysDict.dictName != ''">
@@ -63,17 +63,17 @@
 
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
-        select count(1)
+        select count(*)
         from sys_dict_type
         <where>
             <if test="sysDict.dictId != null">
                 and dict_id = #{sysDict.dictId}
             </if>
             <if test="sysDict.dictName != null and sysDict.dictName != ''">
-                and dict_name = #{sysDict.dictName}
+                and dict_name like concat('%',#{sysDict.dictName},'%')
             </if>
             <if test="sysDict.dictType != null and sysDict.dictType != ''">
-                and dict_type = #{sysDict.dictType}
+                and dict_type like concat('%',#{sysDict.dictType},'%')
             </if>
             <if test="sysDict.status != null and sysDict.status != ''">
                 and status = #{sysDict.status}
@@ -153,6 +153,11 @@
     </insert>
 
     <!--通过主键修改数据-->
+    <update id="updateDictDataByDictType">
+        update sys_dict_data  set  dict_type=#{newDictType}
+        where dict_type in (select dict_type from(select dict_type from sys_dict_data where dict_type=#{dictType}) a)
+    </update>
+
     <update id="update">
         update sys_dict_type
         <set>
