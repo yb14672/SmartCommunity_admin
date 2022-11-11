@@ -134,24 +134,26 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
                 //因为字典标题名为必填字段，所以判断是否为空
                 if (sysDictData.getDictLabel() == null || "".equals(sysDictData.getDictLabel())) {
                     result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
-                    return result;
                 } else {
-                    //判断字典标题名是否唯一
-                    if (checkUnique(1, sysDictData, this.baseMapper.checkDictValueUnique(sysDictData))) {
-                        //当路由不为空时判断其路由是否重复
-                        if (!"".equals(sysDictData.getDictValue()) || !"".equals(sysDictData.getDictValue())) {
-                            //不唯一即false，因此不唯一时提示并返回
-                            if (!checkUnique(1, sysDictData, this.baseMapper.checkDictValueUnique(sysDictData))) {
-                                result.setMeta(ResultTool.fail(ResultCode.REPEAT_MENUPATH));
-                                return result;
+                    //判断是否没有修改就提交
+                    SysDictData dictDataById = this.baseMapper.getDictDataById(sysDictData.getDictCode() + "");
+                    if(!checkEquals(sysDictData,dictDataById)){
+                        //判断字典标题名是否唯一
+                        if (checkUnique(1, sysDictData, this.baseMapper.checkDictValueUnique(sysDictData))) {
+                            //当路由不为空时判断其路由是否重复
+                            if (!"".equals(sysDictData.getDictValue()) || !"".equals(sysDictData.getDictValue())) {
+                                //不唯一即false，因此不唯一时提示并返回
+                                if (!checkUnique(1, sysDictData, this.baseMapper.checkDictValueUnique(sysDictData))) {
+                                    result.setMeta(ResultTool.fail(ResultCode.REPEAT_MENUPATH));
+                                }
+                            } else {
+                                result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_DATA_VALUE));
                             }
                         } else {
-                            result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_DATA_VALUE));
-                            return result;
+                            result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_DATA_LABEL));
                         }
-                    } else {
-                        result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_DATA_LABEL));
-                        return result;
+                    }else{
+                        result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
                     }
                 }
                 sysDictData.setUpdateBy(user.getUserName());
@@ -218,6 +220,26 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
     @Override
     public List<DataDictExcelDto> getDictListById(ArrayList<Integer> idList) {
         return this.baseMapper.getDictListById(idList);
+    }
+
+    @Override
+    public Boolean checkEquals(SysDictData updateData, SysDictData originalData) {
+        if(updateData.getDictLabel().equals(originalData.getDictLabel())){
+            if(updateData.getDictValue().equals(originalData.getDictValue())){
+                if(updateData.getCssClass().equals(originalData.getCssClass())){
+                    if(updateData.getDictSort().equals(originalData.getDictSort())){
+                        if(updateData.getListClass().equals(originalData.getListClass())){
+                            if(updateData.getStatus().equals(originalData.getStatus())){
+                                if(updateData.getRemark().equals(originalData.getRemark())){
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
 
