@@ -60,6 +60,7 @@ public enum ResultCode {
     REPEAT_POST_CODE(3018,"岗位编码重复"),
     REPEAT_POST_NAME(3019,"岗位名称重复"),
     DEPT_ASSIGNED(3020,"岗位已被分配，不允许删除" ),
+    DEPTID_NOT_ITEM(3021,"不能更改父级为该类的子级"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),
