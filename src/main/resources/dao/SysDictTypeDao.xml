@@ -152,6 +152,12 @@
         remark = values(remark)
     </insert>
 
+    <!--通过主键修改数据-->
+    <update id="updateDictDataByDictType">
+        update sys_dict_data  set  dict_type=#{newDictType}
+        where dict_type in (select dict_type from(select dict_type from sys_dict_data where dict_type=#{dictType}) a)
+    </update>
+
     <update id="update">
         update sys_dict_type
         <set>
@@ -181,12 +187,6 @@
             </if>
         </set>
         where dict_id = #{dictId}
-    </update>
-
-    <!--通过主键修改数据-->
-    <update id="updateDictDataByDictType">
-        update sys_dict_data  set  dict_type=#{sysDictType.dictType}
-        where dict_type in (select dict_type from(select dict_type from sys_dict_data where dict_type=#{dictType}) a)
     </update>
 
     <!--通过主键删除-->

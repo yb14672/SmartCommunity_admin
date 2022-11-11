@@ -32,6 +32,12 @@ public interface SysDictTypeService extends IService<SysDictType> {
     //    分页查询
     Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime);
 
+    /**
+     * 查詢所有字典
+     * @return
+     */
+    Result selectDictAll();
+
 //    新增
     Result insertOrUpdateBatch(SysDictType sysDictType);
 
@@ -40,5 +46,12 @@ public interface SysDictTypeService extends IService<SysDictType> {
 
 //    删除
     Result deleteByIdList(List<Integer> idList);
+
+    /**
+     * 根據id查詢字典類型
+     * @param id
+     * @return
+     */
+    Result getDictTypeById(String id);
 }
 

@@ -1,4 +1,4 @@
-//package com.zy_admin.community.controller;
+package com.zy_admin.community.controller;//package com.zy_admin.community.controller;
 //
 //import com.zy_admin.community.entity.ZyFiles;
 //import com.zy_admin.util.MinioUtilS;

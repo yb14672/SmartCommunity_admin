@@ -301,7 +301,7 @@
             LEFT JOIN sys_user_role sur on sur.role_id = sr.role_id
             LEFT JOIN sys_user su on su.user_id = sur.user_id where su.user_id = #{userId})
         </if>
-        order by order_num desc
+        order by order_num asc
     </select>
 
     <select id="queryAllMenu" resultType="com.zy_admin.sys.entity.MenuTree">

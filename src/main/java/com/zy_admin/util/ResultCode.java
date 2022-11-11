@@ -22,6 +22,7 @@ public enum ResultCode {
     PARAM_IS_BLANK(1002, "参数为空"),
     PARAM_TYPE_ERROR(1003, "参数类型错误"),
     PARAM_NOT_COMPLETE(1004, "参数缺失"),
+    NO_CHANGE_IN_PARAMETER(1005,"参数没有变化"),
 
     /* 用户错误 */
     USER_NOT_LOGIN(2001, "用户未登录"),
@@ -46,12 +47,19 @@ public enum ResultCode {
     MENU_HAVE_CHILDREN(3005, "该菜单有子集，若要删除请使用批量删除"),
     REPEAT_ROLE_KEY(3006,"当前权限码已存在"),
     REPEAT_ROLE_NAME(3007,"当前角色名已存在"),
-    REPEAT_DICT_NAME(3008,"当前字典名字已存在"),
-    REPEAT_DICT_TYPE(3009,"当前字典类型已存在"),
-    ADMIN_NOT_ALLOWED_DELETE(3010,"不允许删除管理员"),
-    PARENT_CLASS_CANNOT_BE_ITSELF(3011,"修改时父类不能是自己"),
-    DICT_HAVE_CHILDREN(3012, "该字典有子集"),
-    DEPT_HAVE_CHILDREN(3013, "该部门有子集"),
+    ADMIN_NOT_ALLOWED_DELETE(3008,"不允许删除管理员"),
+    PARENT_CLASS_CANNOT_BE_ITSELF(3009,"修改时父类不能是自己"),
+    REPEAT_DICT_NAME(3010,"字典名重复" ),
+    REPEAT_DICT_TYPE(3011,"字典类型重复" ),
+    REPEAT_DICT_DATA_LABEL(3012,"数据标签重复" ),
+    REPEAT_DICT_DATA_VALUE(3013,"数据键值重复" ),
+    DICT_HAVE_CHILDREN(3014, "该字典有子集，若要删除请使用批量删除"),
+    DEPT_HAVE_CHILDREN(3015, "该部门有子集，不允许删除"),
+    REPEAT_DEPTNAME(3016, "该部门名已存在"),
+    DEPT_HAVE_USER(3017, "该部门有用户，不允许删除"),
+    REPEAT_POST_CODE(3018,"岗位编码重复"),
+    REPEAT_POST_NAME(3019,"岗位名称重复"),
+    DEPT_ASSIGNED(3020,"岗位已被分配，不允许删除" ),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

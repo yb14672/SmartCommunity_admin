@@ -51,6 +51,17 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         return sysDictTypeDao.getDictLists();
     }
 
+    @Override
+    public Result selectDictAll() {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<SysDictType> sysDictTypeList = this.baseMapper.selectDictAll();
+        if(!sysDictTypeList.isEmpty()||sysDictTypeList.size() > 0) {
+            result.setData(sysDictTypeList);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+
     /**
      * 分页加查询
      * @param sysDictType
@@ -126,8 +137,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result updateDict(SysDictType sysDictType) {
-//        根据id获取到的对象
-        SysDictType sysDictType1 = this.baseMapper.queryById(sysDictType.getDictId());
+        SysDictType sysDictType1 = this.baseMapper.queryById(sysDictType.getDictId()+"");
         Result result = new Result();
 //        type为1是修改
         if (selectSysDictByName(1,sysDictType)){
@@ -146,6 +156,18 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         }else {
             return new Result(null, ResultTool.fail(ResultCode.REPEAT_DICT_NAME));
         }
+    }
+
+    @Override
+    public Result getDictTypeById(String id) {
+        Result result = new Result();
+        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        SysDictType sysDictType = this.baseMapper.queryById(id);
+        if (sysDictType != null || sysDictType.getDictId() != null) {
+            result.setData(sysDictType);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
     }
 
 //    批量删除

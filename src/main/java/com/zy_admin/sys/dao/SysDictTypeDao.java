@@ -33,7 +33,7 @@ public interface SysDictTypeDao extends BaseMapper<SysDictType> {
      * @param endTime
      * @return
      */
-    Long count(@Param("sysDict")SysDictType sysDictType,@Param("startTime")String startTime,@Param("endTime")String endTime);
+    Long count(@Param("sysDict") SysDictType sysDictType, @Param("startTime") String startTime, @Param("endTime") String endTime);
 
 //    新增
     int insert(SysDictType sysDictType);
@@ -42,10 +42,10 @@ public interface SysDictTypeDao extends BaseMapper<SysDictType> {
     int update(SysDictType sysDictType);
 
 //    根据对象获取id
-    SysDictType queryById(long id);
+    SysDictType queryById(String id);
 
-//    修改类型
-    void updateDictDataByDictType(@Param("dictType") String dictType,@Param("sysDictType") SysDictType sysDictType);
+//    修改状态
+    void updateDictDataByDictType(@Param("dictType") String dictType, @Param("newDictType") String newDictType);
 
 //    删除多个
     int deleteByIdList(@Param("idList") List<Integer> idList);
@@ -73,5 +73,8 @@ public interface SysDictTypeDao extends BaseMapper<SysDictType> {
      * @return
      */
     List<SysDictType> getDictLists();
+
+    @Select("select * from sys_dict_type")
+    List<SysDictType> selectDictAll();
 }
 
