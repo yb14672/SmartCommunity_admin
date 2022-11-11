@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.service.SysDeptService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -29,10 +30,10 @@ public class SysDeptController extends ApiController {
     private SysDeptService sysDeptService;
 
 //    树结构
-//    @GetMapping("/getDeptTree")
-//    public Result getMenuTree(){
-//        return this.sysDeptService.getDeptTree();
-//    }
+    @GetMapping("/getDeptTree")
+    public Result getMenuTree(){
+        return this.sysDeptService.getDeptTree();
+    }
 
 //    删除部门
 //    @DeleteMapping()

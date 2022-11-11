@@ -131,6 +131,7 @@ public class SysDictTypeController extends ApiController {
     @GetMapping("/selectDictByLimit")
     public Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime){
         System.out.println(sysDictType);
+        System.out.println(pageable);
         Result result = sysDictTypeService.selectDictByLimit(sysDictType, pageable,startTime,endTime);
         System.out.println(result);
         return result;

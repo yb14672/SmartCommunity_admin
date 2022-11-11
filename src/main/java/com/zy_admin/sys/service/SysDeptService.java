@@ -2,6 +2,7 @@ package com.zy_admin.sys.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.sys.entity.SysDept;
+import com.zy_admin.util.Result;
 
 /**
  * 部门表(SysDept)表服务接口
@@ -11,7 +12,7 @@ import com.zy_admin.sys.entity.SysDept;
  */
 public interface SysDeptService extends IService<SysDept> {
 //    部门的树结构所有数据
-//    Result getDeptTree();
+    Result getDeptTree();
 
 //    删除
 //    Result deleteByIdList(List<Integer> idList);
