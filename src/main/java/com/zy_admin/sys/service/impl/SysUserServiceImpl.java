@@ -1,5 +1,6 @@
 package com.zy_admin.sys.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.sys.dto.SysUserDto;
@@ -139,6 +140,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_SAME_PASSWORD));
         }
         return result;
+    }
+
+    @Override
+    public Result selectAll(Page page, SysUser sysUser) {
+
+        return null;
     }
 }
 

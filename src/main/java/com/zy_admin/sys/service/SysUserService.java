@@ -1,5 +1,6 @@
 package com.zy_admin.sys.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.Result;
@@ -62,5 +63,13 @@ public interface SysUserService extends IService<SysUser> {
      * @return 结果
      */
     Result resetPwd(SysUser user);
+
+    /**
+     * 查询所有用户
+     * @param page
+     * @param sysUser
+     * @return
+     */
+    Result selectAll(Page page, SysUser sysUser);
 }
 

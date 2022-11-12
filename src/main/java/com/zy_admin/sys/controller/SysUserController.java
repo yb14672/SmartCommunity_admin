@@ -1,7 +1,6 @@
 package com.zy_admin.sys.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -39,8 +38,8 @@ public class SysUserController extends ApiController {
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<SysUser> page, SysUser sysUser) {
-        return success(this.sysUserService.page(page, new QueryWrapper<>(sysUser)));
+    public Result selectAll(Page page, SysUser sysUser) {
+        return this.sysUserService.selectAll(page, sysUser);
     }
 
     /**
