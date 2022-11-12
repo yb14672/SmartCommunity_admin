@@ -233,6 +233,11 @@
         where dict_code = #{dictCode}
     </update>
 
+    <update id="changeStatusByDictType">
+        update sys_dict_data set status=#{status}
+        where dict_type = #{dict_type}
+    </update>
+
     <!--通过主键删除-->
     <delete id="deleteDictDataByIds">
         delete

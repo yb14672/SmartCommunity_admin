@@ -289,7 +289,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
             List<MenuTree> menuTree = this.baseMapper.getMenuTree();
             Tree tree = new Tree(menuTree);
             List<MenuTree> menuTrees = tree.buildTree();
-            System.out.println(menuTrees);
             result.setData(menuTrees);
             result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
             return result;

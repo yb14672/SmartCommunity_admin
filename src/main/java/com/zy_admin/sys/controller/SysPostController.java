@@ -174,7 +174,6 @@ public class SysPostController extends ApiController {
     @DeleteMapping("/deletePost")
     public Result deletePost( @RequestParam("ids")  List<Integer> postIds)
     {
-        System.out.println(postIds);
         return sysPostService.deletePost(postIds);
     }
 

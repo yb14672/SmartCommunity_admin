@@ -24,9 +24,6 @@ import java.util.List;
 @Service("sysPostService")
 public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> implements SysPostService {
 
-    @Resource
-    private SysPostDao sysPostDao;
-
     @Override
     public Result selectPostByLimit(SysPost sysPost, Pageable pageable) {
         Result result = new Result();
@@ -45,17 +42,12 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
         }else {
             pageable.setPageNum(0);
         }
-
         pageable.setTotal(total);
         List<SysPost> sysPosts = this.baseMapper.queryAllByLimit(sysPost, pageable);
-        System.out.println(sysPosts.toString());
         PostDto postDto = new PostDto(sysPosts,pageable);
         result.setData(postDto);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-
         return result;
-
-
     }
 
     @Override
@@ -163,7 +155,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
     @Override
     public Result deletePost(List<Integer> ids) {
         Result result = new Result();
-        List<Integer> postIds = sysPostDao.getPostIdFromUserPost(ids);
+        List<Integer> postIds = baseMapper.getPostIdFromUserPost(ids);
         if (postIds.size()>0) {
             result.setMeta(ResultTool.fail(ResultCode.DEPT_ASSIGNED));
         }else {

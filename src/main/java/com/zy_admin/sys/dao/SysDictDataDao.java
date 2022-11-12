@@ -17,6 +17,14 @@ import java.util.List;
 public interface SysDictDataDao extends BaseMapper<SysDictData> {
 
     /**
+     * 修改状态
+     * @param dictType
+     * @param status
+     */
+    void changeStatusByDictType(@Param("dictType") String dictType, @Param("status") String status);
+
+
+    /**
      * 根据字典类型获取所有对应的字典数据
      * @param deptType
      * @return

@@ -32,7 +32,6 @@ public class MinioController {
         String url = address + "/" + bucketName + "/" + upload.get(0);
         result.setData(url == null ? null : url);
         result.setMeta(url == null ? ResultTool.fail(ResultCode.USER_AVATAR_UPLOAD_FAILED) : ResultTool.fail(ResultCode.SUCCESS));
-        System.out.println(result);
         return result;
     }
 
