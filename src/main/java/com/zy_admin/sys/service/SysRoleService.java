@@ -17,6 +17,13 @@ import java.util.List;
  */
 public interface SysRoleService extends IService<SysRole> {
     /**
+     * 获取所有角色
+     *
+     */
+
+    Result getAllRole(SysRole sysRole);
+
+    /**
      * 根据id列表查询
      *
      * @param roleIds
@@ -25,7 +32,7 @@ public interface SysRoleService extends IService<SysRole> {
     List<SysRole> queryRoleById(ArrayList<Integer> roleIds);
 
     /**
-     * 获取所有角色
+     * 获取所有角色id
      *
      * @return
      */

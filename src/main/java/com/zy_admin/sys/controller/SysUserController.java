@@ -5,15 +5,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.sys.dto.userDto;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtils;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -30,6 +33,12 @@ public class SysUserController extends ApiController {
      */
     @Resource
     private SysUserService sysUserService;
+    @Resource
+    private RequestUtil requestUtil;
+
+
+
+
 
     /**
      * 分页查询所有数据
@@ -161,6 +170,24 @@ public class SysUserController extends ApiController {
     @PutMapping("/resetPwd")
     public Result resetPwd(@RequestBody SysUser sysUser){
         return this.sysUserService.resetPwd(sysUser);
+    }
+
+
+    @PostMapping("/insertUser")
+    public Result insertUser(HttpServletRequest request, @RequestBody userDto sysUserDto)
+    {
+        sysUserDto.setCreateTime(LocalDateTime.now().toString());
+        SysUser user = this.requestUtil.getUser(request);
+        sysUserDto.setCreateBy(user.getUserName());
+        return sysUserService.insertUser(sysUserDto);
+    }
+    @PutMapping("/updateUser")
+    public Result updateUser(HttpServletRequest request, @RequestBody userDto userDto)
+    {
+        userDto.setUpdateTime(LocalDateTime.now().toString());
+        SysUser user = this.requestUtil.getUser(request);
+        userDto.setCreateBy(user.getUserName());
+        return sysUserService.adminUpdateUser(userDto);
     }
 }
 

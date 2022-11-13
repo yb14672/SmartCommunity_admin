@@ -102,4 +102,26 @@
         </set>
         where user_id = #{userId}
     </update>
+
+    <insert id="insertUser" keyProperty="userId" useGeneratedKeys="true">
+        insert into sys_user(dept_id,user_name,nick_name,email,phonenumber,sex,password,status,create_by,create_time,update_by,update_time)
+        values (#{deptId},#{userName},#{nickName},#{email},#{phonenumber},#{sex},#{password},#{status},#{createBy},#{createTime},#{updateBy},#{updateTime})
+
+    </insert>
+
+    <insert id="insertRole">
+        insert into sys_user_role(user_id,role_id)
+        values
+        <foreach collection="roleIds" item="roleId" separator=",">
+            (#{id},#{roleId})
+        </foreach>
+    </insert>
+
+    <insert id="insertPost">
+        insert into sys_user_post(user_id,post_id)
+        values
+        <foreach collection="postIds" item="postId" separator=",">
+            (#{id},#{postId})
+        </foreach>
+    </insert>
 </mapper>

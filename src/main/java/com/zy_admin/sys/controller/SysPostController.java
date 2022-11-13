@@ -49,6 +49,13 @@ public class SysPostController extends ApiController {
     @Resource
     private RequestUtil requestUtil;
 
+
+    @GetMapping("/getAllPost")
+    public Result getAllPost()
+    {
+        Result allPost = sysPostService.getAllPost();
+        return allPost;
+    }
     /**
      * 分页查询所有数据
      *
@@ -149,7 +156,7 @@ public class SysPostController extends ApiController {
         //如果前台传的集合为空或者长度为0.则全部导出。
         //执行查询角色列表的sql语句,但不包括del_flag为2的
         if (postIds == null || postIds.size() == 0) {
-            sysPosts = sysPostService.getRoleLists();
+            sysPosts = sysPostService.getPostLists();
         } else {
             //执行查询角色列表的sql语句
             sysPosts = sysPostService.queryRoleById(postIds);

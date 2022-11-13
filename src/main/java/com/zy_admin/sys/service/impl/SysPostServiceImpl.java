@@ -156,8 +156,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
     }
 
     @Override
-    public List<SysPost> getRoleLists() {
-        return this.baseMapper.getRoleLists();
+    public List<SysPost> getPostLists() {
+        return this.baseMapper.getPostLists();
     }
 
     @Override
@@ -171,6 +171,16 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
+    }
+
+    @Override
+    public Result getAllPost() {
+        Result result = new Result();
+        List<SysPost> postLists = this.baseMapper.getPostLists();
+        result.setData(postLists);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
+
     }
 
 

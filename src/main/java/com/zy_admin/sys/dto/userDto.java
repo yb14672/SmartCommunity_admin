@@ -1,24 +1,15 @@
-package com.zy_admin.sys.entity;
+package com.zy_admin.sys.dto;
 
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-
-/**
- * 用户信息表(SysUser)表实体类
- *
- * @author makejava
- * @since 2022-11-01 19:49:42
- */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@SuppressWarnings("serial")
-public class SysUser extends Model<SysUser> {
+@NoArgsConstructor
+public class userDto {
     //用户ID
     private Long userId;
     //部门ID
@@ -50,12 +41,14 @@ public class SysUser extends Model<SysUser> {
     //创建者
     private String createBy;
     //创建时间
-    private Date createTime;
+    private String createTime;
     //更新者
     private String updateBy;
     //更新时间
-    private Date updateTime;
+    private String updateTime;
     //备注
     private String remark;
 
+    int[] postIds;
+    int[] roleIds;
 }

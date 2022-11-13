@@ -1,6 +1,7 @@
 package com.zy_admin.sys.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zy_admin.sys.dto.userDto;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.Result;
 
@@ -13,7 +14,15 @@ import com.zy_admin.util.Result;
 public interface SysUserService extends IService<SysUser> {
 
     /**
+     * 管理员修改用户
+     * @param
+     * @return
+     */
+    Result adminUpdateUser(userDto userDto);
+
+    /**
      * 查询头像
+     *
      * @param userId
      * @return
      */
@@ -21,6 +30,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 登录
+     *
      * @param sysUser
      * @return
      */
@@ -28,6 +38,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 根据账号查询用户
+     *
      * @param userName
      * @return
      */
@@ -35,6 +46,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 根据ID查询用户
+     *
      * @param id
      * @return
      */
@@ -42,6 +54,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 根据用户ID获取用户所有信息
+     *
      * @param userId
      * @return
      */
@@ -62,5 +75,38 @@ public interface SysUserService extends IService<SysUser> {
      * @return 结果
      */
     Result resetPwd(SysUser user);
+
+    /**
+     * 新增用户
+     *
+     * @param sysUserDto
+     * @return
+     */
+    Result insertUser(userDto sysUserDto);
+
+    /**
+     * 昵称查重
+     *
+     * @param type
+     * @param sysUserDto
+     * @return
+     */
+    Boolean checkNiceName(int type, userDto sysUserDto);
+
+    /**
+     * 电话查重
+     * @param type
+     * @param sysUserDto
+     * @return
+     */
+    Boolean checkPhone(int type, userDto sysUserDto);
+
+    /**
+     * 邮箱查重
+     * @param type
+     * @param sysUserDto
+     * @return
+     */
+    Boolean checkEmail(int type, userDto sysUserDto);
 }
 

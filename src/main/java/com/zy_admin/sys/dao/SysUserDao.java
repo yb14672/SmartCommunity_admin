@@ -2,7 +2,10 @@ package com.zy_admin.sys.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.sys.dto.SysUserDto;
+import com.zy_admin.sys.dto.userDto;
 import com.zy_admin.sys.entity.SysUser;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 /**
@@ -51,6 +54,67 @@ public interface SysUserDao extends BaseMapper<SysUser> {
 
     @Select("select * from sys_user where user_name=#{userName} and password=#{password}")
     SysUser login(SysUser sysUser);
+
+    /**
+     * 新增用户并返回自增id
+     * @param sysUserDao
+     * @return
+     */
+    int insertUser(userDto sysUserDao);
+
+    /**
+     * 昵称查重
+     * @param nickName
+     * @return
+     */
+    @Select("select * from sys_user where nick_name = #{nickName}")
+    SysUser checkNiceName(String nickName);
+
+    /**
+     * 电话查重
+     * @param phonenumber
+     * @return
+     */
+    @Select("select * from sys_user where phonenumber = #{phonenumber}")
+    SysUser checkPhone(String phonenumber);
+
+
+    /**
+     * 邮箱查重
+     * @param email
+     * @return
+     */
+    @Select("select * from sys_user where email = #{email}")
+    SysUser checkEmail(String email);
+
+
+    /**
+     * 新增用户角色权限
+     * @param id
+     * @param roleIds
+     */
+    void insertRole(@Param("id") Long id,@Param("roleIds") int[] roleIds);
+
+    /**
+     * 新增用户岗位
+     * @param id
+     * @param postIds
+     */
+    void insertPost(@Param("id") Long id,@Param("postIds") int[] postIds);
+
+    /**
+     * 删除用户拥有的角色
+     * @param id
+     */
+    @Delete("delete * from sys_user_role where user_id=#{userId}")
+    void deleteRole(long id);
+
+    /**
+     * 删除用户具有的岗位
+     * @param id
+     */
+    @Delete("delete * from sys_user_post where user_id =#{userId}")
+    void deletePost(long id);
 
 }
 
