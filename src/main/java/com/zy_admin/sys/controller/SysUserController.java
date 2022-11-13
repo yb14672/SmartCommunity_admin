@@ -181,7 +181,7 @@ public class SysUserController extends ApiController {
         sysUserDto.setCreateBy(user.getUserName());
         return sysUserService.insertUser(sysUserDto);
     }
-    @PutMapping("/updateUser")
+    @PutMapping("/adminUpdateUser")
     public Result updateUser(HttpServletRequest request, @RequestBody userDto userDto)
     {
         userDto.setUpdateTime(LocalDateTime.now().toString());
