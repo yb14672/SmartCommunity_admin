@@ -108,5 +108,8 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     Boolean checkEmail(int type, userDto sysUserDto);
+
+
+    Result resetPassword(SysUser sysUser);
 }
 

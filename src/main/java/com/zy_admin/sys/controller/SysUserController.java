@@ -189,5 +189,13 @@ public class SysUserController extends ApiController {
         userDto.setCreateBy(user.getUserName());
         return sysUserService.adminUpdateUser(userDto);
     }
+
+    @PostMapping("/resetPassword")
+        public Result resetPassword(HttpServletRequest request, @RequestBody SysUser sysUser)
+        {
+            SysUser user = this.requestUtil.getUser(request);
+            sysUser.setUpdateBy(user.getUserName());
+            return sysUserService.resetPassword(sysUser);
+        }
 }
 

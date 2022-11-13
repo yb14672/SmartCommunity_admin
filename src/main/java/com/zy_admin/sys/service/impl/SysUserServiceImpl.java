@@ -282,6 +282,25 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         }
         return false;
     }
+
+    /**
+     * 重置密码
+     * @param sysUser
+     * @return
+     */
+    @Override
+    public Result resetPassword(SysUser sysUser) {
+        Result result = new Result();
+        SysUser user = this.baseMapper.selectById(sysUser.getUserId());
+        if (!sysUser.getPassword().equals(user.getPassword()))
+        {
+            this.baseMapper.updateUser(sysUser);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }else {
+            result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_SAME_PASSWORD));
+        }
+        return result;
+    }
 }
 
 
