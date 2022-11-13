@@ -60,10 +60,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         String jwtToken = "";
         if (user != null) {
             jwtToken = JwtUtils.getJwtToken(user.getUserId() + "", user.getNickName());
+            System.out.println(jwtToken);
+            redisService.set(jwtToken,sysUser.getUserName());
             if ("1".equals(user.getStatus())) {
                 return new Result(jwtToken, ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED));
             }
-            redisService.set(jwtToken,sysUser.getUserName());
             return new Result(jwtToken, ResultTool.success(ResultCode.SUCCESS));
         }
         return new Result(jwtToken, ResultTool.fail(ResultCode.USER_WRONG_ACCOUNT_OR_PASSWORD));

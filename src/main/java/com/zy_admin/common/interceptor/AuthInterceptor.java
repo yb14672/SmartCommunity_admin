@@ -27,10 +27,9 @@ public class AuthInterceptor implements HandlerInterceptor {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=utf-8");
         String token = request.getHeader("token");
-//        if (request.getMethod().toUpperCase().equals("OPTIONS")) {
-//            System.out.println("OPTIONS请求，放行");
-//            return true;
-//        }
+        if (request.getMethod().toUpperCase().equals("OPTIONS")) {
+            return true;
+        }
         if (StringUtils.isEmpty(token)) {
             response.getWriter().print(JSON.toJSONString(new Result(null, ResultTool.fail(ResultCode.USER_LOGIN_EXPIRED))));
             return false;
