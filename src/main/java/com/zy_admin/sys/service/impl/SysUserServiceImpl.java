@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.sys.dto.SysUserDto;
 import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.*;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ import javax.annotation.Resource;
 public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> implements SysUserService {
     @Resource
     private SysUserDao sysUserDao;
+    @Resource
+    private RedisService redisService;
 
     @Override
     public Result getAvatarById(String userId) {
@@ -60,6 +63,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             if ("1".equals(user.getStatus())) {
                 return new Result(jwtToken, ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED));
             }
+            redisService.set(jwtToken,sysUser.getUserName());
             return new Result(jwtToken, ResultTool.success(ResultCode.SUCCESS));
         }
         return new Result(jwtToken, ResultTool.fail(ResultCode.USER_WRONG_ACCOUNT_OR_PASSWORD));
