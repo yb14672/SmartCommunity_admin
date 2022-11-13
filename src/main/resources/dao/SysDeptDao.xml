@@ -16,26 +16,16 @@
     </select>
     <!--部门名查重-->
     <select id="checkDeptNameUnique" resultType="com.zy_admin.sys.entity.SysDept">
-        select *
-        from sys_dept
-        where dept_name = #{deptName}
-          and del_flag != 2 and parent_id=#{parentId} limit 1
+        select * from sys_dept where dept_name=#{deptName} and del_flag != 2 and parent_id=#{parentId} limit 1
     </select>
     <!--新增部门 useGeneratedKeys(主键回显)-->
     <insert id="insertDept" keyProperty="deptId" useGeneratedKeys="true"
             parameterType="com.zy_admin.sys.entity.SysDept">
-        insert into sys_dept
-        (parent_id, ancestors, dept_name, order_num, leader, phone, email, status, del_flag, create_by, create_time,
-         update_by, update_time)
-        values (#{parentId}, #{ancestors}, #{deptName}, #{orderNum}, #{leader}, #{phone}, #{email}, #{status},
-                #{delFlag}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
-    </insert>
-    <!--查询子级id集合-->
-    <select id="getDeptIdList" resultType="java.lang.Long">
-        select dept_id
-        from sys_dept
-        where parent_id = #{deptId}
-    </select>
+    insert into sys_dept
+    (parent_id,ancestors,dept_name,order_num,leader,phone,email,status,del_flag,create_by,create_time,update_by,update_time)
+    values
+    (#{parentId},#{ancestors},#{deptName},#{orderNum},#{leader},#{phone},#{email},#{status},#{delFlag},#{createBy},#{createTime},#{updateBy},#{updateTime})
+</insert>
     <!--修改部门-->
     <update id="updateDept" keyProperty="deptId"
             parameterType="com.zy_admin.sys.entity.SysDept">
@@ -85,31 +75,26 @@
     </update>
     <!--删除部门-->
     <delete id="deleteByIdList" parameterType="integer">
-        update sys_dept set del_flag = '2' where dept_id in
+         update sys_dept set del_flag = '2' where dept_id in
         <foreach collection="idList" item="dept_id" separator="," open="(" close=")">
             #{dept_id}
         </foreach>
     </delete>
     <!--判断下面有没有子集-->
     <select id="hasChildDept" resultType="java.lang.Integer">
-        select count(*)
-        FROM sys_dept
-        where del_flag = '0'
-          and parent_id = #{deptId}
+       select count(*) FROM sys_dept where del_flag = '0'and parent_id = #{deptId}
     </select>
-    <!--判断下面有没有用户-->
-    <select id="hasUserDept" resultType="java.lang.Integer">
-        select count(*)
-        from sys_user
-        where dept_id in
-        <foreach collection="idList" item="dept_id" separator="," open="(" close=")">
-            #{dept_id}
-        </foreach>
+<!--判断下面有没有用户-->
+    <select id="hasUserDept"  resultType="java.lang.Integer">
+     select count(*) from sys_user where dept_id = #{deptId}
     </select>
-    <!--查询父级id-->
+<!--查询父级id-->
     <select id="getDeptById" resultType="com.zy_admin.sys.entity.SysDept">
-        select *
-        from sys_dept
-        where dept_id = #{deptId}
+        select * from sys_dept where dept_id = #{deptId}
+    </select>
+    <!--查询子级id集合-->
+    <select id="getDeptIdList" resultType="java.lang.Long">
+        select dept_id from sys_dept where parent_id = #{deptId}
     </select>
 </mapper>
+

@@ -73,7 +73,7 @@
                 and post_id = #{postId}
             </if>
             <if test="postCode != null and postCode != ''">
-                 and post_code like concat('%',#{postCode},'%')
+                and post_code like concat('%',#{postCode},'%')
             </if>
             <if test="postName != null and postName != ''">
                 and post_name like concat('%', #{postName},'%')
