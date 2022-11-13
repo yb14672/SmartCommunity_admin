@@ -1,7 +1,7 @@
 package com.zy_admin.sys.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zy_admin.common.Page;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.Result;
 
