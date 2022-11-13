@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -196,7 +197,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             //小于1说明没有子集，就可以删
             if (hasChildDept < 1) {
                 //判断有没有用户
-                Integer hasUserDept = this.baseMapper.hasUserDept(idList.get(0));
+                Integer hasUserDept = this.baseMapper.hasUserDept(Collections.singletonList(idList.get(0)));
                 System.err.println(hasUserDept);
                 //小于1说明没有用户，就可以删
                 if (hasUserDept < 1) {

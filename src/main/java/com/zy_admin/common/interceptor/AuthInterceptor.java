@@ -27,7 +27,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=utf-8");
         String token = request.getHeader("token");
-        if (request.getMethod().toUpperCase().equals("OPTIONS")) {
+        if ("OPTIONS".equals(request.getMethod().toUpperCase())) {
             return true;
         }
         if (StringUtils.isEmpty(token)) {

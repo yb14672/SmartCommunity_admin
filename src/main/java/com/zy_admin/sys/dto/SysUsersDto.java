@@ -1,8 +1,6 @@
 package com.zy_admin.sys.dto;
 
 import com.zy_admin.common.Pageable;
-import com.zy_admin.sys.entity.SysDept;
-import com.zy_admin.sys.entity.SysUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +14,7 @@ import java.util.List;
 public class SysUsersDto {
     //用户集合
     @Autowired
-    private List<SysUser> sysUser;
+    private List<SysUserDeptDto> sysUserDeptDto;
     //开始时间
     private String startTime;
     //结束时间
@@ -24,6 +22,4 @@ public class SysUsersDto {
     //页码
     @Autowired
     private Pageable pageable;
-    //部门
-    private SysDept sysDept;
 }

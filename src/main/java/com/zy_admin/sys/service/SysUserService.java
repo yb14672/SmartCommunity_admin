@@ -1,7 +1,7 @@
 package com.zy_admin.sys.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.Result;
 
@@ -66,13 +66,6 @@ public interface SysUserService extends IService<SysUser> {
      */
     Result resetPwd(SysUser user);
 
-    /**
-     * 查询所有用户
-     * @param page
-     * @param sysUser
-     * @return
-     */
-    Result selectAll(Page page, SysUser sysUser);
 
     /**
      * 根据用户ID获取其信息和对应的角色
@@ -88,5 +81,14 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     Result insertAuthRole(Integer userId, List<Long> roleIdList) throws Exception;
+
+
+    /**
+     * 查询所有用户
+     * @param pageable
+     * @param sysUser
+     * @return
+     */
+    Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime);
 }
 
