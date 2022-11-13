@@ -137,12 +137,11 @@ public class SysRoleController extends ApiController {
     @Transactional(rollbackFor = Exception.class)
     public Result delete(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<Integer>();
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             for (String str : idList) {
                 idList1.add(Integer.valueOf(str));
-                if("1".equals(str)){
+                if ("1".equals(str)) {
                     result.setMeta(ResultTool.fail(ResultCode.ADMIN_NOT_ALLOWED_DELETE));
                     return result;
                 }
@@ -152,8 +151,6 @@ public class SysRoleController extends ApiController {
             //删除权限表
             this.sysRoleMenuService.deleteByIdList(idList1);
         } catch (NumberFormatException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -165,6 +162,7 @@ public class SysRoleController extends ApiController {
      * @param roleAndRoleMenu
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping("/addRole")
     public Result insert(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
         roleAndRoleMenu.setCreateTime(LocalDateTime.now().toString());
@@ -183,6 +181,7 @@ public class SysRoleController extends ApiController {
      * @return
      */
     @PutMapping("/updateRole")
+    @Transactional(rollbackFor = Exception.class)
     public Result update(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
         roleAndRoleMenu.setDeptCheckStrictly(null);
         roleAndRoleMenu.setMenuCheckStrictly(null);
