@@ -111,7 +111,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             result.setData(personal);
             result.setJsonResult(ResultTool.success(ResultCode.SUCCESS));
         }
-        return result;
+         return result;
     }
 
     /**
