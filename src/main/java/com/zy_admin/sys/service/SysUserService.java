@@ -5,6 +5,9 @@ import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.Result;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 用户信息表(SysUser)表服务接口
  *
@@ -16,16 +19,23 @@ public interface SysUserService extends IService<SysUser> {
     /**
      *批量导入用户信息
      * @param file
-     * @param tenantCode
      */
-    void importData(MultipartFile file, String tenantCode);
+    void importData(MultipartFile file);
 
-//    /**
-//     * 批量导出用户信息
-//     * @param ids
-//     * @param response
-//     */
-//    void exportData(Long[] ids, HttpServletResponse response);
+    /**
+     * 导出所有用户
+     *
+     * @return
+     */
+    List<SysUser> getUserLists();
+
+    /**
+     * 选中导出
+     *
+     * @param userIds
+     * @return
+     */
+    List<SysUser> queryUserById(ArrayList<Integer> userIds);
 
     /**
      * 查询头像

@@ -72,7 +72,6 @@ public class SysDictTypeController extends ApiController {
                 .autoCloseStream(true)
                 .sheet("模板")
                 .doWrite(sysDictTypeList);
-
     }
 
 //    删除

@@ -48,11 +48,33 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Autowired
     private SysDeptService sysDeptService;
 
+    /**
+     * 默认是导出全部
+     * @return
+     */
+    @Override
+    public List<SysUser> getUserLists() {
+        return sysUserDao.getUserLists();
+    }
+
+    /**
+     * 导出选中的部分
+     * @param userIds
+     * @return
+     */
+    @Override
+    public List<SysUser> queryUserById(ArrayList<Integer> userIds) {
+        //        如果有选中列表，就执行导出多个
+        if (userIds!=null){
+            userIds = userIds.size()==0 ? null : userIds;
+        }
+        return sysUserDao.queryUserById(userIds);
+    }
 
 //    导入
     @Override
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void importData(MultipartFile file, String tenantCode) {
+    public void importData(MultipartFile file) {
 // 从文件流获取工作簿对象
         Workbook workbook = getWorkBook(file);
         Sheet sheet = workbook.getSheetAt(workbook.getFirstVisibleTab());
@@ -85,7 +107,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                 QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
                 queryWrapper.eq("dept_name",getCellValue(sheet.getRow(i).getCell(2)));
                 List<SysDept> list = sysDeptService.list(queryWrapper);
-                userEntity.setDeptId(list.get(0).getDeptId());
+                if(list.size()!=0){
+                    userEntity.setDeptId(list.get(0).getDeptId());
+                }
             }
 // 添加昵称
             if (sheet.getRow(i).getCell(1) != null) {
@@ -108,7 +132,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      */
     private void checkPhoneNumber(int rowNum, int colNum, String stringCellValue) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("phone_number", stringCellValue);
+        queryWrapper.eq("phonenumber", stringCellValue);
         if (sysUserService.list(queryWrapper).size() > 0) {
            new Exception("手机号不能重复");
         }

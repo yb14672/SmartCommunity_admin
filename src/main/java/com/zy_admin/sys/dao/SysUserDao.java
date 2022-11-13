@@ -3,7 +3,11 @@ package com.zy_admin.sys.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.sys.dto.SysUserDto;
 import com.zy_admin.sys.entity.SysUser;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 用户信息表(SysUser)表数据库访问层
@@ -12,6 +16,19 @@ import org.apache.ibatis.annotations.Select;
  * @since 2022-11-01 19:49:42
  */
 public interface SysUserDao extends BaseMapper<SysUser> {
+
+    /**
+     * 勾选用户获取excel
+     * @param userIds
+     * @return
+     */
+    List<SysUser> queryUserById(@Param("list") ArrayList<Integer> userIds);
+
+    /**
+     * 所有用户获取excel
+     * @return
+     */
+    List<SysUser> getUserLists();
 
     /**
      * 查询头像
