@@ -47,7 +47,7 @@ public class SysDictTypeController extends ApiController {
      * @param response
      */
     @GetMapping("/getExcel")
-    public void getExcel( ArrayList<Integer> dictIds, HttpServletResponse response) throws IOException {
+    public void getExcel(@RequestParam("dictIds") ArrayList<Integer> dictIds, HttpServletResponse response) throws IOException {
         List<SysDictType> sysDictTypeList = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
         //执行   查询角色列表的sql语句   但不包括del_flag为2的
@@ -55,6 +55,7 @@ public class SysDictTypeController extends ApiController {
             sysDictTypeList = sysDictTypeService.getDictLists();
         } else {
             //执行查询角色列表的sql语句
+            System.out.println(dictIds);
             sysDictTypeList = sysDictTypeService.queryDictById(dictIds);
         }
         String fileName = URLEncoder.encode("字典表数据", "UTF-8");

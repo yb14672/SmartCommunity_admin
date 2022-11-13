@@ -3,6 +3,7 @@ package com.zy_admin.sys.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.Result;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 用户信息表(SysUser)表服务接口
@@ -11,6 +12,20 @@ import com.zy_admin.util.Result;
  * @since 2022-11-01 19:49:42
  */
 public interface SysUserService extends IService<SysUser> {
+
+    /**
+     *批量导入用户信息
+     * @param file
+     * @param tenantCode
+     */
+    void importData(MultipartFile file, String tenantCode);
+
+//    /**
+//     * 批量导出用户信息
+//     * @param ids
+//     * @param response
+//     */
+//    void exportData(Long[] ids, HttpServletResponse response);
 
     /**
      * 查询头像

@@ -10,6 +10,7 @@ import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtils;
 import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,17 @@ public class SysUserController extends ApiController {
      */
     @Resource
     private SysUserService sysUserService;
+
+    /**
+     * 导入
+     * @param file
+     * @param tenantCode
+     */
+    @RequestMapping("/import-data")
+    public void importData(@RequestParam("file") MultipartFile file, @RequestParam("tenantCode") String tenantCode) {
+        sysUserService.importData(file, tenantCode);
+
+    }
 
     /**
      * 分页查询所有数据
