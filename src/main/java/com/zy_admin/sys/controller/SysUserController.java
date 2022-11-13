@@ -3,7 +3,7 @@ package com.zy_admin.sys.controller;
 
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
-import com.zy_admin.common.Page;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtils;
@@ -33,13 +33,13 @@ public class SysUserController extends ApiController {
     /**
      * 分页查询所有数据
      *
-     * @param page    分页对象
+     * @param pageable    分页对象
      * @param sysUser 查询实体
      * @return 所有数据
      */
-    @GetMapping
-    public Result selectAll(Page page, SysUser sysUser) {
-        return this.sysUserService.selectAll(page, sysUser);
+    @GetMapping("/selectUsers")
+    public Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime) {
+        return this.sysUserService.selectUsers(pageable, sysUser, startTime, endTime);
     }
 
     /**

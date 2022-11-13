@@ -1,9 +1,11 @@
 package com.zy_admin.sys.service.impl;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.sys.dto.SysUserDto;
+import com.zy_admin.sys.dto.SysUsersDto;
+import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtils;
@@ -11,6 +13,8 @@ import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 用户信息表(SysUser)表服务实现类
@@ -20,7 +24,32 @@ import org.springframework.stereotype.Service;
  */
 @Service("sysUserService")
 public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> implements SysUserService {
-
+    @Override
+    public Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime) {
+        Result result = new Result();
+        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        //满足条件的总数据
+        long total = this.baseMapper.UserCount(sysUser, startTime, endTime);
+        long pages = 0;
+        if (total > 0) {
+            //计算出总页码
+            pages = total % pageable.getPageSize() == 0 ? total / pageable.getPageSize() : total / pageable.getPageSize() + 1;
+            pageable.setPages(pages);
+            //页码修正
+            pageable.setPageNum(pageable.getPageNum() < 1 ? 1 : pageable.getPageNum());
+            pageable.setPageNum(pageable.getPageNum() > pages ? pages : pageable.getPageNum());
+            //设置起始下标
+            pageable.setIndex((pageable.getPageNum() - 1) * pageable.getPageSize());
+        } else {
+            pageable.setPageNum(0);
+        }
+        pageable.setTotal(total);
+        List<SysUser> sysUserList = this.baseMapper.selectUsers(sysUser, pageable, startTime, endTime);
+        SysUsersDto sysUsersDto = new SysUsersDto(sysUserList, startTime, endTime, pageable,sysDept);
+        result.setData(sysUsersDto);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
+    }
     @Override
     public Result getAvatarById(String userId) {
         Result result = new Result();
@@ -139,12 +168,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_SAME_PASSWORD));
         }
         return result;
-    }
-
-    @Override
-    public Result selectAll(Page page, SysUser sysUser) {
-
-        return null;
     }
 }
 

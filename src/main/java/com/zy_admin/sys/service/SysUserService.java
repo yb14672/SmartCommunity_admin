@@ -1,7 +1,7 @@
 package com.zy_admin.sys.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zy_admin.common.Page;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.Result;
 
@@ -70,6 +70,6 @@ public interface SysUserService extends IService<SysUser> {
      * @param sysUser
      * @return
      */
-    Result selectAll(Page page, SysUser sysUser);
+    Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime);
 }
 

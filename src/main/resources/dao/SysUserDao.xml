@@ -1,20 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy_admin.sys.dao.SysUserDao">
+    <!--用户列表分页，条件搜索-->
+    <resultMap type="com.zy_admin.sys.dto.SysUsersDto" id="SysUserResult">
+        <association property="sysUser" javaType="com.zy_admin.sys.entity.SysUser" autoMapping="true">
+            <id column="user_id" property="userId" javaType="Integer"/>
+        </association>
+        <association property="sysDept" javaType="com.zy_admin.sys.entity.SysDept" autoMapping="true">
+            <id column="dept_id" property="deptId" javaType="Integer"/>
+        </association>
+    </resultMap>
+    <select id="selectUsers"  resultMap="SysUserResult">
+        SELECT u.*,d.dept_name,d.leader from sys_user u left join sys_dept d on u.dept_id=d.dept_id where u.del_flag =
+        '0';
+        <if test="sysUser.deptId != null and sysUser.deptId != 0">
+            and u.dept_id = #{sysUser.deptId}
+        </if>
+        <if test="sysUser.userName != null and sysUser.userName != ''">
+            and u.user_name like concat('%', #{sysUser.userName}, '%')
+        </if>
+        <if test="sysUser.phonenumber != null and sysUser.phonenumber != ''">
+            and u.phonenumber like concat('%', #{sysUser.phonenumber}, '%')
+        </if>
+        <if test="v.status != null and sysUser.status != ''">
+            and u.status = #{sysUser.status}
+        </if>
+        <if test="sysUser.startTime != null and sysUser.startTime != ''"><!-- 开始时间检索 -->
+            and u.create_time >=#{beginTime}
+        </if>
+        <if test="sysUser.endTime != null and sysUser.endTime != ''"><!-- 结束时间检索 -->
+            and u.create_time >=#{endTime}
+        </if>
+        <if test="pageSize!=0">
+            limit #{nowPage},#{pageSize}
+        </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long" parameterType="com.zy_admin.sys.entity.SysUser">
+        select count(*)
+        from sys_user u left join sys_dept d on u.dept_id=d.dept_id where u.del_flag =
+        '0';
+        <if test="sysUser.deptId != null and sysUser.deptId != 0">
+            and u.dept_id = #{sysUser.deptId}
+        </if>
+        <if test="sysUser.userName != null and sysUser.userName != ''">
+            and u.user_name like concat('%', #{sysUser.userName}, '%')
+        </if>
+        <if test="sysUser.phonenumber != null and sysUser.phonenumber != ''">
+            and u.phonenumber like concat('%', #{sysUser.phonenumber}, '%')
+        </if>
+        <if test="v.status != null and sysUser.status != ''">
+            and u.status = #{sysUser.status}
+        </if>
+        <if test="sysUser.startTime != null and sysUser.startTime != ''"><!-- 开始时间检索 -->
+            and u.create_time >=#{beginTime}
+        </if>
+        <if test="sysUser.endTime != null and sysUser.endTime != ''"><!-- 结束时间检索 -->
+            and u.create_time >=#{endTime}
+        </if>
+    </select>
 
     <resultMap type="com.zy_admin.sys.dto.SysUserDto" id="SysUserMap">
         <association property="sysUser" javaType="com.zy_admin.sys.entity.SysUser" autoMapping="true">
-            <id column="user_id"  property="userId" jdbcType="INTEGER"/>
+            <id column="user_id" property="userId" jdbcType="INTEGER"/>
         </association>
         <association property="sysRole" javaType="com.zy_admin.sys.entity.SysRole" autoMapping="true">
-            <id column="rId"  property="roleId" jdbcType="INTEGER"/>
+            <id column="rId" property="roleId" jdbcType="INTEGER"/>
             <result column="rStatus" property="status" jdbcType="VARCHAR"/>
         </association>
         <association property="sysDept" javaType="com.zy_admin.sys.entity.SysDept" autoMapping="true">
-            <id column="dept_id"  property="deptId" jdbcType="INTEGER"/>
+            <id column="dept_id" property="deptId" jdbcType="INTEGER"/>
         </association>
         <association property="sysPost" javaType="com.zy_admin.sys.entity.SysPost" autoMapping="true">
-            <id column="post_id"  property="postId" jdbcType="INTEGER"/>
+            <id column="post_id" property="postId" jdbcType="INTEGER"/>
         </association>
     </resultMap>
 
@@ -54,7 +113,7 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
-
+    <!--查询用户信息-->
     <sql id="selectUserInfo">
         select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark,
                d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status,
