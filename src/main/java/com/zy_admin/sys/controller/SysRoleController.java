@@ -7,6 +7,7 @@ import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.entity.SysRole;
@@ -47,11 +48,21 @@ public class SysRoleController extends ApiController {
     SysRoleMenuService sysRoleMenuService;
 
     /**
-     * 用于批量导出角色列表数据
-     *
-     * @param roleIds
-     * @param response
+     * 获取所有除去管理员以外的角色并分页
+     * @param page
+     * @return
      */
+    @GetMapping("/getRoleList")
+    public Result getRoleList(Page page) {
+        return this.sysRoleService.getRoleList(page);
+    }
+
+        /**
+         * 用于批量导出角色列表数据
+         *
+         * @param roleIds
+         * @param response
+         */
     @PostMapping("/getExcel")
     public void getExcel(@RequestBody ArrayList<Integer> roleIds, HttpServletResponse response) throws IOException {
         List<SysRole> sysRoles = new ArrayList<>();

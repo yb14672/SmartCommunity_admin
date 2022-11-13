@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户信息表(SysUser)表控制层
@@ -29,6 +31,32 @@ public class SysUserController extends ApiController {
      */
     @Resource
     private SysUserService sysUserService;
+
+    /**
+     * 根据用户ID获取其信息和对应的角色
+     * @param userId
+     * @return
+     */
+    @GetMapping("/authRole/{userId}")
+    public Result authRole(@PathVariable("userId") Long userId){
+        return this.sysUserService.authRole(userId);
+    }
+
+    /**
+     * 根据用户ID修改其对应的角色列表
+     * @param map
+     * @return
+     */
+    @PutMapping("/authRole")
+    public Result insertAuthRole(@RequestBody Map<String,Object> map) throws Exception {
+        Integer userId = (Integer) map.get("userId");
+        String[] roleIds = map.get("roleIds").toString().split(",");
+        ArrayList<Long> roleIdList = new ArrayList<>();
+        for (String roleId : roleIds) {
+            roleIdList.add(Long.valueOf(roleId));
+        }
+        return this.sysUserService.insertAuthRole(userId,roleIdList);
+    }
 
     /**
      * 分页查询所有数据

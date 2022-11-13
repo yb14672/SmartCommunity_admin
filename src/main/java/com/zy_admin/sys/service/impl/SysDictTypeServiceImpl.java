@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dao.SysDictDataDao;
 import com.zy_admin.sys.dao.SysDictTypeDao;
-import com.zy_admin.sys.dto.SysDicDto;
+import com.zy_admin.sys.dto.SysDictDto;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
 import com.zy_admin.util.Result;
@@ -92,9 +92,9 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         pageable.setTotal(total);
         List<SysDictType> sysDictTypeList = this.baseMapper.selectDictByLimit(sysDictType, pageable, startTime, endTime);
 //        封装一个dto，把对象和分页放进去
-        SysDicDto sysDicDto = new SysDicDto(sysDictTypeList, startTime, endTime, pageable);
+        SysDictDto sysDictDto = new SysDictDto(sysDictTypeList, startTime, endTime, pageable);
 //        存到data数据里面
-        result.setData(sysDicDto);
+        result.setData(sysDictDto);
 //        返回信号
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;

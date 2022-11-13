@@ -19,5 +19,20 @@ public interface SysUserRoleDao extends BaseMapper<SysUserRole> {
      * @return
      */
     List<SysUserRole> getListByIds(@Param("roleIdList") List<Integer> roleIdList);
+
+    /**
+     * 根据用户ID删除所有角色
+     * @param userId
+     * @return
+     */
+    int deleteByUserId(@Param("userId") String userId);
+
+    /**
+     * 根据用户ID批量新增对应角色列表
+     * @param userId
+     * @param roleIdList
+     * @return
+     */
+    int insertBatchByRoleId(@Param("userId") String userId,@Param("roleIdList") List<Long> roleIdList);
 }
 

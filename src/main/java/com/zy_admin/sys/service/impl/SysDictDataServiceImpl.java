@@ -43,8 +43,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
 
     @Override
     public Result selectDictDataLimit(SysDictData sysDictData, Page page) {
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //新建查询条件对象
         LambdaQueryWrapper<SysDictData> queryWrapper = new LambdaQueryWrapper<>();
         //StringUtils.isNotEmpty(xxx)--当dictType不为空时，执行这个行sql

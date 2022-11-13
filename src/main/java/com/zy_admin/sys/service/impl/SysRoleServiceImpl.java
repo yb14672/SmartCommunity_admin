@@ -1,5 +1,7 @@
 package com.zy_admin.sys.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dao.SysRoleDao;
@@ -32,6 +34,27 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
     SysRoleMenuDao sysRoleMenuDao;
     @Resource
     SysUserRoleDao sysUserRoleDao;
+
+    /**
+     * 获取所有除去管理员以外的角色并分页
+     *
+     * @param page
+     * @return
+     */
+    @Override
+    public Result getRoleList(Page page) {
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
+        //因为超级管理员不允许分配，因此查询条件需要加上id不为1
+        queryWrapper.ne(SysRole::getRoleId,1);
+        queryWrapper.orderByAsc(SysRole::getRoleSort);
+        Page page1 = this.baseMapper.selectPage(page, queryWrapper);
+        if (page1.getSize() > 0) {
+            result.setData(page1);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
 
     @Override
     public List<SysRole> queryRoleById(ArrayList<Integer> roleIds) {
