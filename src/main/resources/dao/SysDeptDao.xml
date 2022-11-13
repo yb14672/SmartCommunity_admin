@@ -101,7 +101,10 @@
     <select id="hasUserDept" resultType="java.lang.Integer">
         select count(*)
         from sys_user
-        where dept_id = #{deptId}
+        where dept_id in
+        <foreach collection="idList" item="dept_id" separator="," open="(" close=")">
+            #{dept_id}
+        </foreach>
     </select>
     <!--查询父级id-->
     <select id="getDeptById" resultType="com.zy_admin.sys.entity.SysDept">

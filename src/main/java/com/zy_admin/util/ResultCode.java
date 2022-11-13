@@ -59,9 +59,11 @@ public enum ResultCode {
     DEPT_HAVE_USER(3017, "该部门有用户，不允许删除"),
     REPEAT_POST_CODE(3018,"岗位编码重复"),
     REPEAT_POST_NAME(3019,"岗位名称重复"),
-    DEPT_ASSIGNED(3020,"岗位已被分配，不允许删除" ),
+    POST_ASSIGNED(3020,"岗位已被分配" ),
     DEPTID_NOT_ITEM(3021,"不能更改父级为该类的子级"),
     ROLE_HAS_BEEN_ASSIGNED(3022,"角色已被分配，不能删除"),
+    DEPT_ASSIGNED(3023,"部门已被分配" ),
+
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

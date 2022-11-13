@@ -74,10 +74,10 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
     /**
      * 判断下面有没有用户
      *
-     * @param DeptId
+     * @param idList
      * @return
      */
-    Integer hasUserDept(long DeptId);
+    Integer hasUserDept(@Param("idList") List<Integer> idList);
 
     SysDept getDeptById(Long parentId);
 }

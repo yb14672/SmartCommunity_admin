@@ -11,8 +11,8 @@ import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -122,6 +122,19 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
                         return result;
                     }
                 }
+                //查询原本数据
+                SysDept dept = this.baseMapper.selectById(sysDept.getDeptId());
+                //若状态不等则修改了状态
+                if (!dept.getStatus().equals(sysDept.getStatus())) {
+                    List<Integer> idList = new ArrayList<Integer>();
+                    idList.add(Math.toIntExact(dept.getDeptId()));
+                    Integer hasUserDept = this.baseMapper.hasUserDept(idList);
+                    //判断是否该部门是否用户
+                    if (hasUserDept > 1) {
+                        result.setMeta(ResultTool.fail(ResultCode.DEPT_ASSIGNED));
+                        return result;
+                    }
+                }
                 String ancestors = ancestors(sysDept);
                 sysDept.setAncestors(ancestors);
                 sysDept.setUpdateTime(LocalDateTime.now().toString());
@@ -183,26 +196,22 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
     @Override
     public Result deleteDept(List<Integer> idList) {
         Result result = new Result();
-        //判断是删除单个还是多个
-        if (idList.size() == 1) {
-            //判断有没有子集
-            Integer hasChildDept = this.baseMapper.hasChildDept(idList.get(0));
-            //小于1说明没有子集，就可以删
-            if (hasChildDept < 1) {
-                //判断有没有用户
-                Integer hasUserDept = this.baseMapper.hasUserDept(idList.get(0));
-                //小于1说明没有用户，就可以删
-                if (hasUserDept < 1) {
-                    int i = this.baseMapper.deleteByIdList(idList);
-                    result.setData("删除成功，影响的行数：" + i);
-                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-                } else {
-                    result.setMeta(ResultTool.fail(ResultCode.DEPT_HAVE_USER));
-                }
+        //判断有没有子集
+        Integer hasChildDept = this.baseMapper.hasChildDept(idList.get(0));
+        //小于1说明没有子集，就可以删
+        if (hasChildDept < 1) {
+            //判断有没有用户
+            Integer hasUserDept = this.baseMapper.hasUserDept(idList);
+            //小于1说明没有用户，就可以删
+            if (hasUserDept < 1) {
+                int i = this.baseMapper.deleteByIdList(idList);
+                result.setData("删除成功，影响的行数：" + i);
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             } else {
-                result.setMeta(ResultTool.fail(ResultCode.DEPT_HAVE_CHILDREN));
+                result.setMeta(ResultTool.fail(ResultCode.DEPT_HAVE_USER));
             }
-            //多个就是批量删除
+        } else {
+            result.setMeta(ResultTool.fail(ResultCode.DEPT_HAVE_CHILDREN));
         }
         return result;
     }
