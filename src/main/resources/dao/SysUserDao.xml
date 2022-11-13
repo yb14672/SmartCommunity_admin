@@ -79,16 +79,16 @@
 
     <!--    个人中心，七表联查-->
     <select id="personal" resultMap="SysUserMap">
-        SELECT
-            *,r.role_id rId,r.status rStatus
-        FROM
-            sys_user u
-                LEFT JOIN sys_role_dept rd ON u.dept_id = rd.dept_id
-                LEFT JOIN sys_user_role ur on u.user_id = ur.user_id
-                LEFT JOIN sys_role r ON ur.role_id = r.role_id
-                LEFT JOIN sys_dept d on u.dept_id = d.dept_id
-                LEFT JOIN sys_user_post up on u.user_id = up.user_id
-                LEFT JOIN sys_post p on up.post_id = p.post_id
+        SELECT *,
+               r.role_id rId,
+               r.status  rStatus
+        FROM sys_user u
+                 LEFT JOIN sys_role_dept rd ON u.dept_id = rd.dept_id
+                 LEFT JOIN sys_user_role ur on u.user_id = ur.user_id
+                 LEFT JOIN sys_role r ON ur.role_id = r.role_id
+                 LEFT JOIN sys_dept d on u.dept_id = d.dept_id
+                 LEFT JOIN sys_user_post up on u.user_id = up.user_id
+                 LEFT JOIN sys_post p on up.post_id = p.post_id
         where u.user_id = #{userId}
     </select>
 
@@ -115,9 +115,34 @@
     </resultMap>
     <!--查询用户信息-->
     <sql id="selectUserInfo">
-        select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark,
-               d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status,
-               r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status
+        select u.user_id,
+               u.dept_id,
+               u.user_name,
+               u.nick_name,
+               u.email,
+               u.avatar,
+               u.phonenumber,
+               u.password,
+               u.sex,
+               u.status,
+               u.del_flag,
+               u.login_ip,
+               u.login_date,
+               u.create_by,
+               u.create_time,
+               u.remark,
+               d.dept_id,
+               d.parent_id,
+               d.dept_name,
+               d.order_num,
+               d.leader,
+               d.status as dept_status,
+               r.role_id,
+               r.role_name,
+               r.role_key,
+               r.role_sort,
+               r.data_scope,
+               r.status as role_status
         from sys_user u
                  left join sys_dept d on u.dept_id = d.dept_id
                  left join sys_user_role ur on u.user_id = ur.user_id
@@ -125,7 +150,9 @@
     </sql>
 
     <select id="getAvatarById" resultType="string">
-        SELECT avatar FROM sys_user WHERE user_id = #{userId}
+        SELECT avatar
+        FROM sys_user
+        WHERE user_id = #{userId}
     </select>
 
     <select id="queryById" resultMap="SysUserMap1">
@@ -135,10 +162,93 @@
 
     <!--查询单个-->
     <select id="queryByName" resultMap="SysUserMap1">
-        select
-            user_id, dept_id, user_name, nick_name, user_type, email, phonenumber, sex, avatar, password, status, del_flag, login_ip, login_date, create_by, create_time, update_by, update_time, remark
+        select user_id,
+               dept_id,
+               user_name,
+               nick_name,
+               user_type,
+               email,
+               phonenumber,
+               sex,
+               avatar,
+               password,
+               status,
+               del_flag,
+               login_ip,
+               login_date,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
         from sys_user
         where user_name = #{userName}
+    </select>
+
+    <resultMap type="com.zy_admin.sys.dto.UserRoleDto" id="UserRoleDtoMap">
+        <id property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="userType" column="user_type" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="phonenumber" column="phonenumber" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="status" column="user_status" jdbcType="VARCHAR"/>
+        <result property="delFlag" column="user_del" jdbcType="VARCHAR"/>
+        <result property="loginIp" column="login_ip" jdbcType="VARCHAR"/>
+        <result property="loginDate" column="login_date" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="user_create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="user_remark" jdbcType="VARCHAR"/>
+        <collection property="roleList" javaType="java.util.List" ofType="com.zy_admin.sys.dto.RoleDto">
+            <id property="roleId" column="role_id" jdbcType="INTEGER"/>
+            <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
+            <result property="roleKey" column="role_key" jdbcType="VARCHAR"/>
+            <result property="roleSort" column="role_sort" jdbcType="INTEGER"/>
+            <result property="dataScope" column="data_scope" jdbcType="VARCHAR"/>
+            <result property="menuCheckStrictly" column="menu_check_strictly" jdbcType="INTEGER"/>
+            <result property="deptCheckStrictly" column="dept_check_strictly" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="userHave" column="user_have" jdbcType="BOOLEAN"/>
+        </collection>
+    </resultMap>
+
+    <!--查询用户及其对应的角色-->
+    <select id="authRole" resultMap="UserRoleDtoMap">
+        select distinct r.role_id,
+                        r.role_name,
+                        r.role_key,
+                        r.role_sort,
+                        r.data_scope,
+                        r.menu_check_strictly,
+                        r.dept_check_strictly,
+                        r.status,
+                        r.del_flag,
+                        r.create_time,
+                        r.remark,
+                        u.*,
+                        u.status      user_status,
+                        u.del_flag    user_del,
+                        u.create_time user_create_time,
+                        u.remark      user_remark,
+                        true          user_have
+        from sys_role r
+                 left join sys_user_role ur on ur.role_id = r.role_id
+                 left join sys_user u on u.user_id = ur.user_id
+                 left join sys_dept d on u.dept_id = d.dept_id
+        WHERE r.del_flag = '0'
+          and ur.user_id = #{userId}
     </select>
 
     <update id="updateUser" parameterType="com.zy_admin.sys.entity.SysUser">

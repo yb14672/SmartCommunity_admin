@@ -48,7 +48,7 @@
     <select id="queryAll" resultMap="BaseResultMap">
         select
           user_id, role_id
-        from zy-community.sys_user_role
+        from sys_user_role
     </select>
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
@@ -70,11 +70,11 @@
         values ()
     </insert>
 
-    <insert id="insertBatch" keyProperty="userId" useGeneratedKeys="true">
-        insert into sys_user_role()
+    <insert id="insertBatchByRoleId">
+        insert into sys_user_role
         values
-        <foreach collection="entities" item="entity" separator=",">
-        ()
+        <foreach collection="roleIdList" item="role_id" separator=",">
+        (${userId},${role_id})
         </foreach>
     </insert>
 
@@ -97,7 +97,7 @@
     </update>
 
     <!--通过主键删除-->
-    <delete id="deleteById">
+    <delete id="deleteByUserId">
         delete from sys_user_role where user_id = #{userId}
     </delete>
 
