@@ -16,6 +16,18 @@
     </properties>
 
     <dependencies>
+        <!--导入导出的依赖-->
+        <!--POI文件流处理-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>4.1.0</version>
+        </dependency>
         <!--导入aspecj依赖-->
         <dependency>
             <groupId>org.aspectj</groupId>
