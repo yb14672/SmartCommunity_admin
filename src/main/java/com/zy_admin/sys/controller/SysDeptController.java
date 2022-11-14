@@ -54,7 +54,7 @@ public class SysDeptController extends ApiController {
      */
     @PostMapping("/insertDept")
     public Result insertDept(@RequestBody SysDept sysDept, HttpServletRequest request) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //从token获值
         try {
             SysUser user = requestUtil.getUser(request);
@@ -98,7 +98,7 @@ public class SysDeptController extends ApiController {
     @DeleteMapping("/deleteDept")
     public Result deleteDept(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<Integer>();
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             for (String str : idList) {
                 //把选中的id传到集合里面

@@ -2,19 +2,43 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy_admin.sys.dao.SysUserDao">
     <!--通过主键删除-->
-    <delete id="deleteByIdList">
+    <update id="deleteByIdList">
         update sys_user set del_flag = 2 where user_id in
         <foreach collection="idList" item="userId" separator="," open="(" close=")">
             #{userId}
         </foreach>
-    </delete>
-
+    </update>
     <!--用户列表分页，条件搜索-->
-    <select id="selectUsers"  resultType="com.zy_admin.sys.dto.SysUserDeptDto">
-        SELECT *,u.user_id userId,d.dept_Id deptId from sys_user u left join sys_dept d on u.dept_id=d.dept_id where u.del_flag =
-        '0'
+    <resultMap type="com.zy_admin.sys.dto.SysUserDeptDto" id="SysUserDeptDtoMap">
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="userType" column="user_type" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="phonenumber" column="phonenumber" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
+        <result property="loginIp" column="login_ip" jdbcType="VARCHAR"/>
+        <result property="loginDate" column="login_date" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <association property="dept" javaType="com.zy_admin.sys.entity.SysDept" autoMapping="true">
+            <id column="dept_id" property="deptId" jdbcType="INTEGER"/>
+        </association>
+    </resultMap>
+
+    <select id="selectUsers"  resultMap="SysUserDeptDtoMap">
+        SELECT *,u.user_id userId,d.dept_Id deptId from sys_user u
+        left join sys_dept d on u.dept_id=d.dept_id where u.del_flag = '0'
         <if test="sysUser.deptId != null and sysUser.deptId != 0">
-            and u.dept_id = #{sysUser.deptId}
+            AND (u.dept_id = #{sysUser.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(#{sysUser.deptId}, ancestors) ))
         </if>
         <if test="sysUser.userName != null and sysUser.userName != ''">
             and u.user_name like concat('%', #{sysUser.userName}, '%')
@@ -42,7 +66,7 @@
         from sys_user u left join sys_dept d on u.dept_id=d.dept_id where u.del_flag =
         '0'
         <if test="sysUser.deptId != null and sysUser.deptId != 0">
-            and u.dept_id = #{sysUser.deptId}
+            AND (u.dept_id = #{sysUser.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(#{sysUser.deptId}, ancestors) ))
         </if>
         <if test="sysUser.userName != null and sysUser.userName != ''">
             and u.user_name like concat('%', #{sysUser.userName}, '%')
@@ -60,7 +84,6 @@
             and u.create_time &lt;= #{endTime}
         </if>
     </select>
-
     <resultMap type="com.zy_admin.sys.dto.SysUserDto" id="SysUserMap">
         <association property="sysUser" javaType="com.zy_admin.sys.entity.SysUser" autoMapping="true">
             <id column="user_id" property="userId" jdbcType="INTEGER"/>
@@ -76,6 +99,7 @@
             <id column="post_id" property="postId" jdbcType="INTEGER"/>
         </association>
     </resultMap>
+
 
     <!--    个人中心，七表联查-->
     <select id="personal" resultMap="SysUserMap">
@@ -113,7 +137,7 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
-    <!--查询用户信息-->
+
     <sql id="selectUserInfo">
         select u.user_id,
                u.dept_id,
@@ -184,6 +208,21 @@
         from sys_user
         where user_name = #{userName}
     </select>
+    <!--    勾选的导出-->
+    <select id="queryUserById" resultType="com.zy_admin.sys.entity.SysUser">
+        select * from sys_user
+        <if test="list!=null">
+            where user_id in (
+            <foreach collection="list" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+    </select>
+<!--    所有的都导出-->
+    <select id="getUserLists" resultType="com.zy_admin.sys.entity.SysUser">
+        select * from sys_user where del_flag != 2
+    </select>
 
     <resultMap type="com.zy_admin.sys.dto.UserRoleDto" id="UserRoleDtoMap">
         <id property="userId" column="user_id" jdbcType="INTEGER"/>
@@ -251,7 +290,6 @@
           and ur.user_id = #{userId}
     </select>
 
-
     <update id="updateUser" parameterType="com.zy_admin.sys.entity.SysUser">
         update sys_user
         <set>
@@ -269,6 +307,48 @@
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null">remark = #{remark},</if>
             update_time = sysdate()
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <insert id="insertUser" keyProperty="userId" useGeneratedKeys="true">
+        insert into sys_user(dept_id,user_name,nick_name,email,phonenumber,sex,password,status,create_by,create_time,update_by,update_time)
+        values (#{deptId},#{userName},#{nickName},#{email},#{phonenumber},#{sex},#{password},#{status},#{createBy},#{createTime},#{updateBy},#{updateTime})
+
+    </insert>
+
+    <insert id="insertRole">
+        insert into sys_user_role(user_id,role_id)
+        values
+        <foreach collection="roleIds" item="roleId" separator=",">
+            (#{id},#{roleId})
+        </foreach>
+    </insert>
+
+    <insert id="insertPost">
+        insert into sys_user_post(user_id,post_id)
+        values
+        <foreach collection="postIds" item="postId" separator=",">
+            (#{id},#{postId})
+        </foreach>
+    </insert>
+
+    <update id="adminUpdateUser" parameterType="com.zy_admin.sys.dto.UserDto">
+        update sys_user
+        <set>
+            <if test="deptId != null and deptId != 0">dept_id = #{deptId},</if>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
+            <if test="email != null and email != ''">email = #{email},</if>
+            <if test="phonenumber != null and phonenumber != ''">phonenumber = #{phonenumber},</if>
+            <if test="sex != null and sex != ''">sex = #{sex},</if>
+            <if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="loginIp != null and loginIp != ''">login_ip = #{loginIp},</if>
+            <if test="loginDate != null">login_date = #{loginDate},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
         </set>
         where user_id = #{userId}
     </update>

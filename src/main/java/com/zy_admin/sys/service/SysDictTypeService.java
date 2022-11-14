@@ -29,6 +29,7 @@ public interface SysDictTypeService extends IService<SysDictType> {
      * @return
      */
     List<SysDictType> getDictLists();
+
     //    分页查询
     Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime);
 

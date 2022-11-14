@@ -3,6 +3,7 @@ package com.zy_admin.common.interceptor;
 
 import com.alibaba.fastjson.JSON;
 import com.zy_admin.sys.service.RedisService;
+import com.zy_admin.util.JwtUtils;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
@@ -27,8 +28,15 @@ public class AuthInterceptor implements HandlerInterceptor {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=utf-8");
         String token = request.getHeader("token");
-        if ("OPTIONS".equals(request.getMethod().toUpperCase())) {
+
+        if (request.getMethod().toUpperCase().equals("OPTIONS")) {
             return true;
+        }
+        //验证token的有效性
+        if (!JwtUtils.checkToken(token)){
+            System.err.println(111);
+            response.getWriter().print(JSON.toJSONString(new Result(null, ResultTool.fail(ResultCode.USER_TOKEN_INVALID))));
+            return false;
         }
         if (StringUtils.isEmpty(token)) {
             response.getWriter().print(JSON.toJSONString(new Result(null, ResultTool.fail(ResultCode.USER_LOGIN_EXPIRED))));

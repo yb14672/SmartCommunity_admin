@@ -67,12 +67,18 @@ public interface SysPostService extends IService<SysPost> {
      * 获取所有角色
      * @return
      */
-    List<SysPost> getRoleLists();
+    List<SysPost> getPostLists();
 
 
+    /**
+     * 批量删除岗位
+     * @param ids
+     * @return
+     */
     Result deletePost(List<Integer> ids);
 
 
+    Result getAllPost();
 
 }
 

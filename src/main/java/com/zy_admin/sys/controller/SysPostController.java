@@ -46,6 +46,13 @@ public class SysPostController extends ApiController {
     @Resource
     private RequestUtil requestUtil;
 
+
+    @GetMapping("/getAllPost")
+    public Result getAllPost()
+    {
+        Result allPost = sysPostService.getAllPost();
+        return allPost;
+    }
     /**
      * 分页查询所有数据
      *
@@ -123,7 +130,6 @@ public class SysPostController extends ApiController {
         sysPost.setCreateTime(LocalDateTime.now().toString());
         sysPost.setCreateBy(user.getUserName());
         Result result = this.sysPostService.addPost(sysPost);
-
         return result;
     }
 
@@ -135,14 +141,13 @@ public class SysPostController extends ApiController {
         return this.sysPostService.update(sysPost);
     }
 
-
     @PostMapping("/getExcel")
     public void getExcel(@RequestBody ArrayList<Integer> postIds, HttpServletResponse response) throws IOException {
         List<SysPost> sysPosts = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
         //执行查询角色列表的sql语句,但不包括del_flag为2的
         if (postIds == null || postIds.size() == 0) {
-            sysPosts = sysPostService.getRoleLists();
+            sysPosts = sysPostService.getPostLists();
         } else {
             //执行查询角色列表的sql语句
             sysPosts = sysPostService.queryRoleById(postIds);

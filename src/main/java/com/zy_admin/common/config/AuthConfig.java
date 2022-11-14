@@ -23,6 +23,6 @@ public class AuthConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         //addPathPatterns：哪些路径下的会被拦截
         //excludePathPatterns：哪些路径下不会被拦截
-        registry.addInterceptor(initAuthInterceptor()).addPathPatterns("/**").excludePathPatterns("/**/login");
+        registry.addInterceptor(initAuthInterceptor()).addPathPatterns("/**").excludePathPatterns("/**/login").excludePathPatterns("/upload");
     }
 }

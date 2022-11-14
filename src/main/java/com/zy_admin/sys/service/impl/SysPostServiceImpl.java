@@ -11,7 +11,6 @@ import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,16 +23,12 @@ import java.util.List;
 @Service("sysPostService")
 public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> implements SysPostService {
 
-    @Resource
-    private SysPostDao sysPostDao;
-
     @Override
     public Result selectPostByLimit(SysPost sysPost, Pageable pageable) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //获取总行数
         long total = this.baseMapper.count(sysPost);
-        //总页数
-        long pages = 0L;
+        long pages = 0;
         if (total > 0) {
             pages = total % pageable.getPageSize() == 0 ? total / pageable.getPageSize() : total / pageable.getPageSize() + 1;
             pageable.setPages(pages);
@@ -45,56 +40,63 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
         } else {
             pageable.setPageNum(0);
         }
-
         pageable.setTotal(total);
         List<SysPost> sysPosts = this.baseMapper.queryAllByLimit(sysPost, pageable);
-        System.out.println(sysPosts.toString());
         PostDto postDto = new PostDto(sysPosts, pageable);
         result.setData(postDto);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-
         return result;
-
-
     }
 
     @Override
     public Result addPost(SysPost sysPost) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         if (checkPostCode(0, sysPost)) {
             if (checkPostName(0, sysPost)) {
                 this.baseMapper.insert(sysPost);
                 result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
-                return result;
 
             } else {
                 result.setMeta(ResultTool.fail(ResultCode.REPEAT_POST_NAME));
-                return result;
             }
         } else {
             result.setMeta(ResultTool.fail(ResultCode.REPEAT_POST_CODE));
-            return result;
         }
+        return result;
     }
 
     @Override
     public Result update(SysPost sysPost) {
-        Result result = new Result();
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        SysPost oldPost = this.baseMapper.queryPostById(sysPost.getPostId());
+        if (sysPost.getPostName().equals(oldPost.getPostName())&&sysPost.getPostCode().equals(oldPost.getPostCode())&&sysPost.getPostSort().equals(oldPost.getPostSort())&&sysPost.getStatus().equals(oldPost.getStatus())){
+            result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
+            return result;
+        }
         if (checkPostCode(1, sysPost)) {
             if (checkPostName(1, sysPost)) {
+                //修改前的数据
+                SysPost post = this.baseMapper.selectPostById(sysPost.getPostId()+"");
+                //判断是否有更改状态，若有则去查询
+                if(!post.getStatus().equals(sysPost.getStatus())) {
+                    List<Integer> ids=new ArrayList<Integer>();
+                    ids.add(Math.toIntExact(post.getPostId()));
+                    List<Integer> postIds = baseMapper.getPostIdFromUserPost(ids);
+                    //判断在用户表中是否有配分配，若有则提示
+                    if (postIds.size() > 0) {
+                        result.setMeta(ResultTool.fail(ResultCode.POST_ASSIGNED));
+                        return result;
+                    }
+                }
                 this.baseMapper.updateById(sysPost);
-                result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
-                return result;
-
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             } else {
                 result.setMeta(ResultTool.fail(ResultCode.REPEAT_POST_NAME));
-                return result;
             }
         } else {
             result.setMeta(ResultTool.fail(ResultCode.REPEAT_POST_CODE));
-            return result;
         }
-
+        return result;
     }
 
 
@@ -141,6 +143,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
     }
 
 
+
+
     @Override
     public List<SysPost> queryRoleById(ArrayList<Integer> roleIds) {
         if (roleIds != null) {
@@ -150,20 +154,29 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
     }
 
     @Override
-    public List<SysPost> getRoleLists() {
-        return this.baseMapper.getRoleLists();
+    public List<SysPost> getPostLists() {
+        return this.baseMapper.getPostLists();
     }
 
     @Override
     public Result deletePost(List<Integer> ids) {
-        Result result = new Result();
-        List<Integer> postIds = sysPostDao.getPostIdFromUserPost(ids);
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<Integer> postIds = baseMapper.getPostIdFromUserPost(ids);
         if (postIds.size() > 0) {
-            result.setMeta(ResultTool.fail(ResultCode.DEPT_ASSIGNED));
+            result.setMeta(ResultTool.fail(ResultCode.POST_ASSIGNED));
         } else {
             this.baseMapper.deletePost(ids);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
+        return result;
+    }
+
+    @Override
+    public Result getAllPost() {
+        Result result = new Result();
+        List<SysPost> postLists = this.baseMapper.getPostLists();
+        result.setData(postLists);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
 

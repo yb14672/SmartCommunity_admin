@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,8 +23,6 @@ import java.util.List;
  */
 @Service("sysDeptService")
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> implements SysDeptService {
-    @Resource
-    private SysDeptDao sysDeptDao;
 
     /**
      * 根据条件查询部门数据
@@ -35,7 +32,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
      */
     @Override
     public Result getDeptList(SysDept sysDept) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
 
             List<DeptTreeDto> deptList = this.baseMapper.getDeptList(sysDept);
@@ -43,12 +40,10 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             result.setData(tree.buildTree());
 
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-            System.out.println(result);
             return result;
         } catch (Exception e) {
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
-            System.out.println(result);
             return result;
         }
     }
@@ -61,7 +56,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
      */
     @Override
     public Result insertDept(SysDept sysDept) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             //判断部门名是否为空
             if (sysDept.getDeptName() == null || "".equals(sysDept.getDeptName())) {
@@ -76,7 +71,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             }
             String ancestors = ancestors(sysDept);
             sysDept.setAncestors(ancestors);
-            sysDeptDao.insertDept(sysDept);
+            baseMapper.insertDept(sysDept);
             if (sysDept.getDeptId() != null) {
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             }
@@ -93,8 +88,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             return result;
         }
     }
-
-
     /**
      * 修改部门
      *
@@ -106,48 +99,53 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
         System.out.println(sysDept);
         Result result = new Result();
         try {
-            List<Long> deptIdList = this.sysDeptDao.getDeptIdList(sysDept.getDeptId());
+            List<Long> deptIdList = this.baseMapper.getDeptIdList(sysDept.getDeptId());
             //判断修改的的父级是否为自己的子级
             for (Long deptId : deptIdList) {
-                if (sysDept.getParentId().equals(deptId)){
+                if (sysDept.getParentId().equals(deptId)) {
                     result.setMeta(ResultTool.fail(ResultCode.DEPTID_NOT_ITEM));
                     return result;
                 }
             }
-            //判断菜单的父类是否自己
-            if (!sysDept.getParentId().equals(sysDept.getDeptId())) {
-                //因为菜单名为必填字段，所以判断是否为空
-                if (sysDept.getDeptName() == null || "".equals(sysDept.getDeptName())) {
-                    result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
-                    return result;
-                } else {
-                    //判断菜单名称是否唯一
-                    if (checkDeptNameUnique(1, sysDept)) {
-                    } else {
-                        result.setMeta(ResultTool.fail(ResultCode.REPEAT_DEPTNAME));
+            //判断是否没有修改就提交
+            SysDept DeptById =this.baseMapper.getDeptByDeptId(sysDept.getDeptId()+"");
+            if (!checkEquals(sysDept, DeptById)) {
+                //判断菜单的父类是否自己
+                if (!sysDept.getParentId().equals(sysDept.getDeptId())) {
+                    //因为菜单名为必填字段，所以判断是否为空
+                    if (sysDept.getDeptName() == null || "".equals(sysDept.getDeptName())) {
+                        result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
                         return result;
+                    } else {
+                        //判断菜单名称是否唯一
+                        if (checkDeptNameUnique(1, sysDept)) {
+                        } else {
+                            result.setMeta(ResultTool.fail(ResultCode.REPEAT_DEPTNAME));
+                            return result;
+                        }
                     }
-                }
-                String ancestors = ancestors(sysDept);
-                sysDept.setAncestors(ancestors);
-                sysDept.setUpdateTime(LocalDateTime.now().toString());
-                int i = this.baseMapper.updateDept(sysDept);
-                if (i == 1) {
-                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-                }
-            } else {
-                result.setMeta(ResultTool.fail(ResultCode.PARENT_CLASS_CANNOT_BE_ITSELF));
+                    String ancestors = ancestors(sysDept);
+                    sysDept.setAncestors(ancestors);
+                    sysDept.setUpdateTime(LocalDateTime.now().toString());
+                    int i = this.baseMapper.updateDept(sysDept);
+                    if (i == 1) {
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                    }
+                } else {
+                    result.setMeta(ResultTool.fail(ResultCode.PARENT_CLASS_CANNOT_BE_ITSELF));
+                }}else {
+                result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
             }
-        } catch (NullPointerException e) {
+        } catch(NullPointerException e){
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.PARAM_IS_BLANK));
-        } catch (ClassCastException e) {
+        } catch(ClassCastException e){
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.PARAM_TYPE_ERROR));
-        } catch (Exception e) {
+        } catch(Exception e){
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
-        } finally {
+        } finally{
             return result;
         }
     }
@@ -179,7 +177,31 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
         }
         return false;
     }
-
+    /**
+     * 验证没有修改
+     * @param updateDept
+     * @param originalDept
+     * @return
+     */
+    @Override
+    public Boolean checkEquals (SysDept updateDept, SysDept originalDept){
+        if (updateDept.getParentId().equals(originalDept.getParentId())) {
+            if (updateDept.getDeptName().equals(originalDept.getDeptName())) {
+                if (updateDept.getOrderNum().equals(originalDept.getOrderNum())) {
+                    if (updateDept.getLeader().equals(originalDept.getLeader())) {
+                        if (updateDept.getPhone().equals(originalDept.getPhone())) {
+                            if (updateDept.getEmail().equals(originalDept.getEmail())) {
+                                if (updateDept.getStatus().equals(originalDept.getStatus())) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
     /**
      * 删除部门
      *
@@ -188,29 +210,23 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
      */
     @Override
     public Result deleteDept(List<Integer> idList) {
-        Result result = new Result();
-        //判断是删除单个还是多个
-        if (idList.size() == 1) {
-            //判断有没有子集
-            Integer hasChildDept = this.baseMapper.hasChildDept(idList.get(0));
-            System.err.println(hasChildDept);
-            //小于1说明没有子集，就可以删
-            if (hasChildDept < 1) {
-                //判断有没有用户
-                Integer hasUserDept = this.baseMapper.hasUserDept(Collections.singletonList(idList.get(0)));
-                System.err.println(hasUserDept);
-                //小于1说明没有用户，就可以删
-                if (hasUserDept < 1) {
-                    int i = this.baseMapper.deleteByIdList(idList);
-                    result.setData("删除成功，影响的行数：" + i);
-                    result.setMeta(ResultTool.success(ResultTool.success(ResultCode.SUCCESS)));
-                } else {
-                    result.setMeta(ResultTool.fail(ResultCode.DEPT_HAVE_USER));
-                }
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        //判断有没有子集
+        Integer hasChildDept = this.baseMapper.hasChildDept(idList.get(0));
+        //小于1说明没有子集，就可以删
+        if (hasChildDept < 1) {
+            //判断有没有用户
+            Integer hasUserDept = this.baseMapper.hasUserDept(idList);
+            //小于1说明没有用户，就可以删
+            if (hasUserDept < 1) {
+                int i = this.baseMapper.deleteByIdList(idList);
+                result.setData("删除成功，影响的行数：" + i);
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             } else {
-                result.setMeta(ResultTool.fail(ResultCode.DEPT_HAVE_CHILDREN));
+                result.setMeta(ResultTool.fail(ResultCode.DEPT_HAVE_USER));
             }
-            //多个就是批量删除
+        } else {
+            result.setMeta(ResultTool.fail(ResultCode.DEPT_HAVE_CHILDREN));
         }
         return result;
     }
@@ -222,12 +238,12 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
      * @return
      */
     private String ancestors(SysDept sysdept) {
-        SysDept parentDept = this.sysDeptDao.getDeptById(sysdept.getParentId());
-        if (sysdept.getParentId() == 0){
-            return "0";
-        }else{
-            return parentDept.getAncestors()+","+parentDept.getDeptId();
+        Long parentId = sysdept.getParentId();
+        if (parentId != 0) {
+            SysDept parentDept = this.baseMapper.getDeptById(parentId);
+            return parentDept.getAncestors() + "," + parentDept.getDeptId();
         }
+        return "0";
     }
 }
 
