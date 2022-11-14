@@ -16,12 +16,32 @@ import java.util.List;
  */
 public interface SysDeptDao extends BaseMapper<SysDept> {
     /**
+     * 根据id查询出他的子集
+     * @param deptId
+     * @return
+     */
+    List<Long> getDeptIdList(Integer deptId);
+
+    /**
+     * 根据id查数据
+     * @param deptId
+     * @return
+     */
+    SysDept getDeptByDeptId(String deptId);
+    /**
      * 根据条件查部门
      *
      * @param sysDept
      * @return
      */
     List<DeptTreeDto> getDeptList(SysDept sysDept);
+
+    /**
+     * 根据父类Id查询出父级
+     * @param parentId
+     * @return
+     */
+    SysDept getDeptById(Long parentId);
 
     /**
      * 添加部门
@@ -81,11 +101,5 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      */
     Integer hasUserDept(@Param("idList") List<Integer> idList);
 
-    /**
-     * 根据ID获取部门
-     * @param deptId
-     * @return
-     */
-    SysDept getDeptById(Long deptId);
 }
 

@@ -13,7 +13,14 @@ import java.util.List;
  * @since 2022-11-01 19:49:34
  */
 public interface SysDeptService extends IService<SysDept> {
-
+    /**
+     * 检查两个data是否一致
+     *
+     * @param updateDept
+     * @param originalDept
+     * @return
+     */
+    Boolean checkEquals(SysDept updateDept, SysDept originalDept);
     /**
      * 根据条件查询部门
      * @param sysDept

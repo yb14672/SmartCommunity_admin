@@ -18,12 +18,15 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 删除用户
+     *
      * @param idList
      * @return
      */
     Result deleteUserById(List<Integer> idList);
+
     /**
      * 查询所有用户
+     *
      * @param pageable
      * @param sysUser
      * @param startTime
@@ -31,8 +34,10 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime);
+
     /**
      * 查询头像
+     *
      * @param userId
      * @return
      */
@@ -40,6 +45,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 登录
+     *
      * @param sysUser
      * @return
      */
@@ -47,6 +53,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 根据账号查询用户
+     *
      * @param userName
      * @return
      */
@@ -54,6 +61,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 根据ID查询用户
+     *
      * @param id
      * @return
      */
@@ -61,6 +69,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 根据用户ID获取用户所有信息
+     *
      * @param userId
      * @return
      */
@@ -84,6 +93,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 查询所有用户
+     *
      * @param page
      * @param sysUser
      * @return
@@ -92,6 +102,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 根据用户ID获取其信息和对应的角色
+     *
      * @param userId
      * @return
      */
@@ -99,6 +110,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 根据用户ID修改其对应的角色列表
+     *
      * @param userId
      * @param roleIdList
      * @return

@@ -18,12 +18,13 @@ import java.util.List;
  * @since 2022-11-01 19:49:42
  */
 public interface SysUserDao extends BaseMapper<SysUser> {
+
     /**
      * 根据id删除用户
      * @param idList
      * @return
      */
-    int deleteByIdList(List<Integer> idList);
+    int deleteByIdList(@Param("idList") List<Integer> idList);
     /**
      * 分页查询
      * @param sysUser
