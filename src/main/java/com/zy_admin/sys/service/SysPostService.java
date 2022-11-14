@@ -80,6 +80,5 @@ public interface SysPostService extends IService<SysPost> {
 
     Result getAllPost();
 
-
 }
 

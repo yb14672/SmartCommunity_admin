@@ -88,5 +88,9 @@ public interface SysPostDao extends BaseMapper<SysPost> {
      * @return
      */
     int deletePost(@Param("idList") List<Integer> sysPosts);
+
+
+    @Select("select * from sys_post where post_id = #{postId}")
+    SysPost queryPostById(long postId);
 }
 

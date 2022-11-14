@@ -68,6 +68,11 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
     @Override
     public Result update(SysPost sysPost) {
         Result result = new Result();
+        SysPost oldPost = this.baseMapper.queryPostById(sysPost.getPostId());
+        if (sysPost.getPostName().equals(oldPost.getPostName())&&sysPost.getPostCode().equals(oldPost.getPostCode())&&sysPost.getPostSort().equals(oldPost.getPostSort())&&sysPost.getStatus().equals(oldPost.getStatus())){
+            result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
+            return result;
+        }
         if (checkPostCode(1, sysPost)) {
             if (checkPostName(1, sysPost)) {
                 //修改前的数据
