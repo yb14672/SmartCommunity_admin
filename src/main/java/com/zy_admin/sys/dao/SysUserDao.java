@@ -9,7 +9,6 @@ import com.zy_admin.sys.entity.SysUser;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,18 +18,7 @@ import java.util.List;
  * @since 2022-11-01 19:49:42
  */
 public interface SysUserDao extends BaseMapper<SysUser> {
-    /**
-     * 勾选用户获取excel
-     * @param userIds
-     * @return
-     */
-    List<SysUser> queryUserById(@Param("list") ArrayList<Integer> userIds);
 
-    /**
-     * 所有用户获取excel
-     * @return
-     */
-    List<SysUser> getUserLists();
 
     /**
      * 查询所有
@@ -96,5 +84,13 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @return
      */
     UserRoleDto authRole(Long userId);
+
+
+    /**
+     * 根据id删除用户
+     * @param idList
+     * @return
+     */
+    int deleteByIdList(List<Integer> idList);
 }
 

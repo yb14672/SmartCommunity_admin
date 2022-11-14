@@ -90,5 +90,12 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime);
+
+    /**
+     * 删除用户
+     * @param idList
+     * @return
+     */
+    Result deleteUserById(List<Integer> idList);
 }
 

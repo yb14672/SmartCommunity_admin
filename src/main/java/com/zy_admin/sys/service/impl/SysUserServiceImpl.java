@@ -33,6 +33,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Resource
     private SysUserRoleDao sysUserRoleDao;
     @Resource
+    private SysUserDao sysUserDao;
+    @Resource
     private RedisService redisService;
 
     /**
@@ -224,5 +226,25 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
+
+    /**
+     * 删除用户
+     * @param idList
+     * @return
+     */
+    @Override
+    public Result deleteUserById(List<Integer> idList) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        //若等于0则此次删除的用户
+            int i = this.baseMapper.deleteByIdList(idList);
+            if (i >= 1) {
+                result.setData("删除成功，影响的行数：" + i);
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }else{
+            result.setMeta(ResultTool.fail(ResultCode.ROLE_HAS_BEEN_ASSIGNED));
+        }
+        return result;
+    }
+
 }
 

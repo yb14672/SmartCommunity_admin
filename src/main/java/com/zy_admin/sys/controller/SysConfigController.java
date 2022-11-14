@@ -27,7 +27,6 @@ public class SysConfigController extends ApiController {
     private SysConfigService sysConfigService;
 
 
-
     /**
      * 通过主键查询单条数据
      *
