@@ -97,6 +97,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
 // 获取sheet表总行数\总列数
         Integer rowNumber = sheet.getLastRowNum();
         Integer emptyRow = 0;
+        String errorMsg="";
         for (int i = 1; i < rowNumber + 1; i++) {
 // 判断当前行是否为空行
             if (!judgeRow(sheet.getRow(i))) {
@@ -105,43 +106,62 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             }
             SysUser userEntity = new SysUser();
 // 添加姓名
-            checkRequire(i, 0, sheet.getRow(i));
-            userEntity.setUserName(getCellValue(sheet.getRow(i).getCell(0)));
+            checkRequire(i, 1, sheet.getRow(i));
+            userEntity.setUserName(getCellValue(sheet.getRow(i).getCell(1)));
+// 添加邮箱
+            userEntity.setEmail(getCellValue(sheet.getRow(i).getCell(3)));
+// 验证用户名重复
+            if (!checkUserName(i, 1, getCellValue(sheet.getRow(i).getCell(1)))) {
+                result.setMeta(ResultTool.fail(ResultCode.USERNAME_REPEAT));
+                errorMsg += "第"+i+"条用户名重复,";
+            }
+// 验证邮箱重复
+            if (!checkEmail(i, 3, getCellValue(sheet.getRow(i).getCell(3)))) {
+                result.setMeta(ResultTool.fail(ResultCode.EMAIL_REPEAT));
+                errorMsg += "第"+i+"条邮箱重复,";
+            }
 //状态为0能渲染
             userEntity.setDelFlag("0");
 //添加昵称
-            userEntity.setNickName(getCellValue(sheet.getRow(i).getCell(1)));
-// 添加手机号 colNum是列数
-            if (!checkRequire(i, 3, sheet.getRow(i))) {
-                result.setMeta(ResultTool.fail(ResultCode.DATA_REPEAT));
-                return result;
-            }
-            if (!checkRepeat(i, 3, phoneNumber, getCellValue(sheet.getRow(i).getCell(3)))) {
-                result.setMeta(ResultTool.fail(ResultCode.FILE_REPEAT));
-                return result;
-            }
-            if (!checkPhoneNumber(i, 3, getCellValue(sheet.getRow(i).getCell(3)))) {
-                result.setMeta(ResultTool.fail(ResultCode.USER_TELREPEAT));
-                return result;
-            }
-            userEntity.setPhonenumber(getCellValue(sheet.getRow(i).getCell(3)));
+            userEntity.setNickName(getCellValue(sheet.getRow(i).getCell(2)));
 // 添加部门
-            if (sheet.getRow(i).getCell(2) != null && sheet.getRow(i).getCell(2).getCellType() != CellType.BLANK) {
+            userEntity.setDeptId(Long.valueOf(getCellValue(sheet.getRow(i).getCell(0))));
+// 添加手机号 colNum是列数
+            if (!checkRequire(i, 4, sheet.getRow(i))) {
+                result.setMeta(ResultTool.fail(ResultCode.DATA_REPEAT));
+            }
+            if (!checkRepeat(i, 4, phoneNumber, getCellValue(sheet.getRow(i).getCell(4)))) {
+                result.setMeta(ResultTool.fail(ResultCode.FILE_REPEAT));
+            }
+            if (!checkPhoneNumber(i, 4, getCellValue(sheet.getRow(i).getCell(4)))) {
+                result.setMeta(ResultTool.fail(ResultCode.USER_TELREPEAT));
+                errorMsg += "第"+i+"条电话号重复,";
+            }
+//            思路:拿一个map去存键值，键是索引，值是内容，然后去遍历通过索引去取值，然后再前端遍历
+
+            userEntity.setPhonenumber(getCellValue(sheet.getRow(i).getCell(4)));
+// 添加部门
+            if (sheet.getRow(i).getCell(0) != null && sheet.getRow(i).getCell(0).getCellType() != CellType.BLANK) {
 //                QueryWrapper 是mybatisplus的构造器，
                 QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
-                queryWrapper.eq("dept_name", getCellValue(sheet.getRow(i).getCell(2)));
+                queryWrapper.eq("dept_name", getCellValue(sheet.getRow(i).getCell(0)));
                 List<SysDept> list = sysDeptService.list(queryWrapper);
                 if (list.size() != 0) {
                     userEntity.setDeptId(list.get(0).getDeptId());
                 }
             }
 // 添加昵称
-            if (sheet.getRow(i).getCell(1) != null) {
-                userEntity.setNickName(getCellValue(sheet.getRow(i).getCell(1)));
+            if (sheet.getRow(i).getCell(2) != null) {
+                userEntity.setNickName(getCellValue(sheet.getRow(i).getCell(2)));
             }
             userEntity.setPassword("88888888");
             userEntityList.add(userEntity);
-            phoneNumber.add(getCellValue(sheet.getRow(i).getCell(3)));
+            System.out.println("userEntityList"+userEntityList);
+            phoneNumber.add(getCellValue(sheet.getRow(i).getCell(4)));
+        }
+        if(!"".equals(errorMsg)){
+            result.setData(errorMsg);
+            return result;
         }
         if (emptyRow != rowNumber - 1) {
             if (sysUserService.saveBatch(userEntityList)) {
@@ -164,6 +184,38 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("phonenumber", stringCellValue);
         System.out.println("sysUserService.list(queryWrapper).size()" + sysUserService.list(queryWrapper).size());
+        if (sysUserService.list(queryWrapper).size() > 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 验证用户名不能重复
+     *
+     * @param rowNum
+     * @param colNum
+     * @param stringCellValue
+     */
+    private boolean checkUserName(int rowNum, int colNum, String stringCellValue) {
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_name", stringCellValue);
+        if (sysUserService.list(queryWrapper).size() > 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 验证邮箱不能重复
+     *
+     * @param rowNum
+     * @param colNum
+     * @param stringCellValue
+     */
+    private boolean checkEmail(int rowNum, int colNum, String stringCellValue) {
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("email", stringCellValue);
         if (sysUserService.list(queryWrapper).size() > 0) {
             return false;
         }
