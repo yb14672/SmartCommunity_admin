@@ -22,7 +22,6 @@ public enum ResultCode {
     PARAM_IS_BLANK(1002, "参数为空"),
     PARAM_TYPE_ERROR(1003, "参数类型错误"),
     PARAM_NOT_COMPLETE(1004, "参数缺失"),
-    NO_CHANGE_IN_PARAMENTERS(1005,"参数没有变化"),
     NO_CHANGE_IN_PARAMETER(1005,"参数没有变化"),
 
     /* 用户错误 */
@@ -39,8 +38,6 @@ public enum ResultCode {
     USER_WRONG_ACCOUNT_OR_PASSWORD(2010, "账号或者密码不正确"),
     USER_AVATAR_UPLOAD_FAILED(2011, "图片上传失败"),
     USER_AVATAR_NULL(2012,"没有头像，记得上传哦"),
-    USER_LOGIN_EXPIRED(2013,"登录已过期"),
-
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
@@ -56,14 +53,17 @@ public enum ResultCode {
     REPEAT_DICT_TYPE(3011,"字典类型重复" ),
     REPEAT_DICT_DATA_LABEL(3012,"数据标签重复" ),
     REPEAT_DICT_DATA_VALUE(3013,"数据键值重复" ),
-    DICT_HAVE_CHILDREN(3014, "该字典有子集，若要删除请使用批量删除"),
+    DICT_HAVE_CHILDREN(3014, "该字典有子集，不允许删除"),
     DEPT_HAVE_CHILDREN(3015, "该部门有子集，不允许删除"),
     REPEAT_DEPTNAME(3016, "该部门名已存在"),
     DEPT_HAVE_USER(3017, "该部门有用户，不允许删除"),
     REPEAT_POST_CODE(3018,"岗位编码重复"),
     REPEAT_POST_NAME(3019,"岗位名称重复"),
-    DEPT_ASSIGNED(3020,"岗位已被分配，不允许删除" ),
+    POST_ASSIGNED(3020,"岗位已被分配" ),
     DEPTID_NOT_ITEM(3021,"不能更改父级为该类的子级"),
+    ROLE_HAS_BEEN_ASSIGNED(3022,"角色已被分配，不能删除"),
+    DEPT_ASSIGNED(3023,"部门已被分配" ),
+
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

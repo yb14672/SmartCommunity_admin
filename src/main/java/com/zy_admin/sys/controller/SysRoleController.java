@@ -7,6 +7,7 @@ import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.entity.SysRole;
@@ -47,11 +48,21 @@ public class SysRoleController extends ApiController {
     SysRoleMenuService sysRoleMenuService;
 
     /**
-     * 用于批量导出角色列表数据
-     *
-     * @param roleIds
-     * @param response
+     * 获取所有除去管理员以外的角色并分页
+     * @param page
+     * @return
      */
+    @GetMapping("/getRoleList")
+    public Result getRoleList(Page page) {
+        return this.sysRoleService.getRoleList(page);
+    }
+
+        /**
+         * 用于批量导出角色列表数据
+         *
+         * @param roleIds
+         * @param response
+         */
     @PostMapping("/getExcel")
     public void getExcel(@RequestBody ArrayList<Integer> roleIds, HttpServletResponse response) throws IOException {
         List<SysRole> sysRoles = new ArrayList<>();
@@ -137,12 +148,11 @@ public class SysRoleController extends ApiController {
     @Transactional(rollbackFor = Exception.class)
     public Result delete(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<Integer>();
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             for (String str : idList) {
                 idList1.add(Integer.valueOf(str));
-                if("1".equals(str)){
+                if ("1".equals(str)) {
                     result.setMeta(ResultTool.fail(ResultCode.ADMIN_NOT_ALLOWED_DELETE));
                     return result;
                 }
@@ -152,8 +162,6 @@ public class SysRoleController extends ApiController {
             //删除权限表
             this.sysRoleMenuService.deleteByIdList(idList1);
         } catch (NumberFormatException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -165,6 +173,7 @@ public class SysRoleController extends ApiController {
      * @param roleAndRoleMenu
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping("/addRole")
     public Result insert(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
         roleAndRoleMenu.setCreateTime(LocalDateTime.now().toString());
@@ -183,6 +192,7 @@ public class SysRoleController extends ApiController {
      * @return
      */
     @PutMapping("/updateRole")
+    @Transactional(rollbackFor = Exception.class)
     public Result update(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
         roleAndRoleMenu.setDeptCheckStrictly(null);
         roleAndRoleMenu.setMenuCheckStrictly(null);

@@ -13,7 +13,6 @@ import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysPost;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysPostService;
-import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.JwtUtils;
 import com.zy_admin.util.RequestUtil;
@@ -44,8 +43,6 @@ public class SysPostController extends ApiController {
      */
     @Resource
     private SysPostService sysPostService;
-    @Resource
-    private SysUserService sysUserService;
     @Resource
     private RequestUtil requestUtil;
 
@@ -107,41 +104,35 @@ public class SysPostController extends ApiController {
 
 
     @GetMapping("/getPostList")
-    public Result getPostList(SysPost sysPost, Pageable pageable)
-    {
-
+    public Result getPostList(SysPost sysPost, Pageable pageable) {
         Result result = this.sysPostService.selectPostByLimit(sysPost, pageable);
         return result;
     }
 
     /**
      * 添加岗位
+     *
      * @param request
      * @param sysPost
      * @return
      */
     @PostMapping("/addPost")
-    public Result addPost(HttpServletRequest request, @RequestBody SysPost sysPost)
-    {
+    public Result addPost(HttpServletRequest request, @RequestBody SysPost sysPost) {
         String id = JwtUtils.getMemberIdByJwtToken(request);
         SysUser user = this.requestUtil.getUser(request);
         sysPost.setCreateTime(LocalDateTime.now().toString());
         sysPost.setCreateBy(user.getUserName());
         Result result = this.sysPostService.addPost(sysPost);
-
         return result;
     }
 
-    @PostMapping("/updatePost")
-    public Result updatePost(HttpServletRequest request, @RequestBody SysPost sysPost){
-        String id = JwtUtils.getMemberIdByJwtToken(request);
+    @PutMapping("/updatePost")
+    public Result updatePost(HttpServletRequest request, @RequestBody SysPost sysPost) {
         SysUser user = this.requestUtil.getUser(request);
         sysPost.setUpdateBy(user.getUserName());
         sysPost.setUpdateTime(LocalDateTime.now().toString());
         return this.sysPostService.update(sysPost);
-
     }
-
 
     @PostMapping("/getExcel")
     public void getExcel(@RequestBody ArrayList<Integer> postIds, HttpServletResponse response) throws IOException {
@@ -172,12 +163,9 @@ public class SysPostController extends ApiController {
     }
 
     @DeleteMapping("/deletePost")
-    public Result deletePost( @RequestParam("ids")  List<Integer> postIds)
-    {
-        System.out.println(postIds);
+    public Result deletePost(@RequestParam("ids") List<Integer> postIds) {
         return sysPostService.deletePost(postIds);
     }
-
 
 
 }

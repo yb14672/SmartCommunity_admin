@@ -74,13 +74,15 @@ public class SysDictTypeController extends ApiController {
 
     }
 
-//    删除
-    @DeleteMapping()
-    @Transactional(rollbackFor = Exception.class)
+    /**
+     * 删除
+     * @param idList
+     * @return
+     */
+    @DeleteMapping
     public Result delete(@RequestParam String[] idList){
         List<Integer> idList1 = new ArrayList<Integer>();
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             for (String str : idList) {
 //                把删除选上的id添加到idlist1的集合里
@@ -101,6 +103,7 @@ public class SysDictTypeController extends ApiController {
      * @return
      */
     @PutMapping("/updateDict")
+    @Transactional(rollbackFor = Exception.class)
     public Result updateDict(@RequestBody SysDictType sysDictType){
         return sysDictTypeService.updateDict(sysDictType);
     }
@@ -111,7 +114,6 @@ public class SysDictTypeController extends ApiController {
      */
     @PostMapping("/addSysDict")
     public Result insertDictType(@RequestBody SysDictType sysDictType){
-        System.out.println(sysDictType);
         sysDictType.setCreateTime(LocalDateTime.now().toString());
         return this.sysDictTypeService.insertOrUpdateBatch(sysDictType);
     }
@@ -127,10 +129,7 @@ public class SysDictTypeController extends ApiController {
      */
     @GetMapping("/selectDictByLimit")
     public Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime){
-        System.out.println(sysDictType);
-        System.out.println(pageable);
         Result result = sysDictTypeService.selectDictByLimit(sysDictType, pageable,startTime,endTime);
-        System.out.println(result);
         return result;
     }
 
@@ -176,6 +175,5 @@ public class SysDictTypeController extends ApiController {
     public R update(@RequestBody SysDictType sysDictType) {
         return success(this.sysDictTypeService.updateById(sysDictType));
     }
-
 }
 

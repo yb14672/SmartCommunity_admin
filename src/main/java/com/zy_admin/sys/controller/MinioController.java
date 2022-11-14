@@ -27,12 +27,11 @@ public class MinioController {
 
     @PostMapping("/upload")
     public Result upload(MultipartFile file) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         List<String> upload = minioUtilS.upload(new MultipartFile[]{file});
         String url = address + "/" + bucketName + "/" + upload.get(0);
         result.setData(url == null ? null : url);
         result.setMeta(url == null ? ResultTool.fail(ResultCode.USER_AVATAR_UPLOAD_FAILED) : ResultTool.fail(ResultCode.SUCCESS));
-        System.out.println(result);
         return result;
     }
 

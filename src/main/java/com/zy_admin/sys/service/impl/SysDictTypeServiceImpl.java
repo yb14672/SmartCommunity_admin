@@ -2,15 +2,15 @@ package com.zy_admin.sys.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.sys.dao.SysDictDataDao;
 import com.zy_admin.sys.dao.SysDictTypeDao;
-import com.zy_admin.sys.dto.SysDicDto;
+import com.zy_admin.sys.dto.SysDictDto;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.List;
 public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictType> implements SysDictTypeService {
 
     @Resource
-    private SysDictTypeDao sysDictTypeDao;
+    private SysDictDataDao sysDictDataDao;
 
     /**
      * 导出选中的部分
@@ -35,11 +35,11 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
      */
     @Override
     public List<SysDictType> queryDictById(ArrayList<Integer> dictIds) {
-//        如果有选中列表，就执行导出多个
+        //如果有选中列表，就执行导出多个
         if (dictIds!=null){
             dictIds = dictIds.size()==0 ? null : dictIds;
         }
-        return sysDictTypeDao.queryDictById(dictIds);
+        return baseMapper.queryDictById(dictIds);
     }
 
     /**
@@ -48,7 +48,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
      */
     @Override
     public List<SysDictType> getDictLists() {
-        return sysDictTypeDao.getDictLists();
+        return baseMapper.getDictLists();
     }
 
     @Override
@@ -72,8 +72,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
      */
     @Override
     public Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime) {
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //满足条件的总数据
         long total = this.baseMapper.count(sysDictType, startTime, endTime);
         long pages = 0;
@@ -92,9 +91,9 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         pageable.setTotal(total);
         List<SysDictType> sysDictTypeList = this.baseMapper.selectDictByLimit(sysDictType, pageable, startTime, endTime);
 //        封装一个dto，把对象和分页放进去
-        SysDicDto sysDicDto = new SysDicDto(sysDictTypeList, startTime, endTime, pageable);
+        SysDictDto sysDictDto = new SysDictDto(sysDictTypeList, startTime, endTime, pageable);
 //        存到data数据里面
-        result.setData(sysDicDto);
+        result.setData(sysDictDto);
 //        返回信号
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
@@ -105,16 +104,14 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Result insertOrUpdateBatch(SysDictType sysDictType) {
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
-//        判断字典名称唯一
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        //判断字典名称唯一
         if (selectSysDictByName(0,sysDictType)){
-//            判断字典类型唯一
+            //判断字典类型唯一
             if (selectSysDictByType(0,sysDictType)){
                 try {
-//                    新增字典
+                    //新增字典
                     int sysDictType1 = this.baseMapper.insert(sysDictType);
                     result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
                 }catch (Exception e){
@@ -135,33 +132,39 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Result updateDict(SysDictType sysDictType) {
         SysDictType sysDictType1 = this.baseMapper.queryById(sysDictType.getDictId()+"");
-        Result result = new Result();
-//        type为1是修改
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        //type为1是修改
         if (selectSysDictByName(1,sysDictType)){
             if (selectSysDictByType(1,sysDictType)){
                 try {
                     int update = this.baseMapper.update(sysDictType);
-                    this.baseMapper.updateDictDataByDictType(sysDictType1.getDictType(),sysDictType.getDictType());
-                    return new Result(null, ResultTool.fail(ResultCode.SUCCESS));
+                    //判断字典类型是否有修改
+                    if(!sysDictType1.getDictType().equals(sysDictType.getDictType())){
+                        this.baseMapper.updateDictDataByDictType(sysDictType1.getDictType(),sysDictType.getDictType());
+                    }
+                    //判断字典状态是否有修改
+                    if(!sysDictType1.getStatus().equals(sysDictType.getStatus())){
+                        this.sysDictDataDao.changeStatusByDictType(sysDictType.getDictType(),sysDictType.getStatus());
+                    }
+                    result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
                 }catch (Exception e){
                     e.printStackTrace();
-                    return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+                    result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
                 }
             }else {
-                return new Result(null, ResultTool.fail(ResultCode.REPEAT_DICT_TYPE));
+                result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_TYPE));
             }
         }else {
-            return new Result(null, ResultTool.fail(ResultCode.REPEAT_DICT_NAME));
+            result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_NAME));
         }
+        return result;
     }
 
     @Override
     public Result getDictTypeById(String id) {
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         SysDictType sysDictType = this.baseMapper.queryById(id);
         if (sysDictType != null || sysDictType.getDictId() != null) {
             result.setData(sysDictType);
@@ -173,19 +176,16 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
 //    批量删除
     @Override
     public Result deleteByIdList(List<Integer> idList) {
-        Result result = new Result();
-        System.out.println("删除数量"+idList.size());
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
 //        判断是单个
         if (idList.size()==1){
 //            查当前的有没有子集 hasChildDict返回的是子集的数量
             Integer hasChildDict = this.baseMapper.hasChildDict(idList);
-            System.out.println("单个删除子集数量"+hasChildDict);
 //            小于1说明没有子集，就可以删
             if (hasChildDict<1){
                 int i = this.baseMapper.deleteByIdList(idList);
-                System.out.println(i);
                 result.setData("删除成功，影响的行数：" + i);
-                result.setMeta(ResultTool.success(ResultTool.success(ResultCode.SUCCESS)));
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             }else {
                 result.setMeta(ResultTool.fail(ResultCode.DICT_HAVE_CHILDREN));
             }
@@ -195,7 +195,6 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
             Integer childs = this.baseMapper.hasChildDict(idList);
             if (childs<1){
                 int i = this.baseMapper.deleteByIdList(idList);
-                System.out.println("多个删除子集数量"+i);
                 if (i >= 1) {
                     result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 } else {
