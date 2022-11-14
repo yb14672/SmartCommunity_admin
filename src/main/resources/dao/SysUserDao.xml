@@ -318,7 +318,7 @@
         </foreach>
     </insert>
 
-    <update id="adminUpdateUser" parameterType="com.zy_admin.sys.dto.userDto">
+    <update id="adminUpdateUser" parameterType="com.zy_admin.sys.dto.UserDto">
         update sys_user
         <set>
             <if test="deptId != null and deptId != 0">dept_id = #{deptId},</if>

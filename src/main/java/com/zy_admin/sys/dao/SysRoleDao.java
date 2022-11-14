@@ -92,7 +92,7 @@ public interface SysRoleDao extends BaseMapper<SysRole> {
     SysRole selectRoleKey(String roleKey);
 
 
-    @Select("select * from sys_role where role_id!=1")
+    @Select("select * from sys_role where role_id!=1 and del_flag != 2")
     List<SysRole> getAllRole(SysRole sysRole);
 }
 

@@ -9,7 +9,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class userDto {
+public class UserDto {
     //用户ID
     private Long userId;
     //部门ID

@@ -3,7 +3,7 @@ package com.zy_admin.sys.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.sys.dto.userDto;
+import com.zy_admin.sys.dto.UserDto;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.Result;
 
@@ -41,7 +41,7 @@ public interface SysUserService extends IService<SysUser> {
      * @param
      * @return
      */
-    Result adminUpdateUser(userDto userDto);
+    Result adminUpdateUser(UserDto userDto);
 
     /**
      * 查询头像
@@ -148,7 +148,7 @@ public interface SysUserService extends IService<SysUser> {
      * @param sysUserDto
      * @return
      */
-    Boolean checkPhone(int type, userDto sysUserDto);
+    Boolean checkPhone(int type, UserDto sysUserDto);
 
     /**
      * 邮箱查重
@@ -156,9 +156,9 @@ public interface SysUserService extends IService<SysUser> {
      * @param sysUserDto
      * @return
      */
-    Boolean checkEmail(int type, userDto sysUserDto);
+    Boolean checkEmail(int type, UserDto sysUserDto);
 
-    Boolean checkUserName(int type,userDto userDto);
+    Boolean checkUserName(int type, UserDto userDto);
 
 
     Result resetPassword(SysUser sysUser);

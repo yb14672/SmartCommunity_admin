@@ -4,11 +4,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dto.SysUserDeptDto;
 import com.zy_admin.sys.dto.SysUserDto;
-import com.zy_admin.sys.dto.userDto;
+import com.zy_admin.sys.dto.UserDto;
 import com.zy_admin.sys.dto.UserRoleDto;
 import com.zy_admin.sys.entity.SysUser;
 import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -96,7 +95,7 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @param sysUserDao
      * @return
      */
-    int insertUser(userDto sysUserDao);
+    int insertUser(UserDto sysUserDao);
 
     /**
      * 昵称查重
@@ -155,8 +154,7 @@ public interface SysUserDao extends BaseMapper<SysUser> {
     void deletePost(long id);
 
 
-    void adminUpdateUser(userDto userDto);
-
+    void adminUpdateUser(UserDto userDto);
 
     /**
      * 根据用户ID获取其信息和对应的角色

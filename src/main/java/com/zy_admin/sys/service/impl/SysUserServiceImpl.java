@@ -9,7 +9,7 @@ import com.zy_admin.sys.dto.SysUserDeptDto;
 import com.zy_admin.sys.dto.SysUserDto;
 import com.zy_admin.sys.dto.SysUsersDto;
 import com.zy_admin.sys.dto.UserRoleDto;
-import com.zy_admin.sys.dto.userDto;
+import com.zy_admin.sys.dto.UserDto;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
@@ -264,7 +264,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      * @return
      */
     @Override
-    public Result insertUser(userDto sysUserDto) {
+    public Result insertUser(UserDto sysUserDto) {
         Result result = new Result();
         if (checkUserName(0,sysUserDto)) {
             if (checkNiceName(0, sysUserDto)) {
@@ -300,42 +300,47 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      * @return
      */
     @Override
-    public Result adminUpdateUser(userDto userDto) {
+    public Result adminUpdateUser(UserDto userDto) {
         Result result = new Result();
-            if (checkNiceName(1, userDto)) {
-                if (checkPhone(1, userDto)) {
-                    if (checkEmail(1, userDto)) {
-                        //判断postId有没有值
-                        if (userDto.getPostIds()!= null) {
-                            this.baseMapper.deleteRole(userDto.getUserId());
-                            this.baseMapper.insertRole(userDto.getUserId(), userDto.getRoleIds());
-                        }
-                        //判断roleId有没有值
-                        if (userDto.getRoleIds() != null) {
-                            this.baseMapper.deletePost(userDto.getUserId());
-                            this.baseMapper.insertPost(userDto.getUserId(), userDto.getPostIds());
-                        }
-                        this.baseMapper.adminUpdateUser(userDto);
+        SysUser user = this.baseMapper.getUserById(userDto.getUserId() + "");
+        if (user.getNickName().equals(userDto.getNickName()) && user.getPhonenumber().equals(userDto.getPhonenumber()) && user.getEmail().equals(userDto.getEmail()) && user.getDeptId().equals(userDto.getDeptId()) && user.getSex().equals(userDto.getSex()) && user.getStatus().equals(userDto.getStatus())) {
+            result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
+            return result;
+        }
 
-
-                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-
-
-                    } else {
-                        result.setMeta(ResultTool.fail(ResultCode.REPEAT_EMAIL));
+        if (checkNiceName(1, userDto)) {
+            if (checkPhone(1, userDto)) {
+                if (checkEmail(1, userDto)) {
+                    //判断postId有没有值
+                    if (userDto.getPostIds() != null) {
+                        this.baseMapper.deleteRole(userDto.getUserId());
+                        this.baseMapper.insertRole(userDto.getUserId(), userDto.getRoleIds());
                     }
+                    //判断roleId有没有值
+                    if (userDto.getRoleIds() != null) {
+                        this.baseMapper.deletePost(userDto.getUserId());
+                        this.baseMapper.insertPost(userDto.getUserId(), userDto.getPostIds());
+                    }
+                    this.baseMapper.adminUpdateUser(userDto);
+
+
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+
+
                 } else {
-                    result.setMeta(ResultTool.fail(ResultCode.REPEAT_PHONENUMBER));
+                    result.setMeta(ResultTool.fail(ResultCode.REPEAT_EMAIL));
                 }
             } else {
-                result.setMeta(ResultTool.fail(ResultCode.REPEAT_NICK_NAME));
+                result.setMeta(ResultTool.fail(ResultCode.REPEAT_PHONENUMBER));
             }
+        } else {
+            result.setMeta(ResultTool.fail(ResultCode.REPEAT_NICK_NAME));
+        }
         return result;
-
     }
 
     @Override
-    public Boolean checkNiceName(int type, userDto sysUserDto) {
+    public Boolean checkNiceName(int type, UserDto sysUserDto) {
         SysUser sysUser = this.baseMapper.checkNiceName(sysUserDto.getNickName());
         if (type == 0) {
             if (sysUser == null || sysUser.getUserId() == null) {
@@ -355,7 +360,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     }
 
     @Override
-    public Boolean checkPhone(int type, userDto sysUserDto) {
+    public Boolean checkPhone(int type, UserDto sysUserDto) {
         SysUser sysUser = this.baseMapper.checkPhone(sysUserDto.getPhonenumber());
         if (type == 0) {
             if (sysUser == null || sysUser.getUserId() == null) {
@@ -376,7 +381,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
 
 
     @Override
-    public Boolean checkEmail(int type, userDto sysUserDto) {
+    public Boolean checkEmail(int type, UserDto sysUserDto) {
         SysUser sysUser = this.baseMapper.checkEmail(sysUserDto.getEmail());
         if (type == 0) {
             if (sysUser == null || sysUser.getUserId() == null) {
@@ -396,7 +401,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     }
 
     @Override
-    public Boolean checkUserName(int type, userDto userDto) {
+    public Boolean checkUserName(int type, UserDto userDto) {
         SysUser sysUser = this.baseMapper.checkUserName(userDto.getUserName());
         if (type == 0) {
             if (sysUser == null || sysUser.getUserId() == null) {

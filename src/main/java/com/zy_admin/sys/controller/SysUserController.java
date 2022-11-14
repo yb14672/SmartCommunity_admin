@@ -1,14 +1,12 @@
 package com.zy_admin.sys.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zy_admin.sys.dto.userDto;
+import com.zy_admin.sys.dto.UserDto;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysUser;
-import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtils;
 import com.zy_admin.util.RequestUtil;
@@ -231,7 +229,7 @@ public class SysUserController extends ApiController {
 
 
     @PostMapping("/insertUser")
-    public Result insertUser(HttpServletRequest request, @RequestBody userDto sysUserDto)
+    public Result insertUser(HttpServletRequest request, @RequestBody UserDto sysUserDto)
     {
         sysUserDto.setCreateTime(LocalDateTime.now().toString());
         SysUser user = this.requestUtil.getUser(request);
@@ -239,7 +237,7 @@ public class SysUserController extends ApiController {
         return sysUserService.insertUser(sysUserDto);
     }
     @PutMapping("/adminUpdateUser")
-    public Result updateUser(HttpServletRequest request, @RequestBody userDto userDto)
+    public Result updateUser(HttpServletRequest request, @RequestBody UserDto userDto)
     {
         System.err.println(userDto.toString());
         userDto.setUpdateTime(LocalDateTime.now().toString());
