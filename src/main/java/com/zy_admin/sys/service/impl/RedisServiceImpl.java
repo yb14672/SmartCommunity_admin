@@ -32,7 +32,7 @@ public class RedisServiceImpl implements RedisService {
         redisTemplate.setKeySerializer(redisSerializer);
         ValueOperations<String,Object> vo = redisTemplate.opsForValue();
         //设置key并且设置有效时间
-        vo.set(key, value,5, TimeUnit.SECONDS);
+        vo.set(key, value,2, TimeUnit.MINUTES);
     }
 
     /**
@@ -52,7 +52,7 @@ public class RedisServiceImpl implements RedisService {
      */
     @Override
     public  Boolean update(String key){
-        return redisTemplate.expire(key, 5, TimeUnit.SECONDS);
+        return redisTemplate.expire(key, 2, TimeUnit.MINUTES);
     }
 
     /**

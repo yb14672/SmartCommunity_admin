@@ -87,11 +87,6 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      * @return
      */
     SysDept getDeptById(Long deptId);
-    /**
-     * 根据id查询出他的子集
-     * @param deptId
-     * @return
-     */
-    List<Long> getDeptIdList(Long deptId);
+
 }
 
