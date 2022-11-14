@@ -138,21 +138,25 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
                     SysDictData dictDataById = this.baseMapper.getDictDataById(sysDictData.getDictCode() + "");
                     if(!checkEquals(sysDictData,dictDataById)){
                         //判断字典标题名是否唯一
-                        if (checkUnique(1, sysDictData, this.baseMapper.checkDictValueUnique(sysDictData))) {
+                        if (checkUnique(1, sysDictData, this.baseMapper.checkDictLabelUnique(sysDictData))) {
                             //当路由不为空时判断其路由是否重复
                             if (!"".equals(sysDictData.getDictValue()) || !"".equals(sysDictData.getDictValue())) {
                                 //不唯一即false，因此不唯一时提示并返回
                                 if (!checkUnique(1, sysDictData, this.baseMapper.checkDictValueUnique(sysDictData))) {
-                                    result.setMeta(ResultTool.fail(ResultCode.REPEAT_MENUPATH));
+                                    result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_DATA_VALUE));
+                                    return result;
                                 }
                             } else {
-                                result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_DATA_VALUE));
+                                result.setMeta(ResultTool.fail(ResultCode.PARAM_IS_BLANK));
+                                return result;
                             }
                         } else {
                             result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_DATA_LABEL));
+                            return result;
                         }
                     }else{
                         result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
+                        return result;
                     }
                 }
                 sysDictData.setUpdateBy(user.getUserName());
