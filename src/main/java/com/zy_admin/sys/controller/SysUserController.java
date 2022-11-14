@@ -4,10 +4,13 @@ package com.zy_admin.sys.controller;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtils;
 import com.zy_admin.util.Result;
+import com.zy_admin.util.ResultCode;
+import com.zy_admin.util.ResultTool;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,6 +35,42 @@ public class SysUserController extends ApiController {
     @Resource
     private SysUserService sysUserService;
 
+    /**
+     * 删除数据
+     *
+     * @param idList 主键结合
+     * @return 删除结果
+     */
+    @DeleteMapping
+    public Result deleteUserById(@RequestParam String[] idList) {
+        List<Integer> idList1 = new ArrayList<Integer>();
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        try {
+            for (String id : idList) {
+                idList1.add(Integer.valueOf(id));
+                if ("1".equals(id)) {
+                    result.setMeta(ResultTool.fail(ResultCode.ADMIN_NOT_ALLOWED_DELETE));
+                    return result;
+                }
+            }
+            //逻辑删除用户表
+            result = this.sysUserService.deleteUserById(idList1);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    /**
+     * 分页查询所有数据
+     *
+     * @param pageable    分页对象
+     * @param sysUser 查询实体
+     * @return 所有数据
+     */
+    @GetMapping("/selectUsers")
+    public Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime) {
+        return this.sysUserService.selectUsers(pageable, sysUser, startTime, endTime);
+    }
     /**
      * 根据用户ID获取其信息和对应的角色
      * @param userId
@@ -115,16 +154,6 @@ public class SysUserController extends ApiController {
         return success(this.sysUserService.updateById(sysUser));
     }
 
-    /**
-     * 删除数据
-     *
-     * @param idList 主键结合
-     * @return 删除结果
-     */
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.sysUserService.removeByIds(idList));
-    }
 
     /**
      * 登录

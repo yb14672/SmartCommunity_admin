@@ -35,7 +35,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
      */
     @Override
     public List<SysDictType> queryDictById(ArrayList<Integer> dictIds) {
-//        如果有选中列表，就执行导出多个
+        //如果有选中列表，就执行导出多个
         if (dictIds!=null){
             dictIds = dictIds.size()==0 ? null : dictIds;
         }
@@ -72,8 +72,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
      */
     @Override
     public Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime) {
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //满足条件的总数据
         long total = this.baseMapper.count(sysDictType, startTime, endTime);
         long pages = 0;
@@ -106,8 +105,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
      */
     @Override
     public Result insertOrUpdateBatch(SysDictType sysDictType) {
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断字典名称唯一
         if (selectSysDictByName(0,sysDictType)){
             //判断字典类型唯一
@@ -136,8 +134,8 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
     @Override
     public Result updateDict(SysDictType sysDictType) {
         SysDictType sysDictType1 = this.baseMapper.queryById(sysDictType.getDictId()+"");
-        Result result = new Result();
-//        type为1是修改
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        //type为1是修改
         if (selectSysDictByName(1,sysDictType)){
             if (selectSysDictByType(1,sysDictType)){
                 try {
@@ -148,25 +146,25 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
                     }
                     //判断字典状态是否有修改
                     if(!sysDictType1.getStatus().equals(sysDictType.getStatus())){
-                        this.sysDictDataDao.changeStatusByDictType(sysDictType1.getDictType(),sysDictType.getStatus());
+                        this.sysDictDataDao.changeStatusByDictType(sysDictType.getDictType(),sysDictType.getStatus());
                     }
-                    return new Result(null, ResultTool.fail(ResultCode.SUCCESS));
+                    result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
                 }catch (Exception e){
                     e.printStackTrace();
-                    return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+                    result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
                 }
             }else {
-                return new Result(null, ResultTool.fail(ResultCode.REPEAT_DICT_TYPE));
+                result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_TYPE));
             }
         }else {
-            return new Result(null, ResultTool.fail(ResultCode.REPEAT_DICT_NAME));
+            result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_NAME));
         }
+        return result;
     }
 
     @Override
     public Result getDictTypeById(String id) {
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         SysDictType sysDictType = this.baseMapper.queryById(id);
         if (sysDictType != null || sysDictType.getDictId() != null) {
             result.setData(sysDictType);
@@ -178,7 +176,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
 //    批量删除
     @Override
     public Result deleteByIdList(List<Integer> idList) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
 //        判断是单个
         if (idList.size()==1){
 //            查当前的有没有子集 hasChildDict返回的是子集的数量

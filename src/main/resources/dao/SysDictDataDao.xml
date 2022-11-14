@@ -235,7 +235,7 @@
 
     <update id="changeStatusByDictType">
         update sys_dict_data set status=#{status}
-        where dict_type = #{dict_type}
+        where dict_type = #{dictType}
     </update>
 
     <!--通过主键删除-->

@@ -36,6 +36,21 @@
         from sys_dept
         where parent_id = #{deptId}
     </select>
+    <update id="changeStatus" keyProperty="deptId">
+        update sys_dept
+        set status = #{status}
+        where dept_id in (
+            select dept_id
+            from (
+                     select dept_id
+                     from sys_dept
+                     where sys_dept = #{deptId}
+                        or parent_id = #{deptId}
+                        or parent_id in
+                           (select dept_id from (select dept_id from sys_dept where parent_id = #{deptId}) temp)
+                 ) a
+        )
+    </update>
     <!--修改部门-->
     <update id="updateDept" keyProperty="deptId"
             parameterType="com.zy_admin.sys.entity.SysDept">

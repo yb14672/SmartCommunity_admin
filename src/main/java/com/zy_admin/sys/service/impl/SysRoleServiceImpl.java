@@ -89,8 +89,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
 
     @Override
     public Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime) {
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //满足条件的总数据
         long total = this.baseMapper.count(sysRole, startTime, endTime);
         long pages = 0;
@@ -147,7 +146,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
 
     @Override
     public Result update(RoleAndRoleMenu roleAndRoleMenu) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         if (checkRoleNameUnique(1,roleAndRoleMenu)) {
             if (checkRoleKeyUnique(1,roleAndRoleMenu)) {
                 try {
@@ -219,7 +218,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
 
     @Override
     public Result changeStatus(SysRole sysRole) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         int i = this.baseMapper.updateRole(sysRole);
         result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
         if (i == 1) {

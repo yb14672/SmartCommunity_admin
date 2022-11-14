@@ -123,7 +123,6 @@ public class SysPostController extends ApiController {
         sysPost.setCreateTime(LocalDateTime.now().toString());
         sysPost.setCreateBy(user.getUserName());
         Result result = this.sysPostService.addPost(sysPost);
-
         return result;
     }
 
@@ -134,7 +133,6 @@ public class SysPostController extends ApiController {
         sysPost.setUpdateTime(LocalDateTime.now().toString());
         return this.sysPostService.update(sysPost);
     }
-
 
     @PostMapping("/getExcel")
     public void getExcel(@RequestBody ArrayList<Integer> postIds, HttpServletResponse response) throws IOException {

@@ -55,6 +55,8 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      */
     Integer updateDept(SysDept sysDept);
 
+    int changeStatus(@Param("status") String status,@Param("menuId") String menuId);
+
     /**
      * 删除
      *
@@ -79,6 +81,11 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      */
     Integer hasUserDept(@Param("idList") List<Integer> idList);
 
-    SysDept getDeptById(Long parentId);
+    /**
+     * 根据ID获取部门
+     * @param deptId
+     * @return
+     */
+    SysDept getDeptById(Long deptId);
 }
 

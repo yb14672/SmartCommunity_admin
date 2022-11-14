@@ -22,7 +22,7 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuDao, SysRoleM
 
     @Override
     public Result getMenuIdsByRoleId(String id) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try{
             List<Integer> menuIds = this.baseMapper.getMenuIdsByRoleId(id);
             result.setData(menuIds);

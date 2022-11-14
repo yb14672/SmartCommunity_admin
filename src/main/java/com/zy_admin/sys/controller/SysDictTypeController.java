@@ -74,12 +74,15 @@ public class SysDictTypeController extends ApiController {
 
     }
 
-//    删除
+    /**
+     * 删除
+     * @param idList
+     * @return
+     */
     @DeleteMapping
     public Result delete(@RequestParam String[] idList){
         List<Integer> idList1 = new ArrayList<Integer>();
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             for (String str : idList) {
 //                把删除选上的id添加到idlist1的集合里
@@ -100,7 +103,7 @@ public class SysDictTypeController extends ApiController {
      * @return
      */
     @PutMapping("/updateDict")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Result updateDict(@RequestBody SysDictType sysDictType){
         return sysDictTypeService.updateDict(sysDictType);
     }
@@ -172,6 +175,5 @@ public class SysDictTypeController extends ApiController {
     public R update(@RequestBody SysDictType sysDictType) {
         return success(this.sysDictTypeService.updateById(sysDictType));
     }
-
 }
 

@@ -28,7 +28,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
 
     @Override
     public Result getAllMenu(String userId) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             SysUserDto userDto = sysUserDao.personal(userId);
             if (!"1".equals(userDto.getSysRole().getStatus())||!"2".equals(userDto.getSysRole().getDelFlag())) {
@@ -47,7 +47,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
 
     @Override
     public Result queryAllMenu(SysMenu menu) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             List<MenuTree> menuList = this.baseMapper.queryAllMenu(menu);
             Tree tree = new Tree(menuList);
@@ -63,7 +63,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
 
     @Override
     public Result insertMenu(SysMenu menu) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             //因为菜单名为必填字段，所以判断是否为空
             if (menu.getMenuName() == null || "".equals(menu.getMenuName())) {
@@ -105,7 +105,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
 
     @Override
     public Result updateMenu(SysMenu menu) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             //判断菜单的父类是否自己
             if(!menu.getParentId().equals(menu.getMenuId())){
@@ -153,7 +153,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
 
     @Override
     public Result deleteByIdList(List<Long> idList) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //若为一个即单删除，否则批量删除
         if (idList.size() == 1) {
             //判断是否有子集，若有则提示
@@ -181,7 +181,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
 
     @Override
     public Result deteleById(Long id) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断是否有子集，若有则提示
         Integer hasChildren = this.baseMapper.hasChildByMenuId(id);
         result.setMeta(ResultTool.fail(ResultCode.MENU_HAVE_CHILDREN));
@@ -283,8 +283,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
 
     @Override
     public Result getMenuTrees() {
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             List<MenuTree> menuTree = this.baseMapper.getMenuTree();
             Tree tree = new Tree(menuTree);

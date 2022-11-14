@@ -2,6 +2,7 @@ package com.zy_admin.sys.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.Result;
 
@@ -15,6 +16,21 @@ import java.util.List;
  */
 public interface SysUserService extends IService<SysUser> {
 
+    /**
+     * 删除用户
+     * @param idList
+     * @return
+     */
+    Result deleteUserById(List<Integer> idList);
+    /**
+     * 查询所有用户
+     * @param pageable
+     * @param sysUser
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime);
     /**
      * 查询头像
      * @param userId

@@ -1,10 +1,15 @@
 package com.zy_admin.sys.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zy_admin.common.Pageable;
+import com.zy_admin.sys.dto.SysUserDeptDto;
 import com.zy_admin.sys.dto.SysUserDto;
 import com.zy_admin.sys.dto.UserRoleDto;
 import com.zy_admin.sys.entity.SysUser;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * 用户信息表(SysUser)表数据库访问层
@@ -13,7 +18,29 @@ import org.apache.ibatis.annotations.Select;
  * @since 2022-11-01 19:49:42
  */
 public interface SysUserDao extends BaseMapper<SysUser> {
-
+    /**
+     * 根据id删除用户
+     * @param idList
+     * @return
+     */
+    int deleteByIdList(List<Integer> idList);
+    /**
+     * 分页查询
+     * @param sysUser
+     * @param pageable
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<SysUserDeptDto> selectUsers(@Param("sysUser") SysUser sysUser, @Param("pageable") Pageable pageable, @Param("startTime") String startTime, @Param("endTime")String endTime);
+    /**
+     * 统计用户总量
+     * @param sysUser
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    Long count(@Param("sysUser")SysUser sysUser, @Param("startTime")String startTime, @Param("endTime")String endTime);
     /**
      * 查询头像
      * @param userId

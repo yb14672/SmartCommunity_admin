@@ -50,6 +50,13 @@ public interface SysPostDao extends BaseMapper<SysPost> {
     @Select("select * from sys_post where post_name=#{postName} ")
     SysPost selectPostName(String postName);
 
+    /**
+     * 查询名称
+     * @param postId
+     * @return
+     */
+    @Select("select * from sys_post where post_id=#{postId} ")
+    SysPost selectPostById(String postId);
 
     /**
      * 查询编码

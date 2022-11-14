@@ -25,7 +25,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
 
     @Override
     public Result selectPostByLimit(SysPost sysPost, Pageable pageable) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //获取总行数
         long total = this.baseMapper.count(sysPost);
         long pages = 0;
@@ -50,7 +50,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
 
     @Override
     public Result addPost(SysPost sysPost) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         if (checkPostCode(0, sysPost)) {
             if (checkPostName(0, sysPost)) {
                 this.baseMapper.insert(sysPost);
@@ -67,11 +67,11 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
 
     @Override
     public Result update(SysPost sysPost) {
-        Result result = new Result();
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         if (checkPostCode(1, sysPost)) {
             if (checkPostName(1, sysPost)) {
                 //修改前的数据
-                SysPost post = this.baseMapper.selectById(sysPost.getPostId());
+                SysPost post = this.baseMapper.selectPostById(sysPost.getPostId()+"");
                 //判断是否有更改状态，若有则去查询
                 if(!post.getStatus().equals(sysPost.getStatus())) {
                     List<Integer> ids=new ArrayList<Integer>();
@@ -80,11 +80,11 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
                     //判断在用户表中是否有配分配，若有则提示
                     if (postIds.size() > 0) {
                         result.setMeta(ResultTool.fail(ResultCode.POST_ASSIGNED));
-                    } else {
-                        this.baseMapper.updateById(sysPost);
-                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                        return result;
                     }
                 }
+                this.baseMapper.updateById(sysPost);
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             } else {
                 result.setMeta(ResultTool.fail(ResultCode.REPEAT_POST_NAME));
             }
@@ -153,7 +153,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
 
     @Override
     public Result deletePost(List<Integer> ids) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         List<Integer> postIds = baseMapper.getPostIdFromUserPost(ids);
         if (postIds.size() > 0) {
             result.setMeta(ResultTool.fail(ResultCode.POST_ASSIGNED));
