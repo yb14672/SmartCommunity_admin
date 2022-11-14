@@ -9,6 +9,7 @@ import com.zy_admin.sys.dto.SysUserDeptDto;
 import com.zy_admin.sys.dto.SysUserDto;
 import com.zy_admin.sys.dto.SysUsersDto;
 import com.zy_admin.sys.dto.UserRoleDto;
+import com.zy_admin.sys.dto.userDto;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
@@ -30,7 +31,6 @@ import java.util.List;
  */
 @Service("sysUserService")
 public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> implements SysUserService {
-
     @Resource
     private SysUserRoleDao sysUserRoleDao;
     @Resource
@@ -128,6 +128,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         return result;
     }
 
+
     @Override
     public Result getAvatarById(String userId) {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -138,7 +139,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                 return result;
             }
             String avatar = this.baseMapper.getAvatarById(userId);
-            if(avatar==null||avatar.isEmpty()){
+            if (avatar == null || avatar.isEmpty()) {
                 result.setMeta(ResultTool.fail(ResultCode.USER_AVATAR_NULL));
                 return result;
             }
@@ -255,5 +256,183 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     }
 
 
+
+    /**
+     * 新增用户
+     *
+     * @param sysUserDto
+     * @return
+     */
+    @Override
+    public Result insertUser(userDto sysUserDto) {
+        Result result = new Result();
+        if (checkUserName(0,sysUserDto)) {
+            if (checkNiceName(0, sysUserDto)) {
+                if (checkPhone(0, sysUserDto)) {
+                    if (checkEmail(0, sysUserDto)) {
+                        if (sysUserDto.getPostIds().length != 0) {
+                            this.baseMapper.insertPost(sysUserDto.getUserId(), sysUserDto.getPostIds());
+                        }
+                        if (sysUserDto.getRoleIds().length != 0) {
+                            this.baseMapper.insertRole(sysUserDto.getUserId(), sysUserDto.getRoleIds());
+                        }
+                        this.baseMapper.insertUser(sysUserDto);
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                    } else {
+                        result.setMeta(ResultTool.fail(ResultCode.REPEAT_EMAIL));
+                    }
+                } else {
+                    result.setMeta(ResultTool.fail(ResultCode.REPEAT_PHONENUMBER));
+                }
+            } else {
+                result.setMeta(ResultTool.fail(ResultCode.REPEAT_NICK_NAME));
+            }
+        }else {
+            result.setMeta(ResultTool.fail(ResultCode.REPEAT_USER_NAME));
+        }
+        return result;
+    }
+
+    /**
+     * 管理员修改用户
+     *
+     * @param userDto
+     * @return
+     */
+    @Override
+    public Result adminUpdateUser(userDto userDto) {
+        Result result = new Result();
+            if (checkNiceName(1, userDto)) {
+                if (checkPhone(1, userDto)) {
+                    if (checkEmail(1, userDto)) {
+                        //判断postId有没有值
+                        if (userDto.getPostIds()!= null) {
+                            this.baseMapper.deleteRole(userDto.getUserId());
+                            this.baseMapper.insertRole(userDto.getUserId(), userDto.getRoleIds());
+                        }
+                        //判断roleId有没有值
+                        if (userDto.getRoleIds() != null) {
+                            this.baseMapper.deletePost(userDto.getUserId());
+                            this.baseMapper.insertPost(userDto.getUserId(), userDto.getPostIds());
+                        }
+                        this.baseMapper.adminUpdateUser(userDto);
+
+
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+
+
+                    } else {
+                        result.setMeta(ResultTool.fail(ResultCode.REPEAT_EMAIL));
+                    }
+                } else {
+                    result.setMeta(ResultTool.fail(ResultCode.REPEAT_PHONENUMBER));
+                }
+            } else {
+                result.setMeta(ResultTool.fail(ResultCode.REPEAT_NICK_NAME));
+            }
+        return result;
+
+    }
+
+    @Override
+    public Boolean checkNiceName(int type, userDto sysUserDto) {
+        SysUser sysUser = this.baseMapper.checkNiceName(sysUserDto.getNickName());
+        if (type == 0) {
+            if (sysUser == null || sysUser.getUserId() == null) {
+                return true;
+            }
+        } else {
+            //修改时--先判断是否为空，为空则不重名，即唯一
+            if (sysUser == null || sysUser.getUserId() == null) {
+                return true;
+                //判断ID是否一致，若否，则重名，即不唯一
+            } else if (!sysUser.getUserId().equals(sysUserDto.getUserId())) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean checkPhone(int type, userDto sysUserDto) {
+        SysUser sysUser = this.baseMapper.checkPhone(sysUserDto.getPhonenumber());
+        if (type == 0) {
+            if (sysUser == null || sysUser.getUserId() == null) {
+                return true;
+            }
+        } else {
+            //修改时--先判断是否为空，为空则不重名，即唯一
+            if (sysUser == null || sysUser.getUserId() == null) {
+                return true;
+                //判断ID是否一致，若否，则重名，即不唯一
+            } else if (!sysUser.getUserId().equals(sysUserDto.getUserId())) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+
+    @Override
+    public Boolean checkEmail(int type, userDto sysUserDto) {
+        SysUser sysUser = this.baseMapper.checkEmail(sysUserDto.getEmail());
+        if (type == 0) {
+            if (sysUser == null || sysUser.getUserId() == null) {
+                return true;
+            }
+        } else {
+            //修改时--先判断是否为空，为空则不重名，即唯一
+            if (sysUser == null || sysUser.getUserId() == null) {
+                return true;
+                //判断ID是否一致，若否，则重名，即不唯一
+            } else if (!sysUser.getUserId().equals(sysUserDto.getUserId())) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean checkUserName(int type, userDto userDto) {
+        SysUser sysUser = this.baseMapper.checkUserName(userDto.getUserName());
+        if (type == 0) {
+            if (sysUser == null || sysUser.getUserId() == null) {
+                return true;
+            }
+        } else {
+            //修改时--先判断是否为空，为空则不重名，即唯一
+            if (sysUser == null || sysUser.getUserId() == null) {
+                return true;
+                //判断ID是否一致，若否，则重名，即不唯一
+            } else if (!sysUser.getUserId().equals(userDto.getUserId())) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 重置密码
+     *
+     * @param sysUser
+     * @return
+     */
+    @Override
+    public Result resetPassword(SysUser sysUser) {
+        Result result = new Result();
+        SysUser user = this.baseMapper.getUserById(sysUser.getUserId() + "");
+
+        if (!sysUser.getPassword().equals(user.getPassword())) {
+            this.baseMapper.updateUser(sysUser);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        } else {
+            result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_SAME_PASSWORD));
+        }
+        return result;
+    }
 }
 

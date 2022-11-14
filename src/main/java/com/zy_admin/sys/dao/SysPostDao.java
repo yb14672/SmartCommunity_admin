@@ -79,7 +79,7 @@ public interface SysPostDao extends BaseMapper<SysPost> {
      * 所有用户获取excel
      * @return
      */
-    List<SysPost> getRoleLists();
+    List<SysPost> getPostLists();
 
     /**
      * 查询用户岗位表中的岗位ID
@@ -95,5 +95,9 @@ public interface SysPostDao extends BaseMapper<SysPost> {
      * @return
      */
     int deletePost(@Param("idList") List<Integer> sysPosts);
+
+
+    @Select("select * from sys_post where post_id = #{postId}")
+    SysPost queryPostById(long postId);
 }
 

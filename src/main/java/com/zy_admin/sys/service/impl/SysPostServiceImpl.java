@@ -68,6 +68,11 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
     @Override
     public Result update(SysPost sysPost) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        SysPost oldPost = this.baseMapper.queryPostById(sysPost.getPostId());
+        if (sysPost.getPostName().equals(oldPost.getPostName())&&sysPost.getPostCode().equals(oldPost.getPostCode())&&sysPost.getPostSort().equals(oldPost.getPostSort())&&sysPost.getStatus().equals(oldPost.getStatus())){
+            result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
+            return result;
+        }
         if (checkPostCode(1, sysPost)) {
             if (checkPostName(1, sysPost)) {
                 //修改前的数据
@@ -149,8 +154,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
     }
 
     @Override
-    public List<SysPost> getRoleLists() {
-        return this.baseMapper.getRoleLists();
+    public List<SysPost> getPostLists() {
+        return this.baseMapper.getPostLists();
     }
 
     @Override
@@ -163,6 +168,15 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
             this.baseMapper.deletePost(ids);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
+        return result;
+    }
+
+    @Override
+    public Result getAllPost() {
+        Result result = new Result();
+        List<SysPost> postLists = this.baseMapper.getPostLists();
+        result.setData(postLists);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
 

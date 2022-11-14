@@ -3,6 +3,7 @@ package com.zy_admin.sys.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.sys.dto.userDto;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.Result;
 
@@ -34,6 +35,13 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime);
+
+    /**
+     * 管理员修改用户
+     * @param
+     * @return
+     */
+    Result adminUpdateUser(userDto userDto);
 
     /**
      * 查询头像
@@ -116,5 +124,43 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     Result insertAuthRole(Integer userId, List<Long> roleIdList) throws Exception;
+
+    /**
+     * 新增用户
+     *
+     * @param sysUserDto
+     * @return
+     */
+    Result insertUser(UserDto sysUserDto);
+
+    /**
+     * 昵称查重
+     *
+     * @param type
+     * @param sysUserDto
+     * @return
+     */
+    Boolean checkNiceName(int type, UserDto sysUserDto);
+
+    /**
+     * 电话查重
+     * @param type
+     * @param sysUserDto
+     * @return
+     */
+    Boolean checkPhone(int type, userDto sysUserDto);
+
+    /**
+     * 邮箱查重
+     * @param type
+     * @param sysUserDto
+     * @return
+     */
+    Boolean checkEmail(int type, userDto sysUserDto);
+
+    Boolean checkUserName(int type,userDto userDto);
+
+
+    Result resetPassword(SysUser sysUser);
 }
 

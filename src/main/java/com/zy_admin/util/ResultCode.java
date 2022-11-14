@@ -65,7 +65,10 @@ public enum ResultCode {
     DEPTID_NOT_ITEM(3021,"不能更改父级为该类的子级"),
     ROLE_HAS_BEEN_ASSIGNED(3022,"角色已被分配，不能删除"),
     DEPT_ASSIGNED(3023,"部门已被分配" ),
-
+    REPEAT_NICK_NAME(3021,"昵称重复"),
+    REPEAT_PHONENUMBER(3022,"电话重复"),
+    REPEAT_EMAIL(3023,"邮箱重复"),
+    REPEAT_USER_NAME(3024,"用户名重复"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

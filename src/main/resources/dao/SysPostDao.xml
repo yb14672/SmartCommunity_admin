@@ -201,7 +201,7 @@
 
 
 
-    <select id="getRoleLists" resultType="com.zy_admin.sys.entity.SysPost">
+    <select id="getPostLists" resultType="com.zy_admin.sys.entity.SysPost">
         select * from sys_post
     </select>
 

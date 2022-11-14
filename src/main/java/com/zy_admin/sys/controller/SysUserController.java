@@ -1,14 +1,17 @@
 package com.zy_admin.sys.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.sys.dto.userDto;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtils;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
@@ -18,6 +21,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +39,12 @@ public class SysUserController extends ApiController {
      */
     @Resource
     private SysUserService sysUserService;
+    @Resource
+    private RequestUtil requestUtil;
+
+
+
+
 
     /**
      * 删除数据
@@ -155,7 +165,6 @@ public class SysUserController extends ApiController {
         return success(this.sysUserService.updateById(sysUser));
     }
 
-
     /**
      * 登录
      * @param sysUser
@@ -219,5 +228,33 @@ public class SysUserController extends ApiController {
     public Result resetPwd(@RequestBody SysUser sysUser){
         return this.sysUserService.resetPwd(sysUser);
     }
+
+
+    @PostMapping("/insertUser")
+    public Result insertUser(HttpServletRequest request, @RequestBody userDto sysUserDto)
+    {
+        sysUserDto.setCreateTime(LocalDateTime.now().toString());
+        SysUser user = this.requestUtil.getUser(request);
+        sysUserDto.setCreateBy(user.getUserName());
+        return sysUserService.insertUser(sysUserDto);
+    }
+    @PutMapping("/adminUpdateUser")
+    public Result updateUser(HttpServletRequest request, @RequestBody userDto userDto)
+    {
+        System.err.println(userDto.toString());
+        userDto.setUpdateTime(LocalDateTime.now().toString());
+        SysUser user = this.requestUtil.getUser(request);
+        userDto.setCreateBy(user.getUserName());
+        return sysUserService.adminUpdateUser(userDto);
+    }
+
+    @PostMapping("/resetPassword")
+        public Result resetPassword(HttpServletRequest request,@RequestBody SysUser sysUser)
+        {
+            System.out.println(sysUser);
+            SysUser user = this.requestUtil.getUser(request);
+            sysUser.setUpdateBy(user.getUserName());
+            return sysUserService.resetPassword(sysUser);
+        }
 }
 

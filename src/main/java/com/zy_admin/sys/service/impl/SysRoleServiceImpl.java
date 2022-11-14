@@ -58,6 +58,15 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
     }
 
     @Override
+    public Result getAllRole( SysRole sysRole) {
+        Result result = new Result();
+        List<SysRole> allRole = this.baseMapper.getAllRole(sysRole);
+        result.setData(allRole);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
+    }
+
+    @Override
     public List<SysRole> queryRoleById(ArrayList<Integer> roleIds) {
         if (roleIds != null) {
             roleIds = roleIds.size() == 0 ? null : roleIds;

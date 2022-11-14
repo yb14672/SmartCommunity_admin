@@ -47,6 +47,17 @@ public class SysRoleController extends ApiController {
     @Resource
     SysRoleMenuService sysRoleMenuService;
 
+
+
+
+    @GetMapping("/getAllRole")
+    public Result getAllRole(SysRole sysRole) {
+        Result allRole = sysRoleService.getAllRole(sysRole);
+        System.out.println(allRole);
+        return allRole;
+    }
+
+
     /**
      * 获取所有除去管理员以外的角色并分页
      * @param page
