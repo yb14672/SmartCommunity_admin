@@ -96,6 +96,8 @@ public interface SysUserDao extends BaseMapper<SysUser> {
     SysUser checkEmail(String email);
 
 
+    @Select("select * from sys_user where user_name = #{userName}")
+    SysUser checkUserName(String userName);
     /**
      * 新增用户角色权限
      * @param id
