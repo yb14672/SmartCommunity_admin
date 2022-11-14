@@ -208,6 +208,21 @@
         from sys_user
         where user_name = #{userName}
     </select>
+    <!--    勾选的导出-->
+    <select id="queryUserById" resultType="com.zy_admin.sys.entity.SysUser">
+        select * from sys_user
+        <if test="list!=null">
+            where user_id in (
+            <foreach collection="list" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+    </select>
+<!--    所有的都导出-->
+    <select id="getUserLists" resultType="com.zy_admin.sys.entity.SysUser">
+        select * from sys_user
+    </select>
 
     <resultMap type="com.zy_admin.sys.dto.UserRoleDto" id="UserRoleDtoMap">
         <id property="userId" column="user_id" jdbcType="INTEGER"/>

@@ -69,6 +69,13 @@ public enum ResultCode {
     REPEAT_PHONENUMBER(3022,"电话重复"),
     REPEAT_EMAIL(3023,"邮箱重复"),
     REPEAT_USER_NAME(3024,"用户名重复"),
+    DICT_NOCHANGE(3024,"字典信息没有改变" ),
+    USER_TELREPEAT(3025,"手机号重复" ),
+    USER_REPEAT(3026,"导入有重复" ),
+    FILE_REPEAT(3027,"导入文件有重复" ),
+    DATA_REPEAT(3027,"数据不能为空" ),
+    USERNAME_REPEAT(3028,"用户名有重复" ),
+    EMAIL_REPEAT(3029,"邮箱有重复" ),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

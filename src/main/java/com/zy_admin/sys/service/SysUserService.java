@@ -6,6 +6,10 @@ import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dto.UserDto;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.Result;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.List;
 
@@ -42,6 +46,33 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     Result adminUpdateUser(UserDto userDto);
+
+    /**
+     * 下载模板
+     * @return
+     */
+    List<SysUser> uploadUser();
+
+    /**
+     *批量导入用户信息
+     * @param file
+     */
+    Result importData(MultipartFile file);
+
+    /**
+     * 导出所有用户
+     *
+     * @return
+     */
+    List<SysUser> getUserLists();
+
+    /**
+     * 选中导出
+     *
+     * @param userIds
+     * @return
+     */
+    List<SysUser> queryUserById(ArrayList<Integer> userIds);
 
     /**
      * 查询头像

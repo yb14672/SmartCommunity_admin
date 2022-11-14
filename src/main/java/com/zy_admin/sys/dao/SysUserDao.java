@@ -9,8 +9,12 @@ import com.zy_admin.sys.dto.UserRoleDto;
 import com.zy_admin.sys.entity.SysUser;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,6 +56,19 @@ public interface SysUserDao extends BaseMapper<SysUser> {
 
 
     /**
+     * 勾选用户获取excel
+     * @param userIds
+     * @return
+     */
+    List<SysUser> queryUserById(@Param("list") ArrayList<Integer> userIds);
+
+    /**
+     * 所有用户获取excel
+     * @return
+     */
+    List<SysUser> getUserLists();
+
+    /**
      * 查询头像
      * @param userId
      * @return
@@ -87,6 +104,11 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      */
     int updateUser(SysUser user);
 
+    /**
+     * 登录
+     * @param sysUser
+     * @return
+     */
     @Select("select * from sys_user where user_name=#{userName} and password=#{password}")
     SysUser login(SysUser sysUser);
 
