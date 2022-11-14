@@ -17,10 +17,16 @@ import java.util.List;
 public interface SysUserService extends IService<SysUser> {
 
     /**
+     * 下载模板
+     * @return
+     */
+    List<SysUser> uploadUser();
+
+    /**
      *批量导入用户信息
      * @param file
      */
-    void importData(MultipartFile file);
+    Result importData(MultipartFile file);
 
     /**
      * 导出所有用户

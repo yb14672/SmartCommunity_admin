@@ -60,6 +60,11 @@ public enum ResultCode {
     REPEAT_POST_CODE(3018,"岗位编码重复"),
     REPEAT_POST_NAME(3019,"岗位名称重复"),
     DEPT_ASSIGNED(3020,"岗位已被分配，不允许删除" ),
+    DICT_NOCHANGE(3024,"字典信息没有改变" ),
+    USER_TELREPEAT(3025,"手机号重复" ),
+    USER_REPEAT(3026,"导入有重复" ),
+    FILE_REPEAT(3027,"导入文件有重复" ),
+    DATA_REPEAT(3027,"数据不能为空" ),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

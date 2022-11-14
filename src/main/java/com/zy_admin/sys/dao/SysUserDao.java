@@ -66,6 +66,11 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      */
     int updateUser(SysUser user);
 
+    /**
+     * 登录
+     * @param sysUser
+     * @return
+     */
     @Select("select * from sys_user where user_name=#{userName} and password=#{password}")
     SysUser login(SysUser sysUser);
 }

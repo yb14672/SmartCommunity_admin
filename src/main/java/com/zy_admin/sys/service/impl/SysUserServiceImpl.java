@@ -49,7 +49,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private SysDeptService sysDeptService;
 
     /**
+     * 下载模板
+     *
+     * @return
+     */
+    @Override
+    public List<SysUser> uploadUser() {
+        return null;
+    }
+
+    /**
      * 默认是导出全部
+     *
      * @return
      */
     @Override
@@ -59,22 +70,24 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
 
     /**
      * 导出选中的部分
+     *
      * @param userIds
      * @return
      */
     @Override
     public List<SysUser> queryUserById(ArrayList<Integer> userIds) {
         //        如果有选中列表，就执行导出多个
-        if (userIds!=null){
-            userIds = userIds.size()==0 ? null : userIds;
+        if (userIds != null) {
+            userIds = userIds.size() == 0 ? null : userIds;
         }
         return sysUserDao.queryUserById(userIds);
     }
 
-//    导入
+    //    导入
     @Override
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void importData(MultipartFile file) {
+    public Result importData(MultipartFile file) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
 // 从文件流获取工作簿对象
         Workbook workbook = getWorkBook(file);
         Sheet sheet = workbook.getSheetAt(workbook.getFirstVisibleTab());
@@ -94,20 +107,31 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
 // 添加姓名
             checkRequire(i, 0, sheet.getRow(i));
             userEntity.setUserName(getCellValue(sheet.getRow(i).getCell(0)));
+//状态为0能渲染
+            userEntity.setDelFlag("0");
 //添加昵称
             userEntity.setNickName(getCellValue(sheet.getRow(i).getCell(1)));
 // 添加手机号 colNum是列数
-            checkRequire(i, 3, sheet.getRow(i));
-            checkRepeat(i, 3, phoneNumber, getCellValue(sheet.getRow(i).getCell(3)));
-            checkPhoneNumber(i, 3, getCellValue(sheet.getRow(i).getCell(3)));
+            if (!checkRequire(i, 3, sheet.getRow(i))) {
+                result.setMeta(ResultTool.fail(ResultCode.DATA_REPEAT));
+                return result;
+            }
+            if (!checkRepeat(i, 3, phoneNumber, getCellValue(sheet.getRow(i).getCell(3)))) {
+                result.setMeta(ResultTool.fail(ResultCode.FILE_REPEAT));
+                return result;
+            }
+            if (!checkPhoneNumber(i, 3, getCellValue(sheet.getRow(i).getCell(3)))) {
+                result.setMeta(ResultTool.fail(ResultCode.USER_TELREPEAT));
+                return result;
+            }
             userEntity.setPhonenumber(getCellValue(sheet.getRow(i).getCell(3)));
 // 添加部门
             if (sheet.getRow(i).getCell(2) != null && sheet.getRow(i).getCell(2).getCellType() != CellType.BLANK) {
 //                QueryWrapper 是mybatisplus的构造器，
                 QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
-                queryWrapper.eq("dept_name",getCellValue(sheet.getRow(i).getCell(2)));
+                queryWrapper.eq("dept_name", getCellValue(sheet.getRow(i).getCell(2)));
                 List<SysDept> list = sysDeptService.list(queryWrapper);
-                if(list.size()!=0){
+                if (list.size() != 0) {
                     userEntity.setDeptId(list.get(0).getDeptId());
                 }
             }
@@ -120,22 +144,30 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             phoneNumber.add(getCellValue(sheet.getRow(i).getCell(3)));
         }
         if (emptyRow != rowNumber - 1) {
-            sysUserService.saveBatch(userEntityList);
+            if (sysUserService.saveBatch(userEntityList)) {
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            } else {
+                result.setMeta(ResultTool.fail(ResultCode.USER_REPEAT));
+            }
         }
+        return result;
     }
 
     /**
      * 验证手机号不能重复
+     *
      * @param rowNum
      * @param colNum
      * @param stringCellValue
      */
-    private void checkPhoneNumber(int rowNum, int colNum, String stringCellValue) {
+    private boolean checkPhoneNumber(int rowNum, int colNum, String stringCellValue) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("phonenumber", stringCellValue);
+        System.out.println("sysUserService.list(queryWrapper).size()" + sysUserService.list(queryWrapper).size());
         if (sysUserService.list(queryWrapper).size() > 0) {
-           new Exception("手机号不能重复");
+            return false;
         }
+        return true;
     }
 
     /**
@@ -146,26 +178,28 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      * @param phoneNumber
      * @param stringCellValue
      */
-    private void checkRepeat(int rowNum, int colNum, List<String> phoneNumber, String stringCellValue) {
+    private boolean checkRepeat(int rowNum, int colNum, List<String> phoneNumber, String stringCellValue) {
         for (String s : phoneNumber) {
             if (s.equals(stringCellValue)) {
-                new Exception("不能重复");
+                return false;
             }
         }
+        return true;
     }
 
     /**
-     * 检验必填项
+     * 检验必填项 数据不能为空
      *
      * @param rowNum
      * @param colNum
      * @param row
      */
-    private void checkRequire(int rowNum, int colNum, Row row) {
+    private boolean checkRequire(int rowNum, int colNum, Row row) {
         Cell cell = row.getCell(colNum);
         if (cell == null || CellType.BLANK.equals(cell.getCellType())) {
-            new Exception("数据不能为空");
+            return false;
         }
+        return true;
     }
 
     /**
@@ -266,7 +300,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                 return result;
             }
             String avatar = this.baseMapper.getAvatarById(userId);
-            if(avatar==null||avatar.isEmpty()){
+            if (avatar == null || avatar.isEmpty()) {
                 result.setMeta(ResultTool.fail(ResultCode.USER_AVATAR_NULL));
                 return result;
             }

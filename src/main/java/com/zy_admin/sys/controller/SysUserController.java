@@ -46,9 +46,8 @@ public class SysUserController extends ApiController {
      * @param file
      */
     @RequestMapping("/import-data")
-    public void importData(@RequestParam("file") MultipartFile file) {
-        sysUserService.importData(file);
-
+    public Result importData(@RequestParam("file") MultipartFile file) {
+        return sysUserService.importData(file);
     }
 
     /**
@@ -69,6 +68,33 @@ public class SysUserController extends ApiController {
             sysUserList = sysUserService.queryUserById(userIds);
         }
         String fileName = URLEncoder.encode("用户表数据", "UTF-8");
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("content-type", "text/html;charset=UTF-8");
+        // 内容样式
+        HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
+        EasyExcel.write(response.getOutputStream(), SysUser.class)
+                .excelType(ExcelTypeEnum.XLS)
+                //自适应表格格式
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                .autoCloseStream(true)
+                .sheet("模板")
+                .doWrite(sysUserList);
+    }
+
+    /**
+     * 下载模板
+     * @param
+     * @param response
+     * @throws IOException
+     */
+    @GetMapping("/uploadExcel")
+    public void uploadExcel(HttpServletResponse response) throws IOException {
+        List<SysUser> sysUserList = new ArrayList<>();
+//        直接下载模板
+        sysUserList = sysUserService.uploadUser();
+        String fileName = URLEncoder.encode("下载模板表", "UTF-8");
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader("content-type", "text/html;charset=UTF-8");

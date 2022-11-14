@@ -144,7 +144,17 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
             if (selectSysDictByType(1,sysDictType)){
                 try {
                     int update = this.baseMapper.update(sysDictType);
+//                    原来的对象
+                    SysDictType sysDictType2 = this.baseMapper.queryById(sysDictType.getDictId()+"");
+                    System.out.println("sysDictType2"+sysDictType2);
+//                    修改后的
+                    System.out.println("sysDictType"+sysDictType);
                     this.baseMapper.updateDictDataByDictType(sysDictType1.getDictType(),sysDictType.getDictType());
+//                    判断修改的有没有重复
+                    System.out.println(sysDictType2.equals(sysDictType));
+                    if (sysDictType2.equals(sysDictType)){
+                        return new Result(null, ResultTool.fail(ResultCode.DICT_NOCHANGE));
+                    }
                     return new Result(null, ResultTool.fail(ResultCode.SUCCESS));
                 }catch (Exception e){
                     e.printStackTrace();
