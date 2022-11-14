@@ -15,6 +15,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:35
  */
+@SuppressWarnings("ALL")
 public interface SysDictTypeDao extends BaseMapper<SysDictType> {
     /**
      * 分页查询
@@ -35,30 +36,63 @@ public interface SysDictTypeDao extends BaseMapper<SysDictType> {
      */
     Long count(@Param("sysDict") SysDictType sysDictType, @Param("startTime") String startTime, @Param("endTime") String endTime);
 
-//    新增
+    /**
+     * 新增
+      * @param sysDictType
+     * @return
+     */
     int insert(SysDictType sysDictType);
 
-//    修改
+    /**
+     * 修改
+     * @param sysDictType
+     * @return
+     */
     int update(SysDictType sysDictType);
 
-//    根据对象获取id
+    /**
+     * 根据对象获取id
+      * @param id
+     * @return
+     */
     SysDictType queryById(String id);
 
-//    修改状态
+    /**
+     * 同时修改字典和字典数据的类型
+     * @param dictType
+     * @param newDictType
+     */
     void updateDictDataByDictType(@Param("dictType") String dictType, @Param("newDictType") String newDictType);
 
-//    删除多个
+
+    /**
+     * 删除多个
+      * @param idList
+     * @return
+     */
     int deleteByIdList(@Param("idList") List<Integer> idList);
 
-//    查询name是否重复
+    /**
+     * 查询name是否重复
+      * @param SysDictName
+     * @return
+     */
     @Select("select * from sys_dict_type where dict_name = #{dictName}")
     SysDictType selectSysDictByName(String SysDictName);
 
-//    查询type是否重复
+    /**
+     * 查询type是否重复
+     * @param SysDictType
+     * @return
+     */
     @Select("select * from sys_dict_type where dict_type = #{dictType}")
     SysDictType selectSysDictByType(String SysDictType);
 
-//    判断下面有没有子集
+    /**
+     * 判断下面有没有子集
+     * @param DictIds
+     * @return
+     */
     Integer hasChildDict(@Param("idList") List<Integer> DictIds);
 
     /**
@@ -74,6 +108,10 @@ public interface SysDictTypeDao extends BaseMapper<SysDictType> {
      */
     List<SysDictType> getDictLists();
 
+    /**
+     * 查询所有字典
+     * @return
+     */
     @Select("select * from sys_dict_type")
     List<SysDictType> selectDictAll();
 }

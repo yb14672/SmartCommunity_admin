@@ -233,6 +233,11 @@
         where dict_code = #{dictCode}
     </update>
 
+    <update id="changeStatusByDictType">
+        update sys_dict_data set status=#{status}
+        where dict_type = #{dict_type}
+    </update>
+
     <!--通过主键删除-->
     <delete id="deleteDictDataByIds">
         delete
@@ -295,8 +300,26 @@
         WHERE dd.dict_type = #{dictType}
     </select>
 
+    <resultMap type="com.zy_admin.sys.dto.DataDictExcelDto" id="SysDictDataDtoMap">
+        <result property="dictCode" column="dict_code" jdbcType="INTEGER"/>
+        <result property="dictSort" column="dict_sort" jdbcType="INTEGER"/>
+        <result property="dictLabel" column="dict_label" jdbcType="VARCHAR"/>
+        <result property="dictValue" column="dict_value" jdbcType="VARCHAR"/>
+        <result property="dictType" column="dict_type" jdbcType="VARCHAR"/>
+        <result property="dictName" column="dict_name" jdbcType="VARCHAR"/>
+        <result property="cssClass" column="css_class" jdbcType="VARCHAR"/>
+        <result property="listClass" column="list_class" jdbcType="VARCHAR"/>
+        <result property="isDefault" column="is_default" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <!--查询指定字典数据-->
-    <select id="getDictListById" resultMap="SysDictDataMap">
+    <select id="getDictListById" resultMap="SysDictDataDtoMap">
         select dd.*, dt.dict_name
         from sys_dict_data dd
                  LEFT JOIN sys_dict_type dt ON dd.dict_type = dt.dict_type

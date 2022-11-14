@@ -1,9 +1,12 @@
 package com.zy_admin.sys.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.sys.dto.userDto;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.Result;
+
+import java.util.List;
 
 /**
  * 用户信息表(SysUser)表服务接口
@@ -22,7 +25,6 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 查询头像
-     *
      * @param userId
      * @return
      */
@@ -54,7 +56,6 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 根据用户ID获取用户所有信息
-     *
      * @param userId
      * @return
      */
@@ -75,6 +76,29 @@ public interface SysUserService extends IService<SysUser> {
      * @return 结果
      */
     Result resetPwd(SysUser user);
+
+    /**
+     * 查询所有用户
+     * @param page
+     * @param sysUser
+     * @return
+     */
+    Result selectAll(Page page, SysUser sysUser);
+
+    /**
+     * 根据用户ID获取其信息和对应的角色
+     * @param userId
+     * @return
+     */
+    Result authRole(Long userId);
+
+    /**
+     * 根据用户ID修改其对应的角色列表
+     * @param userId
+     * @param roleIdList
+     * @return
+     */
+    Result insertAuthRole(Integer userId, List<Long> roleIdList) throws Exception;
 
     /**
      * 新增用户

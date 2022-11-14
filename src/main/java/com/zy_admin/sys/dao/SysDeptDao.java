@@ -32,6 +32,14 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
     Integer insertDept(SysDept sysDept);
 
     /**
+     * 根据id查询出他的子集
+     *
+     * @param deptId
+     * @return
+     */
+    List<Long> getDeptIdList(Long deptId);
+
+    /**
      * 部门名称验重
      *
      * @param sysDept
@@ -62,13 +70,14 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      * @return
      */
     Integer hasChildDept(long DeptId);
+
     /**
      * 判断下面有没有用户
      *
-     * @param DeptId
+     * @param idList
      * @return
      */
-    Integer hasUserDept(long DeptId);
+    Integer hasUserDept(@Param("idList") List<Integer> idList);
 
     SysDept getDeptById(Long parentId);
 }

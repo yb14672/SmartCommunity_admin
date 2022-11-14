@@ -11,8 +11,8 @@ import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,8 +23,6 @@ import java.util.List;
  */
 @Service("sysDeptService")
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> implements SysDeptService {
-    @Resource
-    private SysDeptDao sysDeptDao;
 
     /**
      * 根据条件查询部门数据
@@ -42,12 +40,10 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             result.setData(tree.buildTree());
 
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-            System.out.println(result);
             return result;
         } catch (Exception e) {
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
-            System.out.println(result);
             return result;
         }
     }
@@ -75,7 +71,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             }
             String ancestors = ancestors(sysDept);
             sysDept.setAncestors(ancestors);
-            sysDeptDao.insertDept(sysDept);
+            baseMapper.insertDept(sysDept);
             if (sysDept.getDeptId() != null) {
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             }
@@ -102,9 +98,16 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
      */
     @Override
     public Result updateDept(SysDept sysDept) {
-        System.out.println(sysDept);
         Result result = new Result();
         try {
+            List<Long> deptIdList = this.baseMapper.getDeptIdList(sysDept.getDeptId());
+            //判断修改的的父级是否为自己的子级
+            for (Long deptId : deptIdList) {
+                if (sysDept.getParentId().equals(deptId)) {
+                    result.setMeta(ResultTool.fail(ResultCode.DEPTID_NOT_ITEM));
+                    return result;
+                }
+            }
             //判断菜单的父类是否自己
             if (!sysDept.getParentId().equals(sysDept.getDeptId())) {
                 //因为菜单名为必填字段，所以判断是否为空
@@ -116,6 +119,19 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
                     if (checkDeptNameUnique(1, sysDept)) {
                     } else {
                         result.setMeta(ResultTool.fail(ResultCode.REPEAT_DEPTNAME));
+                        return result;
+                    }
+                }
+                //查询原本数据
+                SysDept dept = this.baseMapper.selectById(sysDept.getDeptId());
+                //若状态不等则修改了状态
+                if (!dept.getStatus().equals(sysDept.getStatus())) {
+                    List<Integer> idList = new ArrayList<Integer>();
+                    idList.add(Math.toIntExact(dept.getDeptId()));
+                    Integer hasUserDept = this.baseMapper.hasUserDept(idList);
+                    //判断是否该部门是否用户
+                    if (hasUserDept > 1) {
+                        result.setMeta(ResultTool.fail(ResultCode.DEPT_ASSIGNED));
                         return result;
                     }
                 }
@@ -180,28 +196,22 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
     @Override
     public Result deleteDept(List<Integer> idList) {
         Result result = new Result();
-        //判断是删除单个还是多个
-        if (idList.size() == 1) {
-            //判断有没有子集
-            Integer hasChildDept = this.baseMapper.hasChildDept(idList.get(0));
-            System.err.println(hasChildDept);
-            //小于1说明没有子集，就可以删
-            if (hasChildDept < 1) {
-                //判断有没有用户
-                Integer hasUserDept = this.baseMapper.hasUserDept(idList.get(0));
-                System.err.println(hasUserDept);
-                //小于1说明没有用户，就可以删
-                if (hasUserDept < 1) {
-                    int i = this.baseMapper.deleteByIdList(idList);
-                    result.setData("删除成功，影响的行数：" + i);
-                    result.setMeta(ResultTool.success(ResultTool.success(ResultCode.SUCCESS)));
-                } else {
-                    result.setMeta(ResultTool.fail(ResultCode.DEPT_HAVE_USER));
-                }
+        //判断有没有子集
+        Integer hasChildDept = this.baseMapper.hasChildDept(idList.get(0));
+        //小于1说明没有子集，就可以删
+        if (hasChildDept < 1) {
+            //判断有没有用户
+            Integer hasUserDept = this.baseMapper.hasUserDept(idList);
+            //小于1说明没有用户，就可以删
+            if (hasUserDept < 1) {
+                int i = this.baseMapper.deleteByIdList(idList);
+                result.setData("删除成功，影响的行数：" + i);
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             } else {
-                result.setMeta(ResultTool.fail(ResultCode.DEPT_HAVE_CHILDREN));
+                result.setMeta(ResultTool.fail(ResultCode.DEPT_HAVE_USER));
             }
-            //多个就是批量删除
+        } else {
+            result.setMeta(ResultTool.fail(ResultCode.DEPT_HAVE_CHILDREN));
         }
         return result;
     }
@@ -215,7 +225,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
     private String ancestors(SysDept sysdept) {
         Long parentId = sysdept.getParentId();
         if (parentId != 0) {
-            SysDept parentDept = this.sysDeptDao.getDeptById(parentId);
+            SysDept parentDept = this.baseMapper.getDeptById(parentId);
             return parentDept.getAncestors() + "," + parentDept.getDeptId();
         }
         return "0";

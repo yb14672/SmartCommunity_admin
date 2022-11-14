@@ -1,5 +1,6 @@
 package com.zy_admin.sys.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dto.RoleAndRoleMenu;
@@ -96,5 +97,11 @@ public interface SysRoleService extends IService<SysRole> {
      * @return
      */
     Boolean checkRoleKeyUnique(int type,RoleAndRoleMenu roleAndRoleMenu);
+    /**
+     * 获取所有除去管理员以外的角色并分页
+     * @param page
+     * @return
+     */
+    Result getRoleList(Page page);
 }
 

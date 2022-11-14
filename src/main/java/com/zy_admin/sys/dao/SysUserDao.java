@@ -3,6 +3,7 @@ package com.zy_admin.sys.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.sys.dto.SysUserDto;
 import com.zy_admin.sys.dto.userDto;
+import com.zy_admin.sys.dto.UserRoleDto;
 import com.zy_admin.sys.entity.SysUser;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
@@ -127,5 +128,11 @@ public interface SysUserDao extends BaseMapper<SysUser> {
     void adminUpdateUser(userDto userDto);
 
 
+    /**
+     * 根据用户ID获取其信息和对应的角色
+     * @param userId
+     * @return
+     */
+    UserRoleDto authRole(Long userId);
 }
 

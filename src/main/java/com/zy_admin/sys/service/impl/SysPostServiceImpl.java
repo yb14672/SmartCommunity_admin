@@ -11,7 +11,6 @@ import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,86 +23,80 @@ import java.util.List;
 @Service("sysPostService")
 public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> implements SysPostService {
 
-    @Resource
-    private SysPostDao sysPostDao;
-
     @Override
     public Result selectPostByLimit(SysPost sysPost, Pageable pageable) {
         Result result = new Result();
-       //获取总行数
+        //获取总行数
         long total = this.baseMapper.count(sysPost);
         long pages = 0;
-        if (total>0)
-        {
-            pages = total%pageable.getPageSize()==0?total/pageable.getPageSize():total/pageable.getPageSize()+1;
+        if (total > 0) {
+            pages = total % pageable.getPageSize() == 0 ? total / pageable.getPageSize() : total / pageable.getPageSize() + 1;
             pageable.setPages(pages);
             //页码修正
             pageable.setPageNum(pageable.getPageNum() < 1 ? 1 : pageable.getPageNum());
             pageable.setPageNum(pageable.getPageNum() > pages ? pages : pageable.getPageNum());
             //设置起始下标
             pageable.setIndex((pageable.getPageNum() - 1) * pageable.getPageSize());
-        }else {
+        } else {
             pageable.setPageNum(0);
         }
-
         pageable.setTotal(total);
         List<SysPost> sysPosts = this.baseMapper.queryAllByLimit(sysPost, pageable);
-        System.out.println(sysPosts.toString());
-        PostDto postDto = new PostDto(sysPosts,pageable);
+        PostDto postDto = new PostDto(sysPosts, pageable);
         result.setData(postDto);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-
         return result;
-
-
     }
 
     @Override
     public Result addPost(SysPost sysPost) {
         Result result = new Result();
-        if (checkPostCode(0,sysPost))
-        {
-            if (checkPostName(0,sysPost))
-            {
+        if (checkPostCode(0, sysPost)) {
+            if (checkPostName(0, sysPost)) {
                 this.baseMapper.insert(sysPost);
-               result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
-               return result;
+                result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
 
-            }else {
+            } else {
                 result.setMeta(ResultTool.fail(ResultCode.REPEAT_POST_NAME));
-                return result;
             }
-        }else {
+        } else {
             result.setMeta(ResultTool.fail(ResultCode.REPEAT_POST_CODE));
-            return result;
         }
+        return result;
     }
 
     @Override
     public Result update(SysPost sysPost) {
         Result result = new Result();
-        if (checkPostCode(1,sysPost))
-        {
-            if (checkPostName(1,sysPost))
-            {
-                this.baseMapper.updateById(sysPost);
-                result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
-                return result;
-
-            }else {
+        if (checkPostCode(1, sysPost)) {
+            if (checkPostName(1, sysPost)) {
+                //修改前的数据
+                SysPost post = this.baseMapper.selectById(sysPost.getPostId());
+                //判断是否有更改状态，若有则去查询
+                if(!post.getStatus().equals(sysPost.getStatus())) {
+                    List<Integer> ids=new ArrayList<Integer>();
+                    ids.add(Math.toIntExact(post.getPostId()));
+                    List<Integer> postIds = baseMapper.getPostIdFromUserPost(ids);
+                    //判断在用户表中是否有配分配，若有则提示
+                    if (postIds.size() > 0) {
+                        result.setMeta(ResultTool.fail(ResultCode.POST_ASSIGNED));
+                    } else {
+                        this.baseMapper.updateById(sysPost);
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                    }
+                }
+            } else {
                 result.setMeta(ResultTool.fail(ResultCode.REPEAT_POST_NAME));
-                return result;
             }
-        }else {
+        } else {
             result.setMeta(ResultTool.fail(ResultCode.REPEAT_POST_CODE));
-            return result;
         }
-
+        return result;
     }
 
 
     @Override
-    public Boolean checkPostName(int type,SysPost sysPost){
+    public Boolean checkPostName(int type, SysPost sysPost) {
         SysPost checkPostName = this.baseMapper.selectPostName(sysPost.getPostName());
         //添加时--必须为空
         if (type == 0) {
@@ -124,7 +117,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
     }
 
     @Override
-    public Boolean checkPostCode(int type,SysPost sysPost ){
+    public Boolean checkPostCode(int type, SysPost sysPost) {
         SysPost postCode = this.baseMapper.selectPostCode(sysPost.getPostCode());
         //添加时--必须为空
         if (type == 0) {
@@ -145,8 +138,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
     }
 
 
-
-
     @Override
     public List<SysPost> queryRoleById(ArrayList<Integer> roleIds) {
         if (roleIds != null) {
@@ -163,10 +154,10 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
     @Override
     public Result deletePost(List<Integer> ids) {
         Result result = new Result();
-        List<Integer> postIds = sysPostDao.getPostIdFromUserPost(ids);
-        if (postIds.size()>0) {
-            result.setMeta(ResultTool.fail(ResultCode.DEPT_ASSIGNED));
-        }else {
+        List<Integer> postIds = baseMapper.getPostIdFromUserPost(ids);
+        if (postIds.size() > 0) {
+            result.setMeta(ResultTool.fail(ResultCode.POST_ASSIGNED));
+        } else {
             this.baseMapper.deletePost(ids);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }

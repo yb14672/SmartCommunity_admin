@@ -75,8 +75,7 @@ public class SysDictTypeController extends ApiController {
     }
 
 //    删除
-    @DeleteMapping()
-    @Transactional(rollbackFor = Exception.class)
+    @DeleteMapping
     public Result delete(@RequestParam String[] idList){
         List<Integer> idList1 = new ArrayList<Integer>();
         Result result = new Result();
@@ -101,6 +100,7 @@ public class SysDictTypeController extends ApiController {
      * @return
      */
     @PutMapping("/updateDict")
+    @Transactional
     public Result updateDict(@RequestBody SysDictType sysDictType){
         return sysDictTypeService.updateDict(sysDictType);
     }
@@ -111,7 +111,6 @@ public class SysDictTypeController extends ApiController {
      */
     @PostMapping("/addSysDict")
     public Result insertDictType(@RequestBody SysDictType sysDictType){
-        System.out.println(sysDictType);
         sysDictType.setCreateTime(LocalDateTime.now().toString());
         return this.sysDictTypeService.insertOrUpdateBatch(sysDictType);
     }
@@ -127,10 +126,7 @@ public class SysDictTypeController extends ApiController {
      */
     @GetMapping("/selectDictByLimit")
     public Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime){
-        System.out.println(sysDictType);
-        System.out.println(pageable);
         Result result = sysDictTypeService.selectDictByLimit(sysDictType, pageable,startTime,endTime);
-        System.out.println(result);
         return result;
     }
 
