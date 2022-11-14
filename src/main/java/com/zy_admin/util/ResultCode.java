@@ -39,6 +39,7 @@ public enum ResultCode {
     USER_AVATAR_UPLOAD_FAILED(2011, "图片上传失败"),
     USER_AVATAR_NULL(2012,"没有头像，记得上传哦"),
     USER_LOGIN_EXPIRED(2013,"登录已过期"),
+    USER_TOKEN_INVALID(2014,"无效token"),
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
