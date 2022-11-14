@@ -17,6 +17,13 @@ import org.apache.ibatis.annotations.Select;
 public interface SysUserDao extends BaseMapper<SysUser> {
 
     /**
+     * 根据id获取用户信息
+     */
+    @Select("select * from sys_user where user_id = #{userId}")
+    SysUser getUserById(String userId);
+
+
+    /**
      * 查询头像
      * @param userId
      * @return
@@ -31,7 +38,7 @@ public interface SysUserDao extends BaseMapper<SysUser> {
     SysUser queryByName(String userName);
 
     /**
-     * 根据ID查询用户
+     * 根据ID查询用户及其部门/角色/岗位
      * @param id
      * @return
      */
@@ -106,15 +113,19 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * 删除用户拥有的角色
      * @param id
      */
-    @Delete("delete * from sys_user_role where user_id=#{userId}")
+    @Delete("delete  from sys_user_role where user_id=#{userId}")
     void deleteRole(long id);
 
-    /**
+    /**s
      * 删除用户具有的岗位
      * @param id
      */
-    @Delete("delete * from sys_user_post where user_id =#{userId}")
+    @Delete("delete  from sys_user_post where user_id =#{userId}")
     void deletePost(long id);
+
+
+    void adminUpdateUser(userDto userDto);
+
 
 }
 

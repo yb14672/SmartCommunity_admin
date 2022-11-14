@@ -26,7 +26,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private SysUserDao sysUserDao;
 
 
-
     @Override
     public Result getAvatarById(String userId) {
         Result result = new Result();
@@ -111,11 +110,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             result.setData(personal);
             result.setJsonResult(ResultTool.success(ResultCode.SUCCESS));
         }
-         return result;
+        return result;
     }
 
     /**
      * 个人中心修改
+     *
      * @param user 用户信息
      * @return
      */
@@ -161,26 +161,26 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Override
     public Result insertUser(userDto sysUserDto) {
         Result result = new Result();
-        if (checkNiceName(0,sysUserDto))
-        {
-            if (checkPhone(0,sysUserDto))
-            {
-                if (checkEmail(0,sysUserDto))
-                {
-                     this.baseMapper.insertUser(sysUserDto);
-                     this.baseMapper.insertRole(sysUserDto.getUserId(),sysUserDto.getRoleIds());
-                     this.baseMapper.insertPost(sysUserDto.getUserId(),sysUserDto.getPostIds());
-
-                     result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-
-
-                }else {
+        if (checkNiceName(0, sysUserDto)) {
+            if (checkPhone(0, sysUserDto)) {
+                if (checkEmail(0, sysUserDto)) {
+                    if (sysUserDto.getPostIds().length!=0)
+                    {
+                        this.baseMapper.insertPost(sysUserDto.getUserId(), sysUserDto.getPostIds());
+                    }
+                    if (sysUserDto.getRoleIds().length!=0)
+                    {
+                        this.baseMapper.insertRole(sysUserDto.getUserId(), sysUserDto.getRoleIds());
+                    }
+                    this.baseMapper.insertUser(sysUserDto);
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                } else {
                     result.setMeta(ResultTool.fail(ResultCode.REPEAT_EMAIL));
                 }
-            }else {
+            } else {
                 result.setMeta(ResultTool.fail(ResultCode.REPEAT_PHONENUMBER));
             }
-        }else {
+        } else {
             result.setMeta(ResultTool.fail(ResultCode.REPEAT_NICK_NAME));
         }
         return result;
@@ -188,34 +188,39 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
 
     /**
      * 管理员修改用户
+     *
      * @param userDto
      * @return
      */
     @Override
     public Result adminUpdateUser(userDto userDto) {
         Result result = new Result();
-        if (checkNiceName(1,userDto))
-        {
-            if (checkPhone(1,userDto))
-            {
-                if (checkEmail(1,userDto))
-                {
-                    this.baseMapper.deleteRole(userDto.getUserId());
-                    this.baseMapper.deletePost(userDto.getUserId());
-                    this.baseMapper.insertUser(userDto);
-                    this.baseMapper.insertRole(userDto.getUserId(),userDto.getRoleIds());
-                    this.baseMapper.insertPost(userDto.getUserId(),userDto.getPostIds());
+        if (checkNiceName(1, userDto)) {
+            if (checkPhone(1, userDto)) {
+                if (checkEmail(1, userDto)) {
+                    //判断postId有没有值
+                    if (userDto.getPostIds().length!=0) {
+                        this.baseMapper.deleteRole(userDto.getUserId());
+                        this.baseMapper.insertRole(userDto.getUserId(), userDto.getRoleIds());
+                    }
+                    //判断roleId有没有值
+                    if (userDto.getRoleIds().length!=0) {
+                        this.baseMapper.deletePost(userDto.getUserId());
+                        this.baseMapper.insertPost(userDto.getUserId(), userDto.getPostIds());
+                    }
+                    this.baseMapper.adminUpdateUser(userDto);
+
 
                     result.setMeta(ResultTool.success(ResultCode.SUCCESS));
 
 
-                }else {
+                } else {
                     result.setMeta(ResultTool.fail(ResultCode.REPEAT_EMAIL));
                 }
-            }else {
+            } else {
                 result.setMeta(ResultTool.fail(ResultCode.REPEAT_PHONENUMBER));
             }
-        }else {
+        } else {
             result.setMeta(ResultTool.fail(ResultCode.REPEAT_NICK_NAME));
         }
         return result;
@@ -285,18 +290,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
 
     /**
      * 重置密码
+     *
      * @param sysUser
      * @return
      */
     @Override
     public Result resetPassword(SysUser sysUser) {
         Result result = new Result();
-        SysUser user = this.baseMapper.selectById(sysUser.getUserId());
-        if (!sysUser.getPassword().equals(user.getPassword()))
-        {
+        SysUser user = this.baseMapper.getUserById(sysUser.getUserId() + "");
+
+        if (!sysUser.getPassword().equals(user.getPassword())) {
             this.baseMapper.updateUser(sysUser);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-        }else {
+        } else {
             result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_SAME_PASSWORD));
         }
         return result;

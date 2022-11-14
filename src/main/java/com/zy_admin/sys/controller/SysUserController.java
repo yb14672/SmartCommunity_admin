@@ -184,6 +184,7 @@ public class SysUserController extends ApiController {
     @PutMapping("/adminUpdateUser")
     public Result updateUser(HttpServletRequest request, @RequestBody userDto userDto)
     {
+        System.err.println(userDto.toString());
         userDto.setUpdateTime(LocalDateTime.now().toString());
         SysUser user = this.requestUtil.getUser(request);
         userDto.setCreateBy(user.getUserName());
@@ -191,8 +192,9 @@ public class SysUserController extends ApiController {
     }
 
     @PostMapping("/resetPassword")
-        public Result resetPassword(HttpServletRequest request, @RequestBody SysUser sysUser)
+        public Result resetPassword(HttpServletRequest request,@RequestBody SysUser sysUser)
         {
+            System.out.println(sysUser);
             SysUser user = this.requestUtil.getUser(request);
             sysUser.setUpdateBy(user.getUserName());
             return sysUserService.resetPassword(sysUser);
