@@ -118,7 +118,6 @@ public class SysMenuController extends ApiController {
             idList1.add(Long.valueOf(str));
         }
         Result result = this.sysMenuService.deleteByIdList(idList1);
-        System.out.println(result);
         return result;
     }
 

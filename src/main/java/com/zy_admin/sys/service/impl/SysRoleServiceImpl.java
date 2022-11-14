@@ -1,18 +1,21 @@
 package com.zy_admin.sys.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dao.SysRoleDao;
 import com.zy_admin.sys.dao.SysRoleMenuDao;
+import com.zy_admin.sys.dao.SysUserRoleDao;
 import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.dto.SysRoleDto;
 import com.zy_admin.sys.entity.SysRole;
+import com.zy_admin.sys.entity.SysUserRole;
 import com.zy_admin.sys.service.SysRoleService;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -26,41 +29,77 @@ import java.util.List;
  */
 @Service("sysRoleService")
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> implements SysRoleService {
-    @Resource
-    SysRoleDao sysRoleDao;
+
     @Resource
     SysRoleMenuDao sysRoleMenuDao;
+    @Resource
+    SysUserRoleDao sysUserRoleDao;
 
+    /**
+     * 获取所有除去管理员以外的角色并分页
+     *
+     * @param page
+     * @return
+     */
+    @Override
+    public Result getRoleList(Page page) {
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
+        //因为超级管理员不允许分配，因此查询条件需要加上id不为1
+        queryWrapper.ne(SysRole::getRoleId,1);
+        queryWrapper.ne(SysRole::getDelFlag,2);
+        queryWrapper.orderByAsc(SysRole::getRoleSort);
+        Page page1 = this.baseMapper.selectPage(page, queryWrapper);
+        if (page1.getSize() > 0) {
+            result.setData(page1);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+
+    @Override
+    public Result getAllRole( SysRole sysRole) {
+        Result result = new Result();
+        List<SysRole> allRole = this.baseMapper.getAllRole(sysRole);
+        result.setData(allRole);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
+    }
 
     @Override
     public List<SysRole> queryRoleById(ArrayList<Integer> roleIds) {
         if (roleIds != null) {
             roleIds = roleIds.size() == 0 ? null : roleIds;
         }
-        return sysRoleDao.queryRoleById(roleIds);
+        return baseMapper.queryRoleById(roleIds);
     }
 
     @Override
     public List<SysRole> getRoleLists() {
-        return sysRoleDao.getRoleLists();
+        return baseMapper.getRoleLists();
     }
 
     @Override
     public Result deleteByIdList(List<Integer> idList) {
-        Result result = new Result();
-        int i = this.baseMapper.deleteByIdList(idList);
-        result.setMeta(ResultTool.fail());
-        if (i >= 1) {
-            result.setData("删除成功，影响的行数：" + i);
-            result.setMeta(ResultTool.success(ResultTool.success(ResultCode.SUCCESS)));
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        //获取所有分配了的用户列表
+        List<SysUserRole> list = this.sysUserRoleDao.getListByIds(idList);
+        //若等于0则此次删除的角色没有被分配
+        if(list.size() == 0){
+            int i = this.baseMapper.deleteByIdList(idList);
+            if (i >= 1) {
+                result.setData("删除成功，影响的行数：" + i);
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            }
+        }else{
+            result.setMeta(ResultTool.fail(ResultCode.ROLE_HAS_BEEN_ASSIGNED));
         }
         return result;
     }
 
     @Override
     public Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime) {
-        Result result = new Result();
-        result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //满足条件的总数据
         long total = this.baseMapper.count(sysRole, startTime, endTime);
         long pages = 0;
@@ -92,10 +131,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
      */
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Result insert(RoleAndRoleMenu roleAndRoleMenu) {
         if (checkRoleNameUnique(0,roleAndRoleMenu)) {
-            if (checkRoleNameUnique(0,roleAndRoleMenu)) {
+            if (checkRoleKeyUnique(0,roleAndRoleMenu)) {
                 try {
                     //插入角色
                     this.baseMapper.insert(roleAndRoleMenu);
@@ -117,9 +155,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Result update(RoleAndRoleMenu roleAndRoleMenu) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         if (checkRoleNameUnique(1,roleAndRoleMenu)) {
             if (checkRoleKeyUnique(1,roleAndRoleMenu)) {
                 try {
@@ -191,7 +228,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
 
     @Override
     public Result changeStatus(SysRole sysRole) {
-        Result result = new Result();
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         int i = this.baseMapper.updateRole(sysRole);
         result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
         if (i == 1) {

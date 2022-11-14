@@ -24,7 +24,7 @@ public interface SysRoleDao extends BaseMapper<SysRole> {
      * @param endTime
      * @return
      */
-    Long count(@Param("sysRole") SysRole sysRole,@Param("startTime")String startTime,@Param("endTime")String endTime);
+    Long count(@Param("sysRole") SysRole sysRole, @Param("startTime") String startTime, @Param("endTime") String endTime);
 
     /**
      * 修改用户
@@ -41,7 +41,7 @@ public interface SysRoleDao extends BaseMapper<SysRole> {
      * @param endTime
      * @return
      */
-    List<SysRole> selectRoleByLimit(@Param("sysRole") SysRole sysRole, @Param("pageable") Pageable pageable, @Param("startTime")String startTime, @Param("endTime")String endTime);
+    List<SysRole> selectRoleByLimit(@Param("sysRole") SysRole sysRole, @Param("pageable") Pageable pageable, @Param("startTime") String startTime, @Param("endTime") String endTime);
     /**
      * 勾选用户获取excel
      * @param roleIds
@@ -80,7 +80,7 @@ public interface SysRoleDao extends BaseMapper<SysRole> {
      * @param roleName
      * @return
      */
-    @Select("select * from sys_role where role_name = #{roleName} ")
+    @Select("select * from sys_role where role_name = #{roleName} and del_flag != 2")
     SysRole selectRoleName(String roleName);
 
     /**
@@ -88,7 +88,11 @@ public interface SysRoleDao extends BaseMapper<SysRole> {
      * @param roleKey
      * @return
      */
-    @Select("select * from sys_role where role_key=#{roleKey}")
+    @Select("select * from sys_role where role_key=#{roleKey} and del_flag != 2")
     SysRole selectRoleKey(String roleKey);
+
+
+    @Select("select * from sys_role where role_id!=1 and del_flag != 2")
+    List<SysRole> getAllRole(SysRole sysRole);
 }
 
