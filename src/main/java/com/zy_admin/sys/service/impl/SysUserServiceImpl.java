@@ -172,7 +172,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             return new Result(jwtToken, ResultTool.success(ResultCode.SUCCESS));
         }
         return new Result(jwtToken, ResultTool.fail(ResultCode.USER_WRONG_ACCOUNT_OR_PASSWORD));
-
     }
 
     @Override

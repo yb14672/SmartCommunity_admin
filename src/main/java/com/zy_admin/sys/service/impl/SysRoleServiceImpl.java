@@ -47,6 +47,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
         //因为超级管理员不允许分配，因此查询条件需要加上id不为1
         queryWrapper.ne(SysRole::getRoleId,1);
+        queryWrapper.ne(SysRole::getDelFlag,2);
         queryWrapper.orderByAsc(SysRole::getRoleSort);
         Page page1 = this.baseMapper.selectPage(page, queryWrapper);
         if (page1.getSize() > 0) {
