@@ -10,6 +10,7 @@ import com.zy_admin.sys.dto.SysUserDto;
 import com.zy_admin.sys.dto.SysUsersDto;
 import com.zy_admin.sys.dto.UserRoleDto;
 import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtils;
 import com.zy_admin.util.Result;
@@ -32,6 +33,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
 
     @Resource
     private SysUserRoleDao sysUserRoleDao;
+    @Resource
+    private RedisService redisService;
     /**
      * 删除用户
      * @param idList
@@ -158,9 +161,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Override
     public Result login(SysUser sysUser) {
         SysUser user = baseMapper.login(sysUser);
+        System.err.println(user);
         String jwtToken = "";
         if (user != null) {
             jwtToken = JwtUtils.getJwtToken(user.getUserId() + "", user.getNickName());
+            redisService.set(jwtToken,sysUser.getUserName());
             if ("1".equals(user.getStatus())) {
                 return new Result(jwtToken, ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED));
             }

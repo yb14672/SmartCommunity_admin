@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtils;
 import com.zy_admin.util.Result;
@@ -161,7 +162,7 @@ public class SysUserController extends ApiController {
      * @return
      */
     @PostMapping("/login")
-    public Result login(SysUser sysUser) {
+    public Result login(SysUser sysUser,HttpServletRequest request) {
         Result result = sysUserService.login(sysUser);
         return result;
     }

@@ -37,6 +37,22 @@ public class JwtUtils {
 
         return JwtToken;
     }
+    /**
+     * 判断token是否存在与有效
+     * @param jwtToken token字符串
+     * @return 如果token有效返回true，否则返回false
+     */
+    public static boolean checkToken(String jwtToken) {
+        if(StringUtils.isEmpty(jwtToken)) {
+            return false;
+        }
+        try {
+            Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(jwtToken);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * 根据token获取会员id

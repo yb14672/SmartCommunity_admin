@@ -36,12 +36,6 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      */
     List<DeptTreeDto> getDeptList(SysDept sysDept);
 
-    /**
-     * 根据父类Id查询出父级
-     * @param parentId
-     * @return
-     */
-    SysDept getDeptById(Long parentId);
 
     /**
      * 添加部门
@@ -101,5 +95,11 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      */
     Integer hasUserDept(@Param("idList") List<Integer> idList);
 
+    /**
+     * 根据ID获取部门
+     * @param deptId
+     * @return
+     */
+    SysDept getDeptById(Long deptId);
 }
 
