@@ -22,10 +22,6 @@ import com.zy_admin.util.JwtUtils;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
-import com.zy_admin.util.JwtUtils;
-import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
-import com.zy_admin.util.ResultTool;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -33,14 +29,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.List;
 
 /**
@@ -593,13 +587,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             if (checkNiceName(0, sysUserDto)) {
                 if (checkPhone(0, sysUserDto)) {
                     if (checkEmail(0, sysUserDto)) {
-                        if (sysUserDto.getPostIds().length != 0) {
-                            this.baseMapper.insertPost(sysUserDto.getUserId(), sysUserDto.getPostIds());
-                        }
-                        if (sysUserDto.getRoleIds().length != 0) {
-                            this.baseMapper.insertRole(sysUserDto.getUserId(), sysUserDto.getRoleIds());
-                        }
                         this.baseMapper.insertUser(sysUserDto);
+                        if (sysUserDto.getPostId() != 0) {
+                            this.baseMapper.insertPost(sysUserDto.getUserId(), sysUserDto.getPostId());
+                        }
+                        if (sysUserDto.getRoleId() != 0) {
+                            this.baseMapper.insertRole(sysUserDto.getUserId(), sysUserDto.getRoleId());
+                        }
+
                         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                     } else {
                         result.setMeta(ResultTool.fail(ResultCode.REPEAT_EMAIL));
@@ -625,24 +620,23 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Override
     public Result adminUpdateUser(UserDto userDto) {
         Result result = new Result();
-        SysUser user = this.baseMapper.getUserById(userDto.getUserId() + "");
-        if (user.getNickName().equals(userDto.getNickName()) && user.getPhonenumber().equals(userDto.getPhonenumber()) && user.getEmail().equals(userDto.getEmail()) && user.getDeptId().equals(userDto.getDeptId()) && user.getSex().equals(userDto.getSex()) && user.getStatus().equals(userDto.getStatus())) {
+        SysUserDto user = this.baseMapper.personal(userDto.getUserId() + "");
+        if (user.getSysUser().getNickName().equals(userDto.getNickName()) && user.getSysUser().getPhonenumber().equals(userDto.getPhonenumber()) && user.getSysUser().getEmail().equals(userDto.getEmail()) && user.getSysUser().getDeptId().equals(userDto.getDeptId())&&user.getSysUser().getRemark().equals(userDto.getRemark()) && user.getSysUser().getSex().equals(userDto.getSex()) && user.getSysUser().getStatus().equals(userDto.getStatus())&&user.getSysRole().getRoleId().equals(userDto.getRoleId())&&user.getSysPost().getPostId().equals(userDto.getPostId())) {
             result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
             return result;
         }
-
         if (checkNiceName(1, userDto)) {
             if (checkPhone(1, userDto)) {
                 if (checkEmail(1, userDto)) {
                     //判断postId有没有值
-                    if (userDto.getPostIds() != null) {
+                    if (userDto.getPostId() != null) {
                         this.baseMapper.deleteRole(userDto.getUserId());
-                        this.baseMapper.insertRole(userDto.getUserId(), userDto.getRoleIds());
+                        this.baseMapper.insertRole(userDto.getUserId(), userDto.getRoleId());
                     }
                     //判断roleId有没有值
-                    if (userDto.getRoleIds() != null) {
+                    if (userDto.getRoleId() != null) {
                         this.baseMapper.deletePost(userDto.getUserId());
-                        this.baseMapper.insertPost(userDto.getUserId(), userDto.getPostIds());
+                        this.baseMapper.insertPost(userDto.getUserId(), userDto.getPostId());
                     }
                     this.baseMapper.adminUpdateUser(userDto);
 
