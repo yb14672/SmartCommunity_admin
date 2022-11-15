@@ -109,6 +109,7 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      * @param ancestors
      * @return
      */
-    int updateDeptSon(@Param("status") String status, String ancestors);
+    int updateDeptSon(@Param("status") String status,@Param("ancestors") String ancestors);
+
 }
 

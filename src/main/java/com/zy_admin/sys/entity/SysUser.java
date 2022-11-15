@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 
 /**
  * 用户信息表(SysUser)表实体类
@@ -74,7 +72,7 @@ public class SysUser extends Model<SysUser> {
 
     //最后登录时间
     @ExcelProperty("最后登录时间")
-    private Date loginDate;
+    private String loginDate;
 
     //创建者
     @ExcelProperty("创建者")
@@ -82,7 +80,7 @@ public class SysUser extends Model<SysUser> {
 
     //创建时间
     @ExcelProperty("创建时间")
-    private Date createTime;
+    private String createTime;
 
     //更新者
     @ExcelProperty("更新者")
@@ -90,7 +88,7 @@ public class SysUser extends Model<SysUser> {
 
     //更新时间
     @ExcelProperty("更新时间")
-    private Date updateTime;
+    private String updateTime;
 
     //备注
     @ExcelProperty("备注")

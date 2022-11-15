@@ -37,7 +37,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             List<DeptTreeDto> deptList = this.baseMapper.getDeptList(sysDept);
             DeptTree tree = new DeptTree(deptList);
             result.setData(tree.buildTree());
-
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
@@ -95,7 +94,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
      */
     @Override
     public Result updateDept(SysDept sysDept) {
-        System.out.println("进入修改");
+        System.out.println(sysDept);
         Result result = new Result();
         try {
             List<Long> deptIdList = this.baseMapper.getDeptIdList(sysDept.getDeptId());
@@ -126,13 +125,23 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
                     String ancestors = ancestors(sysDept);
                     sysDept.setAncestors(ancestors);
                     sysDept.setUpdateTime(LocalDateTime.now().toString());
+                    //判断状态是否修改
+                    if(!sysDept.getStatus().equals(DeptById.getStatus())){
+                        //如果已经修改过，则判断父类是否停用
+                        SysDept parentDept =this.baseMapper.getDeptByDeptId(sysDept.getParentId()+"");
+                        if("1".equals(parentDept.getStatus())){
+                            result.setMeta(ResultTool.fail(ResultCode.PARENT_CLASS_DEACTIVATE));
+                            return result;
+                        }
+                    }
                     int i = this.baseMapper.updateDept(sysDept);
                     if (i == 1) {
                         ancestors = ancestors+","+sysDept.getDeptId();
                         System.out.println("ancestors="+ancestors);
                         String status =sysDept.getStatus();
                         System.out.println("status="+status);
-                        int m = this.baseMapper.updateDeptSon(ancestors,status);
+
+                        int m = this.baseMapper.updateDeptSon(status,ancestors);
                         if (m >= 1) {
                             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                         }

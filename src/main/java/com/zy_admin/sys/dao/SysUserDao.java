@@ -9,10 +9,7 @@ import com.zy_admin.sys.dto.UserRoleDto;
 import com.zy_admin.sys.entity.SysUser;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-
-import java.util.List;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,7 +121,7 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @param nickName
      * @return
      */
-    @Select("select * from sys_user where nick_name = #{nickName}")
+    @Select("select * from sys_user where nick_name = #{nickName} and del_flag != 2")
     SysUser checkNiceName(String nickName);
 
     /**
@@ -132,7 +129,7 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @param phonenumber
      * @return
      */
-    @Select("select * from sys_user where phonenumber = #{phonenumber}")
+    @Select("select * from sys_user where phonenumber = #{phonenumber} and del_flag != 2")
     SysUser checkPhone(String phonenumber);
 
 
@@ -141,39 +138,44 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @param email
      * @return
      */
-    @Select("select * from sys_user where email = #{email}")
+    @Select("select * from sys_user where email = #{email} and del_flag != 2")
     SysUser checkEmail(String email);
 
 
-    @Select("select * from sys_user where user_name = #{userName}")
+    /**
+     * 检查用户名是否唯一
+     * @param userName
+     * @return
+     */
+    @Select("select * from sys_user where user_name = #{userName} and del_flag != 2")
     SysUser checkUserName(String userName);
     /**
      * 新增用户角色权限
-     * @param id
-     * @param roleIds
+     * @param userId
+     * @param roleId
      */
-    void insertRole(@Param("id") Long id,@Param("roleIds") int[] roleIds);
+    void insertRole(@Param("userId") Long userId,@Param("roleId") Integer roleId);
 
     /**
      * 新增用户岗位
-     * @param id
-     * @param postIds
+     * @param userId
+     * @param postId
      */
-    void insertPost(@Param("id") Long id,@Param("postIds") int[] postIds);
+    void insertPost(@Param("userId") Long userId,@Param("postId") Integer postId);
 
     /**
      * 删除用户拥有的角色
-     * @param id
+     * @param userId
      */
     @Delete("delete  from sys_user_role where user_id=#{userId}")
-    void deleteRole(long id);
+    void deleteRole(long userId);
 
     /**s
      * 删除用户具有的岗位
-     * @param id
+     * @param userId
      */
-    @Delete("delete  from sys_user_post where user_id =#{userId}")
-    void deletePost(long id);
+    @Delete("delete from sys_user_post where user_id =#{userId}")
+    void deletePost(long userId);
 
 
     void adminUpdateUser(UserDto userDto);

@@ -20,7 +20,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -97,12 +96,8 @@ public class SysUserController extends ApiController {
     @PutMapping("/authRole")
     public Result insertAuthRole(@RequestBody Map<String,Object> map) throws Exception {
         Integer userId = (Integer) map.get("userId");
-        String[] roleIds = map.get("roleIds").toString().split(",");
-        ArrayList<Long> roleIdList = new ArrayList<>();
-        for (String roleId : roleIds) {
-            roleIdList.add(Long.valueOf(roleId));
-        }
-        return this.sysUserService.insertAuthRole(userId,roleIdList);
+        String roleId = map.get("roleId").toString();
+        return this.sysUserService.insertAuthRole(userId,roleId);
     }
 
     /**
@@ -199,17 +194,6 @@ public class SysUserController extends ApiController {
     }
 
     /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.sysUserService.getById(id));
-    }
-
-    /**
      * 新增数据
      *
      * @param sysUser 实体对象
@@ -240,6 +224,16 @@ public class SysUserController extends ApiController {
     public Result login(SysUser sysUser,HttpServletRequest request) {
         Result result = sysUserService.login(sysUser);
         return result;
+    }
+
+    /**
+     * 根据ID获取用户信息
+     * @param userId 用户ID
+     * @return 查询的用户结果+http状态
+     */
+    @GetMapping("/getUserInfo")
+    public Result getUserInfo(String userId){
+        return this.sysUserService.personal(userId);
     }
 
     /**
@@ -297,7 +291,7 @@ public class SysUserController extends ApiController {
 
 
     @PostMapping("/insertUser")
-    public Result insertUser(HttpServletRequest request, @RequestBody UserDto sysUserDto)
+    public Result insertUser(HttpServletRequest request,@RequestBody UserDto sysUserDto)
     {
         sysUserDto.setCreateTime(LocalDateTime.now().toString());
         SysUser user = this.requestUtil.getUser(request);

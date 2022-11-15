@@ -47,6 +47,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
 
     @Override
     public Result queryAllMenu(SysMenu menu) {
+        System.err.println(menu);
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             List<MenuTree> menuList = this.baseMapper.queryAllMenu(menu);
