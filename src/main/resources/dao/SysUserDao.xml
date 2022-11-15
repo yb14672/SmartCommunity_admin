@@ -34,11 +34,12 @@
         </association>
     </resultMap>
 
-    <select id="selectUsers"  resultMap="SysUserDeptDtoMap">
+    <select id="selectUsers" resultMap="SysUserDeptDtoMap">
         SELECT *,u.user_id userId,d.dept_Id deptId from sys_user u
         left join sys_dept d on u.dept_id=d.dept_id where u.del_flag = '0'
         <if test="sysUser.deptId != null and sysUser.deptId != 0">
-            AND (u.dept_id = #{sysUser.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(#{sysUser.deptId}, ancestors) ))
+            AND (u.dept_id = #{sysUser.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE
+            find_in_set(#{sysUser.deptId}, ancestors) ))
         </if>
         <if test="sysUser.userName != null and sysUser.userName != ''">
             and u.user_name like concat('%', #{sysUser.userName}, '%')
@@ -66,7 +67,8 @@
         from sys_user u left join sys_dept d on u.dept_id=d.dept_id where u.del_flag =
         '0'
         <if test="sysUser.deptId != null and sysUser.deptId != 0">
-            AND (u.dept_id = #{sysUser.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(#{sysUser.deptId}, ancestors) ))
+            AND (u.dept_id = #{sysUser.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE
+            find_in_set(#{sysUser.deptId}, ancestors) ))
         </if>
         <if test="sysUser.userName != null and sysUser.userName != ''">
             and u.user_name like concat('%', #{sysUser.userName}, '%')
@@ -219,9 +221,11 @@
             )
         </if>
     </select>
-<!--    所有的都导出-->
+    <!--    所有的都导出-->
     <select id="getUserLists" resultType="com.zy_admin.sys.entity.SysUser">
-        select * from sys_user where del_flag != 2
+        select *
+        from sys_user
+        where del_flag != '2'
     </select>
 
     <resultMap type="com.zy_admin.sys.dto.UserRoleDto" id="UserRoleDtoMap">
@@ -312,18 +316,20 @@
     </update>
 
     <insert id="insertUser" keyProperty="userId" useGeneratedKeys="true">
-        insert into sys_user(dept_id,user_name,nick_name,email,phonenumber,sex,password,status,create_by,create_time,update_by,update_time)
-        values (#{deptId},#{userName},#{nickName},#{email},#{phonenumber},#{sex},#{password},#{status},#{createBy},#{createTime},#{updateBy},#{updateTime})
+        insert into sys_user(dept_id, user_name, nick_name, email, phonenumber, sex, password, status, create_by,
+                             create_time, update_by, update_time)
+        values (#{deptId}, #{userName}, #{nickName}, #{email}, #{phonenumber}, #{sex}, #{password}, #{status},
+                #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
     </insert>
 
     <insert id="insertRole">
         insert into sys_user_role
-        values (#{userId},#{roleId})
+        values (#{userId}, #{roleId})
     </insert>
 
     <insert id="insertPost">
         insert into sys_user_post
-        values (#{userId},#{postId})
+        values (#{userId}, #{postId})
     </insert>
 
     <update id="adminUpdateUser" parameterType="com.zy_admin.sys.dto.UserDto">

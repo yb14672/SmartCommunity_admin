@@ -94,7 +94,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
      */
     @Override
     public Result updateDept(SysDept sysDept) {
-        System.out.println(sysDept);
         Result result = new Result();
         try {
             List<Long> deptIdList = this.baseMapper.getDeptIdList(sysDept.getDeptId());
@@ -137,9 +136,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
                     int i = this.baseMapper.updateDept(sysDept);
                     if (i == 1) {
                         ancestors = ancestors+","+sysDept.getDeptId();
-                        System.out.println("ancestors="+ancestors);
                         String status =sysDept.getStatus();
-                        System.out.println("status="+status);
 
                         int m = this.baseMapper.updateDeptSon(status,ancestors);
                         if (m >= 1) {
