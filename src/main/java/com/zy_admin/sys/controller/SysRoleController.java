@@ -53,7 +53,6 @@ public class SysRoleController extends ApiController {
     @GetMapping("/getAllRole")
     public Result getAllRole(SysRole sysRole) {
         Result allRole = sysRoleService.getAllRole(sysRole);
-        System.out.println(allRole);
         return allRole;
     }
 
@@ -116,7 +115,6 @@ public class SysRoleController extends ApiController {
     @GetMapping("/selectRoleByLimit")
     public Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime) {
         Result result = sysRoleService.selectRoleByLimit(sysRole, pageable, startTime, endTime);
-        System.out.println(result.toString());
         return result;
     }
 
@@ -196,7 +194,6 @@ public class SysRoleController extends ApiController {
         roleAndRoleMenu.setMenuCheckStrictly(null);
         roleAndRoleMenu.setDelFlag("0");
         Result insert = this.sysRoleService.insert(roleAndRoleMenu);
-        System.out.println(insert);
         return insert;
     }
 
