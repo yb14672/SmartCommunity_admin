@@ -69,7 +69,7 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      */
     Integer updateDept(SysDept sysDept);
 
-    int changeStatus(@Param("status") String status,@Param("menuId") String menuId);
+    int changeStatus(@Param("status") String status, @Param("menuId") String menuId);
 
     /**
      * 删除

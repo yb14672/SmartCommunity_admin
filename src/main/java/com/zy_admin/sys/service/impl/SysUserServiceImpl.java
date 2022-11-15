@@ -1,27 +1,15 @@
 package com.zy_admin.sys.service.impl;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.sys.dao.SysUserRoleDao;
-import com.zy_admin.sys.dto.SysUserDeptDto;
-import com.zy_admin.sys.dto.SysUserDto;
-import com.zy_admin.sys.dto.SysUsersDto;
-import com.zy_admin.sys.dto.UserRoleDto;
-import com.zy_admin.sys.dto.UserDto;
+import com.zy_admin.sys.dto.*;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysUser;
-import com.zy_admin.sys.service.RedisService;
-import com.zy_admin.sys.service.SysDeptService;
-import com.zy_admin.sys.service.SysPostService;
-import com.zy_admin.sys.service.SysRoleService;
-import com.zy_admin.sys.service.SysUserService;
-import com.zy_admin.util.JwtUtils;
-import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
-import com.zy_admin.util.ResultTool;
+import com.zy_admin.sys.service.*;
 import com.zy_admin.util.JwtUtils;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultCode;
@@ -33,14 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.List;
 
 /**

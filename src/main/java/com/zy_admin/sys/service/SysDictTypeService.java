@@ -54,5 +54,13 @@ public interface SysDictTypeService extends IService<SysDictType> {
      * @return
      */
     Result getDictTypeById(String id);
+
+    /**
+     * 检查前端输入的值是否和数据库相等
+     * @param dictType
+     * @param sysDictType
+     * @return
+     */
+    boolean checkEquals(SysDictType dictType, SysDictType sysDictType);
 }
 

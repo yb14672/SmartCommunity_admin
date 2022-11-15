@@ -9,10 +9,7 @@ import com.zy_admin.sys.dto.UserRoleDto;
 import com.zy_admin.sys.entity.SysUser;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-
-import java.util.List;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +36,7 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @param endTime
      * @return
      */
-    List<SysUserDeptDto> selectUsers(@Param("sysUser") SysUser sysUser, @Param("pageable") Pageable pageable, @Param("startTime") String startTime, @Param("endTime")String endTime);
+    List<SysUserDeptDto> selectUsers(@Param("sysUser") SysUser sysUser, @Param("pageable") Pageable pageable, @Param("startTime") String startTime, @Param("endTime") String endTime);
     /**
      * 统计用户总量
      * @param sysUser
@@ -47,7 +44,7 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @param endTime
      * @return
      */
-    Long count(@Param("sysUser")SysUser sysUser, @Param("startTime")String startTime, @Param("endTime")String endTime);
+    Long count(@Param("sysUser") SysUser sysUser, @Param("startTime") String startTime, @Param("endTime") String endTime);
     /**
      * 根据id获取用户信息
      */
@@ -152,14 +149,14 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @param id
      * @param roleIds
      */
-    void insertRole(@Param("id") Long id,@Param("roleIds") int[] roleIds);
+    void insertRole(@Param("id") Long id, @Param("roleIds") int[] roleIds);
 
     /**
      * 新增用户岗位
      * @param id
      * @param postIds
      */
-    void insertPost(@Param("id") Long id,@Param("postIds") int[] postIds);
+    void insertPost(@Param("id") Long id, @Param("postIds") int[] postIds);
 
     /**
      * 删除用户拥有的角色
