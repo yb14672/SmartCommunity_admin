@@ -96,12 +96,8 @@ public class SysUserController extends ApiController {
     @PutMapping("/authRole")
     public Result insertAuthRole(@RequestBody Map<String,Object> map) throws Exception {
         Integer userId = (Integer) map.get("userId");
-        String[] roleIds = map.get("roleIds").toString().split(",");
-        ArrayList<Long> roleIdList = new ArrayList<>();
-        for (String roleId : roleIds) {
-            roleIdList.add(Long.valueOf(roleId));
-        }
-        return this.sysUserService.insertAuthRole(userId,roleIdList);
+        String roleId = map.get("roleId").toString();
+        return this.sysUserService.insertAuthRole(userId,roleId);
     }
 
     /**

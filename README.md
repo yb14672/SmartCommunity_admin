@@ -26,7 +26,7 @@
 #### 前端
 
 - vue2.x
-- vue-element-admin
+- element-ui
 
 ## 功能模块
 

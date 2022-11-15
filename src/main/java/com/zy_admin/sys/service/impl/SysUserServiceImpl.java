@@ -105,12 +105,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      * 根据用户ID修改其对应的角色列表
      *
      * @param userId
-     * @param roleIdList
+     * @param roleId
      * @return
      */
     @Override
     @Transactional
-    public Result insertAuthRole(Integer userId, List<Long> roleIdList) throws Exception {
+    public Result insertAuthRole(Integer userId, String roleId) throws Exception {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //先删除原本用户拥有的所有角色
         int i = this.sysUserRoleDao.deleteByUserId(userId + "");
@@ -118,7 +118,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             throw new Exception("修改用户角色时出错，请稍后再试");
         }
         //再插入修改后的所有角色
-        int i1 = this.sysUserRoleDao.insertBatchByRoleId(userId + "", roleIdList);
+        int i1 = this.sysUserRoleDao.insertBatchByRoleId(userId + "", roleId);
         if(i1<1){
             throw new Exception("修改用户角色时出错，请稍后再试");
         }

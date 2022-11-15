@@ -72,10 +72,7 @@
 
     <insert id="insertBatchByRoleId">
         insert into sys_user_role
-        values
-        <foreach collection="roleIdList" item="role_id" separator=",">
-        (${userId},${role_id})
-        </foreach>
+        values (${userId},${roleId})
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="userId" useGeneratedKeys="true">
