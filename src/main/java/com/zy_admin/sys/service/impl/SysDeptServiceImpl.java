@@ -11,7 +11,6 @@ import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -96,7 +95,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
      */
     @Override
     public Result updateDept(SysDept sysDept) {
-        System.out.println(sysDept);
+        System.out.println("进入修改");
         Result result = new Result();
         try {
             List<Long> deptIdList = this.baseMapper.getDeptIdList(sysDept.getDeptId());
@@ -129,6 +128,14 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
                     sysDept.setUpdateTime(LocalDateTime.now().toString());
                     int i = this.baseMapper.updateDept(sysDept);
                     if (i == 1) {
+                        ancestors = ancestors+","+sysDept.getDeptId();
+                        System.out.println("ancestors="+ancestors);
+                        String status =sysDept.getStatus();
+                        System.out.println("status="+status);
+                        int m = this.baseMapper.updateDeptSon(ancestors,status);
+                        if (m >= 1) {
+                            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                        }
                         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                     }
                 } else {

@@ -101,5 +101,14 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      * @return
      */
     SysDept getDeptById(Long deptId);
+
+    /**
+     * 更新子级停用
+     *
+     * @param status
+     * @param ancestors
+     * @return
+     */
+    int updateDeptSon(@Param("status") String status, String ancestors);
 }
 

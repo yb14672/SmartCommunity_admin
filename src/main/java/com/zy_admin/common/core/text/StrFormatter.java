@@ -7,8 +7,7 @@ import com.zy_admin.util.StringUtils;
  * 
  * @author yangdi
  */
-public class StrFormatter
-{
+public class StrFormatter {
     public static final String EMPTY_JSON = "{}";
     public static final char C_BACKSLASH = '\\';
     public static final char C_DELIM_START = '{';

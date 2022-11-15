@@ -101,6 +101,10 @@
         </set>
         where dept_id = #{deptId}
     </update>
+<!--更新状态-->
+    <update id="updateDeptSon">
+       update sys_dept set status=#{status} where ancestors like concat(#{ancestors},'%')
+    </update>
     <!--删除部门-->
     <delete id="deleteByIdList" parameterType="integer">
         update sys_dept set del_flag = '2' where dept_id in
