@@ -208,6 +208,21 @@
         from sys_user
         where user_name = #{userName}
     </select>
+    <!--    勾选的导出-->
+    <select id="queryUserById" resultType="com.zy_admin.sys.entity.SysUser">
+        select * from sys_user
+        <if test="list!=null">
+            where user_id in (
+            <foreach collection="list" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+    </select>
+<!--    所有的都导出-->
+    <select id="getUserLists" resultType="com.zy_admin.sys.entity.SysUser">
+        select * from sys_user where del_flag != 2
+    </select>
 
     <resultMap type="com.zy_admin.sys.dto.UserRoleDto" id="UserRoleDtoMap">
         <id property="userId" column="user_id" jdbcType="INTEGER"/>
@@ -292,6 +307,48 @@
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null">remark = #{remark},</if>
             update_time = sysdate()
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <insert id="insertUser" keyProperty="userId" useGeneratedKeys="true">
+        insert into sys_user(dept_id,user_name,nick_name,email,phonenumber,sex,password,status,create_by,create_time,update_by,update_time)
+        values (#{deptId},#{userName},#{nickName},#{email},#{phonenumber},#{sex},#{password},#{status},#{createBy},#{createTime},#{updateBy},#{updateTime})
+
+    </insert>
+
+    <insert id="insertRole">
+        insert into sys_user_role(user_id,role_id)
+        values
+        <foreach collection="roleIds" item="roleId" separator=",">
+            (#{id},#{roleId})
+        </foreach>
+    </insert>
+
+    <insert id="insertPost">
+        insert into sys_user_post(user_id,post_id)
+        values
+        <foreach collection="postIds" item="postId" separator=",">
+            (#{id},#{postId})
+        </foreach>
+    </insert>
+
+    <update id="adminUpdateUser" parameterType="com.zy_admin.sys.dto.UserDto">
+        update sys_user
+        <set>
+            <if test="deptId != null and deptId != 0">dept_id = #{deptId},</if>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
+            <if test="email != null and email != ''">email = #{email},</if>
+            <if test="phonenumber != null and phonenumber != ''">phonenumber = #{phonenumber},</if>
+            <if test="sex != null and sex != ''">sex = #{sex},</if>
+            <if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="loginIp != null and loginIp != ''">login_ip = #{loginIp},</if>
+            <if test="loginDate != null">login_date = #{loginDate},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
         </set>
         where user_id = #{userId}
     </update>

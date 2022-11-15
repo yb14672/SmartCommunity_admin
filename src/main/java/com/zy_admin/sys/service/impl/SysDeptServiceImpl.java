@@ -87,8 +87,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             return result;
         }
     }
-
-
     /**
      * 修改部门
      *
@@ -97,7 +95,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
      */
     @Override
     public Result updateDept(SysDept sysDept) {
-        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        System.out.println(sysDept);
+        Result result = new Result();
         try {
             List<Long> deptIdList = this.baseMapper.getDeptIdList(sysDept.getDeptId());
             //判断修改的的父级是否为自己的子级
@@ -107,42 +106,45 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
                     return result;
                 }
             }
-            //判断菜单的父类是否自己
-            if (!sysDept.getParentId().equals(sysDept.getDeptId())) {
-                //因为菜单名为必填字段，所以判断是否为空
-                if (sysDept.getDeptName() == null || "".equals(sysDept.getDeptName())) {
-                    result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
-                    return result;
-                } else {
-                    //判断菜单名称是否唯一
-                    if (checkDeptNameUnique(1, sysDept)) {
-                    } else {
-                        result.setMeta(ResultTool.fail(ResultCode.REPEAT_DEPTNAME));
+            //判断是否没有修改就提交
+            SysDept DeptById =this.baseMapper.getDeptByDeptId(sysDept.getDeptId()+"");
+            if (!checkEquals(sysDept, DeptById)) {
+                //判断菜单的父类是否自己
+                if (!sysDept.getParentId().equals(sysDept.getDeptId())) {
+                    //因为菜单名为必填字段，所以判断是否为空
+                    if (sysDept.getDeptName() == null || "".equals(sysDept.getDeptName())) {
+                        result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
                         return result;
+                    } else {
+                        //判断菜单名称是否唯一
+                        if (checkDeptNameUnique(1, sysDept)) {
+                        } else {
+                            result.setMeta(ResultTool.fail(ResultCode.REPEAT_DEPTNAME));
+                            return result;
+                        }
                     }
-                }
-                //查询原本数据
-                SysDept dept = this.baseMapper.getDeptById(sysDept.getDeptId());
-                String ancestors = ancestors(sysDept);
-                sysDept.setAncestors(ancestors);
-                sysDept.setUpdateTime(LocalDateTime.now().toString());
-                int i = this.baseMapper.updateDept(sysDept);
-                if (i == 1) {
-                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-                }
-            } else {
-                result.setMeta(ResultTool.fail(ResultCode.PARENT_CLASS_CANNOT_BE_ITSELF));
+                    String ancestors = ancestors(sysDept);
+                    sysDept.setAncestors(ancestors);
+                    sysDept.setUpdateTime(LocalDateTime.now().toString());
+                    int i = this.baseMapper.updateDept(sysDept);
+                    if (i == 1) {
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                    }
+                } else {
+                    result.setMeta(ResultTool.fail(ResultCode.PARENT_CLASS_CANNOT_BE_ITSELF));
+                }}else {
+                result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
             }
-        } catch (NullPointerException e) {
+        } catch(NullPointerException e){
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.PARAM_IS_BLANK));
-        } catch (ClassCastException e) {
+        } catch(ClassCastException e){
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.PARAM_TYPE_ERROR));
-        } catch (Exception e) {
+        } catch(Exception e){
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
-        } finally {
+        } finally{
             return result;
         }
     }
@@ -174,7 +176,31 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
         }
         return false;
     }
-
+    /**
+     * 验证没有修改
+     * @param updateDept
+     * @param originalDept
+     * @return
+     */
+    @Override
+    public Boolean checkEquals (SysDept updateDept, SysDept originalDept){
+        if (updateDept.getParentId().equals(originalDept.getParentId())) {
+            if (updateDept.getDeptName().equals(originalDept.getDeptName())) {
+                if (updateDept.getOrderNum().equals(originalDept.getOrderNum())) {
+                    if (updateDept.getLeader().equals(originalDept.getLeader())) {
+                        if (updateDept.getPhone().equals(originalDept.getPhone())) {
+                            if (updateDept.getEmail().equals(originalDept.getEmail())) {
+                                if (updateDept.getStatus().equals(originalDept.getStatus())) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
     /**
      * 删除部门
      *

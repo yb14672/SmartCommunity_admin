@@ -47,12 +47,22 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
         //因为超级管理员不允许分配，因此查询条件需要加上id不为1
         queryWrapper.ne(SysRole::getRoleId,1);
+        queryWrapper.ne(SysRole::getDelFlag,2);
         queryWrapper.orderByAsc(SysRole::getRoleSort);
         Page page1 = this.baseMapper.selectPage(page, queryWrapper);
         if (page1.getSize() > 0) {
             result.setData(page1);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
+        return result;
+    }
+
+    @Override
+    public Result getAllRole( SysRole sysRole) {
+        Result result = new Result();
+        List<SysRole> allRole = this.baseMapper.getAllRole(sysRole);
+        result.setData(allRole);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
 

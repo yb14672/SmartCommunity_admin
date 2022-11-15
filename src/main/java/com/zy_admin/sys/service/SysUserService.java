@@ -3,8 +3,13 @@ package com.zy_admin.sys.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.sys.dto.UserDto;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.Result;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.List;
 
@@ -18,12 +23,15 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 删除用户
+     *
      * @param idList
      * @return
      */
     Result deleteUserById(List<Integer> idList);
+
     /**
      * 查询所有用户
+     *
      * @param pageable
      * @param sysUser
      * @param startTime
@@ -31,8 +39,44 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime);
+
+    /**
+     * 管理员修改用户
+     * @param
+     * @return
+     */
+    Result adminUpdateUser(UserDto userDto);
+
+    /**
+     * 下载模板
+     * @return
+     */
+    List<SysUser> uploadUser();
+
+    /**
+     *批量导入用户信息
+     * @param file
+     */
+    Result importData(MultipartFile file);
+
+    /**
+     * 导出所有用户
+     *
+     * @return
+     */
+    List<SysUser> getUserLists();
+
+    /**
+     * 选中导出
+     *
+     * @param userIds
+     * @return
+     */
+    List<SysUser> queryUserById(ArrayList<Integer> userIds);
+
     /**
      * 查询头像
+     *
      * @param userId
      * @return
      */
@@ -40,6 +84,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 登录
+     *
      * @param sysUser
      * @return
      */
@@ -47,6 +92,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 根据账号查询用户
+     *
      * @param userName
      * @return
      */
@@ -54,6 +100,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 根据ID查询用户
+     *
      * @param id
      * @return
      */
@@ -61,6 +108,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 根据用户ID获取用户所有信息
+     *
      * @param userId
      * @return
      */
@@ -84,6 +132,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 查询所有用户
+     *
      * @param page
      * @param sysUser
      * @return
@@ -92,6 +141,7 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 根据用户ID获取其信息和对应的角色
+     *
      * @param userId
      * @return
      */
@@ -99,10 +149,49 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 根据用户ID修改其对应的角色列表
+     *
      * @param userId
      * @param roleIdList
      * @return
      */
     Result insertAuthRole(Integer userId, List<Long> roleIdList) throws Exception;
+
+    /**
+     * 新增用户
+     *
+     * @param sysUserDto
+     * @return
+     */
+    Result insertUser(UserDto sysUserDto);
+
+    /**
+     * 昵称查重
+     *
+     * @param type
+     * @param sysUserDto
+     * @return
+     */
+    Boolean checkNiceName(int type, UserDto sysUserDto);
+
+    /**
+     * 电话查重
+     * @param type
+     * @param sysUserDto
+     * @return
+     */
+    Boolean checkPhone(int type, UserDto sysUserDto);
+
+    /**
+     * 邮箱查重
+     * @param type
+     * @param sysUserDto
+     * @return
+     */
+    Boolean checkEmail(int type, UserDto sysUserDto);
+
+    Boolean checkUserName(int type, UserDto userDto);
+
+
+    Result resetPassword(SysUser sysUser);
 }
 

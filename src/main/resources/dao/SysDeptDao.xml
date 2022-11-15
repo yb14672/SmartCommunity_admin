@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy_admin.sys.dao.SysDeptDao">
-
+    <!--根据id查数据-->
+    <select id="getDeptByDeptId" resultType="com.zy_admin.sys.entity.SysDept">
+        select * from sys_dept where dept_id = #{deptId}
+    </select>
     <!--根据条件查询部门-->
     <select id="getDeptList" resultType="com.zy_admin.sys.dto.DeptTreeDto">
         select * from sys_dept
