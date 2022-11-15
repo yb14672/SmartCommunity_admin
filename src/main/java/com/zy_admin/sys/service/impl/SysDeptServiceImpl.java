@@ -37,7 +37,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             List<DeptTreeDto> deptList = this.baseMapper.getDeptList(sysDept);
             DeptTree tree = new DeptTree(deptList);
             result.setData(tree.buildTree());
-
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {

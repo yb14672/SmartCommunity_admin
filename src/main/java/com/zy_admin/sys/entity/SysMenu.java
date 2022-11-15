@@ -15,7 +15,7 @@ import java.io.Serializable;
  * @since 2022-11-01 19:49:39
  */
 @SuppressWarnings("serial")
-
+@Data
 public class SysMenu extends Model<SysMenu> {
     //菜单ID
     @TableId
