@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.sys.dao.SysDictDataDao;
+import com.zy_admin.sys.dao.SysDictTypeDao;
 import com.zy_admin.sys.dto.DataDictExcelDto;
 import com.zy_admin.sys.entity.SysDictData;
+import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDictDataService;
 import com.zy_admin.util.Result;
@@ -14,6 +16,7 @@ import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.StringUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,9 @@ import java.util.List;
  */
 @Service("sysDictDataService")
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictData> implements SysDictDataService {
+
+    @Resource
+    private SysDictTypeDao sysDictTypeDao;
 
     @Override
     public Result getDict(String deptType) {
@@ -139,10 +145,20 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
                     if(!checkEquals(sysDictData,dictDataById)){
                         //判断字典标题名是否唯一
                         if (checkUnique(1, sysDictData, this.baseMapper.checkDictLabelUnique(sysDictData))) {
-                            //当路由不为空时判断其路由是否重复
+                            //当字典键值不为空时判断其路由是否重复
                             if (!"".equals(sysDictData.getDictValue()) || !"".equals(sysDictData.getDictValue())) {
                                 //不唯一即false，因此不唯一时提示并返回
-                                if (!checkUnique(1, sysDictData, this.baseMapper.checkDictValueUnique(sysDictData))) {
+                                if (checkUnique(1, sysDictData, this.baseMapper.checkDictValueUnique(sysDictData))) {
+                                    //当其修改状态时
+                                    if(!sysDictData.getStatus().equals(dictDataById.getStatus())){
+                                        SysDictType sysDictType = sysDictTypeDao.selectSysDictByType(dictDataById.getDictType());
+                                        //若它父类是停用则不准启用
+                                        if("1".equals(sysDictType.getStatus())){
+                                            result.setMeta(ResultTool.fail(ResultCode.PARENT_CLASS_DEACTIVATE));
+                                            return result;
+                                        }
+                                    }
+                                }else{
                                     result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_DATA_VALUE));
                                     return result;
                                 }
