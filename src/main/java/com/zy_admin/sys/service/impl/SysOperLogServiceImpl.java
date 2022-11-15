@@ -15,5 +15,9 @@ import org.springframework.stereotype.Service;
 @Service("sysOperLogService")
 public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLog> implements SysOperLogService {
 
+    @Override
+    public void addOperlog(SysOperLog sysOperLog) {
+        this.baseMapper.addOperlog(sysOperLog);
+    }
 }
 

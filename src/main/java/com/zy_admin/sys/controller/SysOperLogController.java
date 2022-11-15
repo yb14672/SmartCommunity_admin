@@ -29,6 +29,15 @@ public class SysOperLogController extends ApiController {
     private SysOperLogService sysOperLogService;
 
     /**
+     * 新增操作日志
+     * @param sysOperLog
+     * @return
+     */
+    public void addOperlog(SysOperLog sysOperLog) {
+         sysOperLogService.addOperlog(sysOperLog);
+    }
+
+  /**
      * 分页查询所有数据
      *
      * @param page       分页对象

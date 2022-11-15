@@ -161,7 +161,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      */
     @Override
     public List<SysUser> getUserLists() {
-        return sysUserDao.getUserLists();
+        return this.baseMapper.getUserLists();
     }
 
     /**
@@ -176,7 +176,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         if (userIds != null) {
             userIds = userIds.size() == 0 ? null : userIds;
         }
-        return sysUserDao.queryUserById(userIds);
+        return this.baseMapper.queryUserById(userIds);
     }
 
     //    导入

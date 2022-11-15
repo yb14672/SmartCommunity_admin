@@ -1,10 +1,11 @@
 package com.zy_admin.sys.entity;
 
-import java.util.Date;
-
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 操作日志记录(SysOperLog)表实体类
@@ -13,6 +14,8 @@ import java.io.Serializable;
  * @since 2022-11-01 19:49:40
  */
 @SuppressWarnings("serial")
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 public class SysOperLog extends Model<SysOperLog> {
     //日志主键
     private Long operId;

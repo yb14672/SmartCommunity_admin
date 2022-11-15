@@ -40,7 +40,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         if (dictIds != null) {
             dictIds = dictIds.size() == 0 ? null : dictIds;
         }
-        return baseMapper.queryDictById(dictIds);
+        return this.baseMapper.queryDictById(dictIds);
     }
 
     /**
@@ -50,7 +50,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
      */
     @Override
     public List<SysDictType> getDictLists() {
-        return baseMapper.getDictLists();
+        return this.baseMapper.getDictLists();
     }
 
     @Override

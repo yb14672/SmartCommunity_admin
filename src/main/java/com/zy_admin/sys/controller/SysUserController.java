@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.log.BusinessType;
+import com.zy_admin.common.log.MyLog;
 import com.zy_admin.sys.dto.UserDto;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysUserService;
@@ -124,8 +126,10 @@ public class SysUserController extends ApiController {
     public void getExcel(@RequestParam("userIds") ArrayList<Integer> userIds, HttpServletResponse response) throws IOException {
         List<SysUser> sysUserList = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
+        System.out.println(userIds);
         if (userIds == null || userIds.size() == 0) {
             sysUserList = sysUserService.getUserLists();
+            System.out.println(sysUserList);
         } else {
             //执行查询用户列表的sql语句
             System.out.println(userIds);
@@ -216,6 +220,7 @@ public class SysUserController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
+    @MyLog(title = "新增用户", optParam = "#{sysUser}", businessType = BusinessType.OTHER)
     public R insert(@RequestBody SysUser sysUser) {
         return success(this.sysUserService.save(sysUser));
     }

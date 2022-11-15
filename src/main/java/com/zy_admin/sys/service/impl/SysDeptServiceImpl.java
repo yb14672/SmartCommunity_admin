@@ -11,7 +11,6 @@ import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -229,6 +228,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             result.setMeta(ResultTool.fail(ResultCode.DEPT_HAVE_CHILDREN));
         }
         return result;
+    }
+
+    @Override
+    public SysDept getDeptById(Long deptId) {
+        return this.baseMapper.getDeptById(deptId);
     }
 
     /**

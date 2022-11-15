@@ -110,6 +110,7 @@ public class SysDictDataController extends ApiController {
      */
     @GetMapping("/getDict")
     public Result getDict(String dictType) {
+        System.out.println(dictType);
         return this.sysDictDataService.getDict(dictType);
     }
 

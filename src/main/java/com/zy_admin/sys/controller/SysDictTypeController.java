@@ -8,6 +8,8 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.log.BusinessType;
+import com.zy_admin.common.log.MyLog;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
 import com.zy_admin.util.ExcelUtil;
@@ -104,6 +106,7 @@ public class SysDictTypeController extends ApiController {
      */
     @PutMapping("/updateDict")
     @Transactional(rollbackFor = Exception.class)
+    @MyLog(title = "修改字典", optParam = "#{sysDictType}", businessType = BusinessType.OTHER)
     public Result updateDict(@RequestBody SysDictType sysDictType){
         return sysDictTypeService.updateDict(sysDictType);
     }
@@ -112,6 +115,7 @@ public class SysDictTypeController extends ApiController {
      * @param sysDictType
      * @return
      */
+    @MyLog(title = "新增字典", optParam = "#{sysDictType}", businessType = BusinessType.OTHER)
     @PostMapping("/addSysDict")
     public Result insertDictType(@RequestBody SysDictType sysDictType){
         sysDictType.setCreateTime(LocalDateTime.now().toString());

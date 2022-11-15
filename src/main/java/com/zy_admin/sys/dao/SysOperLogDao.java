@@ -10,6 +10,6 @@ import com.zy_admin.sys.entity.SysOperLog;
  * @since 2022-11-01 19:49:40
  */
 public interface SysOperLogDao extends BaseMapper<SysOperLog> {
-
+    void addOperlog(SysOperLog sysOperLog);
 }
 

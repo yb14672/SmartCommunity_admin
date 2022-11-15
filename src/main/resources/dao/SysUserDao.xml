@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy_admin.sys.dao.SysUserDao">
-    <!--通过主键删除-->
+    <!--通过主键删除 修改del_flag为2，一对多，用user_id in <foreach collection>-->
     <update id="deleteByIdList">
         update sys_user set del_flag = 2 where user_id in
         <foreach collection="idList" item="userId" separator="," open="(" close=")">
@@ -34,6 +34,7 @@
         </association>
     </resultMap>
 
+<!--    查询个人信息是封装的dto，SysUserDeptDtoMap-->
     <select id="selectUsers"  resultMap="SysUserDeptDtoMap">
         SELECT *,u.user_id userId,d.dept_Id deptId from sys_user u
         left join sys_dept d on u.dept_id=d.dept_id where u.del_flag = '0'
@@ -55,6 +56,7 @@
         <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
             and u.create_time &lt;= #{endTime}
         </if>
+--         pageable是封装的分页的三个对象 pageSize是每页多少个
         <if test="pageable.pageSize!=0">
             limit #{pageable.index},#{pageable.pageSize}
         </if>
@@ -63,8 +65,7 @@
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long" parameterType="com.zy_admin.sys.entity.SysUser">
         select count(*)
-        from sys_user u left join sys_dept d on u.dept_id=d.dept_id where u.del_flag =
-        '0'
+        from sys_user u left join sys_dept d on u.dept_id=d.dept_id where u.del_flag = '0'
         <if test="sysUser.deptId != null and sysUser.deptId != 0">
             AND (u.dept_id = #{sysUser.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(#{sysUser.deptId}, ancestors) ))
         </if>

@@ -10,6 +10,6 @@ import com.zy_admin.sys.entity.SysOperLog;
  * @since 2022-11-01 19:49:40
  */
 public interface SysOperLogService extends IService<SysOperLog> {
-
+    void addOperlog(SysOperLog sysOperLog);
 }
 
