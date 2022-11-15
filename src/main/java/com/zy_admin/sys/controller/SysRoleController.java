@@ -64,7 +64,7 @@ public class SysRoleController extends ApiController {
          * @param response
          */
     @PostMapping("/getExcel")
-    public void getExcel(@RequestBody ArrayList<Integer> roleIds, HttpServletResponse response) throws IOException {
+    public Result getExcel(@RequestBody ArrayList<Integer> roleIds, HttpServletResponse response) throws IOException {
         List<SysRole> sysRoles = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
         //执行   查询角色列表的sql语句   但不包括del_flag为2的
@@ -89,6 +89,7 @@ public class SysRoleController extends ApiController {
                 .sheet("模板")
                 .doWrite(sysRoles);
 
+        return new Result(null,ResultTool.fail(ResultCode.SUCCESS));
     }
 
     /**
