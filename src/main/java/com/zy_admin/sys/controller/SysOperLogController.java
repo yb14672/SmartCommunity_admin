@@ -1,12 +1,12 @@
 package com.zy_admin.sys.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.service.SysOperLogService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -36,8 +36,10 @@ public class SysOperLogController extends ApiController {
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<SysOperLog> page, SysOperLog sysOperLog) {
-        return success(this.sysOperLogService.page(page, new QueryWrapper<>(sysOperLog)));
+    public Result getOperLogs(Page page ,SysOperLog sysOperLog,String startTime,String endTime) {
+        Result sysOperLogs = sysOperLogService.getOperLogs(page,sysOperLog,startTime,endTime);
+        System.out.println(sysOperLogs);
+        return sysOperLogs;
     }
 
     /**
