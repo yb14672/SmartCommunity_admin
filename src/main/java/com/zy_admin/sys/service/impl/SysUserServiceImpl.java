@@ -1,23 +1,16 @@
 package com.zy_admin.sys.service.impl;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.sys.dao.SysDeptDao;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.sys.dao.SysUserRoleDao;
-import com.zy_admin.sys.dto.SysUserDeptDto;
-import com.zy_admin.sys.dto.SysUserDto;
-import com.zy_admin.sys.dto.SysUsersDto;
-import com.zy_admin.sys.dto.UserRoleDto;
-import com.zy_admin.sys.dto.UserDto;
+import com.zy_admin.sys.dto.*;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysUser;
-import com.zy_admin.sys.service.RedisService;
-import com.zy_admin.sys.service.SysDeptService;
-import com.zy_admin.sys.service.SysPostService;
-import com.zy_admin.sys.service.SysRoleService;
-import com.zy_admin.sys.service.SysUserService;
+import com.zy_admin.sys.service.*;
 import com.zy_admin.util.JwtUtils;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultCode;
@@ -148,15 +141,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         return result;
     }
 
-    private SysUserDao sysUserDao;
-    @Autowired
-    private SysPostService sysPostService;
-    @Autowired
-    private SysRoleService sysRoleService;
     @Autowired
     private SysUserService sysUserService;
     @Autowired
-    private SysDeptService sysDeptService;
+    private SysDeptDao sysDeptDao;
 
     /**
      * 下载模板
@@ -188,11 +176,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     public List<SysUser> queryUserById(ArrayList<Integer> userIds) {
         //如果有选中列表，就执行导出多个
         userIds = userIds.size() == 0 ? null : userIds;
-        return sysUserDao.queryUserById(userIds);
+        return baseMapper.queryUserById(userIds);
     }
 
     /**
      * 导入
+     *
      * @param file
      * @return
      */
@@ -256,7 +245,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                 //QueryWrapper 是mybatisplus的构造器，
                 QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
                 queryWrapper.eq("dept_name", getCellValue(sheet.getRow(i).getCell(0)));
-                List<SysDept> list = sysDeptService.list(queryWrapper);
+                List<SysDept> list = sysDeptDao.selectList(queryWrapper);
                 if (list.size() != 0) {
                     userEntity.setDeptId(list.get(0).getDeptId());
                 }
@@ -292,7 +281,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private boolean checkPhoneNumber(int rowNum, int colNum, String stringCellValue) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("phonenumber", stringCellValue);
-        if (sysUserService.list(queryWrapper).size() > 0) {
+        if (baseMapper.selectList(queryWrapper).size() > 0) {
             return false;
         }
         return true;
@@ -308,7 +297,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private boolean checkUserName(int rowNum, int colNum, String stringCellValue) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_name", stringCellValue);
-        if (sysUserService.list(queryWrapper).size() > 0) {
+        if (baseMapper.selectList(queryWrapper).size() > 0) {
             return false;
         }
         return true;
@@ -324,7 +313,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private boolean checkEmail(int rowNum, int colNum, String stringCellValue) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("email", stringCellValue);
-        if (sysUserService.list(queryWrapper).size() > 0) {
+        if (baseMapper.selectList(queryWrapper).size() > 0) {
             return false;
         }
         return true;
@@ -629,7 +618,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     public Result adminUpdateUser(UserDto userDto) {
         Result result = new Result();
         SysUserDto user = this.baseMapper.personal(userDto.getUserId() + "");
-        if (user.getSysUser().getNickName().equals(userDto.getNickName()) && user.getSysUser().getPhonenumber().equals(userDto.getPhonenumber()) && user.getSysUser().getEmail().equals(userDto.getEmail()) && user.getSysUser().getDeptId().equals(userDto.getDeptId()) && user.getSysUser().getSex().equals(userDto.getSex()) && user.getSysUser().getStatus().equals(userDto.getStatus())&&user.getSysRole().getRoleId()==Long.parseLong(userDto.getRoleId()+"")&&user.getSysPost().getPostId()==Long.parseLong(userDto.getPostId()+"")) {
+        if (checkEquals(user, userDto)) {
             result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
             return result;
         }
@@ -759,6 +748,39 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_SAME_PASSWORD));
         }
         return result;
+    }
+
+    public boolean checkEquals(SysUserDto user, UserDto userDto) {
+        if (user.getSysUser().getNickName().equals(userDto.getNickName())) {
+            if (user.getSysUser().getPhonenumber().equals(userDto.getPhonenumber())) {
+                if (user.getSysUser().getEmail().equals(userDto.getEmail())) {
+                    if (user.getSysUser().getDeptId().equals(userDto.getDeptId())) {
+                        if (user.getSysUser().getSex().equals(userDto.getSex())) {
+                            if (user.getSysUser().getStatus().equals(userDto.getStatus())) {
+                                if (user.getSysRole().getRoleId() != null && userDto.getRoleId() != null) {
+                                    if (user.getSysRole().getRoleId() == Long.parseLong(userDto.getRoleId() + "")) {
+                                        if (user.getSysPost().getPostId() == Long.parseLong(userDto.getPostId() + "")) {
+                                            if (user.getSysUser().getRemark() != null) {
+                                                if (userDto.getRemark() != null) {
+                                                    if (user.getSysUser().getRemark().equals(userDto.getRemark())) {
+                                                        return true;
+                                                    }
+                                                }
+                                            } else {
+                                                if (user.getSysUser().getRemark() == null) {
+                                                    return true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
 
