@@ -3,10 +3,6 @@ package com.zy_admin.sys.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysOperLog;
-import com.zy_admin.sys.entity.SysPost;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -40,17 +36,11 @@ public interface SysOperLogDao extends BaseMapper<SysOperLog> {
     * @return
     */
    List<SysOperLog> queryAllByLimit(@Param("sysOperLog") SysOperLog sysOperLog, @Param("pageable") Pageable pageable,@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("orderByColumn") String orderByColumn,@Param("isAsc") String isAsc);
-    /**
-     * 获取日志id
-     * @param logids
-     * @return
-     */
-    List<Integer> getLogById(List<Integer> logids);
 
     /**
      * 根据id删除日志
      * @param logids
      */
-    void deleteById(List<Integer> logids);
+    int deleteLogById(List<Integer> logids);
 }
 

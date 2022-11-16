@@ -34,5 +34,4 @@ public class MinioController {
         result.setMeta(url == null ? ResultTool.fail(ResultCode.USER_AVATAR_UPLOAD_FAILED) : ResultTool.fail(ResultCode.SUCCESS));
         return result;
     }
-
 }
