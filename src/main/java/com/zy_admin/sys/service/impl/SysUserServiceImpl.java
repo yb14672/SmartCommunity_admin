@@ -42,6 +42,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private SysUserRoleDao sysUserRoleDao;
     @Resource
     private RedisService redisService;
+    @Autowired
+    private SysDeptDao sysDeptDao;
 
     /**
      * 删除用户
@@ -140,11 +142,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         }
         return result;
     }
-
-    @Autowired
-    private SysUserService sysUserService;
-    @Autowired
-    private SysDeptDao sysDeptDao;
 
     /**
      * 下载模板
@@ -253,6 +250,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             if (sheet.getRow(i).getCell(2) != null) {
                 userEntity.setNickName(getCellValue(sheet.getRow(i).getCell(2)));
             }
+            userEntity.setDeptId(100L);
             userEntity.setPassword("88888888");
             userEntityList.add(userEntity);
             phoneNumber.add(getCellValue(sheet.getRow(i).getCell(4)));
@@ -262,7 +260,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             return result;
         }
         if (emptyRow != rowNumber - 1) {
-            if (sysUserService.saveBatch(userEntityList)) {
+            if (baseMapper.saveBatch(userEntityList)) {
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             } else {
                 result.setMeta(ResultTool.fail(ResultCode.USER_REPEAT));
@@ -573,18 +571,22 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result insertUser(UserDto sysUserDto) {
         Result result = new Result();
         if (checkUserName(0, sysUserDto)) {
             if (checkNiceName(0, sysUserDto)) {
                 if (checkPhone(0, sysUserDto)) {
                     if (checkEmail(0, sysUserDto)) {
+                        if(sysUserDto.getDeptId()==null) {
+                            sysUserDto.setDeptId(100L);
+                        }
                         this.baseMapper.insertUser(sysUserDto);
-                        if (sysUserDto.getPostId() != 0) {
+                        if (sysUserDto.getPostId()!=null) {
                             this.baseMapper.insertPost(sysUserDto.getUserId(), sysUserDto.getPostId());
                             return result;
                         }
-                        if (sysUserDto.getRoleId() != 0) {
+                        if (sysUserDto.getRoleId()!=null) {
                             this.baseMapper.insertRole(sysUserDto.getUserId(), sysUserDto.getRoleId());
                             return result;
                         }
@@ -615,6 +617,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result adminUpdateUser(UserDto userDto) {
         Result result = new Result();
         SysUserDto user = this.baseMapper.personal(userDto.getUserId() + "");
@@ -761,13 +764,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                                     if (user.getSysRole().getRoleId() == Long.parseLong(userDto.getRoleId() + "")) {
                                         if (user.getSysPost().getPostId() == Long.parseLong(userDto.getPostId() + "")) {
                                             if (user.getSysUser().getRemark() != null) {
-                                                if (userDto.getRemark() != null) {
+                                                if (userDto.getRemark() != null||!"".equals(userDto.getRemark())) {
                                                     if (user.getSysUser().getRemark().equals(userDto.getRemark())) {
                                                         return true;
                                                     }
                                                 }
                                             } else {
-                                                if (user.getSysUser().getRemark() == null) {
+                                                if (userDto.getRemark() == null||"".equals(userDto.getRemark())) {
                                                     return true;
                                                 }
                                             }

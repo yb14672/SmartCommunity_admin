@@ -315,10 +315,17 @@
     </update>
 
     <insert id="insertUser" keyProperty="userId" useGeneratedKeys="true">
-        insert into sys_user(dept_id, user_name, nick_name, email, phonenumber, sex, password, status, create_by,
-                             create_time, update_by, update_time)
-        values (#{deptId}, #{userName}, #{nickName}, #{email}, #{phonenumber}, #{sex}, #{password}, #{status},
-                #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
+        insert into sys_user(
+        dept_id,user_name, nick_name, email, phonenumber,
+        sex, password, status, create_by,
+        create_time, update_by, update_time
+        <if test="remark != null">,remark</if>)
+        values (
+        <if test="deptId != 0 and deptId != null">#{deptId},</if>
+        #{userName}, #{nickName}, #{email}, #{phonenumber},
+        #{sex}, #{password}, #{status},
+        #{createBy}, #{createTime}, #{updateBy}, #{updateTime}
+        <if test="remark!=null">,#{remark}</if>)
     </insert>
 
     <insert id="insertRole">
@@ -329,6 +336,14 @@
     <insert id="insertPost">
         insert into sys_user_post
         values (#{userId}, #{postId})
+    </insert>
+
+    <insert id="saveBatch">
+        insert into sys_user(dept_id,user_name,nick_name,email,phonenumber,password,del_flag)
+        VALUES
+        <foreach collection="userEntityList" item="user" separator="," open="(" close=")">
+            #{user.dept_id}, #{user.userName},#{user.nickName},#{user.email},#{user.phonenumber},#{user.password},#{user.delFlag}
+        </foreach>
     </insert>
 
     <update id="adminUpdateUser" parameterType="com.zy_admin.sys.dto.UserDto">
@@ -351,11 +366,11 @@
         where user_id = #{userId}
     </update>
 
-<!--    <insert id="insertBatch">-->
-<!--        insert into sys_user(role_id,menu_id)-->
-<!--        values-->
-<!--        <foreach collection="menuIdList" item="menuId" separator=",">-->
-<!--            (#{id},#{menuId})-->
-<!--        </foreach>-->
-<!--    </insert>-->
+    <!--    <insert id="insertBatch">-->
+    <!--        insert into sys_user(role_id,menu_id)-->
+    <!--        values-->
+    <!--        <foreach collection="menuIdList" item="menuId" separator=",">-->
+    <!--            (#{id},#{menuId})-->
+    <!--        </foreach>-->
+    <!--    </insert>-->
 </mapper>

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.sys.entity.SysMenu;
 import com.zy_admin.util.Result;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -15,6 +14,12 @@ import java.util.List;
  */
 public interface SysMenuService extends IService<SysMenu> {
 
+    /**
+     * 检查修改后的菜单是否和子集一致
+     * @param menu 修改后的菜单呢数据
+     * @return true--父类是子集
+     */
+    Boolean checkNewParentId(SysMenu menu);
 
     /**
      * 返回菜单树型结构

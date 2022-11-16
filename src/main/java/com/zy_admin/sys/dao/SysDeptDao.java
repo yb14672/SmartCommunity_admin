@@ -17,12 +17,6 @@ import java.util.List;
  */
 @Repository
 public interface SysDeptDao extends BaseMapper<SysDept> {
-    /**
-     * 根据id查询出他的子集
-     * @param deptId
-     * @return
-     */
-    List<Long> getDeptIdList(Integer deptId);
 
     /**
      * 根据id查数据
@@ -46,14 +40,6 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      * @return
      */
     Integer insertDept(SysDept sysDept);
-
-    /**
-     * 根据id查询出他的子集
-     *
-     * @param deptId
-     * @return
-     */
-    List<Long> getDeptIdList(Long deptId);
 
     /**
      * 部门名称验重
@@ -113,5 +99,11 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      */
     int updateDeptSon(@Param("status") String status,@Param("ancestors") String ancestors);
 
+    /**
+     * 检查修改后的菜单是否和子集一致
+     * @param deptId 部门Id
+     * @return 该部门的子集id列表
+     */
+    List<Long> getChildrenById(String deptId);
 }
 

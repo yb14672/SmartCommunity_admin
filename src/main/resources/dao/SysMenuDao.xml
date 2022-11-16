@@ -23,6 +23,18 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <!--根据菜单id获取其所有子集-->
+    <select id="getChildrenById" resultType="long">
+        select menu_id
+        from
+            (select
+                 t1.menu_id,
+                 if(FIND_IN_SET(parent_id,@pid)>0,@pid:= CONCAT( @pid ,",",menu_id),0) as ischild
+             from
+                 (select menu_id,parent_id from sys_menu t  ORDER BY  parent_id,order_num)t1,
+                 ( select @pid:=#{menuId}) t2
+            )t3 where ischild!=0
+    </select>
     <!--查询单个-->
     <select id="queryById" resultMap="SysMenuMap">
         select menu_id,
@@ -400,15 +412,7 @@
     </select>
     <!--根据菜单id查询是否有子集-->
     <select id="hasChildByMenuId" resultType="Integer">
-        select menu_id
-        from
-            (select
-                 t1.menu_id,
-                 if(FIND_IN_SET(parent_id,@pid)>0,@pid:= CONCAT( @pid ,",",menu_id),0) as ischild
-             from
-                 (select menu_id,parent_id from sys_menu t  ORDER BY  parent_id,order_num)t1,
-                 (	select @pid:=#{menuId}) t2
-            )t3 where ischild!=0
+        select count(1) from sys_menu where parent_id = #{menuId}
     </select>
 
     <select id="getMenuTree" resultType="com.zy_admin.sys.entity.MenuTree">

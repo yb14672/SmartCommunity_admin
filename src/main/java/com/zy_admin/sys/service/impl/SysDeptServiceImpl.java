@@ -96,30 +96,27 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
     public Result updateDept(SysDept sysDept) {
         Result result = new Result();
         try {
-            List<Long> deptIdList = this.baseMapper.getDeptIdList(sysDept.getDeptId());
-            //判断修改的的父级是否为自己的子级
-            for (Long deptId : deptIdList) {
-                if (sysDept.getParentId().equals(deptId)) {
-                    result.setMeta(ResultTool.fail(ResultCode.DEPTID_NOT_ITEM));
-                    return result;
-                }
-            }
             //判断是否没有修改就提交
             SysDept DeptById =this.baseMapper.getDeptByDeptId(sysDept.getDeptId()+"");
             if (!checkEquals(sysDept, DeptById)) {
                 //判断菜单的父类是否自己
                 if (!sysDept.getParentId().equals(sysDept.getDeptId())) {
-                    //因为菜单名为必填字段，所以判断是否为空
-                    if (sysDept.getDeptName() == null || "".equals(sysDept.getDeptName())) {
-                        result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
-                        return result;
-                    } else {
-                        //判断菜单名称是否唯一
-                        if (checkDeptNameUnique(1, sysDept)) {
-                        } else {
-                            result.setMeta(ResultTool.fail(ResultCode.REPEAT_DEPTNAME));
+                    if(!checkNewParentId(sysDept)){
+                        //因为菜单名为必填字段，所以判断是否为空
+                        if (sysDept.getDeptName() == null || "".equals(sysDept.getDeptName())) {
+                            result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
                             return result;
+                        } else {
+                            //判断菜单名称是否唯一
+                            if (checkDeptNameUnique(1, sysDept)) {
+                            } else {
+                                result.setMeta(ResultTool.fail(ResultCode.REPEAT_DEPTNAME));
+                                return result;
+                            }
                         }
+                    }else{
+                        result.setMeta(ResultTool.fail(ResultCode.PARENT_CANNOT_BE_A_SUBSET));
+                        return result;
                     }
                     String ancestors = ancestors(sysDept);
                     sysDept.setAncestors(ancestors);
@@ -190,6 +187,30 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
         }
         return false;
     }
+
+    /**
+     * 检查修改后的菜单是否和子集一致
+     *
+     * @param dept 修改后的部门数据
+     * @return true--父类是子集
+     */
+    @Override
+    public Boolean checkNewParentId(SysDept dept) {
+        //获取其子集的菜单ID
+        List<Long> childrenById = this.baseMapper.getChildrenById(dept.getDeptId()+"");
+        //获取到要修改的父类ID
+        long newParentId=dept.getParentId();
+        //循环遍历，检查修改后的父类是否为子集
+        for (int i = 0; i < childrenById.size(); i++) {
+            //获取到子集部门id，用于比较是否相等
+            long childId = childrenById.get(i);
+            if(newParentId==childId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * 验证没有修改
      * @param updateDept
