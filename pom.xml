@@ -42,11 +42,12 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
         <!--aop切面-->
+        <!--日志AOP依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
-    7
+
 
         <dependency>
             <groupId>nl.bitwalker</groupId>
