@@ -88,8 +88,9 @@ public class SysOperLogController extends ApiController {
     }
 
     @GetMapping("/getOperLogList")
-    public Result getOperLogList(SysOperLog sysOperLog, Pageable pageable,String startTime, String endTime){
-        return this.sysOperLogService.getOperLogList(sysOperLog, pageable, startTime, endTime);
+    public Result getOperLogList(SysOperLog sysOperLog,Pageable pageable,String startTime, String endTime,@RequestParam(value = "orderByColumn",defaultValue = "oper_time") String orderByColumn,@RequestParam(value = "isAsc",defaultValue = "desc") String isAsc){
+        System.err.println(orderByColumn+"  "+isAsc);
+        return this.sysOperLogService.getOperLogList(sysOperLog, pageable, startTime, endTime,orderByColumn,isAsc);
     }
 }
 

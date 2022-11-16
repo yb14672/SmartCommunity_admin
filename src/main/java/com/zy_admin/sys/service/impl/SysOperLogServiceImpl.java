@@ -25,7 +25,7 @@ import java.util.List;
 public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLog> implements SysOperLogService {
 
     @Override
-    public Result getOperLogList(SysOperLog sysOperLog, Pageable pageable,String startTime, String endTime) {
+    public Result getOperLogList(SysOperLog sysOperLog, Pageable pageable,String startTime, String endTime,String orderByColumn,String isAsc) {
         Result result =new Result();
         long total = this.baseMapper.count(sysOperLog,startTime,endTime);
         long pages = 0;
@@ -41,8 +41,8 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLog
             pageable.setPageNum(0);
         }
         pageable.setTotal(total);
-        List<SysOperLog> sysOperLogs = this.baseMapper.queryAllByLimit(sysOperLog, pageable, startTime, endTime);
-        SysOperLogDto sysOperLogDto = new SysOperLogDto(sysOperLogs,pageable,startTime,endTime);
+        List<SysOperLog> sysOperLogs = this.baseMapper.queryAllByLimit(sysOperLog, pageable, startTime, endTime,orderByColumn,isAsc);
+        SysOperLogDto sysOperLogDto = new SysOperLogDto(sysOperLogs,pageable,startTime,endTime,orderByColumn,isAsc);
         result.setData(sysOperLogDto);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;

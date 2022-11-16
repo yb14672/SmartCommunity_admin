@@ -16,5 +16,7 @@ public class SysOperLogDto  {
     private Pageable pageable;
     private String startTime;
     private String endTime;
+    private String orderByColumn;
+    private String isAsc;
 
 }

@@ -87,7 +87,9 @@
             <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
                 and oper_time&lt;= #{endTime}
             </if>
+
         </where>
+        order by #{orderByColumn} #{isAsc}
         limit #{pageable.index}, #{pageable.pageSize}
     </select>
 
@@ -142,10 +144,10 @@
                 and error_msg = #{sysOperLog.errorMsg}
             </if>
             <if test="startTime != null and startTime != ''"><!-- 开始时间检索 -->
-                and oper_time >= #{sysOperLog.startTime}
+                and oper_time >= #{startTime}
             </if>
             <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
-                and oper_time&lt;= #{sysOperLog.endTime}
+                and oper_time&lt;= #{endTime}
             </if>
         </where>
     </select>

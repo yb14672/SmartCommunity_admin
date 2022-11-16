@@ -28,6 +28,6 @@ public interface SysOperLogDao extends BaseMapper<SysOperLog> {
     * @param pageable
     * @return
     */
-   List<SysOperLog> queryAllByLimit(@Param("sysOperLog") SysOperLog sysOperLog, @Param("pageable") Pageable pageable,@Param("startTime") String startTime,@Param("endTime") String endTime);
+   List<SysOperLog> queryAllByLimit(@Param("sysOperLog") SysOperLog sysOperLog, @Param("pageable") Pageable pageable,@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("orderByColumn") String orderByColumn,@Param("isAsc") String isAsc);
 }
 

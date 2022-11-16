@@ -14,7 +14,7 @@ import com.zy_admin.util.Result;
  */
 public interface SysOperLogService extends IService<SysOperLog> {
 
-    Result getOperLogList(SysOperLog sysOperLog, Pageable pageable,String startTime, String endTime);
+    Result getOperLogList(SysOperLog sysOperLog, Pageable pageable,String startTime, String endTime,String orderByColumn,String isAsc);
 
 }
 
