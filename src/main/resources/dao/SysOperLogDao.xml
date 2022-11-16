@@ -89,7 +89,7 @@
             </if>
 
         </where>
-        order by #{orderByColumn} #{isAsc}
+        order by oper_time desc
         limit #{pageable.index}, #{pageable.pageSize}
     </select>
 
