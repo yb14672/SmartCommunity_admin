@@ -11,8 +11,13 @@
     <!--通过主键删除-->
     <delete id="deleteById">
         delete from sys_oper_log
-        <if test="operId!=null"></if>
-        where oper_id = #{operId}
+        where oper_id in
+        <foreach collection="logids" item="oper_id" separator="," open="(" close=")">
+            #{oper_id}
+        </foreach>
+    </delete>
+    <delete id="deleteLogs">
+         delete from sys_oper_log
     </delete>
 
     <resultMap type="com.zy_admin.sys.entity.SysOperLog" id="SysOperLogMap">

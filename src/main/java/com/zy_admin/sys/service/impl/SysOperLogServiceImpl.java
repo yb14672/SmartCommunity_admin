@@ -57,12 +57,27 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLog
 
     @Override
     public Result deleteById(List<Integer> logids) {
-        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
-        List<Integer> postIds = baseMapper.getLogById(logids);
-        if (postIds.size() > 0) {
-            result.setMeta(ResultTool.fail(ResultCode.POST_ASSIGNED));
-        } else {
+      Result result = new Result();
+        try {
             this.baseMapper.deleteById(logids);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        }
+
+        return result;
+    }
+
+    /**
+     * 清空
+     * @return
+     */
+    @Override
+    public Result deleteLogs() {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        int i = this.baseMapper.deleteLogs();
+        if (i > 0) {
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;

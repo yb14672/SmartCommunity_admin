@@ -31,5 +31,7 @@ public interface SysOperLogService extends IService<SysOperLog> {
      * @return
      */
     Result deleteById(List<Integer> logids);
+
+    Result deleteLogs();
 }
 

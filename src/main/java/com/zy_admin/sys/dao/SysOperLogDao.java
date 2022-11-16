@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface SysOperLogDao extends BaseMapper<SysOperLog> {
     /**
-     *
+     *来自吕蔚霖的注释：大小姐驾到
      * @param sysOperLog
      * @return
      */
@@ -40,6 +40,12 @@ public interface SysOperLogDao extends BaseMapper<SysOperLog> {
      * 根据id删除日志
      * @param logids
      */
-    void deleteById(List<Integer> logids);
+    void deleteById(@Param("logids") List<Integer> logids);
+
+    /**
+     * 删除所有日志
+     * @return
+     */
+    int deleteLogs();
 }
 

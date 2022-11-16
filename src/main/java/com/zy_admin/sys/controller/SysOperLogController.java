@@ -68,7 +68,11 @@ public class SysOperLogController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping("/deleteLog")
-    public Result deleteById(@RequestParam("idList") List<Integer> Logids) {
+    public Result deleteLog(@RequestParam("idList") List<Integer> Logids) {
+        System.err.println(Logids);
+        if (Logids.size()==0){
+            return this.sysOperLogService.deleteLogs();
+        }
         return sysOperLogService.deleteById(Logids);
     }
     /**
