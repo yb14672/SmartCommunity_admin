@@ -42,15 +42,6 @@ public interface SysOperLogService extends IService<SysOperLog> {
      * @return
      */
     Result deleteLogs();
-    /**
-     * 分页并查询
-     * @param sysOperLog
-     * @param pageable
-     * @param startTime
-     * @param endTime
-     * @return
-     */
-    Result selectOperLogByLimit(SysOperLog sysOperLog, Pageable pageable, String startTime, String endTime);
 
     /**
      * 新增操作日志

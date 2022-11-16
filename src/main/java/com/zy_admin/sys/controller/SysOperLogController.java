@@ -39,11 +39,6 @@ public class SysOperLogController extends ApiController {
     @Resource
     private SysOperLogService sysOperLogService;
 
-    @GetMapping("/selectOperLogByLimit")
-    public Result selectOperLogByLimit(SysOperLog sysOperLog, Pageable pageable,String startTime,String endTime){
-        return sysOperLogService.selectOperLogByLimit(sysOperLog,pageable,startTime,endTime);
-    }
-
     /**
      * 批量导出操作日志数据
      *

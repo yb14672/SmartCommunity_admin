@@ -5,8 +5,6 @@ import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysOperLog;
 import org.apache.ibatis.annotations.Param;
 
-import org.apache.ibatis.annotations.Param;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +54,7 @@ public interface SysOperLogDao extends BaseMapper<SysOperLog> {
      * @return
      */
     int deleteLogs();
+
     /**
      * 导出全部的操作日志
      * @return
@@ -72,13 +71,5 @@ public interface SysOperLogDao extends BaseMapper<SysOperLog> {
      */
     List<SysOperLog> selectOperLogByLimit(@Param("sysOperLog") SysOperLog sysOperLog, @Param("pageable") Pageable pageable, @Param("startTime") String startTime,@Param("endTime") String endTime);
 
-    /**
-     * 查询操作日志的所有数量
-     * @param sysOperLog
-     * @param startTime
-     * @param endTime
-     * @return
-     */
-    Long count(@Param("sysOperLog") SysOperLog sysOperLog,@Param("startTime") String startTime,@Param("endTime") String endTime);
 }
 

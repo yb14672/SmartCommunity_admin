@@ -21,6 +21,122 @@
         <result property="operTime" column="oper_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+    <!--新增操作日志-->
+    <insert id="addOperlog">
+        insert into sys_oper_log(
+        <trim suffixOverrides=",">
+            <if test="title!=null || title!=''">
+                title,
+            </if>
+            <if test="businessType!=null || businessType!=''">
+                business_type,
+            </if>
+            <if test="method!=null || method!=''">
+                method,
+            </if>
+            <if test="requestMethod!=null || requestMethod!=''">
+                request_method,
+            </if>
+            <if test="operatorType!=null || operatorType!=''">
+                operator_type,
+            </if>
+            <if test="operName!=null || operName!=''">
+                oper_name,
+            </if>
+            <if test="deptName!=null || deptName!=''">
+                dept_name,
+            </if>
+            <if test="operUrl!=null || operUrl!=''">
+                oper_url,
+            </if>
+            <if test="operIp!=null || operIp!=''">
+                oper_ip,
+            </if>
+            <if test="operLocation!=null || operLocation!=''">
+                oper_location,
+            </if>
+            <if test="operParam!=null || operParam!=''">
+                oper_param,
+            </if>
+            <if test="jsonResult!=null || jsonResult!=''">
+                json_result,
+            </if>
+            <if test="status!=null || status!=''">
+                status,
+            </if>
+            <if test="errorMsg!=null || errorMsg!=''">
+                error_msg,
+            </if>
+            <if test="operTime!=null || operTime!=''">
+                oper_time,
+            </if>
+        </trim>
+        ) values (
+        <trim suffixOverrides=",">
+            <if test="title!=null || title!=''">
+                #{title},
+            </if>
+            <if test="businessType!=null || businessType!=''">
+                #{businessType},
+            </if>
+            <if test="method!=null || method!=''">
+                #{method},
+            </if>
+            <if test="requestMethod!=null || requestMethod!=''">
+                #{requestMethod},
+            </if>
+            <if test="operatorType!=null || operatorType!=''">
+                #{operatorType},
+            </if>
+            <if test="operName!=null || operName!=''">
+                #{operName},
+            </if>
+            <if test="deptName!=null || deptName!=''">
+                #{deptName},
+            </if>
+            <if test="operUrl!=null || operUrl!=''">
+                #{operUrl},
+            </if>
+            <if test="operIp!=null || operIp!=''">
+                #{operIp},
+            </if>
+            <if test="operLocation!=null || operLocation!=''">
+                #{operLocation},
+            </if>
+            <if test="operParam!=null || operParam!=''">
+                #{operParam},
+            </if>
+            <if test="jsonResult!=null || jsonResult!=''">
+                #{jsonResult},
+            </if>
+            <if test="status!=null || status!=''">
+                #{status},
+            </if>
+            <if test="errorMsg!=null || errorMsg!=''">
+                #{errorMsg},
+            </if>
+            <if test="operTime!=null || operTime!=''">
+                #{operTime},
+            </if>
+        </trim>
+        )
+    </insert>
+    <!--导出选中的操作日志-->
+    <select id="getOperLogById" resultType="com.zy_admin.sys.entity.SysOperLog">
+        select * from sys_oper_log
+        <if test="list!=null">
+            where oper_id in (
+            <foreach collection="list" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+    </select>
+    <!--导出全部的操作日志-->
+    <select id="getOperLogList" resultType="com.zy_admin.sys.entity.SysOperLog">
+        select * from sys_oper_log
+    </select>
+
     <!--查询单个-->
     <select id="queryById" resultMap="SysOperLogMap">
         select
@@ -201,21 +317,6 @@
             </if>
         </where>
     </select>
-    <!--导出选中的操作日志-->
-    <select id="getOperLogById" resultType="com.zy_admin.sys.entity.SysOperLog">
-        select * from sys_oper_log
-        <if test="list!=null">
-            where oper_id in (
-                <foreach collection="list" item="id" separator=",">
-                    #{id}
-                </foreach>
-            )
-        </if>
-    </select>
-    <!--导出全部的操作日志-->
-    <select id="getOperLogList" resultType="com.zy_admin.sys.entity.SysOperLog">
-        select * from sys_oper_log
-    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="operId" useGeneratedKeys="true">
@@ -259,106 +360,6 @@
         status = values(status),
         error_msg = values(error_msg),
         oper_time = values(oper_time)
-    </insert>
-    <!--    新增操作日志-->
-    <insert id="addOperlog">
-        insert into sys_oper_log(
-        <trim suffixOverrides=",">
-            <if test="title!=null || title!=''">
-                title,
-            </if>
-            <if test="businessType!=null || businessType!=''">
-                business_type,
-            </if>
-            <if test="method!=null || method!=''">
-                method,
-            </if>
-            <if test="requestMethod!=null || requestMethod!=''">
-                request_method,
-            </if>
-            <if test="operatorType!=null || operatorType!=''">
-                operator_type,
-            </if>
-            <if test="operName!=null || operName!=''">
-                oper_name,
-            </if>
-            <if test="deptName!=null || deptName!=''">
-                dept_name,
-            </if>
-            <if test="operUrl!=null || operUrl!=''">
-                oper_url,
-            </if>
-            <if test="operIp!=null || operIp!=''">
-                oper_ip,
-            </if>
-            <if test="operLocation!=null || operLocation!=''">
-                oper_location,
-            </if>
-            <if test="operParam!=null || operParam!=''">
-                oper_param,
-            </if>
-            <if test="jsonResult!=null || jsonResult!=''">
-                json_result,
-            </if>
-            <if test="status!=null || status!=''">
-                status,
-            </if>
-            <if test="errorMsg!=null || errorMsg!=''">
-                error_msg,
-            </if>
-            <if test="operTime!=null || operTime!=''">
-                oper_time,
-            </if>
-        </trim>
-        ) values (
-        <trim suffixOverrides=",">
-            <if test="title!=null || title!=''">
-                #{title},
-            </if>
-            <if test="businessType!=null || businessType!=''">
-                #{businessType},
-            </if>
-            <if test="method!=null || method!=''">
-                #{method},
-            </if>
-            <if test="requestMethod!=null || requestMethod!=''">
-                #{requestMethod},
-            </if>
-            <if test="operatorType!=null || operatorType!=''">
-                #{operatorType},
-            </if>
-            <if test="operName!=null || operName!=''">
-                #{operName},
-            </if>
-            <if test="deptName!=null || deptName!=''">
-                #{deptName},
-            </if>
-            <if test="operUrl!=null || operUrl!=''">
-                #{operUrl},
-            </if>
-            <if test="operIp!=null || operIp!=''">
-                #{operIp},
-            </if>
-            <if test="operLocation!=null || operLocation!=''">
-                #{operLocation},
-            </if>
-            <if test="operParam!=null || operParam!=''">
-                #{operParam},
-            </if>
-            <if test="jsonResult!=null || jsonResult!=''">
-                #{jsonResult},
-            </if>
-            <if test="status!=null || status!=''">
-                #{status},
-            </if>
-            <if test="errorMsg!=null || errorMsg!=''">
-                #{errorMsg},
-            </if>
-            <if test="operTime!=null || operTime!=''">
-                #{operTime},
-            </if>
-        </trim>
-        )
     </insert>
 
     <!--通过主键修改数据-->
