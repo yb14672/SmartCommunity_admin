@@ -47,7 +47,7 @@ public interface SysOperLogDao extends BaseMapper<SysOperLog> {
      * 根据id删除日志
      * @param logids
      */
-    void deleteById(@Param("logids") List<Integer> logids);
+    void deleteOperLogById(@Param("logids") List<Integer> logids);
 
     /**
      * 删除所有日志

@@ -152,56 +152,56 @@
         oper_location, oper_param, json_result, status, error_msg, oper_time
         from sys_oper_log
         <where>
-            <if test="operId != null">
-                and oper_id = #{operId}
+            <if test="sysOperLog.operId != null">
+                and oper_id = #{sysOperLog.operId}
             </if>
-            <if test="title != null and title != ''">
-                and title = #{title}
+            <if test="sysOperLog.title != null and sysOperLog.title != ''">
+                and title = #{sysOperLog.title}
             </if>
-            <if test="businessType != null">
-                and business_type = #{businessType}
+            <if test="sysOperLog.businessType != null">
+                and business_type = #{sysOperLog.businessType}
             </if>
-            <if test="method != null and method != ''">
-                and method = #{method}
+            <if test="sysOperLog.method != null and sysOperLog.method != ''">
+                and method = #{sysOperLog.method}
             </if>
-            <if test="requestMethod != null and requestMethod != ''">
-                and request_method = #{requestMethod}
+            <if test="sysOperLog.requestMethod != null and sysOperLog.requestMethod != ''">
+                and request_method = #{sysOperLog.requestMethod}
             </if>
-            <if test="operatorType != null">
-                and operator_type = #{operatorType}
+            <if test="sysOperLog.operatorType != null">
+                and operator_type = #{sysOperLog.operatorType}
             </if>
-            <if test="operName != null and operName != ''">
-                and oper_name = #{operName}
+            <if test="sysOperLog.operName != null and operName != ''">
+                and oper_name = #{sysOperLog.operName}
             </if>
-            <if test="deptName != null and deptName != ''">
-                and dept_name = #{deptName}
+            <if test="sysOperLog.deptName != null and sysOperLog.deptName != ''">
+                and dept_name = #{sysOperLog.deptName}
             </if>
-            <if test="operUrl != null and operUrl != ''">
-                and oper_url = #{operUrl}
+            <if test="sysOperLog.operUrl != null and sysOperLog.operUrl != ''">
+                and oper_url = #{sysOperLog.operUrl}
             </if>
-            <if test="operIp != null and operIp != ''">
-                and oper_ip = #{operIp}
+            <if test="sysOperLog.operIp != null and sysOperLog.operIp != ''">
+                and oper_ip = #{sysOperLog.operIp}
             </if>
-            <if test="operLocation != null and operLocation != ''">
-                and oper_location = #{operLocation}
+            <if test="sysOperLog.operLocation != null and sysOperLog.operLocation != ''">
+                and oper_location = #{sysOperLog.operLocation}
             </if>
-            <if test="operParam != null and operParam != ''">
-                and oper_param = #{operParam}
+            <if test="sysOperLog.operParam != null and sysOperLog.operParam != ''">
+                and oper_param = #{sysOperLog.operParam}
             </if>
-            <if test="jsonResult != null and jsonResult != ''">
-                and json_result = #{jsonResult}
+            <if test="sysOperLog.jsonResult != null and sysOperLog.jsonResult != ''">
+                and json_result = #{sysOperLog.jsonResult}
             </if>
-            <if test="status != null">
-                and status = #{status}
+            <if test="sysOperLog.status != null">
+                and status = #{sysOperLog.status}
             </if>
-            <if test="errorMsg != null and errorMsg != ''">
-                and error_msg = #{errorMsg}
+            <if test="sysOperLog.errorMsg != null and sysOperLog.errorMsg != ''">
+                and error_msg = #{sysOperLog.errorMsg}
             </if>
-            <if test="operTime != null">
-                and oper_time = #{operTime}
+            <if test="sysOperLog.operTime != null">
+                and oper_time = #{sysOperLog.operTime}
             </if>
         </where>
-        limit #{pageable.offset}, #{pageable.pageSize}
+        limit #{pageable.index}, #{pageable.pageSize}
     </select>
 
     <!--查询操作日志并分页-->
@@ -267,52 +267,52 @@
         select count(*)
         from sys_oper_log
         <where>
-            <if test="operId != null">
+            <if test="sysOperLog.operId != null">
                 and oper_id = #{sysOperLog.operId}
             </if>
-            <if test="title != null and title != ''">
+            <if test="sysOperLog.title != null and sysOperLog.title != ''">
                 and title like concat ('%',#{sysOperLog.title},'%')
             </if>
-            <if test="businessType != null">
+            <if test="sysOperLog.businessType != null">
                 and business_type = #{sysOperLog.businessType}
             </if>
-            <if test="method != null and method != ''">
+            <if test="sysOperLog.method != null and sysOperLog.method != ''">
                 and method = #{sysOperLog.method}
             </if>
-            <if test="requestMethod != null and requestMethod != ''">
+            <if test="sysOperLog.requestMethod != null and sysOperLog.requestMethod != ''">
                 and request_method = #{sysOperLog.requestMethod}
             </if>
-            <if test="operatorType != null">
+            <if test="sysOperLog.operatorType != null">
                 and operator_type = #{sysOperLog.operatorType}
             </if>
-            <if test="operName != null and operName != ''">
+            <if test="sysOperLog.operName != null and sysOperLog.operName != ''">
                 and oper_name like concat ('%',#{sysOperLog.operName},'%')
             </if>
-            <if test="deptName != null and deptName != ''">
+            <if test="sysOperLog.deptName != null and sysOperLog.deptName != ''">
                 and dept_name = #{sysOperLog.deptName}
             </if>
-            <if test="operUrl != null and operUrl != ''">
+            <if test="sysOperLog.operUrl != null and sysOperLog.operUrl != ''">
                 and oper_url = #{sysOperLog.operUrl}
             </if>
-            <if test="operIp != null and operIp != ''">
+            <if test="sysOperLog.operIp != null and sysOperLog.operIp != ''">
                 and oper_ip = #{sysOperLog.operIp}
             </if>
-            <if test="operLocation != null and operLocation != ''">
+            <if test="sysOperLog.operLocation != null and sysOperLog.operLocation != ''">
                 and oper_location = #{sysOperLog.operLocation}
             </if>
-            <if test="operParam != null and operParam != ''">
+            <if test="sysOperLog.operParam != null and sysOperLog.operParam != ''">
                 and oper_param = #{sysOperLog.operParam}
             </if>
-            <if test="jsonResult != null and jsonResult != ''">
+            <if test="sysOperLog.jsonResult != null and sysOperLog.jsonResult != ''">
                 and json_result = #{sysOperLog.jsonResult}
             </if>
-            <if test="status != null">
+            <if test="sysOperLog.status != null">
                 and status = #{sysOperLog.status}
             </if>
-            <if test="errorMsg != null and errorMsg != ''">
+            <if test="sysOperLog.errorMsg != null and sysOperLog.errorMsg != ''">
                 and error_msg = #{sysOperLog.errorMsg}
             </if>
-            <if test="operTime != null">
+            <if test="sysOperLog.operTime != null">
                 and oper_time between {#startTime} and #{endTime}
             </if>
         </where>
@@ -416,8 +416,16 @@
     </update>
 
     <!--通过主键删除-->
-    <delete id="deleteById">
-        delete from sys_oper_log where oper_id = #{operId}
+    <delete id="deleteOperLogById">
+        delete from sys_oper_log
+        where oper_id in
+        <foreach collection="logids" item="oper_id" separator="," open="(" close=")">
+            #{oper_id}
+        </foreach>
+    </delete>
+    <!--清空数据-->
+    <delete id="deleteLogs">
+        delete from sys_oper_log
     </delete>
 
 </mapper>

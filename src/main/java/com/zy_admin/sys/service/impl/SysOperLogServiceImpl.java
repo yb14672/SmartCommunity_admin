@@ -58,7 +58,7 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLog
     public Result deleteById(List<Integer> logids) {
       Result result = new Result();
         try {
-            this.baseMapper.deleteById(logids);
+            this.baseMapper.deleteOperLogById(logids);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         } catch (Exception e) {
             e.printStackTrace();

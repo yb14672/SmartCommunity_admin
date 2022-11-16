@@ -6,6 +6,7 @@ import com.zy_admin.sys.entity.SysLogininfor;
 import org.apache.ibatis.annotations.Param;
 
 import com.zy_admin.common.Pageable;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:39
  */
+@Repository
 public interface SysLogininforDao extends BaseMapper<SysLogininfor> {
 
     /**

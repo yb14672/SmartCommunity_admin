@@ -2,6 +2,9 @@ package com.zy_admin.common.core.log;
 
 import java.lang.annotation.*;
 
+/**
+ * @author yb14672
+ */
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

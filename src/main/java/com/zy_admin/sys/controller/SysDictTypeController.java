@@ -8,8 +8,8 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.common.log.BusinessType;
-import com.zy_admin.common.log.MyLog;
+import com.zy_admin.common.core.log.BusinessType;
+import com.zy_admin.common.core.log.MyLog;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
 import com.zy_admin.util.ExcelUtil;

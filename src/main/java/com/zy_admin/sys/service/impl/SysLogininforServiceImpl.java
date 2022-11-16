@@ -26,7 +26,6 @@ import java.util.List;
 @Service("sysLogininforService")
 public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforDao, SysLogininfor> implements SysLogininforService {
 
-
     /**
      * 查询导出数据
      * @param infoIds

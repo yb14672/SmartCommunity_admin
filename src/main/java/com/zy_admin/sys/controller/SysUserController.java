@@ -11,7 +11,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dto.UserDto;
 import com.zy_admin.sys.entity.SysUser;
-import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.entity.SysUserUpload;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.*;
@@ -164,8 +163,6 @@ public class SysUserController extends ApiController {
     @GetMapping("/uploadExcel")
     public void uploadExcel(HttpServletResponse response) throws IOException {
         List<SysUser> sysUserList = new ArrayList<>();
-        //直接下载模板
-        sysUserList = sysUserService.uploadUser();
         //直接下载模板
         sysUserList = sysUserService.uploadUserTemplate();
         String fileName = URLEncoder.encode("下载模板表", "UTF-8");
