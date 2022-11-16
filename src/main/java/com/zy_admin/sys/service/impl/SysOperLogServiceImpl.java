@@ -29,7 +29,6 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLog
      * @param sysOperLog 查询实体
      * @return 所有数据
      */
-
     @Override
     public Result getOperLogList(SysOperLog sysOperLog, Pageable pageable,String startTime, String endTime,String orderByColumn,String isAsc) {
         Result result =new Result();
@@ -47,12 +46,11 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLog
             pageable.setPageNum(0);
         }
         pageable.setTotal(total);
-        List<SysOperLog> sysOperLogs = this.baseMapper.queryAllByLimit(sysOperLog, pageable, startTime, endTime,orderByColumn,isAsc);
+        List<SysOperLog> sysOperLogs = this.baseMapper.queryAllByLimit(sysOperLog, pageable, startTime, endTime);
         SysOperLogDto sysOperLogDto = new SysOperLogDto(sysOperLogs,pageable,startTime,endTime,orderByColumn,isAsc);
         result.setData(sysOperLogDto);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
-
     }
 
     @Override
@@ -65,7 +63,6 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLog
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
         }
-
         return result;
     }
 
