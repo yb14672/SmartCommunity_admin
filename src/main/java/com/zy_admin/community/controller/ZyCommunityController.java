@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.community.service.ZyCommunityService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,6 +29,18 @@ public class ZyCommunityController extends ApiController {
      */
     @Resource
     private ZyCommunityService zyCommunityService;
+
+    /**
+     * 分页查询
+     * @param zyCommunity
+     * @param pageable
+     * @return
+     */
+    @GetMapping("/selectCommunityLimit")
+    public Result selectCommunityLimit(ZyCommunity zyCommunity, Pageable pageable){
+        Result result = zyCommunityService.selectCommunityLimit(zyCommunity, pageable);
+        return result;
+    }
 
     /**
      * 分页查询所有数据

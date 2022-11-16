@@ -25,7 +25,7 @@ server:
 mybatis-plus:
   # 如果是放在src/main/java目录下 classpath:/com/yourpackage/*/mapper/*Mapper.xml
   # 如果是放在resource目录 classpath:/mapper/*Mapper.xml
-  mapper-locations: classpath:dao/*.xml
+  mapper-locations: classpath:dao/**/*.xml
   #实体扫描，多个package用逗号或者分号分隔
   typeAliasesPackage: com.example.demo.**.entity
   configuration:
@@ -34,6 +34,7 @@ mybatis-plus:
 logging:
   level:
     com.zy_admin.sys.dao: DEBUG
+    com.zy_admin.community.dao: DEBUG
 ## minio 文件存储配置信息
 ## minio的配置
 minio:

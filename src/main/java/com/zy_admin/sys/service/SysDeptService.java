@@ -60,5 +60,12 @@ public interface SysDeptService extends IService<SysDept> {
      * @return
      */
     Result deleteDept(List<Integer> idList);
+
+    /**
+     * 根据ID获取部门
+     * @param deptId
+     * @return
+     */
+    SysDept getDeptById(Long deptId);
 }
 

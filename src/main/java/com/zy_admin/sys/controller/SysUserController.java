@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dto.UserDto;
 import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.sys.entity.SysUserUpload;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.*;
 import org.springframework.web.bind.annotation.*;
@@ -158,7 +159,8 @@ public class SysUserController extends ApiController {
     public void uploadExcel(HttpServletResponse response) throws IOException {
         List<SysUser> sysUserList = new ArrayList<>();
 //        直接下载模板
-        sysUserList = sysUserService.uploadUser();
+        sysUserList = sysUserService.uploadUserTemplate();
+        System.out.println(sysUserList);
         String fileName = URLEncoder.encode("下载模板表", "UTF-8");
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
@@ -166,7 +168,7 @@ public class SysUserController extends ApiController {
         // 内容样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), SysUser.class)
+        EasyExcel.write(response.getOutputStream(), SysUserUpload.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())

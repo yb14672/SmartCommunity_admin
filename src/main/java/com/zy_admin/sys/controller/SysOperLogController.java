@@ -9,9 +9,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.service.SysOperLogService;
 import com.zy_admin.util.ExcelUtil;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -36,6 +38,11 @@ public class SysOperLogController extends ApiController {
      */
     @Resource
     private SysOperLogService sysOperLogService;
+
+    @GetMapping("/selectOperLogByLimit")
+    public Result selectOperLogByLimit(SysOperLog sysOperLog, Pageable pageable,String startTime,String endTime){
+        return sysOperLogService.selectOperLogByLimit(sysOperLog,pageable,startTime,endTime);
+    }
 
     /**
      * 批量导出操作日志数据

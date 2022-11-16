@@ -152,6 +152,7 @@ public class SysMenuController extends ApiController {
      * @return
      */
     @PutMapping("/updateMenu")
+    @MyLog(title = "修改菜单", optParam = "#{sysMenu}", businessType = BusinessType.OTHER)
     public Result updateMenu(@RequestBody SysMenu sysMenu){
         Result result = this.sysMenuService.updateMenu(sysMenu);
         return result;
