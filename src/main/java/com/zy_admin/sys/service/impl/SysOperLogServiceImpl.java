@@ -1,16 +1,17 @@
 package com.zy_admin.sys.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dao.SysOperLogDao;
+import com.zy_admin.sys.dto.SysOperLogDto;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.service.SysOperLogService;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
-import com.zy_admin.util.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 操作日志记录(SysOperLog)表服务实现类
@@ -20,33 +21,53 @@ import org.springframework.stereotype.Service;
  */
 @Service("sysOperLogService")
 public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLog> implements SysOperLogService {
+
     /**
      * 分页查询所有数据
      *
-     * @param page       分页对象
+     * @param pageable       分页对象
      * @param sysOperLog 查询实体
      * @return 所有数据
      */
+
     @Override
-    public Result getOperLogs(Page page, SysOperLog sysOperLog,String startTime,String endTime) {
+    public Result getOperLogList(SysOperLog sysOperLog, Pageable pageable, String startTime, String endTime) {
+        Result result =new Result();
+        long total = this.baseMapper.count(sysOperLog,startTime,endTime);
+        long pages = 0;
+        if (total > 0) {
+            pages = total % pageable.getPageSize() == 0 ? total / pageable.getPageSize() : total / pageable.getPageSize() + 1;
+            pageable.setPages(pages);
+            //页码修正
+            pageable.setPageNum(pageable.getPageNum() < 1 ? 1 : pageable.getPageNum());
+            pageable.setPageNum(pageable.getPageNum() > pages ? pages : pageable.getPageNum());
+            //设置起始下标
+            pageable.setIndex((pageable.getPageNum() - 1) * pageable.getPageSize());
+        } else {
+            pageable.setPageNum(0);
+        }
+        pageable.setTotal(total);
+        List<SysOperLog> sysOperLogs = this.baseMapper.queryAllByLimit(sysOperLog, pageable, startTime, endTime);
+        SysOperLogDto sysOperLogDto = new SysOperLogDto(sysOperLogs,pageable,startTime,endTime);
+        result.setData(sysOperLogDto);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
+
+    }
+
+    @Override
+    public Result deleteById(List<Integer> logids) {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
-        //新建查询条件对象
-        LambdaQueryWrapper<SysOperLog> queryWrapper = new LambdaQueryWrapper<>();
-        //StringUtils.isNotEmpty(xxx)--当dictType不为空时，执行这个行sql
-        //SysDictData::getDictType--查询哪个字段
-        //sysDictData.getDictType()--查询条件
-        queryWrapper.like(StringUtils.isNotEmpty(sysOperLog.getTitle()), SysOperLog::getTitle, sysOperLog.getTitle());
-        queryWrapper.like(StringUtils.isNotEmpty(sysOperLog.getOperName()), SysOperLog::getOperName, sysOperLog.getOperName());
-        queryWrapper.eq(StringUtils.isNotNull(sysOperLog.getBusinessType()), SysOperLog::getBusinessType, sysOperLog.getBusinessType());
-        queryWrapper.eq(StringUtils.isNotNull(sysOperLog.getStatus()), SysOperLog::getStatus, sysOperLog.getStatus());
-        queryWrapper.ge(StringUtils.isNotEmpty(sysOperLog.getOperTime()), SysOperLog::getOperTime, startTime);
-        queryWrapper.le(StringUtils.isNotEmpty(sysOperLog.getOperTime()), SysOperLog::getOperTime, endTime);
-        Page page1 = this.baseMapper.selectPage(page, queryWrapper);
-        if (page1.getSize() > 0) {
-            result.setData(page1);
+        List<Integer> postIds = baseMapper.getLogById(logids);
+        if (postIds.size() > 0) {
+            result.setMeta(ResultTool.fail(ResultCode.POST_ASSIGNED));
+        } else {
+            this.baseMapper.deleteById(logids);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
     }
+
+
 }
 

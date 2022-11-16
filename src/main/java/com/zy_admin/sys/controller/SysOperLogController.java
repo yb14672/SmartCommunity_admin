@@ -3,7 +3,7 @@ package com.zy_admin.sys.controller;
 
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.service.SysOperLogService;
 import com.zy_admin.util.Result;
@@ -27,20 +27,6 @@ public class SysOperLogController extends ApiController {
      */
     @Resource
     private SysOperLogService sysOperLogService;
-
-    /**
-     * 分页查询所有数据
-     *
-     * @param page       分页对象
-     * @param sysOperLog 查询实体
-     * @return 所有数据
-     */
-    @GetMapping
-    public Result getOperLogs(Page page ,SysOperLog sysOperLog,String startTime,String endTime) {
-        Result sysOperLogs = sysOperLogService.getOperLogs(page,sysOperLog,startTime,endTime);
-        System.out.println(sysOperLogs);
-        return sysOperLogs;
-    }
 
     /**
      * 通过主键查询单条数据
@@ -78,12 +64,24 @@ public class SysOperLogController extends ApiController {
     /**
      * 删除数据
      *
-     * @param idList 主键结合
+     * @param Logids 主键结合
      * @return 删除结果
      */
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.sysOperLogService.removeByIds(idList));
+    @DeleteMapping("/deleteLog")
+    public Result deleteById(@RequestParam("idList") List<Integer> Logids) {
+        return sysOperLogService.deleteById(Logids);
+    }
+    /**
+     * 分页查询所有数据
+     *
+     * @param pageable       分页对象
+     * @param sysOperLog 查询实体
+     * @return 所有数据
+     */
+
+    @GetMapping("/getOperLogList")
+    public Result getOperLogList(SysOperLog sysOperLog, Pageable pageable, String startTime, String endTime){
+        return this.sysOperLogService.getOperLogList(sysOperLog, pageable, startTime, endTime);
     }
 }
 
