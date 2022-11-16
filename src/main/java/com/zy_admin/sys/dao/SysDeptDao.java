@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.sys.dto.DeptTreeDto;
 import com.zy_admin.sys.entity.SysDept;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:34
  */
+@Repository
 public interface SysDeptDao extends BaseMapper<SysDept> {
     /**
      * 根据id查询出他的子集

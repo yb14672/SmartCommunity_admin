@@ -10,20 +10,4 @@ import lombok.NoArgsConstructor;
 public class Result {
     private Object data;
     private JsonResult meta;
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
-    }
-
-    public JsonResult getJsonResult() {
-        return meta;
-    }
-
-    public void setJsonResult(JsonResult meta) {
-        this.meta = meta;
-    }
 }

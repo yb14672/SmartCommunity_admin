@@ -34,7 +34,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
         //验证token的有效性
         if (!JwtUtils.checkToken(token)){
-            System.err.println(111);
             response.getWriter().print(JSON.toJSONString(new Result(null, ResultTool.fail(ResultCode.USER_TOKEN_INVALID))));
             return false;
         }

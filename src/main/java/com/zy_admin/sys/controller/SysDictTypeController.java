@@ -55,7 +55,6 @@ public class SysDictTypeController extends ApiController {
             sysDictTypeList = sysDictTypeService.getDictLists();
         } else {
             //执行查询角色列表的sql语句
-            System.out.println(dictIds);
             sysDictTypeList = sysDictTypeService.queryDictById(dictIds);
         }
         String fileName = URLEncoder.encode("字典表数据", "UTF-8");
