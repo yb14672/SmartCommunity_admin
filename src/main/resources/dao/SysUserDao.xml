@@ -290,6 +290,10 @@
         WHERE r.del_flag = '0'
           and ur.user_id = #{userId}
     </select>
+    <!--下载模板-->
+    <select id="uploadUserTemplate" resultType="com.zy_admin.sys.entity.SysUser">
+        select dept_id,user_name,nick_name,email,phonenumber from sys_user
+    </select>
 
     <update id="updateUser" parameterType="com.zy_admin.sys.entity.SysUser">
         update sys_user

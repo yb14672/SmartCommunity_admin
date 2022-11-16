@@ -150,7 +150,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      * @return
      */
     @Override
-    public List<SysUser> uploadUser() {
+    public List<SysUser> uploadUserTemplate() {
         return null;
     }
 

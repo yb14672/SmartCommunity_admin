@@ -161,7 +161,7 @@ public class SysUserController extends ApiController {
     public void uploadExcel(HttpServletResponse response) throws IOException {
         List<SysUser> sysUserList = new ArrayList<>();
 //        直接下载模板
-        sysUserList = sysUserService.uploadUser();
+        sysUserList = sysUserService.uploadUserTemplate();
         String fileName = URLEncoder.encode("下载模板表", "UTF-8");
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");

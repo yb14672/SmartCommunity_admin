@@ -1,6 +1,7 @@
 package com.zy_admin.sys.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysOperLog;
 import org.apache.ibatis.annotations.Param;
 
@@ -32,5 +33,24 @@ public interface SysOperLogDao extends BaseMapper<SysOperLog> {
      * @return
      */
     List<SysOperLog> getOperLogList();
+
+    /**
+     * 查询操作日志并分页
+     * @param sysOperLog
+     * @param pageable
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<SysOperLog> selectOperLogByLimit(@Param("sysOperLog") SysOperLog sysOperLog, @Param("pageable") Pageable pageable, @Param("startTime") String startTime,@Param("endTime") String endTime);
+
+    /**
+     * 查询操作日志的所有数量
+     * @param sysOperLog
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    Long count(@Param("sysOperLog") SysOperLog sysOperLog,@Param("startTime") String startTime,@Param("endTime") String endTime);
 }
 

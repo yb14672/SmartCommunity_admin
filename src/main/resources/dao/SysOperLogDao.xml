@@ -88,58 +88,116 @@
         limit #{pageable.offset}, #{pageable.pageSize}
     </select>
 
+    <!--查询操作日志并分页-->
+    <select id="selectOperLogByLimit" resultType="com.zy_admin.sys.entity.SysOperLog">
+        select oper_id,title,operator_type,request_method,oper_name,oper_ip,oper_location,status,oper_time from sys_oper_log
+        <where>
+            <if test="operId != null">
+                and oper_id = #{sysOperLog.operId}
+            </if>
+            <if test="title != null and title != ''">
+                and title like concat ('%',#{sysOperLog.title},'%')
+            </if>
+            <if test="businessType != null">
+                and business_type = #{sysOperLog.businessType}
+            </if>
+            <if test="method != null and method != ''">
+                and method = #{sysOperLog.method}
+            </if>
+            <if test="requestMethod != null and requestMethod != ''">
+                and request_method = #{sysOperLog.requestMethod}
+            </if>
+            <if test="operatorType != null">
+                and operator_type = #{sysOperLog.operatorType}
+            </if>
+            <if test="operName != null and operName != ''">
+                and oper_name like concat ('%',#{sysOperLog.operName},'%')
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{sysOperLog.deptName}
+            </if>
+            <if test="operUrl != null and operUrl != ''">
+                and oper_url = #{sysOperLog.operUrl}
+            </if>
+            <if test="operIp != null and operIp != ''">
+                and oper_ip = #{sysOperLog.operIp}
+            </if>
+            <if test="operLocation != null and operLocation != ''">
+                and oper_location = #{sysOperLog.operLocation}
+            </if>
+            <if test="operParam != null and operParam != ''">
+                and oper_param = #{sysOperLog.operParam}
+            </if>
+            <if test="jsonResult != null and jsonResult != ''">
+                and json_result = #{sysOperLog.jsonResult}
+            </if>
+            <if test="status != null">
+                and status = #{sysOperLog.status}
+            </if>
+            <if test="errorMsg != null and errorMsg != ''">
+                and error_msg = #{sysOperLog.errorMsg}
+            </if>
+            <if test="operTime != null">
+                and oper_time between {#startTime} and #{endTime}
+            </if>
+        </where>
+            <if test="pageable.pageSize!=0">
+                limit #{pageable.index},#{pageable.pageSize}
+            </if>
+    </select>
+
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
-        select count(1)
+        select count(*)
         from sys_oper_log
         <where>
             <if test="operId != null">
-                and oper_id = #{operId}
+                and oper_id = #{sysOperLog.operId}
             </if>
             <if test="title != null and title != ''">
-                and title = #{title}
+                and title like concat ('%',#{sysOperLog.title},'%')
             </if>
             <if test="businessType != null">
-                and business_type = #{businessType}
+                and business_type = #{sysOperLog.businessType}
             </if>
             <if test="method != null and method != ''">
-                and method = #{method}
+                and method = #{sysOperLog.method}
             </if>
             <if test="requestMethod != null and requestMethod != ''">
-                and request_method = #{requestMethod}
+                and request_method = #{sysOperLog.requestMethod}
             </if>
             <if test="operatorType != null">
-                and operator_type = #{operatorType}
+                and operator_type = #{sysOperLog.operatorType}
             </if>
             <if test="operName != null and operName != ''">
-                and oper_name = #{operName}
+                and oper_name like concat ('%',#{sysOperLog.operName},'%')
             </if>
             <if test="deptName != null and deptName != ''">
-                and dept_name = #{deptName}
+                and dept_name = #{sysOperLog.deptName}
             </if>
             <if test="operUrl != null and operUrl != ''">
-                and oper_url = #{operUrl}
+                and oper_url = #{sysOperLog.operUrl}
             </if>
             <if test="operIp != null and operIp != ''">
-                and oper_ip = #{operIp}
+                and oper_ip = #{sysOperLog.operIp}
             </if>
             <if test="operLocation != null and operLocation != ''">
-                and oper_location = #{operLocation}
+                and oper_location = #{sysOperLog.operLocation}
             </if>
             <if test="operParam != null and operParam != ''">
-                and oper_param = #{operParam}
+                and oper_param = #{sysOperLog.operParam}
             </if>
             <if test="jsonResult != null and jsonResult != ''">
-                and json_result = #{jsonResult}
+                and json_result = #{sysOperLog.jsonResult}
             </if>
             <if test="status != null">
-                and status = #{status}
+                and status = #{sysOperLog.status}
             </if>
             <if test="errorMsg != null and errorMsg != ''">
-                and error_msg = #{errorMsg}
+                and error_msg = #{sysOperLog.errorMsg}
             </if>
             <if test="operTime != null">
-                and oper_time = #{operTime}
+                and oper_time between {#startTime} and #{endTime}
             </if>
         </where>
     </select>
