@@ -22,6 +22,14 @@ import java.util.List;
 @Service("sysOperLogService")
 public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLog> implements SysOperLogService {
 
+    /**
+     * 分页查询所有数据
+     *
+     * @param pageable       分页对象
+     * @param sysOperLog 查询实体
+     * @return 所有数据
+     */
+
     @Override
     public Result getOperLogList(SysOperLog sysOperLog, Pageable pageable,String startTime, String endTime,String orderByColumn,String isAsc) {
         Result result =new Result();
@@ -44,11 +52,12 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLog
         result.setData(sysOperLogDto);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
+
     }
 
     @Override
     public Result deleteById(List<Integer> logids) {
-        Result result = new Result();
+      Result result = new Result();
         try {
             this.baseMapper.deleteById(logids);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
@@ -73,5 +82,7 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLog
         }
         return result;
     }
+
+
 }
 

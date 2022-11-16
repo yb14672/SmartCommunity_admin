@@ -81,10 +81,21 @@ public class SysOperLogController extends ApiController {
      * @param idList 主键结合
      * @return 删除结果
      */
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.sysOperLogService.removeByIds(idList));
+    @DeleteMapping("/deleteLog")
+    public Result deleteLog(@RequestParam("idList") List<Integer> Logids) {
+        System.err.println(Logids);
+        if (Logids.size()==0){
+            return this.sysOperLogService.deleteLogs();
+        }
+        return sysOperLogService.deleteById(Logids);
     }
+    /**
+     * 分页查询所有数据
+     *
+     * @param pageable       分页对象
+     * @param sysOperLog 查询实体
+     * @return 所有数据
+     */
 
     @GetMapping("/getOperLogList")
     public Result getOperLogList(SysOperLog sysOperLog, Pageable pageable, String startTime, String endTime, @RequestParam(value = "orderByColumn",defaultValue = "oper_time") String orderByColumn, @RequestParam(value = "isAsc",defaultValue = "desc") String isAsc){

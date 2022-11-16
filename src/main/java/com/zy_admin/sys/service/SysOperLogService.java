@@ -15,7 +15,15 @@ import java.util.List;
  */
 public interface SysOperLogService extends IService<SysOperLog> {
 
-    Result getOperLogList(SysOperLog sysOperLog, Pageable pageable,String startTime, String endTime,String orderByColumn,String isAsc);
+    /**
+     * 分页查询所有数据
+     *
+     * @param pageable       分页对象
+     * @param sysOperLog 查询实体
+     * @return 所有数据
+     */
+
+    Result getOperLogList(SysOperLog sysOperLog, Pageable pageable, String startTime, String endTime);
 
     /**
      * 批量删除日志
@@ -23,5 +31,11 @@ public interface SysOperLogService extends IService<SysOperLog> {
      * @return
      */
     Result deleteById(List<Integer> logIds);
+
+    /**
+     * 清空日志
+     * @return
+     */
+    Result deleteLogs();
 }
 

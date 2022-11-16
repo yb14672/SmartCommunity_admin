@@ -29,18 +29,17 @@ public interface SysOperLogDao extends BaseMapper<SysOperLog> {
      */
     List<SysOperLog> queryAllByLimit(@Param("sysOperLog") SysOperLog sysOperLog, @Param("pageable") Pageable pageable, @Param("startTime") String startTime, @Param("endTime") String endTime);
 
-   /**
-    *
-    * @param sysOperLog
-    * @param pageable
-    * @return
-    */
-   List<SysOperLog> queryAllByLimit(@Param("sysOperLog") SysOperLog sysOperLog, @Param("pageable") Pageable pageable,@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("orderByColumn") String orderByColumn,@Param("isAsc") String isAsc);
 
     /**
      * 根据id删除日志
      * @param logids
      */
-    int deleteLogById(List<Integer> logids);
+    void deleteById(@Param("logids") List<Integer> logids);
+
+    /**
+     * 删除所有日志
+     * @return
+     */
+    int deleteLogs();
 }
 
