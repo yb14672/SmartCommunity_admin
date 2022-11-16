@@ -334,14 +334,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         if (baseMapper.selectList(queryWrapper).size() > 0) {
             return false;
         }
-        String regEx1 = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
-        Pattern p = Pattern.compile(regEx1);
-        Matcher m = p.matcher(stringCellValue);
-        if(m.matches()){
-            return true;
-        }else{
-            return false;
-        }
+        return true;
     }
 
     /**
