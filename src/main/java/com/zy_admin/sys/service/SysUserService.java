@@ -8,6 +8,7 @@ import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.Result;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,12 @@ import java.util.List;
  */
 public interface SysUserService extends IService<SysUser> {
 
+    /**
+     * 登出
+     * @param request
+     * @return
+     */
+    Result logout(HttpServletRequest request);
     /**
      * 删除用户
      *

@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
@@ -44,6 +45,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private RedisService redisService;
     @Autowired
     private SysDeptDao sysDeptDao;
+
+
+    @Override
+    public Result logout(HttpServletRequest request) {
+        String userId = JwtUtils.getMemberIdByJwtToken(request);
+        SysUser user = this.baseMapper.queryById(userId);
+        System.err.println(user);
+        Result result = new Result(user,ResultTool.fail(ResultCode.USER_LOGOUT_FAIL));
+        if (redisService.empty()){
+            result.setMeta(ResultTool.fail(ResultCode.USER_LOGOUT_SUCCESS));
+        }
+        return result;
+    }
 
     /**
      * 删除用户
@@ -247,6 +261,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                     userEntity.setDeptId(list.get(0).getDeptId());
                 }
             }
+            // 添加昵称
             if (sheet.getRow(i).getCell(2) != null) {
                 userEntity.setNickName(getCellValue(sheet.getRow(i).getCell(2)));
             }
@@ -357,11 +372,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      */
     private boolean judgeRow(Row row) {
         int blankRowNum = 0;
-// 没有数据没有格式
+        // 没有数据没有格式
         if (row == null) {
             return false;
         } else {
-// 有格式没有数据
+        // 有格式没有数据
             for (Cell cell : row) {
                 if (cell.getCellType() != CellType.BLANK) {
                     blankRowNum++;
@@ -416,14 +431,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     }
 
     private Workbook getWorkBook(MultipartFile file) {
-// 获得文件名
+        // 获得文件名
         String fileName = file.getOriginalFilename();
-// 创建Workbook工作薄对象，包含整个excel
+        // 创建Workbook工作薄对象，包含整个excel
         Workbook workbook = null;
         try {
-// 获取excel文件的io流
+            // 获取excel文件的io流
             InputStream inputStream = file.getInputStream();
-// 根据文件后缀名不同(xls和xlsx)获得不同的Workbook实现类对象
+            // 根据文件后缀名不同(xls和xlsx)获得不同的Workbook实现类对象
             if (fileName != null) {
                 if (fileName.endsWith("xls") || fileName.endsWith("XLS")) {
                     workbook = new HSSFWorkbook(inputStream);
@@ -470,7 +485,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Override
     public Result login(SysUser sysUser) {
         SysUser user = baseMapper.login(sysUser);
-        System.err.println(user);
         String jwtToken = "";
         if (user != null) {
             jwtToken = JwtUtils.getJwtToken(user.getUserId() + "", user.getNickName());
@@ -478,7 +492,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             if ("1".equals(user.getStatus())) {
                 return new Result(jwtToken, ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED));
             }
-            return new Result(jwtToken, ResultTool.success(ResultCode.SUCCESS));
+            return new Result(jwtToken, ResultTool.fail(ResultCode.USER_LOGIN_SUCCESS));
         }
         return new Result(jwtToken, ResultTool.fail(ResultCode.USER_WRONG_ACCOUNT_OR_PASSWORD));
     }

@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dto.UserDto;
 import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.*;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,11 @@ public class SysUserController extends ApiController {
     @Resource
     private RequestUtil requestUtil;
 
+
+    @PostMapping("/logout")
+    public Result logout(HttpServletRequest request){
+        return sysUserService.logout(request);
+    }
     /**
      * 删除数据
      *
@@ -157,7 +163,7 @@ public class SysUserController extends ApiController {
     @GetMapping("/uploadExcel")
     public void uploadExcel(HttpServletResponse response) throws IOException {
         List<SysUser> sysUserList = new ArrayList<>();
-//        直接下载模板
+        //直接下载模板
         sysUserList = sysUserService.uploadUser();
         String fileName = URLEncoder.encode("下载模板表", "UTF-8");
         response.setContentType("application/vnd.ms-excel");
@@ -174,7 +180,6 @@ public class SysUserController extends ApiController {
                 .sheet("模板")
                 .doWrite(sysUserList);
     }
-
     /**
      * 分页查询所有数据
      *
@@ -229,13 +234,14 @@ public class SysUserController extends ApiController {
      * @return
      */
     @PostMapping("/login")
-    public Result login(SysUser sysUser, HttpServletRequest request) {
+    public Result login(SysUser sysUser) {
         Result result = sysUserService.login(sysUser);
         return result;
     }
 
     /**
      * 根据ID获取用户信息
+     *
      *
      * @param userId 用户ID
      * @return 查询的用户结果+http状态

@@ -35,5 +35,11 @@ public interface RedisService {
      * @return
      */
     Object get(String key);
+
+    /**
+     * 清空缓存
+     * @return
+     */
+    Boolean empty();
  
 }
