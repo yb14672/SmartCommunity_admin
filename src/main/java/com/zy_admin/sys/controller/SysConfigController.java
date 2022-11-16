@@ -1,10 +1,8 @@
 package com.zy_admin.sys.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.sys.entity.SysConfig;
 import com.zy_admin.sys.service.SysConfigService;
 import org.springframework.web.bind.annotation.*;
@@ -28,17 +26,6 @@ public class SysConfigController extends ApiController {
     @Resource
     private SysConfigService sysConfigService;
 
-    /**
-     * 分页查询所有数据
-     *
-     * @param page      分页对象
-     * @param sysConfig 查询实体
-     * @return 所有数据
-     */
-    @GetMapping
-    public R selectAll(Page<SysConfig> page, SysConfig sysConfig) {
-        return success(this.sysConfigService.page(page, new QueryWrapper<>(sysConfig)));
-    }
 
     /**
      * 通过主键查询单条数据

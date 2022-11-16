@@ -89,12 +89,6 @@ public class SysDeptController extends ApiController {
      * @param idList 主键结合
      * @return 删除结果
      */
-    /**
-     * 删除数据
-     *
-     * @param idList 主键结合
-     * @return 删除结果
-     */
     @DeleteMapping("/deleteDept")
     public Result deleteDept(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<Integer>();

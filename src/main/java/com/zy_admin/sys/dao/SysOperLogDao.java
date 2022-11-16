@@ -7,6 +7,9 @@ import com.zy_admin.sys.entity.SysPost;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 操作日志记录(SysOperLog)表数据库访问层
@@ -22,6 +25,14 @@ public interface SysOperLogDao extends BaseMapper<SysOperLog> {
     */
    long count(@Param("sysOperLog") SysOperLog sysOperLog,@Param("startTime") String startTime,@Param("endTime") String endTime );
 
+    /**
+     *
+     * @param sysOperLog
+     * @param pageable
+     * @return
+     */
+    List<SysOperLog> queryAllByLimit(@Param("sysOperLog") SysOperLog sysOperLog, @Param("pageable") Pageable pageable, @Param("startTime") String startTime, @Param("endTime") String endTime);
+
    /**
     *
     * @param sysOperLog
@@ -29,5 +40,17 @@ public interface SysOperLogDao extends BaseMapper<SysOperLog> {
     * @return
     */
    List<SysOperLog> queryAllByLimit(@Param("sysOperLog") SysOperLog sysOperLog, @Param("pageable") Pageable pageable,@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("orderByColumn") String orderByColumn,@Param("isAsc") String isAsc);
+    /**
+     * 获取日志id
+     * @param logids
+     * @return
+     */
+    List<Integer> getLogById(List<Integer> logids);
+
+    /**
+     * 根据id删除日志
+     * @param logids
+     */
+    void deleteById(List<Integer> logids);
 }
 

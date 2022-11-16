@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy_admin.sys.dao.SysOperLogDao">
+<!--查询日志id-->
+    <select id="getLogById" resultType="java.lang.Integer">
+        select oper_id from sys_oper_log WHERE oper_id in
+        <foreach collection="ids" item="operId" separator="," open="(" close=")">
+            #{operId}
+        </foreach>
+    </select>
 
     <resultMap type="com.zy_admin.sys.entity.SysOperLog" id="SysOperLogMap">
         <result property="operId" column="oper_id" jdbcType="INTEGER"/>

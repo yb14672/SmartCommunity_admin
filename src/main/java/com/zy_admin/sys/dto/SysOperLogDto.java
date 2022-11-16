@@ -11,7 +11,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SysOperLogDto  {
+/**
+ * 日志操作DTO
+ */
+public class SysOperLogDto {
     private List<SysOperLog> sysOperLogs;
     private Pageable pageable;
     private String startTime;
