@@ -76,6 +76,8 @@ public enum ResultCode {
     DATA_REPEAT(3027,"数据不能为空" ),
     USERNAME_REPEAT(3028,"用户名有重复" ),
     EMAIL_REPEAT(3029,"邮箱有重复" ),
+    PARENT_CLASS_DEACTIVATE(3030,"父类已被停用" ),
+    PARENT_CANNOT_BE_A_SUBSET(3031,"父类不能是自己的子集" ),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

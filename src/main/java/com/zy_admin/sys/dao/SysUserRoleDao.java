@@ -30,9 +30,9 @@ public interface SysUserRoleDao extends BaseMapper<SysUserRole> {
     /**
      * 根据用户ID批量新增对应角色列表
      * @param userId
-     * @param roleIdList
+     * @param roleId
      * @return
      */
-    int insertBatchByRoleId(@Param("userId") String userId, @Param("roleIdList") List<Long> roleIdList);
+    int insertBatchByRoleId(@Param("userId") String userId,@Param("roleId") String roleId);
 }
 

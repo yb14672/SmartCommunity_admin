@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy_admin.sys.dao.SysUserDao">
-    <!--通过主键删除 修改del_flag为2，一对多，用user_id in <foreach collection>-->
+    <!--通过主键删除-->
     <update id="deleteByIdList">
         update sys_user set del_flag = 2 where user_id in
         <foreach collection="idList" item="userId" separator="," open="(" close=")">
@@ -34,12 +34,12 @@
         </association>
     </resultMap>
 
-<!--    查询个人信息是封装的dto，SysUserDeptDtoMap-->
-    <select id="selectUsers"  resultMap="SysUserDeptDtoMap">
+    <select id="selectUsers" resultMap="SysUserDeptDtoMap">
         SELECT *,u.user_id userId,d.dept_Id deptId from sys_user u
         left join sys_dept d on u.dept_id=d.dept_id where u.del_flag = '0'
         <if test="sysUser.deptId != null and sysUser.deptId != 0">
-            AND (u.dept_id = #{sysUser.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(#{sysUser.deptId}, ancestors) ))
+            AND (u.dept_id = #{sysUser.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE
+            find_in_set(#{sysUser.deptId}, ancestors) ))
         </if>
         <if test="sysUser.userName != null and sysUser.userName != ''">
             and u.user_name like concat('%', #{sysUser.userName}, '%')
@@ -56,7 +56,6 @@
         <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
             and u.create_time &lt;= #{endTime}
         </if>
---         pageable是封装的分页的三个对象 pageSize是每页多少个
         <if test="pageable.pageSize!=0">
             limit #{pageable.index},#{pageable.pageSize}
         </if>
@@ -65,9 +64,11 @@
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long" parameterType="com.zy_admin.sys.entity.SysUser">
         select count(*)
-        from sys_user u left join sys_dept d on u.dept_id=d.dept_id where u.del_flag = '0'
+        from sys_user u left join sys_dept d on u.dept_id=d.dept_id where u.del_flag =
+        '0'
         <if test="sysUser.deptId != null and sysUser.deptId != 0">
-            AND (u.dept_id = #{sysUser.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(#{sysUser.deptId}, ancestors) ))
+            AND (u.dept_id = #{sysUser.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE
+            find_in_set(#{sysUser.deptId}, ancestors) ))
         </if>
         <if test="sysUser.userName != null and sysUser.userName != ''">
             and u.user_name like concat('%', #{sysUser.userName}, '%')
@@ -100,7 +101,6 @@
             <id column="post_id" property="postId" jdbcType="INTEGER"/>
         </association>
     </resultMap>
-
 
     <!--    个人中心，七表联查-->
     <select id="personal" resultMap="SysUserMap">
@@ -220,9 +220,11 @@
             )
         </if>
     </select>
-<!--    所有的都导出-->
+    <!--    所有的都导出-->
     <select id="getUserLists" resultType="com.zy_admin.sys.entity.SysUser">
-        select * from sys_user where del_flag != 2
+        select *
+        from sys_user
+        where del_flag != '2'
     </select>
 
     <resultMap type="com.zy_admin.sys.dto.UserRoleDto" id="UserRoleDtoMap">
@@ -290,10 +292,6 @@
         WHERE r.del_flag = '0'
           and ur.user_id = #{userId}
     </select>
-    <!--下载模板-->
-    <select id="uploadUserTemplate" resultType="com.zy_admin.sys.entity.SysUser">
-        select dept_id,user_name,nick_name,email,phonenumber from sys_user
-    </select>
 
     <update id="updateUser" parameterType="com.zy_admin.sys.entity.SysUser">
         update sys_user
@@ -317,23 +315,34 @@
     </update>
 
     <insert id="insertUser" keyProperty="userId" useGeneratedKeys="true">
-        insert into sys_user(dept_id,user_name,nick_name,email,phonenumber,sex,password,status,create_by,create_time,update_by,update_time)
-        values (#{deptId},#{userName},#{nickName},#{email},#{phonenumber},#{sex},#{password},#{status},#{createBy},#{createTime},#{updateBy},#{updateTime})
+        insert into sys_user(
+        dept_id,user_name, nick_name, email, phonenumber,
+        sex, password, status, create_by,
+        create_time, update_by, update_time
+        <if test="remark != null">,remark</if>)
+        values (
+        <if test="deptId != 0 and deptId != null">#{deptId},</if>
+        #{userName}, #{nickName}, #{email}, #{phonenumber},
+        #{sex}, #{password}, #{status},
+        #{createBy}, #{createTime}, #{updateBy}, #{updateTime}
+        <if test="remark!=null">,#{remark}</if>)
     </insert>
 
     <insert id="insertRole">
-        insert into sys_user_role(user_id,role_id)
-        values
-        <foreach collection="roleIds" item="roleId" separator=",">
-            (#{id},#{roleId})
-        </foreach>
+        insert into sys_user_role
+        values (#{userId}, #{roleId})
     </insert>
 
     <insert id="insertPost">
-        insert into sys_user_post(user_id,post_id)
-        values
-        <foreach collection="postIds" item="postId" separator=",">
-            (#{id},#{postId})
+        insert into sys_user_post
+        values (#{userId}, #{postId})
+    </insert>
+
+    <insert id="saveBatch">
+        insert into sys_user(dept_id,user_name,nick_name,email,phonenumber,password,del_flag)
+        VALUES
+        <foreach collection="userEntityList" item="user" separator="," open="(" close=")">
+            #{user.dept_id}, #{user.userName},#{user.nickName},#{user.email},#{user.phonenumber},#{user.password},#{user.delFlag}
         </foreach>
     </insert>
 
@@ -356,4 +365,12 @@
         </set>
         where user_id = #{userId}
     </update>
+
+    <!--    <insert id="insertBatch">-->
+    <!--        insert into sys_user(role_id,menu_id)-->
+    <!--        values-->
+    <!--        <foreach collection="menuIdList" item="menuId" separator=",">-->
+    <!--            (#{id},#{menuId})-->
+    <!--        </foreach>-->
+    <!--    </insert>-->
 </mapper>

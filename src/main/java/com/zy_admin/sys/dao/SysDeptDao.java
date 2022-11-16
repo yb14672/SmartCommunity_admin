@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.sys.dto.DeptTreeDto;
 import com.zy_admin.sys.entity.SysDept;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -14,13 +15,8 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:34
  */
+@Repository
 public interface SysDeptDao extends BaseMapper<SysDept> {
-    /**
-     * 根据id查询出他的子集
-     * @param deptId
-     * @return
-     */
-    List<Long> getDeptIdList(Integer deptId);
 
     /**
      * 根据id查数据
@@ -46,14 +42,6 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
     Integer insertDept(SysDept sysDept);
 
     /**
-     * 根据id查询出他的子集
-     *
-     * @param deptId
-     * @return
-     */
-    List<Long> getDeptIdList(Long deptId);
-
-    /**
      * 部门名称验重
      *
      * @param sysDept
@@ -69,7 +57,7 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      */
     Integer updateDept(SysDept sysDept);
 
-    int changeStatus(@Param("status") String status, @Param("menuId") String menuId);
+    int changeStatus(@Param("status") String status,@Param("menuId") String menuId);
 
     /**
      * 删除
@@ -101,5 +89,21 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      * @return
      */
     SysDept getDeptById(Long deptId);
+
+    /**
+     * 更新子级停用
+     *
+     * @param status
+     * @param ancestors
+     * @return
+     */
+    int updateDeptSon(@Param("status") String status,@Param("ancestors") String ancestors);
+
+    /**
+     * 检查修改后的菜单是否和子集一致
+     * @param deptId 部门Id
+     * @return 该部门的子集id列表
+     */
+    List<Long> getChildrenById(String deptId);
 }
 

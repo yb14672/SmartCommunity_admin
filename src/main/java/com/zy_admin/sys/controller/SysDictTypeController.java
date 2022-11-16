@@ -8,8 +8,6 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.common.log.BusinessType;
-import com.zy_admin.common.log.MyLog;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
 import com.zy_admin.util.ExcelUtil;
@@ -57,7 +55,6 @@ public class SysDictTypeController extends ApiController {
             sysDictTypeList = sysDictTypeService.getDictLists();
         } else {
             //执行查询角色列表的sql语句
-            System.out.println(dictIds);
             sysDictTypeList = sysDictTypeService.queryDictById(dictIds);
         }
         String fileName = URLEncoder.encode("字典表数据", "UTF-8");
@@ -82,7 +79,6 @@ public class SysDictTypeController extends ApiController {
      * @return
      */
     @DeleteMapping
-    @MyLog(title = "删除选中字典", optParam = "#{idList}", businessType = BusinessType.OTHER)
     public Result delete(@RequestParam String[] idList){
         List<Integer> idList1 = new ArrayList<Integer>();
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -107,7 +103,6 @@ public class SysDictTypeController extends ApiController {
      */
     @PutMapping("/updateDict")
     @Transactional(rollbackFor = Exception.class)
-    @MyLog(title = "修改字典", optParam = "#{sysDictType}", businessType = BusinessType.OTHER)
     public Result updateDict(@RequestBody SysDictType sysDictType){
         return sysDictTypeService.updateDict(sysDictType);
     }
@@ -117,7 +112,6 @@ public class SysDictTypeController extends ApiController {
      * @return
      */
     @PostMapping("/addSysDict")
-    @MyLog(title = "新增字典", optParam = "#{sysDictType}", businessType = BusinessType.OTHER)
     public Result insertDictType(@RequestBody SysDictType sysDictType){
         sysDictType.setCreateTime(LocalDateTime.now().toString());
         return this.sysDictTypeService.insertOrUpdateBatch(sysDictType);

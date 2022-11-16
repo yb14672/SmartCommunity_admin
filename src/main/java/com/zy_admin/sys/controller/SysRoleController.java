@@ -9,8 +9,6 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.common.log.BusinessType;
-import com.zy_admin.common.log.MyLog;
 import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.service.SysRoleMenuService;
@@ -55,7 +53,6 @@ public class SysRoleController extends ApiController {
     @GetMapping("/getAllRole")
     public Result getAllRole(SysRole sysRole) {
         Result allRole = sysRoleService.getAllRole(sysRole);
-        System.out.println(allRole);
         return allRole;
     }
 
@@ -118,7 +115,6 @@ public class SysRoleController extends ApiController {
     @GetMapping("/selectRoleByLimit")
     public Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime) {
         Result result = sysRoleService.selectRoleByLimit(sysRole, pageable, startTime, endTime);
-        System.out.println(result.toString());
         return result;
     }
 
@@ -140,7 +136,6 @@ public class SysRoleController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
-    @MyLog(title = "新增角色", optParam = "#{sysRole}", businessType = BusinessType.OTHER)
     public R insert(@RequestBody SysRole sysRole) {
         return success(this.sysRoleService.save(sysRole));
     }
@@ -152,7 +147,6 @@ public class SysRoleController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
-    @MyLog(title = "修改角色信息", optParam = "#{sysRole}", businessType = BusinessType.OTHER)
     public Result update(@RequestBody SysRole sysRole) {
         return this.sysRoleService.changeStatus(sysRole);
     }
@@ -165,7 +159,6 @@ public class SysRoleController extends ApiController {
      */
     @DeleteMapping
     @Transactional(rollbackFor = Exception.class)
-    @MyLog(title = "删除角色信息", optParam = "#{idList}", businessType = BusinessType.OTHER)
     public Result delete(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<Integer>();
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -195,14 +188,12 @@ public class SysRoleController extends ApiController {
      */
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("/addRole")
-    @MyLog(title = "添加角色及其权限", optParam = "#{roleAndRoleMenu}", businessType = BusinessType.OTHER)
     public Result insert(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
         roleAndRoleMenu.setCreateTime(LocalDateTime.now().toString());
         roleAndRoleMenu.setDeptCheckStrictly(null);
         roleAndRoleMenu.setMenuCheckStrictly(null);
         roleAndRoleMenu.setDelFlag("0");
         Result insert = this.sysRoleService.insert(roleAndRoleMenu);
-        System.out.println(insert);
         return insert;
     }
 
@@ -214,7 +205,6 @@ public class SysRoleController extends ApiController {
      */
     @PutMapping("/updateRole")
     @Transactional(rollbackFor = Exception.class)
-    @MyLog(title = "修改角色及其权限", optParam = "#{roleAndRoleMenu}", businessType = BusinessType.OTHER)
     public Result update(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
         roleAndRoleMenu.setDeptCheckStrictly(null);
         roleAndRoleMenu.setMenuCheckStrictly(null);

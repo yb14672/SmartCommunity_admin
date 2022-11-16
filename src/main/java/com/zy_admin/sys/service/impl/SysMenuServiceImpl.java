@@ -27,6 +27,24 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
     private SysUserDao sysUserDao;
 
     @Override
+    public Boolean checkNewParentId(SysMenu menu) {
+        //获取其子集的菜单ID
+        List<Long> childrenById = this.baseMapper.getChildrenById(menu.getMenuId()+"");
+        //获取到要修改的父类ID
+        long newParentId=menu.getParentId();
+        //循环遍历，检查修改后的父类是否为子集
+        for (int i = 0; i < childrenById.size(); i++) {
+            //获取到子集菜单id，用于比较是否相等
+            long childId = childrenById.get(i);
+            if(newParentId==childId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    @Override
     public Result getAllMenu(String userId) {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
@@ -114,18 +132,24 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
                     result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
                     return result;
                 } else {
-                    //判断菜单名称是否唯一
-                    if (checkMenuNameUnique(1, menu)) {
-                        //当路由不为空时判断其路由是否重复
-                        if (!"".equals(menu.getPath()) || !"#".equals(menu.getPath())) {
-                            //不唯一即false，因此不唯一时提示并返回
-                            if (!checkPathUnique(1, menu)) {
-                                result.setMeta(ResultTool.fail(ResultCode.REPEAT_MENUPATH));
-                                return result;
+                    //检查修改后的父类是否为子集
+                    if(!checkNewParentId(menu)){
+                        //判断菜单名称是否唯一
+                        if (checkMenuNameUnique(1, menu)) {
+                            //当路由不为空时判断其路由是否重复
+                            if (!"".equals(menu.getPath()) || !"#".equals(menu.getPath())) {
+                                //不唯一即false，因此不唯一时提示并返回
+                                if (!checkPathUnique(1, menu)) {
+                                    result.setMeta(ResultTool.fail(ResultCode.REPEAT_MENUPATH));
+                                    return result;
+                                }
                             }
+                        } else {
+                            result.setMeta(ResultTool.fail(ResultCode.REPEAT_MENUNAME));
+                            return result;
                         }
-                    } else {
-                        result.setMeta(ResultTool.fail(ResultCode.REPEAT_MENUNAME));
+                    }else{
+                        result.setMeta(ResultTool.fail(ResultCode.PARENT_CANNOT_BE_A_SUBSET));
                         return result;
                     }
                 }

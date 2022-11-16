@@ -61,6 +61,6 @@ public interface SysDictTypeService extends IService<SysDictType> {
      * @param sysDictType
      * @return
      */
-    boolean checkEquals(SysDictType dictType, SysDictType sysDictType);
+    boolean checkEquals(SysDictType dictType,SysDictType sysDictType);
 }
 
