@@ -216,10 +216,32 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                 result.setMeta(ResultTool.fail(ResultCode.USERNAME_REPEAT));
                 errorMsg += "第" + i + "条用户名重复,";
             }
+//            判断为空
+            if (!checkRequire(i, 1, sheet.getRow(i))) {
+                result.setMeta(ResultTool.fail(ResultCode.MASSAGE_NULL));
+                errorMsg += "第" + i + "条用户名为空,";
+            }
+            if (!checkRequire(i, 2, sheet.getRow(i))) {
+                result.setMeta(ResultTool.fail(ResultCode.MASSAGE_NULL));
+                errorMsg += "第" + i + "条昵称为空,";
+            }
+            if (!checkRequire(i, 3, sheet.getRow(i))) {
+                result.setMeta(ResultTool.fail(ResultCode.MASSAGE_NULL));
+                errorMsg += "第" + i + "条邮箱为空,";
+            }
+            if (!checkRequire(i, 4, sheet.getRow(i))) {
+                result.setMeta(ResultTool.fail(ResultCode.MASSAGE_NULL));
+                errorMsg += "第" + i + "条手机号为空,";
+            }
             // 验证邮箱重复
             if (!checkEmail(i, 3, getCellValue(sheet.getRow(i).getCell(3)))) {
                 result.setMeta(ResultTool.fail(ResultCode.EMAIL_REPEAT));
                 errorMsg += "第" + i + "条邮箱重复,";
+            }
+//            验证邮箱正则
+            if (!checkEmailJudge(i, 3, getCellValue(sheet.getRow(i).getCell(3)))) {
+                result.setMeta(ResultTool.fail(ResultCode.EMAIL_NON_COMPLIANCE));
+                errorMsg += "第" + i + "条邮箱不符合规则,";
             }
             //状态为0能渲染
             userEntity.setDelFlag("0");
@@ -336,6 +358,24 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             return false;
         }
         return true;
+    }
+
+    /**
+     * 邮箱判断正则
+     * @param rowNum
+     * @param colNum
+     * @param stringCellValue
+     * @return
+     */
+    private boolean checkEmailJudge(int rowNum, int colNum, String stringCellValue) {
+        String regEx1 = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+        Pattern p = Pattern.compile(regEx1);
+        Matcher m = p.matcher(stringCellValue);
+        if(m.matches()){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /**
