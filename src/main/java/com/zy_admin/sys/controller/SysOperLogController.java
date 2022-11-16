@@ -5,8 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.Pageable;
+import com.zy_admin.sys.dto.SysOperLogDto;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.service.SysOperLogService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -82,6 +85,13 @@ public class SysOperLogController extends ApiController {
     @DeleteMapping
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.sysOperLogService.removeByIds(idList));
+    }
+
+    @GetMapping("/getOperLogList")
+    public Result getOperLogList(SysOperLog sysOperLog,Pageable pageable,String startTime, String endTime,@RequestParam(value = "orderByColumn",defaultValue = "oper_time") String orderByColumn,@RequestParam(value = "isAsc",defaultValue = "desc") String isAsc){
+        System.err.println(orderByColumn+"  "+isAsc);
+        Result operLogList = this.sysOperLogService.getOperLogList(sysOperLog, pageable, startTime, endTime, orderByColumn, isAsc);
+        return operLogList;
     }
 }
 

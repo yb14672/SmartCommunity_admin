@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.sys.dao.SysOperLogDao">
+
+    <resultMap type="com.zy_admin.sys.entity.SysOperLog" id="SysOperLogMap">
+        <result property="operId" column="oper_id" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="businessType" column="business_type" jdbcType="INTEGER"/>
+        <result property="method" column="method" jdbcType="VARCHAR"/>
+        <result property="requestMethod" column="request_method" jdbcType="VARCHAR"/>
+        <result property="operatorType" column="operator_type" jdbcType="INTEGER"/>
+        <result property="operName" column="oper_name" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="operUrl" column="oper_url" jdbcType="VARCHAR"/>
+        <result property="operIp" column="oper_ip" jdbcType="VARCHAR"/>
+        <result property="operLocation" column="oper_location" jdbcType="VARCHAR"/>
+        <result property="operParam" column="oper_param" jdbcType="VARCHAR"/>
+        <result property="jsonResult" column="json_result" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="errorMsg" column="error_msg" jdbcType="VARCHAR"/>
+        <result property="operTime" column="oper_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SysOperLogMap">
+        select
+          oper_id, title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time
+        from sys_oper_log
+        where oper_id = #{operId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SysOperLogMap">
+        select
+        oper_id, title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip,
+        oper_location, oper_param, json_result, status, error_msg, oper_time
+        from sys_oper_log
+        <where>
+            <if test="sysOperLog.operId != null">
+                and oper_id = #{sysOperLog.operId}
+            </if>
+            <if test="sysOperLog.title != null and sysOperLog.title != ''">
+                and title like concat('%', #{sysOperLog.title},'%')
+            </if>
+            <if test="sysOperLog.businessType != null">
+                and business_type = #{sysOperLog.businessType}
+            </if>
+            <if test="sysOperLog.method != null and sysOperLog.method != ''">
+                and method = #{sysOperLog.method}
+            </if>
+            <if test="sysOperLog.requestMethod != null and sysOperLog.requestMethod != ''">
+                and request_method = #{sysOperLog.requestMethod}
+            </if>
+            <if test="sysOperLog.operatorType != null">
+                and operator_type = #{sysOperLog.operatorType}
+            </if>
+            <if test="sysOperLog.operName != null and sysOperLog.operName != ''">
+                and oper_name like concat('%', #{sysOperLog.operName},'%')
+            </if>
+            <if test="sysOperLog.deptName != null and sysOperLog.deptName != ''">
+                and dept_name = #{sysOperLog.deptName}
+            </if>
+            <if test="sysOperLog.operUrl != null and sysOperLog.operUrl != ''">
+                and oper_url = #{sysOperLog.operUrl}
+            </if>
+            <if test="sysOperLog.operIp != null and sysOperLog.operIp != ''">
+                and oper_ip = #{sysOperLog.operIp}
+            </if>
+            <if test="sysOperLog.operLocation != null and sysOperLog.operLocation != ''">
+                and oper_location = #{sysOperLog.operLocation}
+            </if>
+            <if test="sysOperLog.operParam != null and sysOperLog.operParam != ''">
+                and oper_param = #{sysOperLog.operParam}
+            </if>
+            <if test="sysOperLog.jsonResult != null and sysOperLog.jsonResult != ''">
+                and json_result = #{sysOperLog.jsonResult}
+            </if>
+            <if test="sysOperLog.status != null">
+                and status = #{sysOperLog.status}
+            </if>
+            <if test="sysOperLog.errorMsg != null and sysOperLog.errorMsg != ''">
+                and error_msg = #{sysOperLog.errorMsg}
+            </if>
+            <if test="startTime != null and startTime != ''"><!-- 开始时间检索 -->
+                and oper_time >= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                and oper_time&lt;= #{endTime}
+            </if>
+
+        </where>
+        order by oper_time desc
+        limit #{pageable.index}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from sys_oper_log
+        <where>
+            <if test="sysOperLog.operId != null">
+                and oper_id = #{sysOperLog.operId}
+            </if>
+            <if test="sysOperLog.title != null and sysOperLog.title != ''">
+                and title like concat('%', #{sysOperLog.title},'%')
+            </if>
+            <if test="sysOperLog.businessType != null">
+                and business_type = #{sysOperLog.businessType}
+            </if>
+            <if test="sysOperLog.method != null and sysOperLog.method != ''">
+                and method = #{sysOperLog.method}
+            </if>
+            <if test="sysOperLog.requestMethod != null and sysOperLog.requestMethod != ''">
+                and request_method = #{sysOperLog.requestMethod}
+            </if>
+            <if test="sysOperLog.operatorType != null">
+                and operator_type = #{sysOperLog.operatorType}
+            </if>
+            <if test="sysOperLog.operName != null and sysOperLog.operName != ''">
+                and oper_name like concat('%', #{sysOperLog.operName},'%')
+            </if>
+            <if test="sysOperLog.deptName != null and sysOperLog.deptName != ''">
+                and dept_name = #{sysOperLog.deptName}
+            </if>
+            <if test="sysOperLog.operUrl != null and sysOperLog.operUrl != ''">
+                and oper_url = #{sysOperLog.operUrl}
+            </if>
+            <if test="sysOperLog.operIp != null and sysOperLog.operIp != ''">
+                and oper_ip = #{sysOperLog.operIp}
+            </if>
+            <if test="sysOperLog.operLocation != null and sysOperLog.operLocation != ''">
+                and oper_location = #{sysOperLog.operLocation}
+            </if>
+            <if test="sysOperLog.operParam != null and sysOperLog.operParam != ''">
+                and oper_param = #{sysOperLog.operParam}
+            </if>
+            <if test="sysOperLog.jsonResult != null and sysOperLog.jsonResult != ''">
+                and json_result = #{sysOperLog.jsonResult}
+            </if>
+            <if test="sysOperLog.status != null">
+                and status = #{sysOperLog.status}
+            </if>
+            <if test="sysOperLog.errorMsg != null and sysOperLog.errorMsg != ''">
+                and error_msg = #{sysOperLog.errorMsg}
+            </if>
+            <if test="startTime != null and startTime != ''"><!-- 开始时间检索 -->
+                and oper_time >= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                and oper_time&lt;= #{endTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="operId" useGeneratedKeys="true">
+        insert into sys_oper_log(title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time)
+        values (#{title}, #{businessType}, #{method}, #{requestMethod}, #{operatorType}, #{operName}, #{deptName}, #{operUrl}, #{operIp}, #{operLocation}, #{operParam}, #{jsonResult}, #{status}, #{errorMsg}, #{operTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="operId" useGeneratedKeys="true">
+        insert into sys_oper_log(title, business_type, method, request_method, operator_type, oper_name, dept_name,
+        oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.title}, #{entity.businessType}, #{entity.method}, #{entity.requestMethod}, #{entity.operatorType},
+            #{entity.operName}, #{entity.deptName}, #{entity.operUrl}, #{entity.operIp}, #{entity.operLocation},
+            #{entity.operParam}, #{entity.jsonResult}, #{entity.status}, #{entity.errorMsg}, #{entity.operTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="operId" useGeneratedKeys="true">
+        insert into sys_oper_log(title, business_type, method, request_method, operator_type, oper_name, dept_name,
+        oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.title}, #{entity.businessType}, #{entity.method}, #{entity.requestMethod}, #{entity.operatorType},
+            #{entity.operName}, #{entity.deptName}, #{entity.operUrl}, #{entity.operIp}, #{entity.operLocation},
+            #{entity.operParam}, #{entity.jsonResult}, #{entity.status}, #{entity.errorMsg}, #{entity.operTime})
+        </foreach>
+        on duplicate key update
+        title = values(title),
+        business_type = values(business_type),
+        method = values(method),
+        request_method = values(request_method),
+        operator_type = values(operator_type),
+        oper_name = values(oper_name),
+        dept_name = values(dept_name),
+        oper_url = values(oper_url),
+        oper_ip = values(oper_ip),
+        oper_location = values(oper_location),
+        oper_param = values(oper_param),
+        json_result = values(json_result),
+        status = values(status),
+        error_msg = values(error_msg),
+        oper_time = values(oper_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sys_oper_log
+        <set>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="businessType != null">
+                business_type = #{businessType},
+            </if>
+            <if test="method != null and method != ''">
+                method = #{method},
+            </if>
+            <if test="requestMethod != null and requestMethod != ''">
+                request_method = #{requestMethod},
+            </if>
+            <if test="operatorType != null">
+                operator_type = #{operatorType},
+            </if>
+            <if test="operName != null and operName != ''">
+                oper_name = #{operName},
+            </if>
+            <if test="deptName != null and deptName != ''">
+                dept_name = #{deptName},
+            </if>
+            <if test="operUrl != null and operUrl != ''">
+                oper_url = #{operUrl},
+            </if>
+            <if test="operIp != null and operIp != ''">
+                oper_ip = #{operIp},
+            </if>
+            <if test="operLocation != null and operLocation != ''">
+                oper_location = #{operLocation},
+            </if>
+            <if test="operParam != null and operParam != ''">
+                oper_param = #{operParam},
+            </if>
+            <if test="jsonResult != null and jsonResult != ''">
+                json_result = #{jsonResult},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="errorMsg != null and errorMsg != ''">
+                error_msg = #{errorMsg},
+            </if>
+            <if test="operTime != null">
+                oper_time = #{operTime},
+            </if>
+        </set>
+        where oper_id = #{operId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sys_oper_log where oper_id = #{operId}
+    </delete>
+
+</mapper>
+
