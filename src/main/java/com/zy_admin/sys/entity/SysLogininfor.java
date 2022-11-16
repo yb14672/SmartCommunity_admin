@@ -3,6 +3,7 @@ package com.zy_admin.sys.entity;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -13,6 +14,7 @@ import java.io.Serializable;
  * @since 2022-11-01 19:49:39
  */
 @SuppressWarnings("serial")
+@Data
 public class SysLogininfor extends Model<SysLogininfor> {
     //访问ID
     private Long infoId;
@@ -31,7 +33,7 @@ public class SysLogininfor extends Model<SysLogininfor> {
     //提示消息
     private String msg;
     //访问时间
-    private Date loginTime;
+    private String loginTime;
 
 
     public Long getInfoId() {
@@ -98,11 +100,11 @@ public class SysLogininfor extends Model<SysLogininfor> {
         this.msg = msg;
     }
 
-    public Date getLoginTime() {
+    public String getLoginTime() {
         return loginTime;
     }
 
-    public void setLoginTime(Date loginTime) {
+    public void setLoginTime(String loginTime) {
         this.loginTime = loginTime;
     }
 

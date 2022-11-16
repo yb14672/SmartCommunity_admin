@@ -40,6 +40,9 @@ public enum ResultCode {
     USER_AVATAR_NULL(2012,"没有头像，记得上传哦"),
     USER_LOGIN_EXPIRED(2013,"登录已过期"),
     USER_TOKEN_INVALID(2014,"无效token"),
+    USER_LOGIN_SUCCESS(2015,"登录成功"),
+    USER_LOGOUT_FAIL(2016,"退出失败"),
+    USER_LOGOUT_SUCCESS(2017,"退出成功"),
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
@@ -76,6 +79,10 @@ public enum ResultCode {
     DATA_REPEAT(3027,"数据不能为空" ),
     USERNAME_REPEAT(3028,"用户名有重复" ),
     EMAIL_REPEAT(3029,"邮箱有重复" ),
+    EXCEL_EXPORT_FAILURE(3030,"Excel导出失败"),
+    LOGIN_LOG_GET_FAIL(3031,"登录日志获取失败"),
+    LOG_DELETE_FAIL(3032,"登录日志删除失败"),
+    LOG_EMPTY_FAIL(3033,"登录日志清空失败"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

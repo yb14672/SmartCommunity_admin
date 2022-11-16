@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dto.UserDto;
 import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.*;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,12 @@ public class SysUserController extends ApiController {
     private SysUserService sysUserService;
     @Resource
     private RequestUtil requestUtil;
+
+
+    @PostMapping("/logout")
+    public Result logout(HttpServletRequest request){
+        return sysUserService.logout(request);
+    }
     /**
      * 删除数据
      *
@@ -68,45 +75,50 @@ public class SysUserController extends ApiController {
         }
         return result;
     }
+
     /**
      * 分页查询所有数据
      *
-     * @param pageable    分页对象
-     * @param sysUser 查询实体
+     * @param pageable 分页对象
+     * @param sysUser  查询实体
      * @return 所有数据
      */
     @GetMapping("/selectUsers")
     public Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime) {
         return this.sysUserService.selectUsers(pageable, sysUser, startTime, endTime);
     }
+
     /**
      * 根据用户ID获取其信息和对应的角色
+     *
      * @param userId
      * @return
      */
     @GetMapping("/authRole/{userId}")
-    public Result authRole(@PathVariable("userId") Long userId){
+    public Result authRole(@PathVariable("userId") Long userId) {
         return this.sysUserService.authRole(userId);
     }
 
     /**
      * 根据用户ID修改其对应的角色列表
+     *
      * @param map
      * @return
      */
     @PutMapping("/authRole")
-    public Result insertAuthRole(@RequestBody Map<String,Object> map) throws Exception {
+    public Result insertAuthRole(@RequestBody Map<String, Object> map) throws Exception {
         Integer userId = (Integer) map.get("userId");
         String[] roleIds = map.get("roleIds").toString().split(",");
         ArrayList<Long> roleIdList = new ArrayList<>();
         for (String roleId : roleIds) {
             roleIdList.add(Long.valueOf(roleId));
         }
-        return this.sysUserService.insertAuthRole(userId,roleIdList);
+        return this.sysUserService.insertAuthRole(userId, roleIdList);
     }
 
     /**
      * 导入
+     *
      * @param file
      */
     @RequestMapping("/import-data")
@@ -149,29 +161,36 @@ public class SysUserController extends ApiController {
 
     /**
      * 下载模板
+     *
      * @param
      * @param response
      * @throws IOException
      */
     @GetMapping("/uploadExcel")
-    public void uploadExcel(HttpServletResponse response) throws IOException {
-        List<SysUser> sysUserList = new ArrayList<>();
+    public Result uploadExcel(HttpServletResponse response){
+        try {
+            List<SysUser> sysUserList = new ArrayList<>();
 //        直接下载模板
-        sysUserList = sysUserService.uploadUser();
-        String fileName = URLEncoder.encode("下载模板表", "UTF-8");
-        response.setContentType("application/vnd.ms-excel");
-        response.setCharacterEncoding("utf-8");
-        response.setHeader("content-type", "text/html;charset=UTF-8");
-        // 内容样式
-        HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
-        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), SysUser.class)
-                .excelType(ExcelTypeEnum.XLS)
-                //自适应表格格式
-                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
-                .autoCloseStream(true)
-                .sheet("模板")
-                .doWrite(sysUserList);
+            sysUserList = sysUserService.uploadUser();
+            String fileName = URLEncoder.encode("下载模板表", "UTF-8");
+            response.setContentType("application/vnd.ms-excel");
+            response.setCharacterEncoding("utf-8");
+            response.setHeader("content-type", "text/html;charset=UTF-8");
+            // 内容样式
+            HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
+            response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
+            EasyExcel.write(response.getOutputStream(), SysUser.class)
+                    .excelType(ExcelTypeEnum.XLS)
+                    //自适应表格格式
+                    .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                    .autoCloseStream(true)
+                    .sheet("模板")
+                    .doWrite(sysUserList);
+
+            return new Result(null,ResultTool.fail(ResultCode.SUCCESS));
+        } catch (IOException e) {
+            return new Result(null,ResultTool.fail(ResultCode.EXCEL_EXPORT_FAILURE));
+        }
     }
 
     /**
@@ -188,11 +207,12 @@ public class SysUserController extends ApiController {
 
     /**
      * 根据用户ID获取头像
+     *
      * @param request
      * @return
      */
     @GetMapping("/getAvatarById")
-    public Result getAvatarById(HttpServletRequest request){
+    public Result getAvatarById(HttpServletRequest request) {
         String id = JwtUtils.getMemberIdByJwtToken(request);
         Result avatarById = this.sysUserService.getAvatarById(id);
         return avatarById;
@@ -233,22 +253,24 @@ public class SysUserController extends ApiController {
 
     /**
      * 登录
+     *
      * @param sysUser
      * @return
      */
     @PostMapping("/login")
-    public Result login(SysUser sysUser,HttpServletRequest request) {
+    public Result login(SysUser sysUser) {
         Result result = sysUserService.login(sysUser);
         return result;
     }
 
     /**
      * 根据ID获取用户信息
+     *
      * @param request 用户ID
      * @return 查询的用户结果+http状态
      */
     @GetMapping("/personal")
-    public Result personal(HttpServletRequest request){
+    public Result personal(HttpServletRequest request) {
         String memberIdByJwtToken = JwtUtils.getMemberIdByJwtToken(request);
         return this.sysUserService.personal(memberIdByJwtToken);
     }
@@ -277,36 +299,38 @@ public class SysUserController extends ApiController {
 
     /**
      * 修改用户基本信息
+     *
      * @param sysUser
      * @return
      */
     @PutMapping("/updateUser")
-    public Result updateUser(@RequestBody SysUser sysUser){
+    public Result updateUser(@RequestBody SysUser sysUser) {
         return this.sysUserService.updateUser(sysUser);
     }
 
     /**
      * 修改密码
+     *
      * @param sysUser
      * @return
      */
     @PutMapping("/resetPwd")
-    public Result resetPwd(@RequestBody SysUser sysUser){
+    public Result resetPwd(@RequestBody SysUser sysUser) {
         return this.sysUserService.resetPwd(sysUser);
     }
 
 
     @PostMapping("/insertUser")
-    public Result insertUser(HttpServletRequest request, @RequestBody UserDto sysUserDto)
-    {
+    public Result insertUser(HttpServletRequest request, @RequestBody UserDto sysUserDto) {
         sysUserDto.setCreateTime(LocalDateTime.now().toString());
+        System.out.println(sysUserDto);
         SysUser user = this.requestUtil.getUser(request);
         sysUserDto.setCreateBy(user.getUserName());
         return sysUserService.insertUser(sysUserDto);
     }
+
     @PutMapping("/adminUpdateUser")
-    public Result updateUser(HttpServletRequest request, @RequestBody UserDto userDto)
-    {
+    public Result updateUser(HttpServletRequest request, @RequestBody UserDto userDto) {
         System.err.println(userDto.toString());
         userDto.setUpdateTime(LocalDateTime.now().toString());
         SysUser user = this.requestUtil.getUser(request);
@@ -315,12 +339,11 @@ public class SysUserController extends ApiController {
     }
 
     @PostMapping("/resetPassword")
-        public Result resetPassword(HttpServletRequest request,@RequestBody SysUser sysUser)
-        {
-            System.out.println(sysUser);
-            SysUser user = this.requestUtil.getUser(request);
-            sysUser.setUpdateBy(user.getUserName());
-            return sysUserService.resetPassword(sysUser);
-        }
+    public Result resetPassword(HttpServletRequest request, @RequestBody SysUser sysUser) {
+        System.out.println(sysUser);
+        SysUser user = this.requestUtil.getUser(request);
+        sysUser.setUpdateBy(user.getUserName());
+        return sysUserService.resetPassword(sysUser);
+    }
 }
 

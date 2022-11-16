@@ -36,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
@@ -55,6 +56,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private SysUserRoleDao sysUserRoleDao;
     @Resource
     private RedisService redisService;
+
+    @Override
+    public Result logout(HttpServletRequest request) {
+        String userId = JwtUtils.getMemberIdByJwtToken(request);
+        SysUser user = this.baseMapper.queryById(userId);
+        System.err.println(user);
+        Result result = new Result(user,ResultTool.fail(ResultCode.USER_LOGOUT_FAIL));
+        if (redisService.empty()){
+            result.setMeta(ResultTool.fail(ResultCode.USER_LOGOUT_SUCCESS));
+        }
+        return result;
+    }
+
     /**
      * 删除用户
      * @param idList
@@ -198,45 +212,45 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public Result importData(MultipartFile file) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-// 从文件流获取工作簿对象
+        // 从文件流获取工作簿对象
         Workbook workbook = getWorkBook(file);
         Sheet sheet = workbook.getSheetAt(workbook.getFirstVisibleTab());
         List<SysUser> userEntityList = new ArrayList<>();
-// 记录手机号
+        // 记录手机号
         List<String> phoneNumber = new ArrayList<>();
-// 获取sheet表总行数\总列数
+        // 获取sheet表总行数\总列数
         Integer rowNumber = sheet.getLastRowNum();
         Integer emptyRow = 0;
         String errorMsg="";
         for (int i = 1; i < rowNumber + 1; i++) {
-// 判断当前行是否为空行
+        // 判断当前行是否为空行
             if (!judgeRow(sheet.getRow(i))) {
                 emptyRow++;
                 continue;
             }
             SysUser userEntity = new SysUser();
-// 添加姓名
+            // 添加姓名
             checkRequire(i, 1, sheet.getRow(i));
             userEntity.setUserName(getCellValue(sheet.getRow(i).getCell(1)));
-// 添加邮箱
+            // 添加邮箱
             userEntity.setEmail(getCellValue(sheet.getRow(i).getCell(3)));
-// 验证用户名重复
+            // 验证用户名重复
             if (!checkUserName(i, 1, getCellValue(sheet.getRow(i).getCell(1)))) {
                 result.setMeta(ResultTool.fail(ResultCode.USERNAME_REPEAT));
                 errorMsg += "第"+i+"条用户名重复,";
             }
-// 验证邮箱重复
+            // 验证邮箱重复
             if (!checkEmail(i, 3, getCellValue(sheet.getRow(i).getCell(3)))) {
                 result.setMeta(ResultTool.fail(ResultCode.EMAIL_REPEAT));
                 errorMsg += "第"+i+"条邮箱重复,";
             }
-//状态为0能渲染
+            //状态为0能渲染
             userEntity.setDelFlag("0");
-//添加昵称
+            //添加昵称
             userEntity.setNickName(getCellValue(sheet.getRow(i).getCell(2)));
-// 添加部门
+            // 添加部门
             userEntity.setDeptId(Long.valueOf(getCellValue(sheet.getRow(i).getCell(0))));
-// 添加手机号 colNum是列数
+            // 添加手机号 colNum是列数
             if (!checkRequire(i, 4, sheet.getRow(i))) {
                 result.setMeta(ResultTool.fail(ResultCode.DATA_REPEAT));
             }
@@ -247,12 +261,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                 result.setMeta(ResultTool.fail(ResultCode.USER_TELREPEAT));
                 errorMsg += "第"+i+"条电话号重复,";
             }
-//            思路:拿一个map去存键值，键是索引，值是内容，然后去遍历通过索引去取值，然后再前端遍历
+            //            思路:拿一个map去存键值，键是索引，值是内容，然后去遍历通过索引去取值，然后再前端遍历
 
             userEntity.setPhonenumber(getCellValue(sheet.getRow(i).getCell(4)));
-// 添加部门
+            // 添加部门
             if (sheet.getRow(i).getCell(0) != null && sheet.getRow(i).getCell(0).getCellType() != CellType.BLANK) {
-//                QueryWrapper 是mybatisplus的构造器，
+            //QueryWrapper 是mybatisplus的构造器，
                 QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
                 queryWrapper.eq("dept_name", getCellValue(sheet.getRow(i).getCell(0)));
                 List<SysDept> list = sysDeptService.list(queryWrapper);
@@ -260,7 +274,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                     userEntity.setDeptId(list.get(0).getDeptId());
                 }
             }
-// 添加昵称
+            // 添加昵称
             if (sheet.getRow(i).getCell(2) != null) {
                 userEntity.setNickName(getCellValue(sheet.getRow(i).getCell(2)));
             }
@@ -372,11 +386,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      */
     private boolean judgeRow(Row row) {
         int blankRowNum = 0;
-// 没有数据没有格式
+        // 没有数据没有格式
         if (row == null) {
             return false;
         } else {
-// 有格式没有数据
+        // 有格式没有数据
             for (Cell cell : row) {
                 if (cell.getCellType() != CellType.BLANK) {
                     blankRowNum++;
@@ -431,14 +445,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     }
 
     private Workbook getWorkBook(MultipartFile file) {
-// 获得文件名
+        // 获得文件名
         String fileName = file.getOriginalFilename();
-// 创建Workbook工作薄对象，包含整个excel
+        // 创建Workbook工作薄对象，包含整个excel
         Workbook workbook = null;
         try {
-// 获取excel文件的io流
+        // 获取excel文件的io流
             InputStream inputStream = file.getInputStream();
-// 根据文件后缀名不同(xls和xlsx)获得不同的Workbook实现类对象
+        // 根据文件后缀名不同(xls和xlsx)获得不同的Workbook实现类对象
             if (fileName != null) {
                 if (fileName.endsWith("xls") || fileName.endsWith("XLS")) {
                     workbook = new HSSFWorkbook(inputStream);
@@ -485,7 +499,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Override
     public Result login(SysUser sysUser) {
         SysUser user = baseMapper.login(sysUser);
-        System.err.println(user);
         String jwtToken = "";
         if (user != null) {
             jwtToken = JwtUtils.getJwtToken(user.getUserId() + "", user.getNickName());
@@ -493,7 +506,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             if ("1".equals(user.getStatus())) {
                 return new Result(jwtToken, ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED));
             }
-            return new Result(jwtToken, ResultTool.success(ResultCode.SUCCESS));
+            return new Result(jwtToken, ResultTool.fail(ResultCode.USER_LOGIN_SUCCESS));
         }
         return new Result(jwtToken, ResultTool.fail(ResultCode.USER_WRONG_ACCOUNT_OR_PASSWORD));
     }
@@ -630,7 +643,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
             return result;
         }
-
         if (checkNiceName(1, userDto)) {
             if (checkPhone(1, userDto)) {
                 if (checkEmail(1, userDto)) {
