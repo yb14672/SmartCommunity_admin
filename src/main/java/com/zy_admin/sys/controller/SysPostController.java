@@ -10,6 +10,8 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.log.BusinessType;
+import com.zy_admin.common.log.MyLog;
 import com.zy_admin.sys.entity.SysPost;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysPostService;
@@ -83,6 +85,7 @@ public class SysPostController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
+    @MyLog(title = "新增岗位数据", optParam = "#{sysPost}", businessType = BusinessType.OTHER)
     public R insert(@RequestBody SysPost sysPost) {
         return success(this.sysPostService.save(sysPost));
     }
@@ -94,6 +97,7 @@ public class SysPostController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
+    @MyLog(title = "修改岗位数据", optParam = "#{sysPost}", businessType = BusinessType.OTHER)
     public R update(@RequestBody SysPost sysPost) {
         return success(this.sysPostService.updateById(sysPost));
     }
@@ -105,6 +109,7 @@ public class SysPostController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @MyLog(title = "删除岗位数据", optParam = "#{idList}", businessType = BusinessType.OTHER)
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.sysPostService.removeByIds(idList));
     }
@@ -124,6 +129,7 @@ public class SysPostController extends ApiController {
      * @return
      */
     @PostMapping("/addPost")
+    @MyLog(title = "添加岗位", optParam = "#{sysPost}", businessType = BusinessType.OTHER)
     public Result addPost(HttpServletRequest request, @RequestBody SysPost sysPost) {
         String id = JwtUtils.getMemberIdByJwtToken(request);
         SysUser user = this.requestUtil.getUser(request);
@@ -134,6 +140,7 @@ public class SysPostController extends ApiController {
     }
 
     @PutMapping("/updatePost")
+    @MyLog(title = "修改岗位", optParam = "#{sysPost}", businessType = BusinessType.OTHER)
     public Result updatePost(HttpServletRequest request, @RequestBody SysPost sysPost) {
         SysUser user = this.requestUtil.getUser(request);
         sysPost.setUpdateBy(user.getUserName());
@@ -170,6 +177,7 @@ public class SysPostController extends ApiController {
     }
 
     @DeleteMapping("/deletePost")
+    @MyLog(title = "删除岗位", optParam = "#{postIds}", businessType = BusinessType.OTHER)
     public Result deletePost(@RequestParam("ids") List<Integer> postIds) {
         return sysPostService.deletePost(postIds);
     }

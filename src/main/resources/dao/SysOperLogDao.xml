@@ -143,6 +143,21 @@
             </if>
         </where>
     </select>
+    <!--导出选中的操作日志-->
+    <select id="getOperLogById" resultType="com.zy_admin.sys.entity.SysOperLog">
+        select * from sys_oper_log
+        <if test="list!=null">
+            where oper_id in (
+                <foreach collection="list" item="id" separator=",">
+                    #{id}
+                </foreach>
+            )
+        </if>
+    </select>
+    <!--导出全部的操作日志-->
+    <select id="getOperLogList" resultType="com.zy_admin.sys.entity.SysOperLog">
+        select * from sys_oper_log
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="operId" useGeneratedKeys="true">
@@ -187,7 +202,7 @@
         error_msg = values(error_msg),
         oper_time = values(oper_time)
     </insert>
-<!--    新增操作日志-->
+    <!--    新增操作日志-->
     <insert id="addOperlog">
         insert into sys_oper_log(
         <trim suffixOverrides=",">

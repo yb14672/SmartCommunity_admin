@@ -2,6 +2,8 @@ package com.zy_admin.sys.controller;
 
 
 import com.baomidou.mybatisplus.extension.api.ApiController;
+import com.zy_admin.common.log.BusinessType;
+import com.zy_admin.common.log.MyLog;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDeptService;
@@ -53,6 +55,7 @@ public class SysDeptController extends ApiController {
      * @return 新增结果
      */
     @PostMapping("/insertDept")
+    @MyLog(title = "新增部门", optParam = "#{sysDept}", businessType = BusinessType.OTHER)
     public Result insertDept(@RequestBody SysDept sysDept, HttpServletRequest request) {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //从token获值
@@ -76,6 +79,7 @@ public class SysDeptController extends ApiController {
      * @return 修改结果
      */
     @PutMapping("/updateDept")
+    @MyLog(title = "修改部门信息", optParam = "#{sysDept}", businessType = BusinessType.OTHER)
     public Result updateDept(@RequestBody SysDept sysDept, HttpServletRequest request) {
         SysUser user = requestUtil.getUser(request);
         sysDept.setUpdateBy(user.getUserName());
@@ -89,13 +93,8 @@ public class SysDeptController extends ApiController {
      * @param idList 主键结合
      * @return 删除结果
      */
-    /**
-     * 删除数据
-     *
-     * @param idList 主键结合
-     * @return 删除结果
-     */
     @DeleteMapping("/deleteDept")
+    @MyLog(title = "删除选中部门", optParam = "#{idList}", businessType = BusinessType.OTHER)
     public Result deleteDept(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<Integer>();
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));

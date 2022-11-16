@@ -232,6 +232,7 @@ public class SysUserController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
+    @MyLog(title = "修改用户信息", optParam = "#{sysUser}", businessType = BusinessType.OTHER)
     public R update(@RequestBody SysUser sysUser) {
         return success(this.sysUserService.updateById(sysUser));
     }
@@ -286,6 +287,7 @@ public class SysUserController extends ApiController {
      * @return
      */
     @PutMapping("/updateUser")
+    @MyLog(title = "修改用户基本信息", optParam = "#{sysUser}", businessType = BusinessType.OTHER)
     public Result updateUser(@RequestBody SysUser sysUser){
         return this.sysUserService.updateUser(sysUser);
     }
@@ -296,12 +298,14 @@ public class SysUserController extends ApiController {
      * @return
      */
     @PutMapping("/resetPwd")
+    @MyLog(title = "修改密码", optParam = "#{sysUser}", businessType = BusinessType.OTHER)
     public Result resetPwd(@RequestBody SysUser sysUser){
         return this.sysUserService.resetPwd(sysUser);
     }
 
 
     @PostMapping("/insertUser")
+    @MyLog(title = "新增用户", optParam = "#{sysUserDto}", businessType = BusinessType.OTHER)
     public Result insertUser(HttpServletRequest request, @RequestBody UserDto sysUserDto)
     {
         sysUserDto.setCreateTime(LocalDateTime.now().toString());
@@ -309,6 +313,7 @@ public class SysUserController extends ApiController {
         sysUserDto.setCreateBy(user.getUserName());
         return sysUserService.insertUser(sysUserDto);
     }
+
     @PutMapping("/adminUpdateUser")
     public Result updateUser(HttpServletRequest request, @RequestBody UserDto userDto)
     {

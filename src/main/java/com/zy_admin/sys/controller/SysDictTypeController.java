@@ -82,6 +82,7 @@ public class SysDictTypeController extends ApiController {
      * @return
      */
     @DeleteMapping
+    @MyLog(title = "删除选中字典", optParam = "#{idList}", businessType = BusinessType.OTHER)
     public Result delete(@RequestParam String[] idList){
         List<Integer> idList1 = new ArrayList<Integer>();
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -115,8 +116,8 @@ public class SysDictTypeController extends ApiController {
      * @param sysDictType
      * @return
      */
-    @MyLog(title = "新增字典", optParam = "#{sysDictType}", businessType = BusinessType.OTHER)
     @PostMapping("/addSysDict")
+    @MyLog(title = "新增字典", optParam = "#{sysDictType}", businessType = BusinessType.OTHER)
     public Result insertDictType(@RequestBody SysDictType sysDictType){
         sysDictType.setCreateTime(LocalDateTime.now().toString());
         return this.sysDictTypeService.insertOrUpdateBatch(sysDictType);
