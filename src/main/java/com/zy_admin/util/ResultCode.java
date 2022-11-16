@@ -85,6 +85,9 @@ public enum ResultCode {
     LOGIN_LOG_GET_FAIL(3033,"登录日志获取失败"),
     LOG_DELETE_FAIL(3034,"登录日志删除失败"),
     LOG_EMPTY_FAIL(3035,"登录日志清空失败"),
+    TEL_NON_COMPLIANCE(3036,"电话号码不符合规则" ),
+    EMAIL_NON_COMPLIANCE(3037,"邮箱不符合规则" ),
+    MASSAGE_NULL(3038,"信息为空" ),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

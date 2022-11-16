@@ -23,6 +23,12 @@ import java.util.List;
 public interface SysUserDao extends BaseMapper<SysUser> {
 
     /**
+     * 下载模板
+     * @return
+     */
+    SysUser uploadUserTemplate();
+
+    /**
      * 根据id删除用户
      * @param idList
      * @return

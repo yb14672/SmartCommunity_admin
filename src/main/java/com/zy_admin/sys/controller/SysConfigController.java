@@ -26,6 +26,17 @@ public class SysConfigController extends ApiController {
     @Resource
     private SysConfigService sysConfigService;
 
+    /**
+     * 分页查询所有数据
+     *
+     * @param page      分页对象
+     * @param sysConfig 查询实体
+     * @return 所有数据
+     */
+    @GetMapping
+    public R selectAll(Page<SysConfig> page, SysConfig sysConfig) {
+        return success(this.sysConfigService.page(page, new QueryWrapper<>(sysConfig)));
+    }
 
     /**
      * 通过主键查询单条数据

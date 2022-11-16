@@ -1,6 +1,10 @@
 package com.zy_admin.sys.controller;
 
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
@@ -9,10 +13,15 @@ import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.service.SysOperLogService;
 import com.zy_admin.util.Result;
+import com.zy_admin.util.ExcelUtil;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +39,54 @@ public class SysOperLogController extends ApiController {
     @Resource
     private SysOperLogService sysOperLogService;
 
+    @GetMapping("/selectOperLogByLimit")
+    public Result selectOperLogByLimit(SysOperLog sysOperLog, Pageable pageable,String startTime,String endTime){
+        return sysOperLogService.selectOperLogByLimit(sysOperLog,pageable,startTime,endTime);
+    }
+
     /**
+     * 批量导出操作日志数据
+     *
+     * @param operLogIds
+     * @param response
+     */
+    @GetMapping("/getExcel")
+    public void getExcel(@RequestParam("operLogIds") ArrayList<Integer> operLogIds, HttpServletResponse response) throws IOException {
+        List<SysOperLog> sysOperLogList = new ArrayList<>();
+        //判断操作日志的集合为空或者长度为0.则全部导出。
+        if (operLogIds == null || operLogIds.size() == 0) {
+            sysOperLogList = sysOperLogService.getOperLogList();
+        } else {
+            //不为空就是选中导出操作日志
+            System.out.println(operLogIds);
+            sysOperLogList = sysOperLogService.getOperLogById(operLogIds);
+        }
+        String fileName = URLEncoder.encode("操作日志表数据", "UTF-8");
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("content-type", "text/html;charset=UTF-8");
+        // 内容样式
+        HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
+        EasyExcel.write(response.getOutputStream(), SysOperLog.class)
+                .excelType(ExcelTypeEnum.XLS)
+                //自适应表格格式
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                .autoCloseStream(true)
+                .sheet("模板")
+                .doWrite(sysOperLogList);
+    }
+
+    /**
+     * 新增操作日志
+     * @param sysOperLog
+     * @return
+     */
+    public void addOperlog(SysOperLog sysOperLog) {
+         sysOperLogService.addOperlog(sysOperLog);
+    }
+
+  /**
      * 分页查询所有数据
      *
      * @param page       分页对象

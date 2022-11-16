@@ -16,6 +16,11 @@
     </properties>
 
     <dependencies>
+        <!--日志AOP依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
         <!--导入导出的依赖-->
         <!--POI文件流处理-->
         <dependency>

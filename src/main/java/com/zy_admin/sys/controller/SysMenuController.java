@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.log.BusinessType;
+import com.zy_admin.common.log.MyLog;
 import com.zy_admin.sys.entity.SysMenu;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysMenuService;
@@ -69,6 +71,7 @@ public class SysMenuController extends ApiController {
      * @return 新增结果
      */
     @PostMapping("/addMenu")
+    @MyLog(title = "新增菜单", optParam = "#{sysMenu}", businessType = BusinessType.OTHER)
     public Result insert(@RequestBody SysMenu sysMenu, HttpServletRequest request) {
         String userId = JwtUtils.getMemberIdByJwtToken(request);
         Result result = this.sysUserService.queryById(userId);
@@ -91,6 +94,7 @@ public class SysMenuController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
+    @MyLog(title = "修改菜单", optParam = "#{sysMenu}", businessType = BusinessType.OTHER)
     public R update(@RequestBody SysMenu sysMenu) {
         return success(this.sysMenuService.updateById(sysMenu));
     }
@@ -101,6 +105,7 @@ public class SysMenuController extends ApiController {
      * @return
      */
     @DeleteMapping("/deleteById")
+    @MyLog(title = "根据id删除菜单", optParam = "#{id}", businessType = BusinessType.OTHER)
     public Result deleteById(@RequestParam String id) {
         return this.sysMenuService.deteleById(Long.valueOf(id));
     }
@@ -112,6 +117,7 @@ public class SysMenuController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @MyLog(title = "批量删除菜单", optParam = "#{idList}", businessType = BusinessType.OTHER)
     public Result deleteByIdList(@RequestParam String[] idList) {
         List<Long> idList1=new ArrayList<Long>();
         for (String str : idList) {
@@ -146,6 +152,7 @@ public class SysMenuController extends ApiController {
      * @return
      */
     @PutMapping("/updateMenu")
+    @MyLog(title = "修改菜单", optParam = "#{sysMenu}", businessType = BusinessType.OTHER)
     public Result updateMenu(@RequestBody SysMenu sysMenu){
         Result result = this.sysMenuService.updateMenu(sysMenu);
         return result;

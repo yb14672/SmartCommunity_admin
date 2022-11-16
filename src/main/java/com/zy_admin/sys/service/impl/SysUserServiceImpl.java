@@ -10,7 +10,8 @@ import com.zy_admin.sys.dao.SysUserRoleDao;
 import com.zy_admin.sys.dto.*;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysUser;
-import com.zy_admin.sys.service.*;
+import com.zy_admin.sys.service.RedisService;
+import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtils;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultCode;
@@ -30,6 +31,8 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 用户信息表(SysUser)表服务实现类
@@ -163,7 +166,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      * @return
      */
     @Override
-    public List<SysUser> uploadUser() {
+    public List<SysUser> uploadUserTemplate() {
         return null;
     }
 
@@ -227,10 +230,32 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                 result.setMeta(ResultTool.fail(ResultCode.USERNAME_REPEAT));
                 errorMsg += "第" + i + "条用户名重复,";
             }
+//            判断为空
+            if (!checkRequire(i, 1, sheet.getRow(i))) {
+                result.setMeta(ResultTool.fail(ResultCode.MASSAGE_NULL));
+                errorMsg += "第" + i + "条用户名为空,";
+            }
+            if (!checkRequire(i, 2, sheet.getRow(i))) {
+                result.setMeta(ResultTool.fail(ResultCode.MASSAGE_NULL));
+                errorMsg += "第" + i + "条昵称为空,";
+            }
+            if (!checkRequire(i, 3, sheet.getRow(i))) {
+                result.setMeta(ResultTool.fail(ResultCode.MASSAGE_NULL));
+                errorMsg += "第" + i + "条邮箱为空,";
+            }
+            if (!checkRequire(i, 4, sheet.getRow(i))) {
+                result.setMeta(ResultTool.fail(ResultCode.MASSAGE_NULL));
+                errorMsg += "第" + i + "条手机号为空,";
+            }
             // 验证邮箱重复
             if (!checkEmail(i, 3, getCellValue(sheet.getRow(i).getCell(3)))) {
                 result.setMeta(ResultTool.fail(ResultCode.EMAIL_REPEAT));
                 errorMsg += "第" + i + "条邮箱重复,";
+            }
+//            验证邮箱正则
+            if (!checkEmailJudge(i, 3, getCellValue(sheet.getRow(i).getCell(3)))) {
+                result.setMeta(ResultTool.fail(ResultCode.EMAIL_NON_COMPLIANCE));
+                errorMsg += "第" + i + "条邮箱不符合规则,";
             }
             //状态为0能渲染
             userEntity.setDelFlag("0");
@@ -248,6 +273,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             if (!checkPhoneNumber(i, 4, getCellValue(sheet.getRow(i).getCell(4)))) {
                 result.setMeta(ResultTool.fail(ResultCode.USER_TELREPEAT));
                 errorMsg += "第" + i + "条电话号重复,";
+            }
+            if (!checkPhoneNumberJudge(i, 4, getCellValue(sheet.getRow(i).getCell(4)))) {
+                result.setMeta(ResultTool.fail(ResultCode.USER_TELREPEAT));
+                errorMsg += "第" + i + "条电话号不符合规范,";
             }
             //思路:拿一个map去存键值，键是索引，值是内容，然后去遍历通过索引去取值，然后再前端遍历
             userEntity.setPhonenumber(getCellValue(sheet.getRow(i).getCell(4)));
@@ -299,6 +328,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         }
         return true;
     }
+    private boolean checkPhoneNumberJudge(int rowNum, int colNum, String stringCellValue) {
+        //判断手机号的正则
+        String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(16[5,6])|(17[0-8])|(18[0-9])|(19[1、5、8、9]))\\d{8}$";
+        Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(stringCellValue);
+        return m.matches();
+    }
 
     /**
      * 验证用户名不能重复
@@ -330,6 +366,24 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             return false;
         }
         return true;
+    }
+
+    /**
+     * 邮箱判断正则
+     * @param rowNum
+     * @param colNum
+     * @param stringCellValue
+     * @return
+     */
+    private boolean checkEmailJudge(int rowNum, int colNum, String stringCellValue) {
+        String regEx1 = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+        Pattern p = Pattern.compile(regEx1);
+        Matcher m = p.matcher(stringCellValue);
+        if(m.matches()){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /**

@@ -56,7 +56,7 @@ public interface SysUserService extends IService<SysUser> {
      * 下载模板
      * @return
      */
-    List<SysUser> uploadUser();
+    List<SysUser> uploadUserTemplate();
 
     /**
      *批量导入用户信息

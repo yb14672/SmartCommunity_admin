@@ -236,6 +236,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
         }
         return false;
     }
+
+    @Override
+    public SysDept getDeptById(Long deptId) {
+        return this.baseMapper.getDeptById(deptId);
+    }
     /**
      * 删除部门
      *

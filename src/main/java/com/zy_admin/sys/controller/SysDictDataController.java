@@ -6,6 +6,8 @@ import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.log.BusinessType;
+import com.zy_admin.common.log.MyLog;
 import com.zy_admin.sys.dto.DataDictExcelDto;
 import com.zy_admin.sys.entity.SysDictData;
 import com.zy_admin.sys.entity.SysUser;
@@ -71,6 +73,7 @@ public class SysDictDataController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
+    @MyLog(title = "新增字典数据", optParam = "#{sysDictData}", businessType = BusinessType.OTHER)
     public Result insert(@RequestBody SysDictData sysDictData, HttpServletRequest request) {
         //获取当前登录的用户，用于添加创建人
         SysUser user = requestUtil.getUser(request);
@@ -85,6 +88,7 @@ public class SysDictDataController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
+    @MyLog(title = "修改字典数据", optParam = "#{sysDictData}", businessType = BusinessType.OTHER)
     public Result update(@RequestBody SysDictData sysDictData, HttpServletRequest request) {
         //获取当前登录的用户，用于添加创建人
         SysUser user = requestUtil.getUser(request);
@@ -98,6 +102,7 @@ public class SysDictDataController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @MyLog(title = "删除选中字典", optParam = "#{idList}", businessType = BusinessType.OTHER)
     public Result delete(@RequestParam("idList") List<String> idList) {
         return this.sysDictDataService.removeDictDataByIds(idList);
     }
@@ -109,7 +114,9 @@ public class SysDictDataController extends ApiController {
      * @return
      */
     @GetMapping("/getDict")
+    @MyLog(title = "根据字典类型获取所有字典数据", optParam = "#{dictType}", businessType = BusinessType.OTHER)
     public Result getDict(String dictType) {
+        System.out.println(dictType);
         return this.sysDictDataService.getDict(dictType);
     }
 
