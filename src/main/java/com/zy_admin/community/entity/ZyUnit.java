@@ -15,11 +15,11 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class ZyUnit extends Model<ZyUnit> {
     //单元id
-    private Long unitId;
+    private String unitId;
     //小区id
-    private Long communityId;
+    private String communityId;
     //楼栋id
-    private Long buildingId;
+    private String buildingId;
     //单元名称
     private String unitName;
     //单元编号
@@ -41,28 +41,27 @@ public class ZyUnit extends Model<ZyUnit> {
     //备注
     private String remark;
 
-
-    public Long getUnitId() {
+    public String getUnitId() {
         return unitId;
     }
 
-    public void setUnitId(Long unitId) {
+    public void setUnitId(String unitId) {
         this.unitId = unitId;
     }
 
-    public Long getCommunityId() {
+    public String getCommunityId() {
         return communityId;
     }
 
-    public void setCommunityId(Long communityId) {
+    public void setCommunityId(String communityId) {
         this.communityId = communityId;
     }
 
-    public Long getBuildingId() {
+    public String getBuildingId() {
         return buildingId;
     }
 
-    public void setBuildingId(Long buildingId) {
+    public void setBuildingId(String buildingId) {
         this.buildingId = buildingId;
     }
 

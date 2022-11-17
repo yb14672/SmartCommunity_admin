@@ -1,7 +1,11 @@
 package com.zy_admin.sys.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zy_admin.community.dto.AreaDto;
 import com.zy_admin.sys.entity.SysArea;
+import com.zy_admin.util.Result;
+
+import java.util.List;
 
 /**
  * 区域表(SysArea)表服务接口
@@ -11,5 +15,10 @@ import com.zy_admin.sys.entity.SysArea;
  */
 public interface SysAreaService extends IService<SysArea> {
 
+    /**
+     * 生成省市区树形结构
+     * @return
+     */
+    Result queryAreaTree();
 }
 

@@ -545,10 +545,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断是否有查到对应用户
         if (personal == null) {
-            result.setJsonResult(ResultTool.fail(ResultCode.USER_ACCOUNT_NOT_EXIST));
+            result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_NOT_EXIST));
         } else {
             result.setData(personal);
-            result.setJsonResult(ResultTool.success(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
     }

@@ -43,7 +43,7 @@ public enum ResultCode {
     USER_LOGIN_SUCCESS(2015,"登录成功"),
     USER_LOGOUT_FAIL(2016,"退出失败"),
     USER_LOGOUT_SUCCESS(2017,"退出成功"),
-
+    ADDRESS_GET_FAIL(2018,"地址获取失败"),
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
     DELETE_FAIL(3002, "删除失败，请稍后再试"),
@@ -83,6 +83,11 @@ public enum ResultCode {
     LOGIN_LOG_GET_FAIL(3031,"登录日志获取失败"),
     LOG_DELETE_FAIL(3032,"登录日志删除失败"),
     LOG_EMPTY_FAIL(3033,"登录日志清空失败"),
+    COMMUNITY_GET_FAIL(3034,"小区信息获取失败"),
+    COMMUNITY_ADD_FAIL(3035,"新增小区失败"),
+    REPEAT_COMMUNITY_NAME(3036,"小区名重复"),
+    COMMUNITY_UPDATE_FAIL(3037,"小区修改失败"),
+    COMMUNITY_DELETE_FAIL(3038,"小区删除失败"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

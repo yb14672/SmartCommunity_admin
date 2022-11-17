@@ -45,7 +45,6 @@ public class SysLogininforController extends ApiController {
     public void getExcel(@RequestBody ArrayList<Integer> ids, HttpServletResponse response)throws IOException {
         //导出数据
         List<LoginInForExcelDto> loginInForExcelDtoList = sysLogininforService.queryLogininfor(ids);
-        System.err.println(loginInForExcelDtoList);
         String fileName = URLEncoder.encode("日志数据", "UTF-8");
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
