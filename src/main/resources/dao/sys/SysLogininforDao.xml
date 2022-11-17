@@ -51,8 +51,10 @@
                 and login_time &lt;= #{endTime}
             </if>
         </where>
+        ORDER BY login_time desc
         limit #{pageable.index}, #{pageable.pageSize}
     </select>
+
     <select id="count" resultType="java.lang.Long">
         select count(1)
         from sys_logininfor
@@ -204,8 +206,9 @@
         </foreach>
     </delete>
     <delete id="EmptyLog">
-        delete
-        from sys_logininfor;
+        delete from sys_logininfor;
     </delete>
+
+
 </mapper>
 

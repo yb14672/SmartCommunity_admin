@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.List;
-
 /**
  * 用户信息表(SysUser)表服务接口
  *
@@ -58,7 +56,7 @@ public interface SysUserService extends IService<SysUser> {
      * 下载模板
      * @return
      */
-    List<SysUser> uploadUser();
+    List<SysUser> uploadUserTemplate();
 
     /**
      *批量导入用户信息
@@ -158,10 +156,10 @@ public interface SysUserService extends IService<SysUser> {
      * 根据用户ID修改其对应的角色列表
      *
      * @param userId
-     * @param roleIdList
+     * @param roleId
      * @return
      */
-    Result insertAuthRole(Integer userId, List<Long> roleIdList) throws Exception;
+    Result insertAuthRole(Integer userId, String roleId) throws Exception;
 
     /**
      * 新增用户

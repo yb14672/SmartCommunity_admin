@@ -31,7 +31,7 @@ public interface SysPostDao extends BaseMapper<SysPost> {
      * @param pageable
      * @return
      */
-    List<SysPost>queryAllByLimit(@Param("sysPost") SysPost sysPost,@Param("pageable") Pageable pageable);
+    List<SysPost>queryAllByLimit(@Param("sysPost") SysPost sysPost, @Param("pageable") Pageable pageable);
 
 
     /**

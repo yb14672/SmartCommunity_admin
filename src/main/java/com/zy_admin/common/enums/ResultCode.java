@@ -88,6 +88,15 @@ public enum ResultCode {
     REPEAT_COMMUNITY_NAME(3036,"小区名重复"),
     COMMUNITY_UPDATE_FAIL(3037,"小区修改失败"),
     COMMUNITY_DELETE_FAIL(3038,"小区删除失败"),
+    PARENT_CLASS_DEACTIVATE(3039,"父类已被停用" ),
+    PARENT_CANNOT_BE_A_SUBSET(3040,"父类不能是自己的子集" ),
+    EXCEL_EXPORT_FAILURE(3041,"Excel导出失败"),
+    LOGIN_LOG_GET_FAIL(3042,"登录日志获取失败"),
+    LOG_DELETE_FAIL(3043,"登录日志删除失败"),
+    LOG_EMPTY_FAIL(3044,"登录日志清空失败"),
+    TEL_NON_COMPLIANCE(3045,"电话号码不符合规则" ),
+    EMAIL_NON_COMPLIANCE(3046,"邮箱不符合规则" ),
+    MASSAGE_NULL(3047,"信息为空" ),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

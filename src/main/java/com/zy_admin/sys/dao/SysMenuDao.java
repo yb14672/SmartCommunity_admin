@@ -16,6 +16,13 @@ import java.util.List;
 public interface SysMenuDao extends BaseMapper<SysMenu> {
 
     /**
+     * 根据菜单id获取其所有子集
+     * @param menuId 要查询的菜单id
+     * @return 该菜单的子集id列表
+     */
+    List<Long> getChildrenById(String menuId);
+
+    /**
      * 获取导航菜单列表
      * @return
      */
@@ -44,12 +51,31 @@ public interface SysMenuDao extends BaseMapper<SysMenu> {
      */
     SysMenu checkPathUnique(SysMenu menu);
 
+    /**
+     * 检查组件路径是否唯一
+     * @param menu
+     * @return
+     */
     SysMenu checkComponentUnique(SysMenu menu);
 
+    /**
+     * 检查权限标识是否唯一
+     * @param menu
+     * @return
+     */
     SysMenu checkPermsUnique(SysMenu menu);
 
+    /**
+     * 检查当前菜单是否有子类
+     * @param menuId
+     * @return
+     */
     Integer hasChildByMenuId(Long menuId);
 
+    /**
+     * 获取所有菜单--用于做树
+     * @return
+     */
     List<MenuTree> getMenuTree();
 }
 

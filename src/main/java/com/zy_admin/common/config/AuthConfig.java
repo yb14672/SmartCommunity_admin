@@ -10,8 +10,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  *配置拦截器
  * @author admin
  */
-
-
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
     @Bean

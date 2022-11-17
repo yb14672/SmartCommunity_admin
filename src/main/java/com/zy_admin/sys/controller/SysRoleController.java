@@ -9,13 +9,15 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.service.SysRoleMenuService;
 import com.zy_admin.sys.service.SysRoleService;
 import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -47,16 +49,11 @@ public class SysRoleController extends ApiController {
     @Resource
     SysRoleMenuService sysRoleMenuService;
 
-
-
-
     @GetMapping("/getAllRole")
     public Result getAllRole(SysRole sysRole) {
         Result allRole = sysRoleService.getAllRole(sysRole);
-        System.out.println(allRole);
         return allRole;
     }
-
 
     /**
      * 获取所有除去管理员以外的角色并分页
@@ -75,6 +72,7 @@ public class SysRoleController extends ApiController {
          * @param response
          */
     @PostMapping("/getExcel")
+    @MyLog(title = "角色管理", optParam = "#{roleIds}", businessType = BusinessType.EXPORT)
     public void getExcel(@RequestBody ArrayList<Integer> roleIds, HttpServletResponse response)throws IOException{
             List<SysRole> sysRoles = new ArrayList<>();
             //如果前台传的集合为空或者长度为0.则全部导出。
@@ -111,7 +109,6 @@ public class SysRoleController extends ApiController {
     @GetMapping("/selectRoleByLimit")
     public Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime) {
         Result result = sysRoleService.selectRoleByLimit(sysRole, pageable, startTime, endTime);
-        System.out.println(result.toString());
         return result;
     }
 
@@ -144,6 +141,7 @@ public class SysRoleController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
+    @MyLog(title = "角色管理", optParam = "#{sysRole}", businessType = BusinessType.UPDATE)
     public Result update(@RequestBody SysRole sysRole) {
         return this.sysRoleService.changeStatus(sysRole);
     }
@@ -156,6 +154,7 @@ public class SysRoleController extends ApiController {
      */
     @DeleteMapping
     @Transactional(rollbackFor = Exception.class)
+    @MyLog(title = "角色管理", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result delete(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<Integer>();
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -183,15 +182,15 @@ public class SysRoleController extends ApiController {
      * @param roleAndRoleMenu
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
     @PostMapping("/addRole")
+    @Transactional(rollbackFor = Exception.class)
+    @MyLog(title = "角色管理", optParam = "#{roleAndRoleMenu}", businessType = BusinessType.INSERT)
     public Result insert(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
         roleAndRoleMenu.setCreateTime(LocalDateTime.now().toString());
         roleAndRoleMenu.setDeptCheckStrictly(null);
         roleAndRoleMenu.setMenuCheckStrictly(null);
         roleAndRoleMenu.setDelFlag("0");
         Result insert = this.sysRoleService.insert(roleAndRoleMenu);
-        System.out.println(insert);
         return insert;
     }
 
@@ -203,6 +202,7 @@ public class SysRoleController extends ApiController {
      */
     @PutMapping("/updateRole")
     @Transactional(rollbackFor = Exception.class)
+    @MyLog(title = "角色管理", optParam = "#{roleAndRoleMenu}", businessType = BusinessType.UPDATE)
     public Result update(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
         roleAndRoleMenu.setDeptCheckStrictly(null);
         roleAndRoleMenu.setMenuCheckStrictly(null);

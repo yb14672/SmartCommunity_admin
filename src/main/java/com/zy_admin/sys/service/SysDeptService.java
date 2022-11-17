@@ -14,6 +14,13 @@ import java.util.List;
  */
 public interface SysDeptService extends IService<SysDept> {
     /**
+     * 检查修改后的菜单是否和子集一致
+     * @param dept 修改后的部门数据
+     * @return true--父类是子集
+     */
+    Boolean checkNewParentId(SysDept dept);
+
+    /**
      * 检查两个data是否一致
      *
      * @param updateDept
@@ -53,5 +60,12 @@ public interface SysDeptService extends IService<SysDept> {
      * @return
      */
     Result deleteDept(List<Integer> idList);
+
+    /**
+     * 根据ID获取部门
+     * @param deptId
+     * @return
+     */
+    SysDept getDeptById(Long deptId);
 }
 

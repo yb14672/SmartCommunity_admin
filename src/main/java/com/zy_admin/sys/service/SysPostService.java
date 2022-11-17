@@ -35,7 +35,7 @@ public interface SysPostService extends IService<SysPost> {
      * @param sysPost
      * @return
      */
-    Result update(SysPost  sysPost);
+    Result update(SysPost sysPost);
 
 
     /**

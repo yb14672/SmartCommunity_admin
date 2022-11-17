@@ -1,14 +1,13 @@
 package com.zy_admin.common.core.text;
 
-import com.zy_admin.util.StringUtils;
+import com.zy_admin.util.StringUtil;
 
 /**
  * 字符串格式化
  * 
  * @author yangdi
  */
-public class StrFormatter
-{
+public class StrFormatter {
     public static final String EMPTY_JSON = "{}";
     public static final char C_BACKSLASH = '\\';
     public static final char C_DELIM_START = '{';
@@ -29,7 +28,7 @@ public class StrFormatter
      */
     public static String format(final String strPattern, final Object... argArray)
     {
-        if (StringUtils.isEmpty(strPattern) || StringUtils.isEmpty(argArray))
+        if (StringUtil.isEmpty(strPattern) || StringUtil.isEmpty(argArray))
         {
             return strPattern;
         }

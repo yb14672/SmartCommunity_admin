@@ -2,12 +2,14 @@ package com.zy_admin.sys.controller;
 
 
 import com.baomidou.mybatisplus.extension.api.ApiController;
+import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDeptService;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,6 +55,7 @@ public class SysDeptController extends ApiController {
      * @return 新增结果
      */
     @PostMapping("/insertDept")
+    @MyLog(title = "部门管理", optParam = "#{sysDept}", businessType = BusinessType.INSERT)
     public Result insertDept(@RequestBody SysDept sysDept, HttpServletRequest request) {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         //从token获值
@@ -76,6 +79,7 @@ public class SysDeptController extends ApiController {
      * @return 修改结果
      */
     @PutMapping("/updateDept")
+    @MyLog(title = "部门管理", optParam = "#{sysDept}", businessType = BusinessType.UPDATE)
     public Result updateDept(@RequestBody SysDept sysDept, HttpServletRequest request) {
         SysUser user = requestUtil.getUser(request);
         sysDept.setUpdateBy(user.getUserName());
@@ -89,13 +93,8 @@ public class SysDeptController extends ApiController {
      * @param idList 主键结合
      * @return 删除结果
      */
-    /**
-     * 删除数据
-     *
-     * @param idList 主键结合
-     * @return 删除结果
-     */
     @DeleteMapping("/deleteDept")
+    @MyLog(title = "部门管理", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result deleteDept(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<Integer>();
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));

@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * @version：3.0
  */
 @Component
-public class MinioUtilS {
+public class MinioUtil {
     @Autowired
     private MinioClient minioClient;
 

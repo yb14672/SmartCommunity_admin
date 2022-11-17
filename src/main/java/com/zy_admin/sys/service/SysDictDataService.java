@@ -60,7 +60,7 @@ public interface SysDictDataService extends IService<SysDictData> {
      * @param dictData
      * @return
      */
-    Boolean checkUnique(int type, SysDictData dictData,SysDictData sysDictData);
+    Boolean checkUnique(int type, SysDictData dictData, SysDictData sysDictData);
 
     /**
      * 批量删除字典数据

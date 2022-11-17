@@ -7,11 +7,10 @@ import com.zy_admin.sys.dto.DeptTreeDto;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.service.SysDeptService;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -70,8 +69,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             }
             String ancestors = ancestors(sysDept);
             sysDept.setAncestors(ancestors);
-            baseMapper.insertDept(sysDept);
+            Integer i = baseMapper.insertDept(sysDept);
             if (sysDept.getDeptId() != null) {
+                result.setData("新增成功，影响的行数："+ i);
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             }
         } catch (NullPointerException e) {
@@ -95,39 +95,52 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
      */
     @Override
     public Result updateDept(SysDept sysDept) {
-        System.out.println(sysDept);
         Result result = new Result();
         try {
-            List<Long> deptIdList = this.baseMapper.getDeptIdList(sysDept.getDeptId());
-            //判断修改的的父级是否为自己的子级
-            for (Long deptId : deptIdList) {
-                if (sysDept.getParentId().equals(deptId)) {
-                    result.setMeta(ResultTool.fail(ResultCode.DEPTID_NOT_ITEM));
-                    return result;
-                }
-            }
             //判断是否没有修改就提交
             SysDept DeptById =this.baseMapper.getDeptByDeptId(sysDept.getDeptId()+"");
             if (!checkEquals(sysDept, DeptById)) {
                 //判断菜单的父类是否自己
                 if (!sysDept.getParentId().equals(sysDept.getDeptId())) {
-                    //因为菜单名为必填字段，所以判断是否为空
-                    if (sysDept.getDeptName() == null || "".equals(sysDept.getDeptName())) {
-                        result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
-                        return result;
-                    } else {
-                        //判断菜单名称是否唯一
-                        if (checkDeptNameUnique(1, sysDept)) {
-                        } else {
-                            result.setMeta(ResultTool.fail(ResultCode.REPEAT_DEPTNAME));
+                    if(!checkNewParentId(sysDept)){
+                        //因为菜单名为必填字段，所以判断是否为空
+                        if (sysDept.getDeptName() == null || "".equals(sysDept.getDeptName())) {
+                            result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
                             return result;
+                        } else {
+                            //判断菜单名称是否唯一
+                            if (checkDeptNameUnique(1, sysDept)) {
+                            } else {
+                                result.setMeta(ResultTool.fail(ResultCode.REPEAT_DEPTNAME));
+                                return result;
+                            }
                         }
+                    }else{
+                        result.setMeta(ResultTool.fail(ResultCode.PARENT_CANNOT_BE_A_SUBSET));
+                        return result;
                     }
                     String ancestors = ancestors(sysDept);
                     sysDept.setAncestors(ancestors);
                     sysDept.setUpdateTime(LocalDateTime.now().toString());
+                    //判断状态是否修改
+                    if(!sysDept.getStatus().equals(DeptById.getStatus())){
+                        //如果已经修改过，则判断父类是否停用
+                        SysDept parentDept =this.baseMapper.getDeptByDeptId(sysDept.getParentId()+"");
+                        if("1".equals(parentDept.getStatus())){
+                            result.setMeta(ResultTool.fail(ResultCode.PARENT_CLASS_DEACTIVATE));
+                            return result;
+                        }
+                    }
                     int i = this.baseMapper.updateDept(sysDept);
                     if (i == 1) {
+                        ancestors = ancestors+","+sysDept.getDeptId();
+                        String status =sysDept.getStatus();
+
+                        int m = this.baseMapper.updateDeptSon(status,ancestors);
+                        if (m >= 1) {
+                            result.setData("修改成功，影响的行数："+ m);
+                            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                        }
                         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                     }
                 } else {
@@ -176,6 +189,30 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
         }
         return false;
     }
+
+    /**
+     * 检查修改后的菜单是否和子集一致
+     *
+     * @param dept 修改后的部门数据
+     * @return true--父类是子集
+     */
+    @Override
+    public Boolean checkNewParentId(SysDept dept) {
+        //获取其子集的菜单ID
+        List<Long> childrenById = this.baseMapper.getChildrenById(dept.getDeptId()+"");
+        //获取到要修改的父类ID
+        long newParentId=dept.getParentId();
+        //循环遍历，检查修改后的父类是否为子集
+        for (int i = 0; i < childrenById.size(); i++) {
+            //获取到子集部门id，用于比较是否相等
+            long childId = childrenById.get(i);
+            if(newParentId==childId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * 验证没有修改
      * @param updateDept
@@ -200,6 +237,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             }
         }
         return false;
+    }
+
+    @Override
+    public SysDept getDeptById(Long deptId) {
+        return this.baseMapper.getDeptById(deptId);
     }
     /**
      * 删除部门

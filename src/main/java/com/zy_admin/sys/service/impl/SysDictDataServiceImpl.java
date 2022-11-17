@@ -4,16 +4,19 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.sys.dao.SysDictDataDao;
+import com.zy_admin.sys.dao.SysDictTypeDao;
 import com.zy_admin.sys.dto.DataDictExcelDto;
 import com.zy_admin.sys.entity.SysDictData;
+import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDictDataService;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
-import com.zy_admin.util.StringUtils;
+import com.zy_admin.util.StringUtil;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +30,12 @@ import java.util.List;
 @Service("sysDictDataService")
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictData> implements SysDictDataService {
 
+    @Resource
+    private SysDictTypeDao sysDictTypeDao;
+
     @Override
     public Result getDict(String deptType) {
-        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             List<SysDictData> dictDataList = this.baseMapper.getDict(deptType);
             result.setData(dictDataList);
@@ -43,15 +49,15 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
 
     @Override
     public Result selectDictDataLimit(SysDictData sysDictData, Page page) {
-        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //新建查询条件对象
         LambdaQueryWrapper<SysDictData> queryWrapper = new LambdaQueryWrapper<>();
         //StringUtils.isNotEmpty(xxx)--当dictType不为空时，执行这个行sql
         //SysDictData::getDictType--查询哪个字段
         //sysDictData.getDictType()--查询条件
-        queryWrapper.eq(StringUtils.isNotEmpty(sysDictData.getDictType()), SysDictData::getDictType, sysDictData.getDictType());
-        queryWrapper.like(StringUtils.isNotEmpty(sysDictData.getDictLabel()), SysDictData::getDictLabel, sysDictData.getDictLabel());
-        queryWrapper.eq(StringUtils.isNotEmpty(sysDictData.getStatus()), SysDictData::getStatus, sysDictData.getStatus());
+        queryWrapper.eq(StringUtil.isNotEmpty(sysDictData.getDictType()), SysDictData::getDictType, sysDictData.getDictType());
+        queryWrapper.like(StringUtil.isNotEmpty(sysDictData.getDictLabel()), SysDictData::getDictLabel, sysDictData.getDictLabel());
+        queryWrapper.eq(StringUtil.isNotEmpty(sysDictData.getStatus()), SysDictData::getStatus, sysDictData.getStatus());
         queryWrapper.orderByAsc(SysDictData::getDictSort);
         Page page1 = this.baseMapper.selectPage(page, queryWrapper);
         if (page1.getSize() > 0) {
@@ -136,13 +142,23 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
                 } else {
                     //判断是否没有修改就提交
                     SysDictData dictDataById = this.baseMapper.getDictDataById(sysDictData.getDictCode() + "");
-                    if(!checkEquals(sysDictData,dictDataById)){
+                    if (!checkEquals(sysDictData, dictDataById)) {
                         //判断字典标题名是否唯一
                         if (checkUnique(1, sysDictData, this.baseMapper.checkDictLabelUnique(sysDictData))) {
-                            //当路由不为空时判断其路由是否重复
+                            //当字典键值不为空时判断其路由是否重复
                             if (!"".equals(sysDictData.getDictValue()) || !"".equals(sysDictData.getDictValue())) {
                                 //不唯一即false，因此不唯一时提示并返回
-                                if (!checkUnique(1, sysDictData, this.baseMapper.checkDictValueUnique(sysDictData))) {
+                                if (checkUnique(1, sysDictData, this.baseMapper.checkDictValueUnique(sysDictData))) {
+                                    //当其修改状态时
+                                    if (!sysDictData.getStatus().equals(dictDataById.getStatus())) {
+                                        SysDictType sysDictType = sysDictTypeDao.selectSysDictByType(dictDataById.getDictType());
+                                        //若它父类是停用则不准启用
+                                        if ("1".equals(sysDictType.getStatus())) {
+                                            result.setMeta(ResultTool.fail(ResultCode.PARENT_CLASS_DEACTIVATE));
+                                            return result;
+                                        }
+                                    }
+                                } else {
                                     result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_DATA_VALUE));
                                     return result;
                                 }
@@ -154,7 +170,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
                             result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_DATA_LABEL));
                             return result;
                         }
-                    }else{
+                    } else {
                         result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
                         return result;
                     }
@@ -227,14 +243,39 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
 
     @Override
     public Boolean checkEquals(SysDictData updateData, SysDictData originalData) {
-        if(updateData.getDictLabel().equals(originalData.getDictLabel())){
-            if(updateData.getDictValue().equals(originalData.getDictValue())){
-                if(updateData.getCssClass().equals(originalData.getCssClass())){
-                    if(updateData.getDictSort().equals(originalData.getDictSort())){
-                        if(updateData.getListClass().equals(originalData.getListClass())){
-                            if(updateData.getStatus().equals(originalData.getStatus())){
-                                if(updateData.getRemark().equals(originalData.getRemark())){
+        if (updateData.getDictLabel().equals(originalData.getDictLabel())) {
+            if (updateData.getDictValue().equals(originalData.getDictValue())) {
+                if (updateData.getDictSort().equals(originalData.getDictSort())) {
+                    if (updateData.getListClass().equals(originalData.getListClass())) {
+                        if (updateData.getStatus().equals(originalData.getStatus())) {
+                            if (updateData.getCssClass() != null) {
+                                if (originalData.getCssClass() != null) {
+                                    if (updateData.getCssClass().equals(originalData.getCssClass())) {
+                                        if (updateData.getRemark() != null) {
+                                            if (originalData.getRemark() != null) {
+                                                if (updateData.getRemark().equals(originalData.getRemark())) {
+                                                    return true;
+                                                }
+                                            } else {
+                                                return false;
+                                            }
+                                        } else {
+                                            if (originalData.getRemark() == null) {
+                                                return true;
+                                            } else {
+                                                return false;
+                                            }
+                                        }
+                                        return true;
+                                    }
+                                } else {
+                                    return false;
+                                }
+                            } else {
+                                if (originalData.getCssClass() == null) {
                                     return true;
+                                } else {
+                                    return false;
                                 }
                             }
                         }
