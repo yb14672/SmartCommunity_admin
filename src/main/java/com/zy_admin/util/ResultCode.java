@@ -88,6 +88,9 @@ public enum ResultCode {
     TEL_NON_COMPLIANCE(3036,"电话号码不符合规则" ),
     EMAIL_NON_COMPLIANCE(3037,"邮箱不符合规则" ),
     MASSAGE_NULL(3038,"信息为空" ),
+    BUILDING_REPEAT(3039,"楼层重复" ),
+    BUILDINGNAME_REPEAT(3040,"楼层名字重复" ),
+    BUILD_IDENTICAL(3040,"楼层信息完全相同" ),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),
