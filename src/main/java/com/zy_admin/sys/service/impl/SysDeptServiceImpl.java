@@ -69,8 +69,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             }
             String ancestors = ancestors(sysDept);
             sysDept.setAncestors(ancestors);
-            baseMapper.insertDept(sysDept);
+            Integer i = baseMapper.insertDept(sysDept);
             if (sysDept.getDeptId() != null) {
+                result.setData("新增成功，影响的行数："+ i);
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             }
         } catch (NullPointerException e) {
@@ -137,6 +138,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
 
                         int m = this.baseMapper.updateDeptSon(status,ancestors);
                         if (m >= 1) {
+                            result.setData("修改成功，影响的行数："+ m);
                             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                         }
                         result.setMeta(ResultTool.success(ResultCode.SUCCESS));

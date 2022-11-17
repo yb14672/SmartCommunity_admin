@@ -1,4 +1,4 @@
-package com.zy_admin.common.core.log;
+package com.zy_admin.common.core.annotation;
 
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.OperatorType;

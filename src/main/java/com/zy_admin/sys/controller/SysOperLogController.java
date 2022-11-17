@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.common.core.log.MyLog;
+import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.service.SysOperLogService;
@@ -56,7 +56,6 @@ public class SysOperLogController extends ApiController {
             sysOperLogList = sysOperLogService.getOperLogList();
         } else {
             //不为空就是选中导出操作日志
-            System.out.println(operLogIds);
             sysOperLogList = sysOperLogService.getOperLogById(operLogIds);
         }
         String fileName = URLEncoder.encode("操作日志表数据", "UTF-8");
@@ -138,7 +137,6 @@ public class SysOperLogController extends ApiController {
     @DeleteMapping("/deleteLog")
     @MyLog(title = "操作日志", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result deleteLog(@RequestParam("idList") List<Integer> LogIds) {
-        System.err.println(LogIds);
         if (LogIds.size()==0){
             return this.sysOperLogService.deleteLogs();
         }

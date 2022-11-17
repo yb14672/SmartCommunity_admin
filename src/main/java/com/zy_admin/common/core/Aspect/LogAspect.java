@@ -1,7 +1,8 @@
-package com.zy_admin.common.core.log;
+package com.zy_admin.common.core.Aspect;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.entity.SysUser;
@@ -50,7 +51,7 @@ public class LogAspect {
     /**
      * @annotation(MyLog类的路径) 在idea中，右键自定义的MyLog类-> 点击Copy Reference
      */
-    @Pointcut("@annotation(MyLog)")
+    @Pointcut("@annotation(com.zy_admin.common.core.annotation.MyLog)")
     public void logPointCut() {
         log.info("------>配置切入点");
     }

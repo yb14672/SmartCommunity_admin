@@ -54,7 +54,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     public Result logout(HttpServletRequest request) {
         String userId = JwtUtil.getMemberIdByJwtToken(request);
         SysUser user = this.baseMapper.queryById(userId);
-        System.err.println(user);
         Result result = new Result(user,ResultTool.fail(ResultCode.USER_LOGOUT_FAIL));
         if (redisService.empty()){
             result.setMeta(ResultTool.fail(ResultCode.USER_LOGOUT_SUCCESS));

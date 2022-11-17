@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.common.core.log.MyLog;
+import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.dto.UserDto;
@@ -121,7 +121,7 @@ public class SysUserController extends ApiController {
      *
      * @param file
      */
-    @RequestMapping("/import-data")
+    @PostMapping("/import-data")
     @MyLog(title = "用户管理", optParam = "#{file}", businessType = BusinessType.IMPORT)
     public Result importData(@RequestParam("file") MultipartFile file) {
         return sysUserService.importData(file);
@@ -168,7 +168,7 @@ public class SysUserController extends ApiController {
      * @throws IOException
      */
     @GetMapping("/uploadExcel")
-    @MyLog(title = "用户管理", optParam = "#{response}", businessType = BusinessType.OTHER)
+    @MyLog(title = "用户管理", optParam = "#{response}", businessType = BusinessType.EXPORT)
     public void uploadExcel(HttpServletResponse response) throws IOException {
         List<SysUser> sysUserList = new ArrayList<>();
         //直接下载模板

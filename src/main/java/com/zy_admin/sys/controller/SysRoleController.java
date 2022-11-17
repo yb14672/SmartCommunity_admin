@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.common.core.log.MyLog;
+import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.entity.SysRole;

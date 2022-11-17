@@ -7,7 +7,7 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.enums.BusinessType;
-import com.zy_admin.common.core.log.MyLog;
+import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.sys.dto.DataDictExcelDto;
 import com.zy_admin.sys.entity.SysDictData;
 import com.zy_admin.sys.entity.SysUser;
@@ -115,7 +115,6 @@ public class SysDictDataController extends ApiController {
      */
     @GetMapping("/getDict")
     public Result getDict(String dictType) {
-        System.out.println(dictType);
         return this.sysDictDataService.getDict(dictType);
     }
 
