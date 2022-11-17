@@ -12,9 +12,9 @@ import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
-import com.zy_admin.util.JwtUtils;
+import com.zy_admin.util.JwtUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -52,7 +52,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
 
     @Override
     public Result logout(HttpServletRequest request) {
-        String userId = JwtUtils.getMemberIdByJwtToken(request);
+        String userId = JwtUtil.getMemberIdByJwtToken(request);
         SysUser user = this.baseMapper.queryById(userId);
         System.err.println(user);
         Result result = new Result(user,ResultTool.fail(ResultCode.USER_LOGOUT_FAIL));
@@ -541,7 +541,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         SysUser user = baseMapper.login(sysUser);
         String jwtToken = "";
         if (user != null) {
-            jwtToken = JwtUtils.getJwtToken(user.getUserId() + "", user.getNickName());
+            jwtToken = JwtUtil.getJwtToken(user.getUserId() + "", user.getNickName());
             redisService.set(jwtToken, sysUser.getUserName());
             if ("1".equals(user.getStatus())) {
                 return new Result(jwtToken, ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED));

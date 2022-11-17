@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zy_admin.common.core.log.BusinessType;
-import com.zy_admin.common.core.log.MyLog;
 import com.zy_admin.sys.entity.SysRoleDept;
 import com.zy_admin.sys.service.SysRoleDeptService;
 import org.springframework.web.bind.annotation.*;
@@ -60,7 +58,6 @@ public class SysRoleDeptController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
-    @MyLog(title = "新增角色部门", optParam = "#{sysRoleDept}", businessType = BusinessType.OTHER)
     public R insert(@RequestBody SysRoleDept sysRoleDept) {
         return success(this.sysRoleDeptService.save(sysRoleDept));
     }
@@ -72,7 +69,6 @@ public class SysRoleDeptController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
-    @MyLog(title = "修改角色部门", optParam = "#{sysRoleDept}", businessType = BusinessType.OTHER)
     public R update(@RequestBody SysRoleDept sysRoleDept) {
         return success(this.sysRoleDeptService.updateById(sysRoleDept));
     }
@@ -84,7 +80,6 @@ public class SysRoleDeptController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
-    @MyLog(title = "删除角色部门", optParam = "#{idList}", businessType = BusinessType.OTHER)
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.sysRoleDeptService.removeByIds(idList));
     }

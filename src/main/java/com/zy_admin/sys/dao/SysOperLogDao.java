@@ -61,15 +61,5 @@ public interface SysOperLogDao extends BaseMapper<SysOperLog> {
      */
     List<SysOperLog> getOperLogList();
 
-    /**
-     * 查询操作日志并分页
-     * @param sysOperLog
-     * @param pageable
-     * @param startTime
-     * @param endTime
-     * @return
-     */
-    List<SysOperLog> selectOperLogByLimit(@Param("sysOperLog") SysOperLog sysOperLog, @Param("pageable") Pageable pageable, @Param("startTime") String startTime,@Param("endTime") String endTime);
-
 }
 

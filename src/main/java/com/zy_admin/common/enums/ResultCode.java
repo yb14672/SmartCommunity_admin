@@ -1,4 +1,4 @@
-package com.zy_admin.util;
+package com.zy_admin.common.enums;
 
 /**
  * @Author yb14672

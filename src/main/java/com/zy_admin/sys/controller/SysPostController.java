@@ -10,13 +10,13 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.common.core.log.BusinessType;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.core.log.MyLog;
 import com.zy_admin.sys.entity.SysPost;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysPostService;
 import com.zy_admin.util.ExcelUtil;
-import com.zy_admin.util.JwtUtils;
+import com.zy_admin.util.JwtUtil;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
@@ -50,11 +50,11 @@ public class SysPostController extends ApiController {
 
 
     @GetMapping("/getAllPost")
-    public Result getAllPost()
-    {
+    public Result getAllPost() {
         Result allPost = sysPostService.getAllPost();
         return allPost;
     }
+
     /**
      * 分页查询所有数据
      *
@@ -85,7 +85,6 @@ public class SysPostController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
-    @MyLog(title = "新增岗位数据", optParam = "#{sysPost}", businessType = BusinessType.OTHER)
     public R insert(@RequestBody SysPost sysPost) {
         return success(this.sysPostService.save(sysPost));
     }
@@ -97,7 +96,6 @@ public class SysPostController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
-    @MyLog(title = "修改岗位数据", optParam = "#{sysPost}", businessType = BusinessType.OTHER)
     public R update(@RequestBody SysPost sysPost) {
         return success(this.sysPostService.updateById(sysPost));
     }
@@ -109,7 +107,6 @@ public class SysPostController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
-    @MyLog(title = "删除岗位数据", optParam = "#{idList}", businessType = BusinessType.OTHER)
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.sysPostService.removeByIds(idList));
     }
@@ -129,9 +126,9 @@ public class SysPostController extends ApiController {
      * @return
      */
     @PostMapping("/addPost")
-    @MyLog(title = "添加岗位", optParam = "#{sysPost}", businessType = BusinessType.OTHER)
+    @MyLog(title = "岗位管理", optParam = "#{sysPost}", businessType = BusinessType.INSERT)
     public Result addPost(HttpServletRequest request, @RequestBody SysPost sysPost) {
-        String id = JwtUtils.getMemberIdByJwtToken(request);
+        String id = JwtUtil.getMemberIdByJwtToken(request);
         SysUser user = this.requestUtil.getUser(request);
         sysPost.setCreateTime(LocalDateTime.now().toString());
         sysPost.setCreateBy(user.getUserName());
@@ -140,7 +137,7 @@ public class SysPostController extends ApiController {
     }
 
     @PutMapping("/updatePost")
-    @MyLog(title = "修改岗位", optParam = "#{sysPost}", businessType = BusinessType.OTHER)
+    @MyLog(title = "岗位管理", optParam = "#{sysPost}", businessType = BusinessType.UPDATE)
     public Result updatePost(HttpServletRequest request, @RequestBody SysPost sysPost) {
         SysUser user = this.requestUtil.getUser(request);
         sysPost.setUpdateBy(user.getUserName());
@@ -149,6 +146,7 @@ public class SysPostController extends ApiController {
     }
 
     @PostMapping("/getExcel")
+    @MyLog(title = "岗位管理", optParam = "#{postIds}", businessType = BusinessType.EXPORT)
     public void getExcel(@RequestBody ArrayList<Integer> postIds, HttpServletResponse response) throws IOException {
         List<SysPost> sysPosts = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
@@ -177,7 +175,7 @@ public class SysPostController extends ApiController {
     }
 
     @DeleteMapping("/deletePost")
-    @MyLog(title = "删除岗位", optParam = "#{postIds}", businessType = BusinessType.OTHER)
+    @MyLog(title = "岗位管理", optParam = "#{postIds}", businessType = BusinessType.DELETE)
     public Result deletePost(@RequestParam("ids") List<Integer> postIds) {
         return sysPostService.deletePost(postIds);
     }

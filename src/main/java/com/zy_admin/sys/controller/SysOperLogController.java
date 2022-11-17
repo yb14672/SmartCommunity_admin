@@ -10,6 +10,8 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.log.MyLog;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.service.SysOperLogService;
 import com.zy_admin.util.Result;
@@ -46,6 +48,7 @@ public class SysOperLogController extends ApiController {
      * @param response
      */
     @GetMapping("/getExcel")
+    @MyLog(title = "操作日志", optParam = "#{operLogIds}", businessType = BusinessType.EXPORT)
     public void getExcel(@RequestParam("operLogIds") ArrayList<Integer> operLogIds, HttpServletResponse response) throws IOException {
         List<SysOperLog> sysOperLogList = new ArrayList<>();
         //判断操作日志的集合为空或者长度为0.则全部导出。
@@ -133,6 +136,7 @@ public class SysOperLogController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping("/deleteLog")
+    @MyLog(title = "操作日志", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result deleteLog(@RequestParam("idList") List<Integer> LogIds) {
         System.err.println(LogIds);
         if (LogIds.size()==0){
