@@ -4,36 +4,60 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.community.entity.ZyCommunity;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 小区 (ZyCommunity)表数据库访问层
+ * 小区 (ZyCommunityDto)表数据库访问层
  *
  * @author makejava
  * @since 2022-11-01 19:49:01
  */
-@Repository
 public interface ZyCommunityDao extends BaseMapper<ZyCommunity> {
-    /**
-     * 查询所有的小区信息加分页
-     * @return
-     */
-    List<ZyCommunity> selectCommunityLimit(@Param("zyCommunity")ZyCommunity zyCommunity, @Param("pageable")Pageable pageable);
 
     /**
-     * 获取数量
-     * @param zyCommunity
+     * 查询导出数据
+     * @param ids
      * @return
      */
-    Long count(@Param("zyCommunity") ZyCommunity zyCommunity);
+    List<CommunityExcel> selectByIds(@Param("ids") ArrayList<Long> ids);
 
     /**
-     * 获取下面的所有子集
-     * @param menuId
+     * 修改小区信息
+     * @param community
      * @return
      */
-    List<Long> getChildrenById(String menuId);
+    int updateCommunityById(ZyCommunity community);
+
+    /**
+     * 效验同一地区小区是否同名
+     * @param community
+     * @return
+     */
+    ZyCommunity checkZyCommunity(ZyCommunity community);
+    /**
+     * 新增小区
+     * @param community
+     * @return
+     */
+    int insertCommunity(ZyCommunity community);
+
+    /**
+     * 分页搜索条件
+     * @param community
+     * @param pageable
+     * @return
+     */
+    List<CommunityDto> selectAllByLimit(@Param("community")ZyCommunity community, @Param("pageable")Pageable pageable);
+
+    /**
+     * 统计数据量
+     * @param community
+     * @return
+     */
+    Long count(@Param("community") ZyCommunity community);
+
+
 }
 

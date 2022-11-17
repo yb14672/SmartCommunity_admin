@@ -1,6 +1,6 @@
 package com.zy_admin.common.core.text;
 
-import com.zy_admin.util.StringUtils;
+import com.zy_admin.util.StringUtil;
 
 /**
  * 字符串格式化
@@ -28,7 +28,7 @@ public class StrFormatter {
      */
     public static String format(final String strPattern, final Object... argArray)
     {
-        if (StringUtils.isEmpty(strPattern) || StringUtils.isEmpty(argArray))
+        if (StringUtil.isEmpty(strPattern) || StringUtil.isEmpty(argArray))
         {
             return strPattern;
         }

@@ -1,5 +1,7 @@
 package com.zy_admin.util;
 
+import com.zy_admin.common.enums.ResultCode;
+
 import java.io.Serializable;
 
 /**

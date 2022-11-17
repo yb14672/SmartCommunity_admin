@@ -10,9 +10,10 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.sys.dto.LoginInForExcelDto;
 import com.zy_admin.sys.entity.SysLogininfor;
-import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.service.SysLogininforService;
 import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.Result;
@@ -42,10 +43,10 @@ public class SysLogininforController extends ApiController {
     private SysLogininforService sysLogininforService;
 
     @PostMapping("/getExcel")
+    @MyLog(title = "登录日志", optParam = "#{ids}", businessType = BusinessType.EXPORT)
     public void getExcel(@RequestBody ArrayList<Integer> ids, HttpServletResponse response)throws IOException {
         //导出数据
         List<LoginInForExcelDto> loginInForExcelDtoList = sysLogininforService.queryLogininfor(ids);
-        System.err.println(loginInForExcelDtoList);
         String fileName = URLEncoder.encode("日志数据", "UTF-8");
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
@@ -119,16 +120,15 @@ public class SysLogininforController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping("/deleteByIds")
+    @MyLog(title = "登录日志", optParam = "#{infoIds}", businessType = BusinessType.DELETE)
     public Result delete(@RequestBody int[] infoIds) {
-        System.out.println(infoIds);
         return sysLogininforService.deleteByIds(infoIds);
     }
 
     @DeleteMapping("/EmptyLogininfor")
+    @MyLog(title = "登录日志", businessType = BusinessType.CLEAR)
     public Result EmptyLogininfor(){
         return sysLogininforService.EmptyLogininfor();
     }
-
-
 }
 

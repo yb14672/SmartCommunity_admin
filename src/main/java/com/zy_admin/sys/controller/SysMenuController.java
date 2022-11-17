@@ -5,15 +5,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zy_admin.common.core.log.BusinessType;
-import com.zy_admin.common.core.log.MyLog;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.entity.SysMenu;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysMenuService;
 import com.zy_admin.sys.service.SysUserService;
-import com.zy_admin.util.JwtUtils;
+import com.zy_admin.util.JwtUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,15 +65,44 @@ public class SysMenuController extends ApiController {
     }
 
     /**
+     * 获取菜单树
+     * @return
+     */
+    @GetMapping("/getMenuTree")
+    public Result getMenuTree(){
+        return this.sysMenuService.getMenuTrees();
+    }
+
+    /**
+     * 菜单的条件搜索
+     * @param menu
+     * @return
+     */
+    @GetMapping("/queryMenus")
+    public Result queryAllMenu(SysMenu menu){
+        return this.sysMenuService.queryAllMenu(menu);
+    }
+
+    /**
+     * 获取所有菜单
+     * @return 菜单结果
+     */
+    @GetMapping("/getMenus")
+    public Result getMenuList(HttpServletRequest request){
+        String userId = JwtUtil.getMemberIdByJwtToken(request);
+        return this.sysMenuService.getAllMenu(userId);
+    }
+
+    /**
      * 新增数据
      *
      * @param sysMenu 实体对象
      * @return 新增结果
      */
     @PostMapping("/addMenu")
-    @MyLog(title = "新增菜单", optParam = "#{sysMenu}", businessType = BusinessType.OTHER)
+    @MyLog(title = "菜单管理", optParam = "#{sysMenu}", businessType = BusinessType.INSERT)
     public Result insert(@RequestBody SysMenu sysMenu, HttpServletRequest request) {
-        String userId = JwtUtils.getMemberIdByJwtToken(request);
+        String userId = JwtUtil.getMemberIdByJwtToken(request);
         Result result = this.sysUserService.queryById(userId);
         try {
             SysUser user = (SysUser) result.getData();
@@ -93,11 +122,13 @@ public class SysMenuController extends ApiController {
      * @param sysMenu 实体对象
      * @return 修改结果
      */
-    @PutMapping
-    @MyLog(title = "修改菜单", optParam = "#{sysMenu}", businessType = BusinessType.OTHER)
-    public R update(@RequestBody SysMenu sysMenu) {
-        return success(this.sysMenuService.updateById(sysMenu));
+    @PutMapping("/updateMenu")
+    @MyLog(title = "菜单管理", optParam = "#{sysMenu}", businessType = BusinessType.UPDATE)
+    public Result updateMenu(@RequestBody SysMenu sysMenu){
+        Result result = this.sysMenuService.updateMenu(sysMenu);
+        return result;
     }
+
 
     /**
      * id删除菜单
@@ -105,7 +136,7 @@ public class SysMenuController extends ApiController {
      * @return
      */
     @DeleteMapping("/deleteById")
-    @MyLog(title = "根据id删除菜单", optParam = "#{id}", businessType = BusinessType.OTHER)
+    @MyLog(title = "菜单管理", optParam = "#{id}", businessType = BusinessType.DELETE)
     public Result deleteById(@RequestParam String id) {
         return this.sysMenuService.deteleById(Long.valueOf(id));
     }
@@ -117,7 +148,7 @@ public class SysMenuController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
-    @MyLog(title = "批量删除菜单", optParam = "#{idList}", businessType = BusinessType.OTHER)
+    @MyLog(title = "菜单管理", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result deleteByIdList(@RequestParam String[] idList) {
         List<Long> idList1=new ArrayList<Long>();
         for (String str : idList) {
@@ -125,42 +156,6 @@ public class SysMenuController extends ApiController {
         }
         Result result = this.sysMenuService.deleteByIdList(idList1);
         return result;
-    }
-
-    /**
-     * 获取所有菜单
-     * @return 菜单结果
-     */
-    @RequestMapping("/getMenus")
-    public Result getMenuList(HttpServletRequest request){
-        String userId = JwtUtils.getMemberIdByJwtToken(request);
-        return this.sysMenuService.getAllMenu(userId);
-    }
-    /**
-     * 菜单的条件搜索
-     * @param menu
-     * @return
-     */
-    @GetMapping("/queryMenus")
-    public Result queryAllMenu(SysMenu menu){
-        return this.sysMenuService.queryAllMenu(menu);
-    }
-
-    /**
-     * 修改菜单
-     * @param sysMenu
-     * @return
-     */
-    @PutMapping("/updateMenu")
-    @MyLog(title = "修改菜单", optParam = "#{sysMenu}", businessType = BusinessType.OTHER)
-    public Result updateMenu(@RequestBody SysMenu sysMenu){
-        Result result = this.sysMenuService.updateMenu(sysMenu);
-        return result;
-    }
-
-    @GetMapping("/getMenuTree")
-    public Result getMenuTree(){
-        return this.sysMenuService.getMenuTrees();
     }
 }
 

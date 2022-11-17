@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.community.dao.ZyCommunityDao">
+
+    <resultMap type="com.zy_admin.community.dto.CommunityDto" id="ZyCommunityMap">
+        <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+        <result property="communityName" column="community_name" jdbcType="VARCHAR"/>
+        <result property="communityCode" column="community_code" jdbcType="VARCHAR"/>
+        <result property="communityProvenceCode" column="community_provence_code" jdbcType="VARCHAR"/>
+        <result property="communityCityCode" column="community_city_code" jdbcType="VARCHAR"/>
+        <result property="communityTownCode" column="community_town_code" jdbcType="VARCHAR"/>
+        <result property="communityDetailedAddress" column="community_detailed_address" jdbcType="VARCHAR"/>
+        <result property="communityLongitude" column="community_longitude" jdbcType="VARCHAR"/>
+        <result property="communityLatitude" column="community_latitude" jdbcType="VARCHAR"/>
+        <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+        <result property="communitySort" column="community_sort" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ZyCommunityMap">
+        select community_id,
+               community_name,
+               community_code,
+               community_provence_code,
+               community_city_code,
+               community_town_code,
+               community_detailed_address,
+               community_longitude,
+               community_latitude,
+               dept_id,
+               community_sort,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from zy_community
+        where community_id = #{communityId}
+    </select>
+
+    <!--分页搜索-->
+    <select id="selectAllByLimit" resultMap="ZyCommunityMap">
+        select *,(select name from sys_area a1 where a1.`code` = zc.community_provence_code) communityProvenceName,
+        (select name from sys_area a1 where a1.`code` = zc.community_city_code) communityCityName,
+        (select name from sys_area a1 where a1.`code` = zc.community_town_code) communityTownName
+        from zy_community zc
+        <where>
+            <if test="community.communityName != null and community.communityName != ''">
+                and zc.community_name = #{community.communityName}
+            </if>
+            <if test="community.communityCode != null and community.communityCode != ''">
+                and zc.community_code = #{community.communityCode}
+            </if>
+        </where>
+        limit #{pageable.index},#{pageable.pageSize}
+    </select>
+
+    <!--统计总数据量-->
+    <select id="count" resultType="java.lang.Long">
+        select
+        count(1)
+        from zy_community
+        <where>
+            <if test="community.communityName != null and community.communityName != ''">
+                and community_name = #{community.communityName}
+            </if>
+            <if test="community.communityCode != null and community.communityCode != ''">
+                and community_code = #{community.communityCode}
+            </if>
+        </where>
+    </select>
+    <select id="checkZyCommunity" resultType="com.zy_admin.community.entity.ZyCommunity">
+        select *
+        from zy_community
+        where community_provence_code = #{communityProvenceCode}
+        and community_city_code = #{communityCityCode}
+        and community_town_code = #{communityTownCode}
+        and community_detailed_address = #{communityDetailedAddress}
+        <if test="communityId != null and communityId != ''">
+            and community_id != #{communityId}
+        </if>
+    </select>
+    <select id="selectByIds" resultType="com.zy_admin.community.dto.CommunityExcel">
+        select *,(select name from sys_area a1 where a1.`code` = zc.community_provence_code) communityProvenceName,
+        (select name from sys_area a1 where a1.`code` = zc.community_city_code) communityCityName,
+        (select name from sys_area a1 where a1.`code` = zc.community_town_code) communityTownName
+        from zy_community zc
+        <if test="ids.size != 0">
+            where zc.community_id in
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="communityId" useGeneratedKeys="true">
+        insert into zy_community(community_name, community_code, community_provence_code, community_city_code,
+                                 community_town_code, community_detailed_address, community_longitude,
+                                 community_latitude, dept_id, community_sort, create_by, create_time, update_by,
+                                 update_time, remark)
+        values (#{communityName}, #{communityCode}, #{communityProvenceCode}, #{communityCityCode},
+                #{communityTownCode}, #{communityDetailedAddress}, #{communityLongitude}, #{communityLatitude},
+                #{deptId}, #{communitySort}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="communityId" useGeneratedKeys="true">
+        insert into zy_community(community_name, community_code, community_provence_code, community_city_code,
+        community_town_code, community_detailed_address, community_longitude, community_latitude, dept_id,
+        community_sort, create_by, create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.communityName}, #{entity.communityCode}, #{entity.communityProvenceCode},
+            #{entity.communityCityCode}, #{entity.communityTownCode}, #{entity.communityDetailedAddress},
+            #{entity.communityLongitude}, #{entity.communityLatitude}, #{entity.deptId}, #{entity.communitySort},
+            #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="communityId" useGeneratedKeys="true">
+        insert into zy_community(community_name, community_code, community_provence_code, community_city_code,
+        community_town_code, community_detailed_address, community_longitude, community_latitude, dept_id,
+        community_sort, create_by, create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.communityName}, #{entity.communityCode}, #{entity.communityProvenceCode},
+            #{entity.communityCityCode}, #{entity.communityTownCode}, #{entity.communityDetailedAddress},
+            #{entity.communityLongitude}, #{entity.communityLatitude}, #{entity.deptId}, #{entity.communitySort},
+            #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+        on duplicate key update
+        community_name = values(community_name),
+        community_code = values(community_code),
+        community_provence_code = values(community_provence_code),
+        community_city_code = values(community_city_code),
+        community_town_code = values(community_town_code),
+        community_detailed_address = values(community_detailed_address),
+        community_longitude = values(community_longitude),
+        community_latitude = values(community_latitude),
+        dept_id = values(dept_id),
+        community_sort = values(community_sort),
+        create_by = values(create_by),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        remark = values(remark)
+    </insert>
+
+    <insert id="insertCommunity">
+        insert into zy_community(community_id, community_name, community_code, community_provence_code,
+                                 community_city_code, community_town_code, community_detailed_address,
+                                 community_longitude, community_latitude, dept_id, community_sort, create_by,
+                                 create_time, update_by, update_time, remark)
+        values (#{communityId}, #{communityName}, #{communityCode}, #{communityProvenceCode}, #{communityCityCode},
+                #{communityTownCode}, #{communityDetailedAddress}, #{communityLongitude}, #{communityLatitude},
+                #{deptId}, #{communitySort}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update zy_community
+        <set>
+            <if test="communityName != null and communityName != ''">
+                community_name = #{communityName},
+            </if>
+            <if test="communityCode != null and communityCode != ''">
+                community_code = #{communityCode},
+            </if>
+            <if test="communityProvenceCode != null and communityProvenceCode != ''">
+                community_provence_code = #{communityProvenceCode},
+            </if>
+            <if test="communityCityCode != null and communityCityCode != ''">
+                community_city_code = #{communityCityCode},
+            </if>
+            <if test="communityTownCode != null and communityTownCode != ''">
+                community_town_code = #{communityTownCode},
+            </if>
+            <if test="communityDetailedAddress != null and communityDetailedAddress != ''">
+                community_detailed_address = #{communityDetailedAddress},
+            </if>
+            <if test="communityLongitude != null and communityLongitude != ''">
+                community_longitude = #{communityLongitude},
+            </if>
+            <if test="communityLatitude != null and communityLatitude != ''">
+                community_latitude = #{communityLatitude},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId},
+            </if>
+            <if test="communitySort != null">
+                community_sort = #{communitySort},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where community_id = #{communityId}
+    </update>
+
+    <update id="updateCommunityById">
+        update zy_community
+        <set>
+            <if test="communityName != null and communityName != ''">
+                community_name = #{communityName},
+            </if>
+            <if test="communityCode != null and communityCode != ''">
+                community_code = #{communityCode},
+            </if>
+            <if test="communityProvenceCode != null and communityProvenceCode != ''">
+                community_provence_code = #{communityProvenceCode},
+            </if>
+            <if test="communityCityCode != null and communityCityCode != ''">
+                community_city_code = #{communityCityCode},
+            </if>
+            <if test="communityTownCode != null and communityTownCode != ''">
+                community_town_code = #{communityTownCode},
+            </if>
+            <if test="communityDetailedAddress != null and communityDetailedAddress != ''">
+                community_detailed_address = #{communityDetailedAddress},
+            </if>
+            <if test="communityLongitude != null and communityLongitude != ''">
+                community_longitude = #{communityLongitude},
+            </if>
+            <if test="communityLatitude != null and communityLatitude != ''">
+                community_latitude = #{communityLatitude},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId},
+            </if>
+            <if test="communitySort != null">
+                community_sort = #{communitySort},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where community_id = #{communityId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from zy_community
+        where community_id = #{communityId}
+    </delete>
+
+</mapper>
+

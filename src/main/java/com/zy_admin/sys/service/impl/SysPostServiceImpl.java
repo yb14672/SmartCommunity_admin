@@ -7,7 +7,7 @@ import com.zy_admin.sys.dto.PostDto;
 import com.zy_admin.sys.entity.SysPost;
 import com.zy_admin.sys.service.SysPostService;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 

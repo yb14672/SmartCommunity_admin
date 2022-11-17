@@ -1,27 +1,28 @@
 package com.zy_admin.community.dto;
 
-import com.zy_admin.common.Pageable;
 import com.zy_admin.community.entity.ZyCommunity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
- * @author fangqian
+ * @author admin
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ZyCommunityDto {
-    /**
-     * 显示数据
-     */
-    private List<CommunityDto> zyCommunityList;
-    /**
-     * 分页条件
-     */
-    private Pageable pageable;
+public class CommunityDto extends ZyCommunity {
 
+    /**
+     * 省名称
+     */
+    private String communityProvenceName;
+    /**
+     * 城市名称
+     */
+    private String communityCityName;
+    /**
+     * 区名称
+     */
+    private String communityTownName;
 }
