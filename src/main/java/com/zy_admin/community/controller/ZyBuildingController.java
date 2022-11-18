@@ -1,13 +1,18 @@
 package com.zy_admin.community.controller;
 
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.common.core.log.BusinessType;
-import com.zy_admin.common.core.log.MyLog;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.service.ZyBuildingService;
+import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
@@ -15,6 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,27 +43,58 @@ public class ZyBuildingController extends ApiController {
     private ZyBuildingService zyBuildingService;
 
     /**
+     * 用于批量导出楼层数据
+     *
+     * @param buildingIds
+     * @param response
+     */
+    @GetMapping("/getExcel")
+    @MyLog(title = "导出楼层", optParam = "#{buildingIds}", businessType = BusinessType.EXPORT)
+    public void getExcel(@RequestParam("buildingIds") ArrayList<String> buildingIds, HttpServletResponse response) throws IOException {
+        List<ZyBuilding> zyBuildingList = new ArrayList<>();
+        //如果前台传的集合为空或者长度为0.则全部导出。
+        if (buildingIds == null || buildingIds.size() == 0) {
+            zyBuildingList = zyBuildingService.getBuildingLists();
+        } else {
+            //执行查询角色列表的sql语句
+            zyBuildingList = zyBuildingService.queryZyBuildingById(buildingIds);
+        }
+        String fileName = URLEncoder.encode("楼层表数据", "UTF-8");
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("content-type", "text/html;charset=UTF-8");
+        // 内容样式
+        HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
+        EasyExcel.write(response.getOutputStream(), ZyBuilding.class)
+                .excelType(ExcelTypeEnum.XLS)
+                //自适应表格格式
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                .autoCloseStream(true)
+                .sheet("模板")
+                .doWrite(zyBuildingList);
+    }
+
+    /**
      * 删除
      * @param idList
      * @return
      */
     @DeleteMapping
     @MyLog(title = "删除楼层类型", optParam = "#{idList}", businessType = BusinessType.DELETE)
-    public Result delete(@RequestParam String[] idList){
-        List<Integer> idList1 = new ArrayList<Integer>();
+    public Result delete(@RequestParam("idList") ArrayList<String> idList){
+
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
-            for (String str : idList) {
-//                把删除选上的id添加到idlist1的集合里
-                idList1.add(Integer.valueOf(str));
-            }
-            //修改字典表
-            result = this.zyBuildingService.deleteByIdList(idList1);
+
+            //修改楼层表
+            result = this.zyBuildingService.deleteByIdList(idList);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println(result);
         return result;
     }
 
@@ -65,10 +105,10 @@ public class ZyBuildingController extends ApiController {
     @PutMapping("/updateZyBuilding")
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "修改楼层", optParam = "#{zyBuilding}", businessType = BusinessType.UPDATE)
-    public Result updateZyBuilding(@RequestBody ZyBuilding zyBuilding){
+    public Result updateZyBuilding(@RequestBody ZyBuilding zyBuilding,HttpServletRequest request){
         System.out.println(zyBuilding);
         System.out.println("controller");
-        return zyBuildingService.updateZyBuilding(zyBuilding);
+        return zyBuildingService.updateZyBuilding(zyBuilding,request);
     }
 
     /**
@@ -78,8 +118,8 @@ public class ZyBuildingController extends ApiController {
      */
     @PostMapping("/addZyBuilding")
     @MyLog(title = "新增楼层", optParam = "#{zyBuilding}", businessType = BusinessType.INSERT)
-    public Result insertDictType(@RequestBody ZyBuilding zyBuilding){
-        return this.zyBuildingService.insertZyBuilding(zyBuilding);
+    public Result insertDictType(@RequestBody ZyBuilding zyBuilding, HttpServletRequest request) throws Exception {
+        return this.zyBuildingService.insertZyBuilding(zyBuilding,request);
     }
 
     /**

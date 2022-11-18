@@ -5,7 +5,7 @@ import com.zy_admin.sys.dao.SysRoleMenuDao;
 import com.zy_admin.sys.entity.SysRoleMenu;
 import com.zy_admin.sys.service.SysRoleMenuService;
 import com.zy_admin.util.Result;
-import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 

@@ -67,8 +67,7 @@
     <select id="count" resultType="java.lang.Long">
         select count(1)
         from zy_building b
-        left join zy_owner_room zor on b.building_id = zor.building_id
-        left join zy_community c on zor.community_id = c.community_id
+        join zy_community c on b.community_id = c.community_id
         <where>
             <if test="zyBuilding.buildingId != null">
                 and building_id = #{zyBuilding.buildingId}
@@ -79,34 +78,15 @@
             <if test="zyBuilding.buildingCode != null and zyBuilding.buildingCode != ''">
                 and building_code like concat ('%',#{zyBuilding.buildingCode},'%')
             </if>
-            <if test="zyBuilding.buildingAcreage != null">
-                and building_acreage = #{zyBuilding.buildingAcreage}
-            </if>
-            <if test="zyBuilding.communityId != null">
-                and community_id = #{zyBuilding.communityId}
-            </if>
-            <if test="zyBuilding.createBy != null and zyBuilding.createBy != ''">
-                and create_by = #{zyBuilding.createBy}
-            </if>
-            <if test="zyBuilding.createTime != null">
-                and create_time = #{zyBuilding.createTime}
-            </if>
-            <if test="zyBuilding.updateBy != null and zyBuilding.updateBy != ''">
-                and update_by = #{zyBuilding.updateBy}
-            </if>
-            <if test="zyBuilding.updateTime != null">
-                and update_time = #{zyBuilding.updateTime}
-            </if>
-            <if test="zyBuilding.remark != null and zyBuilding.remark != ''">
-                and remark = #{zyBuilding.remark}
+            <if test="zyBuilding.communityId != null and zyBuilding.communityId!=''">
+                and b.community_id = #{zyBuilding.communityId}
             </if>
         </where>
     </select>
     <!--楼栋和分页-->
-    <select id="selectBuildLimit" resultType="com.zy_admin.community.entity.ZyBuilding">
+    <select id="selectBuildLimit" resultType="com.zy_admin.community.dto.ZyBuildingDto">
         select * from zy_building b
-        left join zy_owner_room zor on b.building_id = zor.building_id
-        left join zy_community c on zor.community_id = c.community_id
+        right join zy_community c on b.community_id = c.community_id
         <where>
             <if test="zyBuilding.buildingName!=null and zyBuilding.buildingName!=''">
                 and building_name like concat ('%',#{zyBuilding.buildingName},'%')
@@ -114,13 +94,36 @@
             <if test="zyBuilding.buildingCode!=null and zyBuilding.buildingCode!=''">
                 and building_code like concat ('%',#{zyBuilding.buildingCode},'%')
             </if>
+            <if test="zyBuilding.communityId != null and zyBuilding.communityId != '' ">
+                and b.community_id = #{zyBuilding.communityId}
+            </if>
         </where>
         <if test="pageable.pageSize!=null">
             limit #{pageable.index},#{pageable.pageSize}
         </if>
     </select>
+
     <select id="getZyBuilding" resultType="com.zy_admin.community.entity.ZyBuilding">
         select * from zy_building where building_id=#{buildId}
+    </select>
+    <!--选中的地方导出-->
+    <select id="queryZyBuildingById" resultType="com.zy_admin.community.entity.ZyBuilding">
+        select * from zy_building
+        <if test="list!=null">
+            where building_id in (
+            <foreach collection="list" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+    </select>
+    <!--导出全部-->
+    <select id="getBuildingLists" resultType="com.zy_admin.community.entity.ZyBuilding">
+        select * from zy_building
+    </select>
+    <!--判断楼层名不重复-->
+    <select id="selectZyBuildingByName" resultType="com.zy_admin.community.entity.ZyBuilding">
+        select * from zy_building where building_name = #{buildingName} and community_id = #{communityId}
     </select>
 
     <!--新增所有列-->
@@ -162,8 +165,8 @@
         remark = values(remark)
     </insert>
     <insert id="insertZyBuilding">
-        insert into zy_building(building_name,building_acreage,remark) values
-        (#{buildingName},#{buildingAcreage},#{remark})
+        insert into zy_building(building_id,building_name,building_code,building_acreage,community_id,create_by,create_time,update_by,update_time,remark) values
+        (#{buildingId},#{buildingName},#{buildingCode},#{buildingAcreage},#{communityId},#{createBy},#{createTime},#{updateBy},#{updateTime},#{remark})
     </insert>
 
     <!--通过主键修改数据-->
@@ -205,8 +208,40 @@
     </update>
     <!--修改楼层-->
     <update id="updateZyBuilding">
-        update zy_building set building_name=#{zyBuilding.buildingName},building_acreage=#{zyBuilding.buildingAcreage}
-        ,remark=#{zyBuilding.remark} where building_id =#{zyBuilding.buildingId}
+        update zy_building
+        <set>
+            <if test="zyBuilding.buildingId != null">
+                building_id = #{zyBuilding.buildingId},
+            </if>
+            <if test="zyBuilding.buildingName != null and zyBuilding.buildingName != ''">
+                building_name = #{zyBuilding.buildingName},
+            </if>
+            <if test="zyBuilding.buildingCode != null and zyBuilding.buildingCode != ''">
+                building_code = #{zyBuilding.buildingCode},
+            </if>
+            <if test="zyBuilding.buildingAcreage != null">
+                building_acreage = #{zyBuilding.buildingAcreage},
+            </if>
+            <if test="zyBuilding.communityId != null">
+                community_id = #{zyBuilding.communityId},
+            </if>
+            <if test="zyBuilding.createBy != null and zyBuilding.createBy != ''">
+                create_by = #{zyBuilding.createBy},
+            </if>
+            <if test="zyBuilding.createTime != null">
+                create_time = #{zyBuilding.createTime},
+            </if>
+            <if test="zyBuilding.updateBy != null and zyBuilding.updateBy != ''">
+                update_by = #{zyBuilding.updateBy},
+            </if>
+            <if test="zyBuilding.updateTime != null">
+                update_time = #{zyBuilding.updateTime},
+            </if>
+            <if test="zyBuilding.remark != null and zyBuilding.remark != ''">
+                remark = #{zyBuilding.remark},
+            </if>
+        </set>
+        where building_id = #{zyBuilding.buildingId}
     </update>
 
     <delete id="deleteByIdList" parameterType="integer">

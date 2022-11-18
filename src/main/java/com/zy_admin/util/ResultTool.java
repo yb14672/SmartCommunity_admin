@@ -1,6 +1,5 @@
 package com.zy_admin.util;
 
-import com.zy_admin.common.enums.ResultCode;
 
 /**
  * @Author yb14672
@@ -20,7 +19,7 @@ public class ResultTool {
         return new JsonResult(false);
     }
 
-    public static JsonResult fail(ResultCode resultEnum) {
+    public static JsonResult fail(com.zy_admin.util.ResultCode resultEnum) {
         return new JsonResult(false, resultEnum);
     }
 }

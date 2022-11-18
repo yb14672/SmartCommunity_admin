@@ -2,10 +2,11 @@ package com.zy_admin.community.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.community.dto.ZyBuildingDto;
 import com.zy_admin.community.entity.ZyBuilding;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,17 +18,30 @@ import java.util.List;
 public interface ZyBuildingDao extends BaseMapper<ZyBuilding> {
 
     /**
+     * 勾选用户获取excel
+     * @param buildingIds
+     * @return
+     */
+    List<ZyBuilding> queryZyBuildingById(@Param("list") ArrayList<String> buildingIds);
+
+    /**
+     * 所有用户获取excel
+     * @return
+     */
+    List<ZyBuilding> getBuildingLists();
+
+    /**
      * 删除ids
      * @param idList
      * @return
      */
-    int deleteByIdList(@Param("idList") List<Integer> idList);
+    int deleteByIdList(@Param("idList") List<String> idList);
 
     /**
      * 楼栋信息和分页
      * @return
      */
-    List<ZyBuilding> selectBuildLimit(@Param("zyBuilding") ZyBuilding zyBuilding, @Param("pageable")Pageable pageable);
+    List<ZyBuildingDto> selectBuildLimit(@Param("zyBuilding") ZyBuilding zyBuilding, @Param("pageable")Pageable pageable);
 
     /**
      * 计算数量
@@ -47,8 +61,7 @@ public interface ZyBuildingDao extends BaseMapper<ZyBuilding> {
      * @param buildingName
      * @return
      */
-    @Select("select * from zy_building where building_name = #{buildingName}")
-    ZyBuilding selectZyBuildingByName(String buildingName);
+    ZyBuilding selectZyBuildingByName(@Param("buildingName")String buildingName,@Param("communityId")String communityId);
 
     /**
      * 修改楼层

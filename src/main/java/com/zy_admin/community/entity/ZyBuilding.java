@@ -1,11 +1,11 @@
 package com.zy_admin.community.entity;
 
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 /**
  * 楼栋 (ZyBuilding)表实体类
@@ -19,41 +19,45 @@ import java.util.Date;
 @NoArgsConstructor
 public class ZyBuilding extends Model<ZyBuilding> {
     //楼栋id
+    @ExcelProperty("楼栋id")
+    @TableId
     private String buildingId;
+
     //楼栋名称
+    @ExcelProperty("楼栋名称")
     private String buildingName;
+
     //楼栋编码
+    @ExcelProperty("楼栋编码")
     private String buildingCode;
+
     //楼栋面积
+    @ExcelProperty("楼栋面积")
     private Double buildingAcreage;
+
     //小区id
-    private Long communityId;
+    @ExcelProperty("小区id")
+    private String communityId;
+
     //创建者
+    @ExcelProperty("创建者")
     private String createBy;
+
     //创建时间
-    private Date createTime;
+    @ExcelProperty("创建时间")
+    private String createTime;
+
     //更新者
+    @ExcelProperty("更新者")
     private String updateBy;
+
     //更新时间
-    private Date updateTime;
+    @ExcelProperty("更新时间")
+    private String updateTime;
+
     //备注
+    @ExcelProperty("备注")
     private String remark;
 
-
-    @Override
-    public String toString() {
-        return "ZyBuilding{" +
-                "buildingId='" + buildingId + '\'' +
-                ", buildingName='" + buildingName + '\'' +
-                ", buildingCode='" + buildingCode + '\'' +
-                ", buildingAcreage=" + buildingAcreage +
-                ", communityId=" + communityId +
-                ", createBy='" + createBy + '\'' +
-                ", createTime=" + createTime +
-                ", updateBy='" + updateBy + '\'' +
-                ", updateTime=" + updateTime +
-                ", remark='" + remark + '\'' +
-                '}';
-    }
 }
 

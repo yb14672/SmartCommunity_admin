@@ -57,7 +57,9 @@
                 and zc.community_code = #{community.communityCode}
             </if>
         </where>
-        limit #{pageable.index},#{pageable.pageSize}
+        <if test="pageable.pageSize!=0">
+            limit #{pageable.index},#{pageable.pageSize}
+        </if>
     </select>
 
     <!--统计总数据量-->

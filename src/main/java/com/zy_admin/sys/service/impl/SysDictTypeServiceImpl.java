@@ -8,7 +8,7 @@ import com.zy_admin.sys.dto.SysDictDto;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
 import com.zy_admin.util.Result;
-import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
