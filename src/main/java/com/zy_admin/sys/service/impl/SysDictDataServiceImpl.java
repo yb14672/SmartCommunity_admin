@@ -3,6 +3,7 @@ package com.zy_admin.sys.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.dao.SysDictDataDao;
 import com.zy_admin.sys.dao.SysDictTypeDao;
 import com.zy_admin.sys.dto.DataDictExcelDto;
@@ -10,8 +11,8 @@ import com.zy_admin.sys.entity.SysDictData;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDictDataService;
+import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.StringUtil;
 import org.springframework.stereotype.Service;
@@ -142,6 +143,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
                 } else {
                     //判断是否没有修改就提交
                     SysDictData dictDataById = this.baseMapper.getDictDataById(sysDictData.getDictCode() + "");
+                    ObjUtil.checkEquals(sysDictData, dictDataById);
                     if (!checkEquals(sysDictData, dictDataById)) {
                         //判断字典标题名是否唯一
                         if (checkUnique(1, sysDictData, this.baseMapper.checkDictLabelUnique(sysDictData))) {
