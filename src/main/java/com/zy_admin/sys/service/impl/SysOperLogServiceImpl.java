@@ -3,16 +3,15 @@ package com.zy_admin.sys.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dao.SysOperLogDao;
-import com.zy_admin.sys.dto.PostDto;
 import com.zy_admin.sys.dto.SysOperLogDto;
 import com.zy_admin.sys.entity.SysOperLog;
-import com.zy_admin.sys.entity.SysPost;
 import com.zy_admin.sys.service.SysOperLogService;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +23,13 @@ import java.util.List;
 @Service("sysOperLogService")
 public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLog> implements SysOperLogService {
 
+    /**
+     * 分页查询所有数据
+     *
+     * @param pageable       分页对象
+     * @param sysOperLog 查询实体
+     * @return 所有数据
+     */
     @Override
     public Result getOperLogList(SysOperLog sysOperLog, Pageable pageable,String startTime, String endTime,String orderByColumn,String isAsc) {
         Result result =new Result();
@@ -41,12 +47,70 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLog
             pageable.setPageNum(0);
         }
         pageable.setTotal(total);
-        List<SysOperLog> sysOperLogs = this.baseMapper.queryAllByLimit(sysOperLog, pageable, startTime, endTime,orderByColumn,isAsc);
+        List<SysOperLog> sysOperLogs = this.baseMapper.queryAllByLimit(sysOperLog, pageable, startTime, endTime);
         SysOperLogDto sysOperLogDto = new SysOperLogDto(sysOperLogs,pageable,startTime,endTime,orderByColumn,isAsc);
         result.setData(sysOperLogDto);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
+    }
 
+    @Override
+    public Result deleteById(List<Integer> logids) {
+      Result result = new Result();
+        try {
+            this.baseMapper.deleteOperLogById(logids);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        }
+        return result;
+    }
+
+    /**
+     * 清空
+     * @return
+     */
+    @Override
+    public Result deleteLogs() {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        int i = this.baseMapper.deleteLogs();
+        if (i > 0) {
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+
+    /**
+     * 新增操作日志
+     * @param sysOperLog
+     */
+    @Override
+    public void addOperlog(SysOperLog sysOperLog) {
+        this.baseMapper.addOperlog(sysOperLog);
+    }
+
+    /**
+     * 选中id导出操作日志
+     * @param operLogIds
+     * @return
+     */
+    @Override
+    public List<SysOperLog> getOperLogById(ArrayList<Integer> operLogIds) {
+        //判断有没有选中，没有选中就导出全部的
+        if (operLogIds!=null){
+            operLogIds = operLogIds.size() == 0 ? null :operLogIds;
+        }
+        return this.baseMapper.getOperLogById(operLogIds);
+    }
+
+    /**
+     * 导出所有操作日志
+     * @return
+     */
+    @Override
+    public List<SysOperLog> getOperLogList() {
+        return this.baseMapper.getOperLogList();
     }
 }
 

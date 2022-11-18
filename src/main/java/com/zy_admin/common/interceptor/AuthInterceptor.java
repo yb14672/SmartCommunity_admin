@@ -1,17 +1,17 @@
 package com.zy_admin.common.interceptor;
- 
+
 
 import com.alibaba.fastjson.JSON;
 import com.zy_admin.sys.service.RedisService;
-import com.zy_admin.util.JwtUtils;
+import com.zy_admin.util.JwtUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
- 
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
@@ -28,13 +28,11 @@ public class AuthInterceptor implements HandlerInterceptor {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=utf-8");
         String token = request.getHeader("token");
-
         if (request.getMethod().toUpperCase().equals("OPTIONS")) {
             return true;
         }
         //验证token的有效性
-        if (!JwtUtils.checkToken(token)){
-            System.err.println(111);
+        if (!JwtUtil.checkToken(token)){
             response.getWriter().print(JSON.toJSONString(new Result(null, ResultTool.fail(ResultCode.USER_TOKEN_INVALID))));
             return false;
         }

@@ -1,16 +1,30 @@
 package com.zy_admin.sys.controller;
 
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.sys.dto.LoginInForExcelDto;
 import com.zy_admin.sys.entity.SysLogininfor;
 import com.zy_admin.sys.service.SysLogininforService;
+import com.zy_admin.util.ExcelUtil;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +41,32 @@ public class SysLogininforController extends ApiController {
      */
     @Resource
     private SysLogininforService sysLogininforService;
+
+    @PostMapping("/getExcel")
+    @MyLog(title = "登录日志", optParam = "#{ids}", businessType = BusinessType.EXPORT)
+    public void getExcel(@RequestBody ArrayList<Integer> ids, HttpServletResponse response)throws IOException {
+        //导出数据
+        List<LoginInForExcelDto> loginInForExcelDtoList = sysLogininforService.queryLogininfor(ids);
+        String fileName = URLEncoder.encode("日志数据", "UTF-8");
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("content-type", "text/html;charset=UTF-8");
+        // 内容样式
+        HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
+        EasyExcel.write(response.getOutputStream(), LoginInForExcelDto.class)
+                .excelType(ExcelTypeEnum.XLS)
+                //自适应表格格式
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                .autoCloseStream(true)
+                .sheet("模板")
+                .doWrite(loginInForExcelDtoList);
+    }
+
+    @GetMapping("/queryLoginInfor")
+    public Result queryLoginInfor(SysLogininfor sysLogininfor, Pageable pageable, String startTime, String endTime) {
+        return sysLogininforService.queryLoginInfor(sysLogininfor,pageable,startTime,endTime);
+    }
 
     /**
      * 分页查询所有数据
@@ -76,12 +116,19 @@ public class SysLogininforController extends ApiController {
     /**
      * 删除数据
      *
-     * @param idList 主键结合
+     * @param infoIds 主键结合
      * @return 删除结果
      */
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.sysLogininforService.removeByIds(idList));
+    @DeleteMapping("/deleteByIds")
+    @MyLog(title = "登录日志", optParam = "#{infoIds}", businessType = BusinessType.DELETE)
+    public Result delete(@RequestBody int[] infoIds) {
+        return sysLogininforService.deleteByIds(infoIds);
+    }
+
+    @DeleteMapping("/EmptyLogininfor")
+    @MyLog(title = "登录日志", businessType = BusinessType.CLEAR)
+    public Result EmptyLogininfor(){
+        return sysLogininforService.EmptyLogininfor();
     }
 }
 

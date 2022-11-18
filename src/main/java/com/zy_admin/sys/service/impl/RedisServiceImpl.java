@@ -9,6 +9,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
  
 import javax.annotation.Resource;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -52,7 +53,7 @@ public class RedisServiceImpl implements RedisService {
      */
     @Override
     public  Boolean update(String key){
-        return redisTemplate.expire(key, 20, TimeUnit.MINUTES);
+        return redisTemplate.expire(key, 10, TimeUnit.MINUTES);
     }
 
     /**
@@ -65,7 +66,22 @@ public class RedisServiceImpl implements RedisService {
         ValueOperations<String,Object> vo = redisTemplate.opsForValue();
         //验证有效时间
         Long expire = redisTemplate.boundHashOps(key).getExpire();
-        System.err.println("redis有效时间："+expire+"S");
+        //System.err.println("redis有效时间："+expire+"S");
         return vo.get(key);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public Boolean empty() {
+        try {
+            Set<String> keys = redisTemplate.keys("*");
+            redisTemplate.delete(keys);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

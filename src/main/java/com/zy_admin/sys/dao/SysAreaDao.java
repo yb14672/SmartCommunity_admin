@@ -1,7 +1,10 @@
 package com.zy_admin.sys.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zy_admin.community.dto.AreaDto;
 import com.zy_admin.sys.entity.SysArea;
+
+import java.util.List;
 
 /**
  * 区域表(SysArea)表数据库访问层
@@ -11,5 +14,6 @@ import com.zy_admin.sys.entity.SysArea;
  */
 public interface SysAreaDao extends BaseMapper<SysArea> {
 
+    List<AreaDto> queryAreaTree();
 }
 

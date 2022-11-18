@@ -1,19 +1,29 @@
 package com.zy_admin.sys.controller;
 
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.sys.dto.SysOperLogDto;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.service.SysOperLogService;
 import com.zy_admin.util.Result;
+import com.zy_admin.util.ExcelUtil;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +42,48 @@ public class SysOperLogController extends ApiController {
     private SysOperLogService sysOperLogService;
 
     /**
+     * 批量导出操作日志数据
+     *
+     * @param operLogIds
+     * @param response
+     */
+    @GetMapping("/getExcel")
+    @MyLog(title = "操作日志", optParam = "#{operLogIds}", businessType = BusinessType.EXPORT)
+    public void getExcel(@RequestParam("operLogIds") ArrayList<Integer> operLogIds, HttpServletResponse response) throws IOException {
+        List<SysOperLog> sysOperLogList = new ArrayList<>();
+        //判断操作日志的集合为空或者长度为0.则全部导出。
+        if (operLogIds == null || operLogIds.size() == 0) {
+            sysOperLogList = sysOperLogService.getOperLogList();
+        } else {
+            //不为空就是选中导出操作日志
+            sysOperLogList = sysOperLogService.getOperLogById(operLogIds);
+        }
+        String fileName = URLEncoder.encode("操作日志表数据", "UTF-8");
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("content-type", "text/html;charset=UTF-8");
+        // 内容样式
+        HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
+        EasyExcel.write(response.getOutputStream(), SysOperLog.class)
+                .excelType(ExcelTypeEnum.XLS)
+                //自适应表格格式
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                .autoCloseStream(true)
+                .sheet("模板")
+                .doWrite(sysOperLogList);
+    }
+
+    /**
+     * 新增操作日志
+     * @param sysOperLog
+     * @return
+     */
+    public void addOperlog(SysOperLog sysOperLog) {
+         sysOperLogService.addOperlog(sysOperLog);
+    }
+
+  /**
      * 分页查询所有数据
      *
      * @param page       分页对象
@@ -79,17 +131,27 @@ public class SysOperLogController extends ApiController {
     /**
      * 删除数据
      *
-     * @param idList 主键结合
+     * @param LogIds 主键结合
      * @return 删除结果
      */
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.sysOperLogService.removeByIds(idList));
+    @DeleteMapping("/deleteLog")
+    @MyLog(title = "操作日志", optParam = "#{idList}", businessType = BusinessType.DELETE)
+    public Result deleteLog(@RequestParam("idList") List<Integer> LogIds) {
+        if (LogIds.size()==0){
+            return this.sysOperLogService.deleteLogs();
+        }
+        return sysOperLogService.deleteById(LogIds);
     }
+    /**
+     * 分页查询所有数据
+     *
+     * @param pageable       分页对象
+     * @param sysOperLog 查询实体
+     * @return 所有数据
+     */
 
     @GetMapping("/getOperLogList")
-    public Result getOperLogList(SysOperLog sysOperLog,Pageable pageable,String startTime, String endTime,@RequestParam(value = "orderByColumn",defaultValue = "oper_time") String orderByColumn,@RequestParam(value = "isAsc",defaultValue = "desc") String isAsc){
-        System.err.println(orderByColumn+"  "+isAsc);
+    public Result getOperLogList(SysOperLog sysOperLog, Pageable pageable, String startTime, String endTime, @RequestParam(value = "orderByColumn",defaultValue = "oper_time") String orderByColumn, @RequestParam(value = "isAsc",defaultValue = "desc") String isAsc){
         Result operLogList = this.sysOperLogService.getOperLogList(sysOperLog, pageable, startTime, endTime, orderByColumn, isAsc);
         return operLogList;
     }

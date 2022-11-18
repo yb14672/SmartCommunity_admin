@@ -8,7 +8,7 @@ import com.zy_admin.sys.dto.SysDictDto;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
@@ -117,6 +117,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
                 try {
                     //新增字典
                     int sysDictType1 = this.baseMapper.insert(sysDictType);
+                    result.setData("新增成功，影响的行数："+ sysDictType1);
                     result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
                 } catch (Exception e) {
                     return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -155,6 +156,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
                             if (!sysDictType1.getStatus().equals(sysDictType.getStatus())) {
                                 this.sysDictDataDao.changeStatusByDictType(sysDictType.getDictType(), sysDictType.getStatus());
                             }
+                            result.setData("修改成功，影响的行数："+ sysDictType1);
                             result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
                         }
                     } else {
@@ -207,6 +209,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
             if (childs < 1) {
                 int i = this.baseMapper.deleteByIdList(idList);
                 if (i >= 1) {
+                    result.setData("删除成功，影响的行数：" + i);
                     result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 } else {
                     result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));

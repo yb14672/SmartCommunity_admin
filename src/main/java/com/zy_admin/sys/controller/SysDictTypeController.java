@@ -6,13 +6,14 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.baomidou.mybatisplus.extension.api.R;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
 import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,7 @@ public class SysDictTypeController extends ApiController {
      * @param response
      */
     @GetMapping("/getExcel")
+    @MyLog(title = "字典类型", optParam = "#{dictIds}", businessType = BusinessType.EXPORT)
     public void getExcel(@RequestParam("dictIds") ArrayList<Integer> dictIds, HttpServletResponse response) throws IOException {
         List<SysDictType> sysDictTypeList = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
@@ -55,7 +57,6 @@ public class SysDictTypeController extends ApiController {
             sysDictTypeList = sysDictTypeService.getDictLists();
         } else {
             //执行查询角色列表的sql语句
-            System.out.println(dictIds);
             sysDictTypeList = sysDictTypeService.queryDictById(dictIds);
         }
         String fileName = URLEncoder.encode("字典表数据", "UTF-8");
@@ -80,6 +81,7 @@ public class SysDictTypeController extends ApiController {
      * @return
      */
     @DeleteMapping
+    @MyLog(title = "字典类型", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result delete(@RequestParam String[] idList){
         List<Integer> idList1 = new ArrayList<Integer>();
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -104,6 +106,7 @@ public class SysDictTypeController extends ApiController {
      */
     @PutMapping("/updateDict")
     @Transactional(rollbackFor = Exception.class)
+    @MyLog(title = "字典类型", optParam = "#{sysDictType}", businessType = BusinessType.UPDATE)
     public Result updateDict(@RequestBody SysDictType sysDictType){
         return sysDictTypeService.updateDict(sysDictType);
     }
@@ -113,6 +116,7 @@ public class SysDictTypeController extends ApiController {
      * @return
      */
     @PostMapping("/addSysDict")
+    @MyLog(title = "字典类型", optParam = "#{sysDictType}", businessType = BusinessType.INSERT)
     public Result insertDictType(@RequestBody SysDictType sysDictType){
         sysDictType.setCreateTime(LocalDateTime.now().toString());
         return this.sysDictTypeService.insertOrUpdateBatch(sysDictType);
@@ -152,28 +156,6 @@ public class SysDictTypeController extends ApiController {
     @GetMapping("/{id}")
     public Result selectOne(@PathVariable String id) {
         return this.sysDictTypeService.getDictTypeById(id);
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param sysDictType 实体对象
-     * @return 新增结果
-     */
-    @PostMapping
-    public R insert(@RequestBody SysDictType sysDictType) {
-        return success(this.sysDictTypeService.save(sysDictType));
-    }
-
-    /**
-     * 修改数据
-     *
-     * @param sysDictType 实体对象
-     * @return 修改结果
-     */
-    @PutMapping
-    public R update(@RequestBody SysDictType sysDictType) {
-        return success(this.sysDictTypeService.updateById(sysDictType));
     }
 }
 

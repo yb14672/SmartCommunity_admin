@@ -6,6 +6,8 @@ import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.sys.dto.DataDictExcelDto;
 import com.zy_admin.sys.entity.SysDictData;
 import com.zy_admin.sys.entity.SysUser;
@@ -71,6 +73,7 @@ public class SysDictDataController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
+    @MyLog(title = "字典数据", optParam = "#{sysDictData}", businessType = BusinessType.INSERT)
     public Result insert(@RequestBody SysDictData sysDictData, HttpServletRequest request) {
         //获取当前登录的用户，用于添加创建人
         SysUser user = requestUtil.getUser(request);
@@ -85,6 +88,7 @@ public class SysDictDataController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
+    @MyLog(title = "字典数据", optParam = "#{sysDictData}", businessType = BusinessType.UPDATE)
     public Result update(@RequestBody SysDictData sysDictData, HttpServletRequest request) {
         //获取当前登录的用户，用于添加创建人
         SysUser user = requestUtil.getUser(request);
@@ -98,6 +102,7 @@ public class SysDictDataController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @MyLog(title = "字典数据", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result delete(@RequestParam("idList") List<String> idList) {
         return this.sysDictDataService.removeDictDataByIds(idList);
     }
@@ -121,6 +126,7 @@ public class SysDictDataController extends ApiController {
      * @return
      */
     @GetMapping("/export")
+    @MyLog(title = "字典数据", optParam = "#{ids}", businessType = BusinessType.EXPORT)
     public void export(@RequestParam("ids") ArrayList<Integer> ids,@RequestParam("dictType") String dictType, HttpServletResponse response) throws IOException {
         //用于存储要导出的数据列表
         List<DataDictExcelDto> sysDictDataList = new ArrayList<>();

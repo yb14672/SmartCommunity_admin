@@ -23,6 +23,12 @@ import java.util.List;
 public interface SysUserDao extends BaseMapper<SysUser> {
 
     /**
+     * 下载模板
+     * @return
+     */
+    SysUser uploadUserTemplate();
+
+    /**
      * 根据id删除用户
      * @param idList
      * @return
@@ -149,6 +155,8 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      */
     @Select("select * from sys_user where user_name = #{userName} and del_flag != 2")
     SysUser checkUserName(String userName);
+
+
     /**
      * 新增用户角色权限
      * @param userId
@@ -186,5 +194,12 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @return
      */
     UserRoleDto authRole(Long userId);
+
+    /**
+     * 循环插入数据
+     * @param userEntityList
+     * @return
+     */
+    boolean saveBatch(List<SysUser> userEntityList);
 }
 

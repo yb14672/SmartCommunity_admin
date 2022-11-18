@@ -28,6 +28,10 @@ public class SysAreaController extends ApiController {
     @Resource
     private SysAreaService sysAreaService;
 
+    @GetMapping("/queryAreaTree")
+    public Result queryAreaTree(){
+        return sysAreaService.queryAreaTree();
+    }
     /**
      * 分页查询所有数据
      *

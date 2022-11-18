@@ -8,10 +8,14 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * 日志操作DTO
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SysOperLogDto  {
+public class SysOperLogDto {
     private List<SysOperLog> sysOperLogs;
     private Pageable pageable;
     private String startTime;
