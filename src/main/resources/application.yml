@@ -25,9 +25,9 @@ server:
 mybatis-plus:
   # 如果是放在src/main/java目录下 classpath:/com/yourpackage/*/mapper/*Mapper.xml
   # 如果是放在resource目录 classpath:/mapper/*Mapper.xml
-  mapper-locations: classpath:dao/*.xml
+  mapper-locations: classpath:dao/**/*.xml
   #实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: com.example.demo.**.entity
+  typeAliasesPackage: com.zy_admin.sys.entity,com.zy_admin.community.entity
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: false

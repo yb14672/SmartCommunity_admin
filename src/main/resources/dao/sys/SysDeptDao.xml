@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.sys.dao.SysDeptDao">
+    <!--更新状态-->
+    <update id="updateDeptSon">
+        update sys_dept set status=#{status} where ancestors like concat(#{ancestors},'%')
+    </update>
+    <!--根据id查数据-->
+    <select id="getDeptByDeptId" resultType="com.zy_admin.sys.entity.SysDept">
+        select * from sys_dept where dept_id = #{deptId}
+    </select>
+    <!--根据条件查询部门-->
+    <select id="getDeptList" resultType="com.zy_admin.sys.dto.DeptTreeDto">
+        select * from sys_dept
+        where del_flag != 2
+        <if test="deptName != null">
+            and dept_name like concat('%',#{deptName},'%')
+        </if>
+        <if test="status != null">
+            and status =#{status}
+        </if>
+        order by parent_id,order_num asc
+    </select>
+    <!--部门名查重-->
+    <select id="checkDeptNameUnique" resultType="com.zy_admin.sys.entity.SysDept">
+        select *
+        from sys_dept
+        where dept_name = #{deptName}
+          and del_flag != 2 and parent_id=#{parentId} limit 1
+    </select>
+    <!--新增部门 useGeneratedKeys(主键回显)-->
+    <insert id="insertDept" keyProperty="deptId" useGeneratedKeys="true"
+            parameterType="com.zy_admin.sys.entity.SysDept">
+        insert into sys_dept
+        (parent_id, ancestors, dept_name, order_num, leader, phone, email, status, del_flag, create_by, create_time,
+         update_by, update_time)
+        values (#{parentId}, #{ancestors}, #{deptName}, #{orderNum}, #{leader}, #{phone}, #{email}, #{status},
+                #{delFlag}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
+    </insert>
+    <!--查询子级id集合-->
+    <select id="getDeptIdList" resultType="java.lang.Long">
+        select dept_id
+        from sys_dept
+        where parent_id = #{deptId}
+    </select>
+    <update id="changeStatus" keyProperty="deptId">
+        update sys_dept
+        set status = #{status}
+        where dept_id in (
+            select dept_id
+            from (
+                     select dept_id
+                     from sys_dept
+                     where sys_dept = #{deptId}
+                        or parent_id = #{deptId}
+                        or parent_id in
+                           (select dept_id from (select dept_id from sys_dept where parent_id = #{deptId}) temp)
+                 ) a
+        )
+    </update>
+    <!--修改部门-->
+    <update id="updateDept" keyProperty="deptId"
+            parameterType="com.zy_admin.sys.entity.SysDept">
+        update sys_dept
+        <set>
+            <if test="parentId!=null">
+                parent_id = #{parentId},
+            </if>
+            <if test="ancestors!=null and ancestors !=''">
+                ancestors = #{ancestors},
+            </if>
+            <if test="deptName!=null and deptName !=''">
+                dept_name = #{deptName},
+            </if>
+            <if test="orderNum!=null">
+                order_num = #{orderNum},
+            </if>
+            <if test="leader!=null and leader !=''">
+                leader = #{leader},
+            </if>
+            <if test="phone!=null and phone !=''">
+                phone = #{phone},
+            </if>
+            <if test="email!=null and email !=''">
+                email = #{email},
+            </if>
+            <if test="status!=null and status !=''">
+                status = #{status},
+            </if>
+            <if test="delFlag!=null and delFlag !=''">
+                del_flag = #{delFlag},
+            </if>
+            <if test="createBy!=null and createBy !=''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime!=null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy!=null and updateBy !=''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime!=null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where dept_id = #{deptId}
+    </update>
+    <!--删除部门-->
+    <delete id="deleteByIdList" parameterType="integer">
+        update sys_dept set del_flag = '2' where dept_id in
+        <foreach collection="idList" item="dept_id" separator="," open="(" close=")">
+            #{dept_id}
+        </foreach>
+    </delete>
+    <!--判断下面有没有子集-->
+    <select id="hasChildDept" resultType="java.lang.Integer">
+        select count(*)
+        FROM sys_dept
+        where del_flag = '0'
+          and parent_id = #{deptId}
+    </select>
+    <!--判断下面有没有用户-->
+    <select id="hasUserDept" resultType="java.lang.Integer">
+        select count(*)
+        from sys_user
+        where dept_id in
+        <foreach collection="idList" item="dept_id" separator="," open="(" close=")">
+            #{dept_id}
+        </foreach>
+    </select>
+    <!--查询父级id-->
+    <select id="getDeptById" resultType="com.zy_admin.sys.entity.SysDept">
+        select *
+        from sys_dept
+        where dept_id = #{deptId}
+    </select>
+</mapper>

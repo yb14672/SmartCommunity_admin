@@ -1,7 +1,10 @@
 package com.zy_admin.community.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zy_admin.common.Pageable;
+import com.zy_admin.community.dto.UnitListDto;
 import com.zy_admin.community.entity.ZyUnit;
+import com.zy_admin.util.Result;
 
 /**
  * 单元 (ZyUnit)表服务接口
@@ -11,5 +14,12 @@ import com.zy_admin.community.entity.ZyUnit;
  */
 public interface ZyUnitService extends IService<ZyUnit> {
 
+    /**
+     *
+     * @param unitListDto
+     * @param pageable
+     * @return
+     */
+    Result getUnitList(ZyUnit unitListDto,Pageable pageable);
 }
 

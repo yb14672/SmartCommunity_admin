@@ -5,8 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.Pageable;
+import com.zy_admin.community.dto.UnitListDto;
 import com.zy_admin.community.entity.ZyUnit;
 import com.zy_admin.community.service.ZyUnitService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -83,5 +86,21 @@ public class ZyUnitController extends ApiController {
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.zyUnitService.removeByIds(idList));
     }
+
+    /**
+     * 单元楼查询分页
+
+     */
+    @GetMapping("/getUnitList")
+    public Result getUnitList( ZyUnit zyUnit, Pageable pageable){
+
+        System.out.println(zyUnit.toString());
+        System.out.println(pageable.toString());
+        Result unitList = zyUnitService.getUnitList(zyUnit, pageable);
+        System.out.println(unitList.toString());
+        return unitList;
+
+    }
+
 }
 
