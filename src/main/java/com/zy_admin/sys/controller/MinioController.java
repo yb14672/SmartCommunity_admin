@@ -2,7 +2,7 @@ package com.zy_admin.sys.controller;
 
 import com.zy_admin.util.MinioUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

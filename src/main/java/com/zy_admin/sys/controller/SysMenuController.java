@@ -13,7 +13,7 @@ import com.zy_admin.sys.service.SysMenuService;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.web.bind.annotation.*;
 

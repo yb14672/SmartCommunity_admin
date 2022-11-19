@@ -125,6 +125,17 @@
     <select id="selectZyBuildingByName" resultType="com.zy_admin.community.entity.ZyBuilding">
         select * from zy_building where building_name = #{buildingName} and community_id = #{communityId}
     </select>
+    <!--判断下面有没有子集-->
+    <select id="selectChild" resultType="java.lang.Long">
+        select count(*) from zy_building b left join zy_unit u on b.building_id = u.building_id
+        <if test="list!=null">
+            where u.building_id in (
+            <foreach collection="list" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="" useGeneratedKeys="true">

@@ -1,17 +1,18 @@
 package com.zy_admin.community.service.impl;
 
+import com.zy_admin.util.JwtUtil;
+import com.zy_admin.util.Result;
+import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.SnowflakeManager;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyBuildingDao;
 import com.zy_admin.community.dto.ZyBuildingDto;
 import com.zy_admin.community.dto.ZyBuildingDtoAll;
 import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.service.ZyBuildingService;
 import com.zy_admin.sys.dao.SysUserDao;
-import com.zy_admin.util.JwtUtil;
-import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultTool;
-import com.zy_admin.util.SnowflakeManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,28 +67,35 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
      */
     @Override
     public Result deleteByIdList(List<String > idList) {
-        Result result = new Result(null, ResultTool.fail(com.zy_admin.util.ResultCode.COMMON_FAIL));
-        //判断是单个
-        if (idList.size() == 1) {
-            int i = this.baseMapper.deleteByIdList(idList);
-            result.setData("删除成功，影响的行数：" + i);
-            result.setMeta(ResultTool.success(com.zy_admin.util.ResultCode.SUCCESS));
-        //多个就是批量删除
-        } else {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        Long aLong = this.baseMapper.selectChild(idList);
+        System.out.println(aLong);
+        //判断下面有没有子集
+        if (aLong>0){
+            result.setMeta(ResultTool.fail(ResultCode.BUILD_HAVA_CHILD));
+        }else {
+            //判断是单个
+            if (idList.size() == 1) {
+                int i = this.baseMapper.deleteByIdList(idList);
+                result.setData("删除成功，影响的行数：" + i);
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                //多个就是批量删除
+            } else {
                 int i = this.baseMapper.deleteByIdList(idList);
                 if (i >= 1) {
-                    result.setMeta(ResultTool.success(com.zy_admin.util.ResultCode.SUCCESS));
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 } else {
-                    result.setMeta(ResultTool.fail(com.zy_admin.util.ResultCode.DELETE_FAIL));
+                    result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
                 }
             }
+        }
         return result;
     }
 
     @Override
     public Result selectBuildLimit(ZyBuilding zyBuilding,Pageable pageable) {
         //默认给失败的情况
-        Result result = new Result(null, ResultTool.fail(com.zy_admin.util.ResultCode.COMMON_FAIL));
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //满足条件的总数
         Long total = this.baseMapper.count(zyBuilding);
         //默认设置页面为0
@@ -112,7 +120,7 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
         //存到data数据里面
         result.setData(zyBuildingDtoAll);
         //返回信号
-        result.setMeta(ResultTool.success(com.zy_admin.util.ResultCode.SUCCESS));
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         System.out.println(result);
         return result;
     }
@@ -132,19 +140,19 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
         String id = JwtUtil.getMemberIdByJwtToken(request);
         zyBuilding.setCreateBy(sysUserDao.getUserById(id).getUserName());
 
-        Result result = new Result(null, ResultTool.fail(com.zy_admin.util.ResultCode.COMMON_FAIL));
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断同一小区的楼层是否唯一,type为0是新增
         if (!selectZyBuildingByName(0, zyBuilding)) {
-            result.setMeta(ResultTool.fail(com.zy_admin.util.ResultCode.BUILDING_REPEAT));
+            result.setMeta(ResultTool.fail(ResultCode.BUILDING_REPEAT));
             return result;
         }
         try {
             //新增楼层
             int sysDictType1 = this.baseMapper.insertZyBuilding(zyBuilding);
-            result.setMeta(ResultTool.fail(com.zy_admin.util.ResultCode.SUCCESS));
+            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
-            return new Result(null, ResultTool.fail(com.zy_admin.util.ResultCode.COMMON_FAIL));
+            return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         }
 
     }
@@ -161,7 +169,7 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
         ZyBuilding zyBuilding1 = this.baseMapper.getZyBuilding(zyBuilding.getBuildingId());
         System.out.println(zyBuilding1);
         //默认给失败
-        Result result = new Result(null, ResultTool.fail(com.zy_admin.util.ResultCode.COMMON_FAIL));
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             //判断是不是完全相同
 //            if (checkEquals(zyBuilding1, zyBuilding)) {
@@ -172,17 +180,17 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
                     zyBuilding.setUpdateBy(sysUserDao.getUserById(id).getUserName());
                     int i = this.baseMapper.updateZyBuilding(zyBuilding);
                     if (i == 1) {
-                        result.setMeta(ResultTool.fail(com.zy_admin.util.ResultCode.SUCCESS));
+                        result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
                     }
                 } else {
-                    result.setMeta(ResultTool.fail(com.zy_admin.util.ResultCode.BUILDINGNAME_REPEAT));
+                    result.setMeta(ResultTool.fail(ResultCode.BUILDINGNAME_REPEAT));
                 }
 //            } else {
-//                result.setMeta(ResultTool.fail(com.zy_admin.util.ResultCode.BUILD_IDENTICAL));
+//                result.setMeta(ResultTool.fail(ResultCode.BUILD_IDENTICAL));
 //            }
         } catch (Exception e) {
             e.printStackTrace();
-            result.setMeta(ResultTool.fail(com.zy_admin.util.ResultCode.COMMON_FAIL));
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
         }
         return result;
     }
@@ -195,11 +203,11 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
      */
     @Override
     public Result queryById(String id) {
-        Result result = new Result(null, ResultTool.fail(com.zy_admin.util.ResultCode.COMMON_FAIL));
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         ZyBuilding zyBuilding = this.baseMapper.queryById(id);
         if (zyBuilding != null || zyBuilding.getBuildingId() != null) {
             result.setData(zyBuilding);
-            result.setMeta(ResultTool.success(com.zy_admin.util.ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
     }

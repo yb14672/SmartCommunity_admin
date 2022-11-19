@@ -16,6 +16,12 @@ import java.util.List;
  * @since 2022-11-01 19:49:00
  */
 public interface ZyBuildingDao extends BaseMapper<ZyBuilding> {
+    /**
+     * 判断下面有没有子集
+     * @param buildingIds
+     * @return
+     */
+    Long selectChild(@Param("list") List<String> buildingIds);
 
     /**
      * 勾选用户获取excel
@@ -78,6 +84,11 @@ public interface ZyBuildingDao extends BaseMapper<ZyBuilding> {
     ZyBuilding queryById(String id);
 
 
+    /**
+     * 根据楼层id查楼层
+     * @param buildId
+     * @return
+     */
     ZyBuilding getZyBuilding(@Param("buildId") String buildId);
 }
 

@@ -16,7 +16,7 @@ import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.entity.SysUserUpload;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.*;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

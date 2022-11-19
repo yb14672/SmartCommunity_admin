@@ -8,7 +8,7 @@ import com.zy_admin.sys.entity.MenuTree;
 import com.zy_admin.sys.entity.SysMenu;
 import com.zy_admin.sys.service.SysMenuService;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.Tree;
 import org.springframework.stereotype.Service;

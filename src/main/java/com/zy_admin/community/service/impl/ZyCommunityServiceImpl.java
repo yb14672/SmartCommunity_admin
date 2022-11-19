@@ -10,7 +10,7 @@ import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.community.service.ZyCommunityService;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.util.*;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

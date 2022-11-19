@@ -1,6 +1,7 @@
 package com.zy_admin.util;
 
 
+import com.zy_admin.common.enums.ResultCode;
 
 import java.io.Serializable;
 
@@ -20,27 +21,27 @@ public class JsonResult<T> implements Serializable {
 
     public JsonResult(boolean success) {
         this.success = success;
-        this.errorCode = success ? com.zy_admin.util.ResultCode.SUCCESS.getCode() : com.zy_admin.util.ResultCode.COMMON_FAIL.getCode();
-        this.errorMsg = success ? com.zy_admin.util.ResultCode.SUCCESS.getMessage() : com.zy_admin.util.ResultCode.COMMON_FAIL.getMessage();
+        this.errorCode = success ? ResultCode.SUCCESS.getCode() : ResultCode.COMMON_FAIL.getCode();
+        this.errorMsg = success ? ResultCode.SUCCESS.getMessage() : ResultCode.COMMON_FAIL.getMessage();
     }
 
-    public JsonResult(boolean success, com.zy_admin.util.ResultCode resultEnum) {
+    public JsonResult(boolean success, ResultCode resultEnum) {
         this.success = success;
-        this.errorCode = success ? com.zy_admin.util.ResultCode.SUCCESS.getCode() : (resultEnum == null ? com.zy_admin.util.ResultCode.COMMON_FAIL.getCode() : resultEnum.getCode());
-        this.errorMsg = success ? com.zy_admin.util.ResultCode.SUCCESS.getMessage() : (resultEnum == null ? com.zy_admin.util.ResultCode.COMMON_FAIL.getMessage() : resultEnum.getMessage());
+        this.errorCode = success ? ResultCode.SUCCESS.getCode() : (resultEnum == null ? ResultCode.COMMON_FAIL.getCode() : resultEnum.getCode());
+        this.errorMsg = success ? ResultCode.SUCCESS.getMessage() : (resultEnum == null ? ResultCode.COMMON_FAIL.getMessage() : resultEnum.getMessage());
     }
 
     public JsonResult(boolean success, T data) {
         this.success = success;
-        this.errorCode = success ? com.zy_admin.util.ResultCode.SUCCESS.getCode() : com.zy_admin.util.ResultCode.COMMON_FAIL.getCode();
-        this.errorMsg = success ? com.zy_admin.util.ResultCode.SUCCESS.getMessage() : com.zy_admin.util.ResultCode.COMMON_FAIL.getMessage();
+        this.errorCode = success ? ResultCode.SUCCESS.getCode() : ResultCode.COMMON_FAIL.getCode();
+        this.errorMsg = success ? ResultCode.SUCCESS.getMessage() : ResultCode.COMMON_FAIL.getMessage();
         this.data = data;
     }
 
-    public JsonResult(boolean success, com.zy_admin.util.ResultCode resultEnum, T data) {
+    public JsonResult(boolean success, ResultCode resultEnum, T data) {
         this.success = success;
-        this.errorCode = success ? com.zy_admin.util.ResultCode.SUCCESS.getCode() : (resultEnum == null ? com.zy_admin.util.ResultCode.COMMON_FAIL.getCode() : resultEnum.getCode());
-        this.errorMsg = success ? com.zy_admin.util.ResultCode.SUCCESS.getMessage() : (resultEnum == null ? com.zy_admin.util.ResultCode.COMMON_FAIL.getMessage() : resultEnum.getMessage());
+        this.errorCode = success ? ResultCode.SUCCESS.getCode() : (resultEnum == null ? ResultCode.COMMON_FAIL.getCode() : resultEnum.getCode());
+        this.errorMsg = success ? ResultCode.SUCCESS.getMessage() : (resultEnum == null ? ResultCode.COMMON_FAIL.getMessage() : resultEnum.getMessage());
         this.data = data;
     }
 
