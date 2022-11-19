@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.dao.SysDeptDao;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.sys.dao.SysUserRoleDao;
@@ -13,8 +14,8 @@ import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtil;
+import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -687,8 +688,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Transactional(rollbackFor = Exception.class)
     public Result adminUpdateUser(UserDto userDto) {
         Result result = new Result();
-        SysUserDto user = this.baseMapper.personal(userDto.getUserId() + "");
-        if (checkEquals(user, userDto)) {
+        UserDto user = this.baseMapper.getUserInfo(userDto.getUserId() + "");
+        //需要判断的字段名
+        String[] fields = new String[]{"nickName", "deptId","phonenumber", "sex", "email", "status", "postId", "roleId", "remark"};
+        if (ObjUtil.checkEquals(user, userDto,fields)) {
             result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
             return result;
         }

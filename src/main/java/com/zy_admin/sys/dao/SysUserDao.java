@@ -23,6 +23,13 @@ import java.util.List;
 public interface SysUserDao extends BaseMapper<SysUser> {
 
     /**
+     * 根据ID获取用户信息--用户管理修改界面
+     * @param id
+     * @return
+     */
+    UserDto getUserInfo(String id);
+
+    /**
      * 下载模板
      * @return
      */

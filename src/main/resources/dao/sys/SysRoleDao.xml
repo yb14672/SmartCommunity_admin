@@ -18,6 +18,30 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
+    <resultMap type="com.zy_admin.sys.dto.RoleAndRoleMenu" id="RoleAndRoleMenu">
+        <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+        <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
+        <result property="roleKey" column="role_key" jdbcType="VARCHAR"/>
+        <result property="roleSort" column="role_sort" jdbcType="INTEGER"/>
+        <result property="dataScope" column="data_scope" jdbcType="VARCHAR"/>
+        <result property="menuCheckStrictly" column="menu_check_strictly" jdbcType="INTEGER"/>
+        <result property="deptCheckStrictly" column="dept_check_strictly" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="getRoleInfo" resultMap="RoleAndRoleMenu">
+        select
+          role_id, role_name, role_key, role_sort, data_scope, menu_check_strictly, dept_check_strictly, status, del_flag, create_by, create_time, update_by, update_time, remark
+        from sys_role
+        where role_id = #{roleId}
+    </select>
 
     <!--查询单个-->
     <select id="queryById" resultMap="SysRoleMap">
@@ -75,6 +99,7 @@
             limit #{pageable.index} ,#{pageable.pageSize}
         </if>
     </select>
+
 
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long" parameterType="com.zy_admin.sys.entity.SysRole">

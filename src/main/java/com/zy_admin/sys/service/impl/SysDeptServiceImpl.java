@@ -6,6 +6,7 @@ import com.zy_admin.sys.dto.DeptTree;
 import com.zy_admin.sys.dto.DeptTreeDto;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.service.SysDeptService;
+import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
@@ -33,7 +34,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
     public Result getDeptList(SysDept sysDept) {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
-
             List<DeptTreeDto> deptList = this.baseMapper.getDeptList(sysDept);
             DeptTree tree = new DeptTree(deptList);
             result.setData(tree.buildTree());
@@ -99,7 +99,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
         try {
             //判断是否没有修改就提交
             SysDept DeptById =this.baseMapper.getDeptByDeptId(sysDept.getDeptId()+"");
-            if (!checkEquals(sysDept, DeptById)) {
+            //需要判断的字段名
+            String[] fields = new String[]{"parentId", "deptName", "orderNum", "leader", "phone", "status", "email"};
+            if (!ObjUtil.checkEquals(sysDept, DeptById,fields)) {
                 //判断菜单的父类是否自己
                 if (!sysDept.getParentId().equals(sysDept.getDeptId())) {
                     if(!checkNewParentId(sysDept)){
@@ -208,32 +210,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             long childId = childrenById.get(i);
             if(newParentId==childId) {
                 return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 验证没有修改
-     * @param updateDept
-     * @param originalDept
-     * @return
-     */
-    @Override
-    public Boolean checkEquals (SysDept updateDept, SysDept originalDept){
-        if (updateDept.getParentId().equals(originalDept.getParentId())) {
-            if (updateDept.getDeptName().equals(originalDept.getDeptName())) {
-                if (updateDept.getOrderNum().equals(originalDept.getOrderNum())) {
-                    if (updateDept.getLeader().equals(originalDept.getLeader())) {
-                        if (updateDept.getPhone().equals(originalDept.getPhone())) {
-                            if (updateDept.getEmail().equals(originalDept.getEmail())) {
-                                if (updateDept.getStatus().equals(originalDept.getStatus())) {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
         return false;

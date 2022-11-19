@@ -194,9 +194,19 @@ public interface SysUserService extends IService<SysUser> {
      */
     Boolean checkEmail(int type, UserDto sysUserDto);
 
+    /**
+     * 用户名查重
+     * @param type
+     * @param userDto
+     * @return
+     */
     Boolean checkUserName(int type, UserDto userDto);
 
-
+    /**
+     * 重置密码
+     * @param sysUser
+     * @return
+     */
     Result resetPassword(SysUser sysUser);
 }
 

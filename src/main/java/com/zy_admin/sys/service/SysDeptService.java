@@ -19,15 +19,6 @@ public interface SysDeptService extends IService<SysDept> {
      * @return true--父类是子集
      */
     Boolean checkNewParentId(SysDept dept);
-
-    /**
-     * 检查两个data是否一致
-     *
-     * @param updateDept
-     * @param originalDept
-     * @return
-     */
-    Boolean checkEquals(SysDept updateDept, SysDept originalDept);
     /**
      * 根据条件查询部门
      * @param sysDept

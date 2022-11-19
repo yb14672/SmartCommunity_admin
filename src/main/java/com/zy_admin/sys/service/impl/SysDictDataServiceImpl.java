@@ -113,6 +113,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
                 sysDictData.setListClass("primary");
                 int i = this.baseMapper.insert(sysDictData);
                 if (i == 1) {
+                    result.setData("新增成功，影响的行数：" + i);
                     result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 }
             } else {
@@ -143,8 +144,9 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
                 } else {
                     //判断是否没有修改就提交
                     SysDictData dictDataById = this.baseMapper.getDictDataById(sysDictData.getDictCode() + "");
-                    ObjUtil.checkEquals(sysDictData, dictDataById);
-                    if (!checkEquals(sysDictData, dictDataById)) {
+                    //需要判断的字段名
+                    String[] fields = new String[]{"dictLabel", "dictValue", "cssClass", "dictSort", "listClass", "status", "remark"};
+                    if (!ObjUtil.checkEquals(sysDictData, dictDataById, fields)) {
                         //判断字典标题名是否唯一
                         if (checkUnique(1, sysDictData, this.baseMapper.checkDictLabelUnique(sysDictData))) {
                             //当字典键值不为空时判断其路由是否重复
@@ -243,49 +245,4 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
         return this.baseMapper.getDictListById(idList);
     }
 
-    @Override
-    public Boolean checkEquals(SysDictData updateData, SysDictData originalData) {
-        if (updateData.getDictLabel().equals(originalData.getDictLabel())) {
-            if (updateData.getDictValue().equals(originalData.getDictValue())) {
-                if (updateData.getDictSort().equals(originalData.getDictSort())) {
-                    if (updateData.getListClass().equals(originalData.getListClass())) {
-                        if (updateData.getStatus().equals(originalData.getStatus())) {
-                            if (updateData.getCssClass() != null) {
-                                if (originalData.getCssClass() != null) {
-                                    if (updateData.getCssClass().equals(originalData.getCssClass())) {
-                                        if (updateData.getRemark() != null) {
-                                            if (originalData.getRemark() != null) {
-                                                if (updateData.getRemark().equals(originalData.getRemark())) {
-                                                    return true;
-                                                }
-                                            } else {
-                                                return false;
-                                            }
-                                        } else {
-                                            if (originalData.getRemark() == null) {
-                                                return true;
-                                            } else {
-                                                return false;
-                                            }
-                                        }
-                                        return true;
-                                    }
-                                } else {
-                                    return false;
-                                }
-                            } else {
-                                if (originalData.getCssClass() == null) {
-                                    return true;
-                                } else {
-                                    return false;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
 }
-
