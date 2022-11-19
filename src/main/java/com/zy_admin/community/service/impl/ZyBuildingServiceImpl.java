@@ -1,9 +1,5 @@
 package com.zy_admin.community.service.impl;
 
-import com.zy_admin.util.JwtUtil;
-import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultTool;
-import com.zy_admin.util.SnowflakeManager;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.enums.ResultCode;
@@ -13,6 +9,7 @@ import com.zy_admin.community.dto.ZyBuildingDtoAll;
 import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.service.ZyBuildingService;
 import com.zy_admin.sys.dao.SysUserDao;
+import com.zy_admin.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -169,7 +166,8 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             //判断是不是完全相同
-//            if (checkEquals(zyBuilding1, zyBuilding)) {
+            String[] fields = new String[]{"buildingName", "buildingAcreage", "remark"};
+            if (!ObjUtil.checkEquals(zyBuilding1, zyBuilding,fields)) {
                 //type为1是修改
                 if (selectZyBuildingByName(1, zyBuilding)) {
                     String id = JwtUtil.getMemberIdByJwtToken(request);
@@ -182,9 +180,9 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
                 } else {
                     result.setMeta(ResultTool.fail(ResultCode.BUILDING_NAME_REPEAT));
                 }
-//            } else {
-//                result.setMeta(ResultTool.fail(ResultCode.BUILD_IDENTICAL));
-//            }
+            } else {
+                result.setMeta(ResultTool.fail(ResultCode.BUILD_IDENTICAL));
+            }
         } catch (Exception e) {
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -210,21 +208,6 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
     }
 
     /**
-     * 检查前端输入的值是否和数据库相等
-     *
-     * @param zyBuildingOld
-     * @param zyBuildingNew
-     * @return
-     */
-    public boolean checkEquals(ZyBuilding zyBuildingOld, ZyBuilding zyBuildingNew) {
-        //判断名字，面积和备注是否相同
-        if (zyBuildingOld.getBuildingName().equals(zyBuildingNew.getBuildingName()) && zyBuildingOld.getBuildingAcreage().equals(zyBuildingNew.getBuildingAcreage()) && zyBuildingOld.getRemark().equals(zyBuildingNew.getRemark())) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * 判断楼层号是否重复
      * @param type
      * @param zyBuilding
@@ -232,18 +215,18 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
      */
     public boolean selectZyBuildingByName(int type, ZyBuilding zyBuilding) {
         ZyBuilding zyBuilding1 = this.baseMapper.selectZyBuildingByName(zyBuilding.getBuildingName(),zyBuilding.getCommunityId());
-//        类型为0是新增
+        //类型为0是新增
         if (type == 0) {
-//            判断是否为空
+            //判断是否为空
             if (zyBuilding1 == null || zyBuilding1.getBuildingName() == null) {
                 return true;
             }
         } else {
-//            修改
+            //修改
             if (zyBuilding1 == null || zyBuilding1.getBuildingName() == null) {
                 return true;
-//                判断房屋楼层是否唯一
-            } else if (!zyBuilding1.getBuildingName().equals(zyBuilding.getBuildingName())) {
+            //判断房屋楼层是否唯一
+            } else if (!zyBuilding1.getBuildingId().equals(zyBuilding.getBuildingId())) {
                 return false;
             } else {
                 return true;
