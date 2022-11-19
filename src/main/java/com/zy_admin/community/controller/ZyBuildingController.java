@@ -48,8 +48,8 @@ public class ZyBuildingController extends ApiController {
      * @param buildingIds
      * @param response
      */
-    @GetMapping("/getExcel")
     @MyLog(title = "导出楼层", optParam = "#{buildingIds}", businessType = BusinessType.EXPORT)
+    @GetMapping("/getExcel")
     public void getExcel(@RequestParam("buildingIds") ArrayList<String> buildingIds, HttpServletResponse response) throws IOException {
         List<ZyBuilding> zyBuildingList = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
@@ -71,7 +71,7 @@ public class ZyBuildingController extends ApiController {
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .autoCloseStream(true)
-                .sheet("模板")
+                .sheet("楼层信息")
                 .doWrite(zyBuildingList);
     }
 

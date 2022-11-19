@@ -27,7 +27,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -125,7 +125,7 @@ public class LogAspect {
         Object o = JSON.toJavaObject(jsonObject, Object.class);
         operLog.setJsonResult(String.valueOf(o));
         // 操作时间
-        operLog.setOperTime(new Date());
+        operLog.setOperTime(LocalDateTime.now()+"");
         Result result1 = (Result) result;
         if (e != null) {
             operLog.setStatus(1);

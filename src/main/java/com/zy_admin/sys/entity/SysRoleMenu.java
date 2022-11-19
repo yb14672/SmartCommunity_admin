@@ -1,5 +1,9 @@
 package com.zy_admin.sys.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +12,9 @@ import java.io.Serializable;
  * @author makejava
  * @since 2022-11-08 14:56:27
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SysRoleMenu implements Serializable {
     private static final long serialVersionUID = 276605403972760818L;
     /**
@@ -18,23 +25,5 @@ public class SysRoleMenu implements Serializable {
      * 菜单ID
      */
     private Long menuId;
-
-
-    public Long getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
-    }
-
 }
 

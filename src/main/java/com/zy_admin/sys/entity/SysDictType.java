@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
  * @author makejava
  * @since 2022-11-01 19:49:35
  */
+@SuppressWarnings("serial")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuppressWarnings("serial")
 public class SysDictType extends Model<SysDictType> {
     //字典主键
     @ExcelProperty("角色ID")

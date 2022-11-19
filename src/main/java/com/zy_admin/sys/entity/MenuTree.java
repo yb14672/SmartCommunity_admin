@@ -1,6 +1,8 @@
 package com.zy_admin.sys.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -8,6 +10,8 @@ import java.util.List;
  * 菜单树
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class MenuTree {
     /**
      * 菜单id

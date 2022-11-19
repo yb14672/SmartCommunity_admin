@@ -183,7 +183,7 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
                         result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
                     }
                 } else {
-                    result.setMeta(ResultTool.fail(ResultCode.BUILDINGNAME_REPEAT));
+                    result.setMeta(ResultTool.fail(ResultCode.BUILDING_NAME_REPEAT));
                 }
 //            } else {
 //                result.setMeta(ResultTool.fail(ResultCode.BUILD_IDENTICAL));
