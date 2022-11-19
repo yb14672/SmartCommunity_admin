@@ -94,7 +94,6 @@ public class ZyBuildingController extends ApiController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(result);
         return result;
     }
 
@@ -106,8 +105,6 @@ public class ZyBuildingController extends ApiController {
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "修改楼层", optParam = "#{zyBuilding}", businessType = BusinessType.UPDATE)
     public Result updateZyBuilding(@RequestBody ZyBuilding zyBuilding,HttpServletRequest request){
-        System.out.println(zyBuilding);
-        System.out.println("controller");
         return zyBuildingService.updateZyBuilding(zyBuilding,request);
     }
 

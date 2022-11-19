@@ -141,7 +141,6 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
     @Override
     public Result updateDict(SysDictType sysDictType) {
         SysDictType sysDictType1 = this.baseMapper.queryById(sysDictType.getDictId() + "");
-        System.out.println(sysDictType1);
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             //需要判断的字段名

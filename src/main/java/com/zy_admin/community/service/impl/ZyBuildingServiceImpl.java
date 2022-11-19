@@ -69,7 +69,6 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
     public Result deleteByIdList(List<String > idList) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         Long aLong = this.baseMapper.selectChild(idList);
-        System.out.println(aLong);
         //判断下面有没有子集
         if (aLong>0){
             result.setMeta(ResultTool.fail(ResultCode.BUILD_HAVA_CHILD));
@@ -121,7 +120,6 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
         result.setData(zyBuildingDtoAll);
         //返回信号
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-        System.out.println(result);
         return result;
     }
 
@@ -167,7 +165,6 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
     public Result updateZyBuilding(ZyBuilding zyBuilding, HttpServletRequest request) {
         //判断楼层的值有没有改变 zyBuilding1是原来的对象
         ZyBuilding zyBuilding1 = this.baseMapper.getZyBuilding(zyBuilding.getBuildingId());
-        System.out.println(zyBuilding1);
         //默认给失败
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
@@ -221,8 +218,6 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
      */
     public boolean checkEquals(ZyBuilding zyBuildingOld, ZyBuilding zyBuildingNew) {
         //判断名字，面积和备注是否相同
-        System.out.println(zyBuildingOld);
-        System.out.println(zyBuildingNew);
         if (zyBuildingOld.getBuildingName().equals(zyBuildingNew.getBuildingName()) && zyBuildingOld.getBuildingAcreage().equals(zyBuildingNew.getBuildingAcreage()) && zyBuildingOld.getRemark().equals(zyBuildingNew.getRemark())) {
             return false;
         }
