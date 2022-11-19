@@ -97,6 +97,10 @@ public enum ResultCode {
     BUILDING_NAME_REPEAT(3045,"楼层名字重复" ),
     BUILD_IDENTICAL(3046,"楼层信息完全相同" ),
     BUILD_HAVA_CHILD(3046,"改楼层下面有单元不允许删除" ),
+    UNIT_ADD_FAIL(3047,"单元新增失败"),
+    UNIT_UPDATE_FAIL(3048,"单元修改失败"),
+    UNIT_NAME_REPEAT(3049,"单元名重复"),
+    UNIT_HAVE_PEOPLE(3050,"本单元存在住户不能删除"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

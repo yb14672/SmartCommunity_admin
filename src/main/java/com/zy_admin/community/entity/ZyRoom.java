@@ -47,9 +47,9 @@ public class ZyRoom extends Model<ZyRoom> {
     //创建时间
     private String createTime;
     //更新者
-    private String upStringBy;
+    private String updateBy;
     //更新时间
-    private String upStringTime;
+    private String updateTime;
     //备注
     private String remark;
 }
