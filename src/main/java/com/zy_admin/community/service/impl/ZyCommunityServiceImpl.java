@@ -14,6 +14,8 @@ import com.zy_admin.util.JwtUtil;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
+import com.zy_admin.util.*;
+import com.zy_admin.common.enums.ResultCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -106,14 +108,20 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
             pageable.setTotal(total);
             long pages = 0;
             if (total > 0) {
-                //总页码数
-                pages = total % pageable.getPageSize() == 0 ? total / pageable.getPageSize() : total / pageable.getPageSize() + 1;
-                pageable.setPages(pages);
-                //页码修正
-                pageable.setPageNum(pageable.getPageNum() < 1 ? 1 : pageable.getPageNum());
-                pageable.setPageNum(pageable.getPageNum() > pages ? pages : pageable.getPageNum());
-                //设置起始下标
-                pageable.setIndex((pageable.getPageNum() - 1) * pageable.getPageSize());
+                if (pageable.getPageSize() != 0) {
+                    //总页码数
+                    pages = total % pageable.getPageSize() == 0 ? total / pageable.getPageSize() : total / pageable.getPageSize() + 1;
+                    pageable.setPages(pages);
+                    //页码修正
+                    pageable.setPageNum(pageable.getPageNum() < 1 ? 1 : pageable.getPageNum());
+                    pageable.setPageNum(pageable.getPageNum() > pages ? pages : pageable.getPageNum());
+                    //设置起始下标
+                    pageable.setIndex((pageable.getPageNum() - 1) * pageable.getPageSize());
+                }else {
+                    pageable.setPageNum(1);
+                    pageable.setPageSize(0);
+                    pageable.setIndex(0);
+                }
             } else {
                 pageable.setPageNum(0);
             }
