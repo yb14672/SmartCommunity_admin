@@ -18,6 +18,9 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
+
+
+
     <!--查询单个-->
     <select id="queryById" resultMap="ZyUnitMap">
         select
@@ -110,12 +113,9 @@
     </insert>
 
     <!--通过主键修改数据-->
-    <update id="update">
+    <update id="updateUnit">
         update zy_unit
         <set>
-            <if test="unitId != null">
-                unit_id = #{unitId},
-            </if>
             <if test="communityId != null">
                 community_id = #{communityId},
             </if>
@@ -153,11 +153,53 @@
                 remark = #{remark},
             </if>
         </set>
+        where unit_id = #{unitId}
     </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
     </delete>
+
+    <insert id="insertUnit">
+        insert  into  zy_unit(unit_id, community_id, building_id, unit_name, unit_code, unit_level, unit_acreage, unit_have_elevator, create_by, create_time, update_by, update_time, remark)
+        values (#{unitId}, #{communityId}, #{buildingId}, #{unitName}, #{unitCode},
+            #{unitLevel}, #{unitAcreage}, #{unitHaveElevator}, #{createBy},
+            #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    </insert>
+
+    <select id="selectAllByUnitByIds" resultType="string">
+        select * from zy_room WHERE unit_id in
+        <foreach collection="unitIds" item="unitIds" separator="," open="(" close=")">
+            #{unitIds}
+        </foreach>
+    </select>
+
+    <delete id="deleteUnit">
+        delete  from zy_unit where unit_id in
+        <foreach collection="unitIds" item="unitIds" separator="," open="(" close=")">
+            #{unitIds}
+        </foreach>
+    </delete>
+
+
+    <select id="getAll" resultType="com.zy_admin.community.dto.UnitListDto">
+        select *,(select community_name from zy_community zc where zc.community_id = zu.community_id) communityName,
+        (select building_name from zy_building zb where zb.building_id = zu.building_id ) buildingName
+        from zy_unit zu
+    </select>
+
+
+    <select id="getUnitById" resultType="com.zy_admin.community.dto.UnitListDto">
+        select *,(select community_name from zy_community zc where zc.community_id = zu.community_id) communityName,
+        (select building_name from zy_building zb where zb.building_id = zu.building_id ) buildingName
+        from zy_unit zu
+        <foreach collection="unitIds" item="Unit_id" separator="," open="(" close=")">
+            #{Unit_id}
+        </foreach>
+    </select>
+
+
+
 
 </mapper>
 

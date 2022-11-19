@@ -128,7 +128,6 @@ public class SysPostController extends ApiController {
     @PostMapping("/addPost")
     @MyLog(title = "岗位管理", optParam = "#{sysPost}", businessType = BusinessType.INSERT)
     public Result addPost(HttpServletRequest request, @RequestBody SysPost sysPost) {
-        String id = JwtUtil.getMemberIdByJwtToken(request);
         SysUser user = this.requestUtil.getUser(request);
         sysPost.setCreateTime(LocalDateTime.now().toString());
         sysPost.setCreateBy(user.getUserName());

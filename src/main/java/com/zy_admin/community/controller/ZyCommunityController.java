@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dto.CommunityExcel;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
@@ -18,7 +19,6 @@ import com.zy_admin.community.service.ZyCommunityService;
 import com.zy_admin.sys.dto.LoginInForExcelDto;
 import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;

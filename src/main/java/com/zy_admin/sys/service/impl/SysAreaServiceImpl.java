@@ -1,13 +1,13 @@
 package com.zy_admin.sys.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dto.AreaDto;
 import com.zy_admin.sys.dao.SysAreaDao;
 import com.zy_admin.sys.entity.SysArea;
 import com.zy_admin.sys.service.SysAreaService;
 import com.zy_admin.util.AreaTree;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
