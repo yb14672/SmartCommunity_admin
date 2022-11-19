@@ -34,7 +34,7 @@ public interface ZyBuildingDao extends BaseMapper<ZyBuilding> {
      * 所有用户获取excel
      * @return
      */
-    List<ZyBuilding> getBuildingLists();
+    List<ZyBuilding> getBuildingLists(String communityId);
 
     /**
      * 删除ids

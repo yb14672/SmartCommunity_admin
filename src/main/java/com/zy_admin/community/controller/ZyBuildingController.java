@@ -50,11 +50,11 @@ public class ZyBuildingController extends ApiController {
      */
     @MyLog(title = "导出楼层", optParam = "#{buildingIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
-    public void getExcel(@RequestParam("buildingIds") ArrayList<String> buildingIds, HttpServletResponse response) throws IOException {
+    public void getExcel(@RequestParam("buildingIds") ArrayList<String> buildingIds, @RequestParam("communityId") String communityId,HttpServletResponse response) throws IOException {
         List<ZyBuilding> zyBuildingList = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
         if (buildingIds == null || buildingIds.size() == 0) {
-            zyBuildingList = zyBuildingService.getBuildingLists();
+            zyBuildingList = zyBuildingService.getBuildingLists(communityId);
         } else {
             //执行查询角色列表的sql语句
             zyBuildingList = zyBuildingService.queryZyBuildingById(buildingIds);

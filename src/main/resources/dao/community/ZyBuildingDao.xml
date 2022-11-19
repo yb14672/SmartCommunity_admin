@@ -119,7 +119,7 @@
     </select>
     <!--导出全部-->
     <select id="getBuildingLists" resultType="com.zy_admin.community.entity.ZyBuilding">
-        select * from zy_building
+        select * from zy_building where community_id = #{communityId}
     </select>
     <!--判断楼层名不重复-->
     <select id="selectZyBuildingByName" resultType="com.zy_admin.community.entity.ZyBuilding">

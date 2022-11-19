@@ -53,8 +53,8 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
      * @return
      */
     @Override
-    public List<ZyBuilding> getBuildingLists() {
-        return baseMapper.getBuildingLists();
+    public List<ZyBuilding> getBuildingLists(String communityId) {
+        return baseMapper.getBuildingLists(communityId);
     }
 
     /**

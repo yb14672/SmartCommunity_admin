@@ -30,7 +30,7 @@ public interface ZyBuildingService extends IService<ZyBuilding> {
      *
      * @return
      */
-    List<ZyBuilding> getBuildingLists();
+    List<ZyBuilding> getBuildingLists(String communityId);
 
     /**
      * 删除楼层
