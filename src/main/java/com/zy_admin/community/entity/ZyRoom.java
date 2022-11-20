@@ -1,10 +1,9 @@
 package com.zy_admin.community.entity;
 
-import java.util.Date;
-
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
-import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 房间 (ZyRoom)表实体类
@@ -14,41 +13,95 @@ import java.io.Serializable;
  */
 @SuppressWarnings("serial")
 public class ZyRoom extends Model<ZyRoom> {
-    //房间id
+    /**
+     * 房间id
+     */
+    @ExcelProperty("房间id")
     private Long roomId;
-    //小区id
+    /**
+     * 小区id
+     */
+    @ExcelProperty("小区id")
     private Long communityId;
-    //楼栋id
+    /**
+     * 楼栋id
+     */
+    @ExcelProperty("楼栋id")
     private Long buildingId;
-    //单元id
+    /**
+     * 单元id
+     */
+    @ExcelProperty("单元id")
     private Long unitId;
-    //楼层
+    /**
+     * 楼层
+     */
+    @ExcelProperty("楼层")
     private Integer roomLevel;
-    //房间编号
+    /**
+     * 房间编号
+     */
+    @ExcelProperty("房间编号")
     private String roomCode;
-    //房间名称
+    /**
+     * 房间名称
+     */
+    @ExcelProperty("房间名称")
     private String roomName;
-    //房屋建筑面积
+    /**
+     * 房屋建筑面积
+     */
+    @ExcelProperty("房屋建筑面积")
     private Double roomAcreage;
-    //算费系数
+    /**
+     * 算费系数
+     */
+    @ExcelProperty("算费系数")
     private Double roomCost;
-    //房屋状态
+    /**
+     * 房屋状态
+     */
+    @ExcelProperty("房屋状态")
     private String roomStatus;
-    //是否商铺
+    /**
+     * 是否商铺
+     */
+    @ExcelProperty("是否商铺")
     private String roomIsShop;
-    //是否商品房
+    /**
+     * 是否商品房
+     */
+    @ExcelProperty("是否商品房")
     private String roomSCommercialHouse;
-    //房屋户型
+    /**
+     * 房屋户型
+     */
+    @ExcelProperty("房屋户型")
     private String roomHouseType;
-    //创建者
+    /**
+     * 创建者
+     */
+    @ExcelProperty("创建者")
     private String createBy;
-    //创建时间
+    /**
+     * 创建时间
+     */
+    @ExcelProperty("创建时间")
     private Date createTime;
-    //更新者
+    /**
+     * 更新者
+     */
+    @ExcelProperty("更新者")
     private String updateBy;
-    //更新时间
+    /**
+     * 更新时间
+     */
+    @ExcelProperty("更新时间")
     private Date updateTime;
-    //备注
+    /**
+     * 备注
+     */
+    @ExcelProperty("备注")
     private String remark;
 
 

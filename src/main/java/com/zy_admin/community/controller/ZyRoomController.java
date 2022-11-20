@@ -1,12 +1,12 @@
 package com.zy_admin.community.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.community.entity.ZyRoom;
 import com.zy_admin.community.service.ZyRoomService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,17 +27,17 @@ public class ZyRoomController extends ApiController {
      */
     @Resource
     private ZyRoomService zyRoomService;
-
     /**
      * 分页查询所有数据
      *
-     * @param page   分页对象
+     * @param page  分页对象
      * @param zyRoom 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<ZyRoom> page, ZyRoom zyRoom) {
-        return success(this.zyRoomService.page(page, new QueryWrapper<>(zyRoom)));
+    public Result getAllCommunity(Page page, ZyRoom zyRoom) {
+        Result result = zyRoomService.getAllCommunity(page,zyRoom);
+        return result;
     }
 
     /**

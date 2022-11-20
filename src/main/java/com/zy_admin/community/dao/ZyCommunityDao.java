@@ -20,7 +20,7 @@ public interface ZyCommunityDao extends BaseMapper<ZyCommunity> {
      * 查询所有的小区信息加分页
      * @return
      */
-    List<ZyCommunity> selectCommunityLimit(@Param("zyCommunity")ZyCommunity zyCommunity, @Param("pageable")Pageable pageable);
+    List<ZyCommunity> selectCommunityLimit(@Param("zyCommunity") ZyCommunity zyCommunity, @Param("pageable") Pageable pageable);
 
     /**
      * 获取数量

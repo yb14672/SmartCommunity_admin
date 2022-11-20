@@ -28,7 +28,7 @@ public interface SysOperLogService extends IService<SysOperLog> {
      * @return 所有数据
      */
 
-    Result getOperLogList(SysOperLog sysOperLog, Pageable pageable, String startTime, String endTime,String orderByColumn,String isAsc);
+    Result getOperLogList(SysOperLog sysOperLog, Pageable pageable, String startTime, String endTime, String orderByColumn, String isAsc);
 
     /**
      * 批量删除日志

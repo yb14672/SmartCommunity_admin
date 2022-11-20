@@ -18,6 +18,6 @@ public interface ZyBuildingDao extends BaseMapper<ZyBuilding> {
      * 楼栋信息和分页
      * @return
      */
-    List<ZyBuilding> selectBuildLimit(@Param("zyBuilding") ZyBuilding zyBuilding, @Param("pageable")Pageable pageable);
+    List<ZyBuilding> selectBuildLimit(@Param("zyBuilding") ZyBuilding zyBuilding, @Param("pageable") Pageable pageable);
 }
 
