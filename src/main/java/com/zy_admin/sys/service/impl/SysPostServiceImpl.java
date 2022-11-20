@@ -6,8 +6,9 @@ import com.zy_admin.sys.dao.SysPostDao;
 import com.zy_admin.sys.dto.PostDto;
 import com.zy_admin.sys.entity.SysPost;
 import com.zy_admin.sys.service.SysPostService;
+import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +70,9 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
     public Result update(SysPost sysPost) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         SysPost oldPost = this.baseMapper.queryPostById(sysPost.getPostId());
-        if (sysPost.getPostName().equals(oldPost.getPostName())&&sysPost.getPostCode().equals(oldPost.getPostCode())&&sysPost.getPostSort().equals(oldPost.getPostSort())&&sysPost.getStatus().equals(oldPost.getStatus())){
+        //需要判断的字段名
+        String[] fields = new String[]{"postCode", "postName", "postSort", "remark", "status"};
+        if (ObjUtil.checkEquals(sysPost, oldPost,fields)){
             result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
             return result;
         }
@@ -141,9 +144,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
         }
         return false;
     }
-
-
-
 
     @Override
     public List<SysPost> queryRoleById(ArrayList<Integer> roleIds) {

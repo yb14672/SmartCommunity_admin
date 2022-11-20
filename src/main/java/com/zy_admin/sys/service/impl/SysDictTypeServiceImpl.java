@@ -7,8 +7,9 @@ import com.zy_admin.sys.dao.SysDictTypeDao;
 import com.zy_admin.sys.dto.SysDictDto;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
+import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
@@ -117,6 +118,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
                 try {
                     //新增字典
                     int sysDictType1 = this.baseMapper.insert(sysDictType);
+                    result.setData("新增成功，影响的行数：" + sysDictType1);
                     result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
                 } catch (Exception e) {
                     return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -141,7 +143,9 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         SysDictType sysDictType1 = this.baseMapper.queryById(sysDictType.getDictId() + "");
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
-            if (checkEquals(sysDictType, sysDictType1)) {
+            //需要判断的字段名
+            String[] fields = new String[]{"dictName", "dictType","status", "remark"};
+            if (!ObjUtil.checkEquals(sysDictType, sysDictType1,fields)) {
                 //type为1是修改
                 if (selectSysDictByName(1, sysDictType)) {
                     if (selectSysDictByType(1, sysDictType)) {
@@ -155,6 +159,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
                             if (!sysDictType1.getStatus().equals(sysDictType.getStatus())) {
                                 this.sysDictDataDao.changeStatusByDictType(sysDictType.getDictType(), sysDictType.getStatus());
                             }
+                            result.setData("修改成功，影响的行数：" + sysDictType1);
                             result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
                         }
                     } else {
@@ -207,6 +212,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
             if (childs < 1) {
                 int i = this.baseMapper.deleteByIdList(idList);
                 if (i >= 1) {
+                    result.setData("删除成功，影响的行数：" + i);
                     result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 } else {
                     result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
@@ -218,7 +224,12 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         return result;
     }
 
-    //    判断name是否重复
+    /**
+     * 判断name是否重复
+     * @param type
+     * @param sysDictType
+     * @return
+     */
     public boolean selectSysDictByName(int type, SysDictType sysDictType) {
         SysDictType sysDictType1 = this.baseMapper.selectSysDictByName(sysDictType.getDictName());
 //        类型为0是新增
@@ -241,20 +252,26 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         return false;
     }
 
-    //    判断type是否重复
+    /**
+     * 判断type是否重复
+     *
+     * @param type
+     * @param sysDictType
+     * @return
+     */
     public boolean selectSysDictByType(int type, SysDictType sysDictType) {
         SysDictType sysDictType1 = this.baseMapper.selectSysDictByType(sysDictType.getDictType());
-//        类型为0是新增
+        //类型为0是新增
         if (type == 0) {
-//            判断是否为空
+            //判断是否为空
             if (sysDictType1 == null || sysDictType1.getDictId() == null) {
                 return true;
             }
         } else {
-//            修改
+            //修改
             if (sysDictType1 == null || sysDictType1.getDictId() == null) {
                 return true;
-//                判断他的类型是否唯一
+                //判断他的类型是否唯一
             } else if (!sysDictType1.getDictId().equals(sysDictType.getDictId())) {
                 return false;
             } else {
@@ -262,27 +279,6 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
             }
         }
         return false;
-    }
-
-    /**
-     * 检查前端输入的值是否和数据库相等
-     *
-     * @param dictType
-     * @param sysDictType
-     * @return
-     */
-    @Override
-    public boolean checkEquals(SysDictType dictType, SysDictType sysDictType) {
-        if (dictType.getDictType().equals(sysDictType.getDictType())) {
-            if (dictType.getDictName().equals(sysDictType.getDictName())) {
-                if (dictType.getStatus().equals(sysDictType.getStatus())) {
-                    if (dictType.getRemark().equals(sysDictType.getRemark())) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
     }
 }
 

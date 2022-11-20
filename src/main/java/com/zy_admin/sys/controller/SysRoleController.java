@@ -3,19 +3,22 @@ package com.zy_admin.sys.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.service.SysRoleMenuService;
 import com.zy_admin.sys.service.SysRoleService;
 import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -47,18 +50,15 @@ public class SysRoleController extends ApiController {
     @Resource
     SysRoleMenuService sysRoleMenuService;
 
-
-
-
     @GetMapping("/getAllRole")
     public Result getAllRole(SysRole sysRole) {
         Result allRole = sysRoleService.getAllRole(sysRole);
         return allRole;
     }
 
-
     /**
      * 获取所有除去管理员以外的角色并分页
+     *
      * @param page
      * @return
      */
@@ -67,37 +67,42 @@ public class SysRoleController extends ApiController {
         return this.sysRoleService.getRoleList(page);
     }
 
-        /**
-         * 用于批量导出角色列表数据
-         *
-         * @param roleIds
-         * @param response
-         */
-    @PostMapping("/getExcel")
-    public void getExcel(@RequestBody ArrayList<Integer> roleIds, HttpServletResponse response)throws IOException{
-            List<SysRole> sysRoles = new ArrayList<>();
-            //如果前台传的集合为空或者长度为0.则全部导出。
-            //执行   查询角色列表的sql语句   但不包括del_flag为2的
-            if (roleIds == null || roleIds.size() == 0) {
-                sysRoles = sysRoleService.getRoleLists();
-            } else {
-                //执行查询角色列表的sql语句
-                sysRoles = sysRoleService.queryRoleById(roleIds);
-            }
-            String fileName = URLEncoder.encode("角色表数据", "UTF-8");
-            response.setContentType("application/vnd.ms-excel");
-            response.setCharacterEncoding("utf-8");
-            response.setHeader("content-type", "text/html;charset=UTF-8");
-            // 内容样式
-            HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
-            response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-            EasyExcel.write(response.getOutputStream(), SysRole.class)
-                    .excelType(ExcelTypeEnum.XLS)
-                    //自适应表格格式
-                    .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
-                    .autoCloseStream(true)
-                    .sheet("模板")
-                    .doWrite(sysRoles);
+    /**
+     * 用于批量导出角色列表数据
+     *
+     * @param roleIds
+     * @param response
+     */
+    @MyLog(title = "角色管理", optParam = "#{roleIds}", businessType = BusinessType.EXPORT)
+    @GetMapping("/getExcel")
+    public Result getExcel(@RequestParam("roleIds") ArrayList<Integer> roleIds, HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<SysRole> sysRoles = new ArrayList<>();
+        //如果前台传的集合为空或者长度为0.则全部导出。
+        //执行   查询角色列表的sql语句   但不包括del_flag为2的
+        if (roleIds == null || roleIds.size() == 0) {
+            sysRoles = sysRoleService.getRoleLists();
+        } else {
+            //执行查询角色列表的sql语句
+            sysRoles = sysRoleService.queryRoleById(roleIds);
+        }
+        String fileName = URLEncoder.encode("角色表数据", "UTF-8");
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("content-type", "text/html;charset=UTF-8");
+        // 内容样式
+        HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), SysRole.class)
+                .excelType(ExcelTypeEnum.XLS)
+                //自适应表格格式
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                .autoCloseStream(true)
+                .sheet("角色信息");
+        excel.doWrite(sysRoles);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
 
     /**
@@ -142,6 +147,7 @@ public class SysRoleController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
+    @MyLog(title = "角色管理", optParam = "#{sysRole}", businessType = BusinessType.UPDATE)
     public Result update(@RequestBody SysRole sysRole) {
         return this.sysRoleService.changeStatus(sysRole);
     }
@@ -154,6 +160,7 @@ public class SysRoleController extends ApiController {
      */
     @DeleteMapping
     @Transactional(rollbackFor = Exception.class)
+    @MyLog(title = "角色管理", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result delete(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<Integer>();
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -181,8 +188,9 @@ public class SysRoleController extends ApiController {
      * @param roleAndRoleMenu
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
     @PostMapping("/addRole")
+    @Transactional(rollbackFor = Exception.class)
+    @MyLog(title = "角色管理", optParam = "#{roleAndRoleMenu}", businessType = BusinessType.INSERT)
     public Result insert(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
         roleAndRoleMenu.setCreateTime(LocalDateTime.now().toString());
         roleAndRoleMenu.setDeptCheckStrictly(null);
@@ -200,6 +208,7 @@ public class SysRoleController extends ApiController {
      */
     @PutMapping("/updateRole")
     @Transactional(rollbackFor = Exception.class)
+    @MyLog(title = "角色管理", optParam = "#{roleAndRoleMenu}", businessType = BusinessType.UPDATE)
     public Result update(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
         roleAndRoleMenu.setDeptCheckStrictly(null);
         roleAndRoleMenu.setMenuCheckStrictly(null);

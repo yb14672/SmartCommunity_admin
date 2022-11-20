@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zy_admin.common.core.log.BusinessType;
-import com.zy_admin.common.core.log.MyLog;
 import com.zy_admin.sys.entity.SysRoleMenu;
 import com.zy_admin.sys.service.SysRoleMenuService;
 import com.zy_admin.util.Result;
@@ -61,7 +59,6 @@ public class SysRoleMenuController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
-    @MyLog(title = "新增角色菜单", optParam = "#{sysRoleMenu}", businessType = BusinessType.OTHER)
     public R insert(@RequestBody SysRoleMenu sysRoleMenu) {
         return success(this.sysRoleMenuService.save(sysRoleMenu));
     }
@@ -73,7 +70,6 @@ public class SysRoleMenuController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
-    @MyLog(title = "修改角色菜单", optParam = "#{sysRoleMenu}", businessType = BusinessType.OTHER)
     public R update(@RequestBody SysRoleMenu sysRoleMenu) {
         return success(this.sysRoleMenuService.updateById(sysRoleMenu));
     }
@@ -85,7 +81,6 @@ public class SysRoleMenuController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
-    @MyLog(title = "删除角色菜单", optParam = "#{idList}", businessType = BusinessType.OTHER)
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.sysRoleMenuService.removeByIds(idList));
     }

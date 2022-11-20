@@ -19,7 +19,7 @@ public interface SysRoleMenuDao extends BaseMapper<SysRoleMenu> {
      * @param id
      * @param menuIdList
      */
-    void insertBatch(@Param("id") long id, @Param("menuIdList") int[] menuIdList);
+    void insertBatch(@Param("id") long id, @Param("menuIdList") Integer[] menuIdList);
 
     /**
      * 根据角色获取权限菜单

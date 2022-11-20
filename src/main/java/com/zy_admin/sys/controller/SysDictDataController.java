@@ -2,12 +2,14 @@ package com.zy_admin.sys.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zy_admin.common.core.log.BusinessType;
-import com.zy_admin.common.core.log.MyLog;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.dto.DataDictExcelDto;
 import com.zy_admin.sys.entity.SysDictData;
 import com.zy_admin.sys.entity.SysUser;
@@ -15,6 +17,7 @@ import com.zy_admin.sys.service.SysDictDataService;
 import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.Result;
+import com.zy_admin.util.ResultTool;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -73,7 +76,7 @@ public class SysDictDataController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
-    @MyLog(title = "新增字典数据", optParam = "#{sysDictData}", businessType = BusinessType.OTHER)
+    @MyLog(title = "字典数据", optParam = "#{sysDictData}", businessType = BusinessType.INSERT)
     public Result insert(@RequestBody SysDictData sysDictData, HttpServletRequest request) {
         //获取当前登录的用户，用于添加创建人
         SysUser user = requestUtil.getUser(request);
@@ -88,7 +91,7 @@ public class SysDictDataController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
-    @MyLog(title = "修改字典数据", optParam = "#{sysDictData}", businessType = BusinessType.OTHER)
+    @MyLog(title = "字典数据", optParam = "#{sysDictData}", businessType = BusinessType.UPDATE)
     public Result update(@RequestBody SysDictData sysDictData, HttpServletRequest request) {
         //获取当前登录的用户，用于添加创建人
         SysUser user = requestUtil.getUser(request);
@@ -102,7 +105,7 @@ public class SysDictDataController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
-    @MyLog(title = "删除选中字典", optParam = "#{idList}", businessType = BusinessType.OTHER)
+    @MyLog(title = "字典数据", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result delete(@RequestParam("idList") List<String> idList) {
         return this.sysDictDataService.removeDictDataByIds(idList);
     }
@@ -114,9 +117,7 @@ public class SysDictDataController extends ApiController {
      * @return
      */
     @GetMapping("/getDict")
-    @MyLog(title = "根据字典类型获取所有字典数据", optParam = "#{dictType}", businessType = BusinessType.OTHER)
     public Result getDict(String dictType) {
-        System.out.println(dictType);
         return this.sysDictDataService.getDict(dictType);
     }
 
@@ -128,7 +129,9 @@ public class SysDictDataController extends ApiController {
      * @return
      */
     @GetMapping("/export")
-    public void export(@RequestParam("ids") ArrayList<Integer> ids,@RequestParam("dictType") String dictType, HttpServletResponse response) throws IOException {
+    @MyLog(title = "字典数据", optParam = "#{ids}", businessType = BusinessType.EXPORT)
+    public Result export(@RequestParam("ids") ArrayList<Integer> ids, @RequestParam("dictType") String dictType, HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //用于存储要导出的数据列表
         List<DataDictExcelDto> sysDictDataList = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
@@ -146,13 +149,16 @@ public class SysDictDataController extends ApiController {
         // 内容样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), DataDictExcelDto.class)
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), DataDictExcelDto.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .autoCloseStream(true)
-                .sheet("模板")
-                .doWrite(sysDictDataList);
+                .sheet("字典数据");
+        excel.doWrite(sysDictDataList);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
 }
 

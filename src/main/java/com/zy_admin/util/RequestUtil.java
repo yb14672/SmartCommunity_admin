@@ -18,7 +18,7 @@ public class RequestUtil {
     private  SysUserService sysUserService;
 
     public  SysUser getUser(HttpServletRequest request){
-        String id = JwtUtils.getMemberIdByJwtToken(request);
+        String id = JwtUtil.getMemberIdByJwtToken(request);
         Result result = sysUserService.queryById(id);
         SysUser user = (SysUser) result.getData();
         return user;

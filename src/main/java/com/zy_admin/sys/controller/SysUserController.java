@@ -3,17 +3,21 @@ package com.zy_admin.sys.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.sys.dto.UserDto;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.entity.SysUserUpload;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.*;
+import com.zy_admin.common.enums.ResultCode;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,6 +60,7 @@ public class SysUserController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @MyLog(title = "用户管理", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result deleteUserById(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<Integer>();
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -105,6 +110,7 @@ public class SysUserController extends ApiController {
      * @return
      */
     @PutMapping("/authRole")
+    @MyLog(title = "分配角色", optParam = "#{map}", businessType = BusinessType.INSERT)
     public Result insertAuthRole(@RequestBody Map<String, Object> map) throws Exception {
         Integer userId = (Integer) map.get("userId");
         String roleId = map.get("roleId").toString();
@@ -116,7 +122,8 @@ public class SysUserController extends ApiController {
      *
      * @param file
      */
-    @RequestMapping("/import-data")
+    @PostMapping("/import-data")
+    @MyLog(title = "用户管理", optParam = "#{file}", businessType = BusinessType.IMPORT)
     public Result importData(@RequestParam("file") MultipartFile file) {
         return sysUserService.importData(file);
     }
@@ -127,8 +134,10 @@ public class SysUserController extends ApiController {
      * @param userIds
      * @param response
      */
+    @MyLog(title = "用户管理", optParam = "#{userIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
-    public void getExcel(@RequestParam("userIds") ArrayList<Integer> userIds, HttpServletResponse response) throws IOException {
+    public Result getExcel(@RequestParam("userIds") ArrayList<Integer> userIds, HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysUser> sysUserList = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
         if (userIds == null || userIds.size() == 0) {
@@ -144,13 +153,16 @@ public class SysUserController extends ApiController {
         // 内容样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), SysUser.class)
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), SysUser.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .autoCloseStream(true)
-                .sheet("模板")
-                .doWrite(sysUserList);
+                .sheet("用户信息");
+        excel.doWrite(sysUserList);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
 
     /**
@@ -161,24 +173,27 @@ public class SysUserController extends ApiController {
      * @throws IOException
      */
     @GetMapping("/uploadExcel")
-    public void uploadExcel(HttpServletResponse response) throws IOException {
+    @MyLog(title = "下载模板", optParam = "#{response}", businessType = BusinessType.EXPORT)
+    public Result uploadExcel(HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysUser> sysUserList = new ArrayList<>();
-        //直接下载模板
-        sysUserList = sysUserService.uploadUserTemplate();
-        String fileName = URLEncoder.encode("下载模板表", "UTF-8");
+        String fileName = URLEncoder.encode("下载模板", "UTF-8");
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader("content-type", "text/html;charset=UTF-8");
         // 内容样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), SysUserUpload.class)
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), SysUserUpload.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .autoCloseStream(true)
-                .sheet("模板")
-                .doWrite(sysUserList);
+                .sheet("模板");
+        excel.doWrite(sysUserList);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
     /**
      * 分页查询所有数据
@@ -200,7 +215,7 @@ public class SysUserController extends ApiController {
      */
     @GetMapping("/getAvatarById")
     public Result getAvatarById(HttpServletRequest request) {
-        String id = JwtUtils.getMemberIdByJwtToken(request);
+        String id = JwtUtil.getMemberIdByJwtToken(request);
         Result avatarById = this.sysUserService.getAvatarById(id);
         return avatarById;
     }
@@ -259,7 +274,7 @@ public class SysUserController extends ApiController {
      */
     @GetMapping("/personal")
     public Result personal(HttpServletRequest request) {
-        String memberIdByJwtToken = JwtUtils.getMemberIdByJwtToken(request);
+        String memberIdByJwtToken = JwtUtil.getMemberIdByJwtToken(request);
         return this.sysUserService.personal(memberIdByJwtToken);
     }
 
@@ -292,6 +307,7 @@ public class SysUserController extends ApiController {
      * @return
      */
     @PutMapping("/updateUser")
+    @MyLog(title = "用户管理", optParam = "#{sysUser}", businessType = BusinessType.UPDATE)
     public Result updateUser(@RequestBody SysUser sysUser) {
         return this.sysUserService.updateUser(sysUser);
     }
@@ -303,12 +319,14 @@ public class SysUserController extends ApiController {
      * @return
      */
     @PutMapping("/resetPwd")
+    @MyLog(title = "重置密码", optParam = "#{sysUser}", businessType = BusinessType.UPDATE)
     public Result resetPwd(@RequestBody SysUser sysUser) {
         return this.sysUserService.resetPwd(sysUser);
     }
 
 
     @PostMapping("/insertUser")
+    @MyLog(title = "用户管理", optParam = "#{sysUserDto}", businessType = BusinessType.INSERT)
     public Result insertUser(HttpServletRequest request, @RequestBody UserDto sysUserDto) {
         sysUserDto.setCreateTime(LocalDateTime.now().toString());
         SysUser user = this.requestUtil.getUser(request);
@@ -317,6 +335,7 @@ public class SysUserController extends ApiController {
     }
 
     @PutMapping("/adminUpdateUser")
+    @MyLog(title = "用户管理", optParam = "#{userDto}", businessType = BusinessType.UPDATE)
     public Result updateUser(HttpServletRequest request, @RequestBody UserDto userDto) {
         userDto.setUpdateTime(LocalDateTime.now().toString());
         SysUser user = this.requestUtil.getUser(request);
@@ -325,6 +344,7 @@ public class SysUserController extends ApiController {
     }
 
     @PostMapping("/resetPassword")
+    @MyLog(title = "重置密码", optParam = "#{sysUser}", businessType = BusinessType.UPDATE)
     public Result resetPassword(HttpServletRequest request, @RequestBody SysUser sysUser) {
         SysUser user = this.requestUtil.getUser(request);
         sysUser.setUpdateBy(user.getUserName());

@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 角色信息表(SysRoleExcelDto)表实体类
@@ -75,7 +74,7 @@ public class SysRole extends Model<SysRole> {
      * 创建时间
      */
     @ExcelProperty("创建时间")
-    private Date createTime;
+    private String createTime;
     /**
      * 更新者
      */
@@ -85,7 +84,7 @@ public class SysRole extends Model<SysRole> {
      * 更新时间
      */
     @ExcelProperty("更新时间")
-    private Date updateTime;
+    private String updateTime;
     /**
      * 备注
      */

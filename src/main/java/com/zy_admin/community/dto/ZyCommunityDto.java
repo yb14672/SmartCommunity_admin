@@ -8,10 +8,20 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * @author fangqian
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ZyCommunityDto {
-    private List<ZyCommunity> zyCommunityList;
+    /**
+     * 显示数据
+     */
+    private List<CommunityDto> zyCommunityList;
+    /**
+     * 分页条件
+     */
     private Pageable pageable;
+
 }

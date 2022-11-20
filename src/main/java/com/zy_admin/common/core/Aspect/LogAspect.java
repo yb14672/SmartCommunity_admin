@@ -1,7 +1,8 @@
-package com.zy_admin.common.core.log;
+package com.zy_admin.common.core.Aspect;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.entity.SysUser;
@@ -9,10 +10,12 @@ import com.zy_admin.sys.service.SysDeptService;
 import com.zy_admin.sys.service.SysOperLogService;
 import com.zy_admin.util.IpUtils;
 import com.zy_admin.util.RequestUtil;
+import com.zy_admin.util.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -24,9 +27,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author yb14672
@@ -49,7 +53,7 @@ public class LogAspect {
     /**
      * @annotation(MyLog类的路径) 在idea中，右键自定义的MyLog类-> 点击Copy Reference
      */
-    @Pointcut("@annotation(MyLog)")
+    @Pointcut("@annotation(com.zy_admin.common.core.annotation.MyLog)")
     public void logPointCut() {
         log.info("------>配置切入点");
     }
@@ -70,19 +74,17 @@ public class LogAspect {
      * @param joinPoint 切点
      * @param e         异常
      */
-//    @AfterThrowing(value = "logPointCut()", throwing = "e")
-//    public void doAfterThrowing(JoinPoint joinPoint, Exception e) {
-//        handleLog(joinPoint, e,result));
-//    }
+    @AfterThrowing(value = "logPointCut()", throwing = "e")
+    public void doAfterThrowing(JoinPoint joinPoint, Exception e) {
+        handleLog(joinPoint, e,null);
+    }
 
     private void handleLog(final JoinPoint joinPoint, final Exception e,Object result) {
-
         // 获得MyLog注解
         MyLog controllerLog = getAnnotationLog(joinPoint);
         if (controllerLog == null) {
             return;
         }
-
         // 获取RequestAttributes
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         // 从获取RequestAttributes中获取HttpServletRequest的信息
@@ -98,11 +100,9 @@ public class LogAspect {
         operLog.setMethod(className + "." + methodName + "()");
         //请求方法
         operLog.setRequestMethod( request.getMethod() );
-        //操作类别（0其它 1后台用户 2手机端用户）
-        operLog.setOperatorType(0);
         //获取昵称
         SysUser user = requestUtil.getUser(request);
-//        获取名字
+        //获取名字
         operLog.setOperName(user.getUserName());
         //获取部门
         SysDept deptById = sysDeptService.getDeptById(user.getDeptId());
@@ -112,20 +112,30 @@ public class LogAspect {
         //获取ip
         String realIp = IpUtils.getIpAddress(request);
         operLog.setOperIp(realIp);
-        //获取操作地点
-        operLog.setOperLocation(request.getRemoteAddr());
-//        获取返回参数
+        //操作地点
+        String pattern = "^(127\\.0\\.0\\.1)|(localhost)|(10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(172\\.((1[6-9])|(2\\d)|(3[01]))\\.\\d{1,3}\\.\\d{1,3})|(192\\.168\\.\\d{1,3}\\.\\d{1,3})$";
+        if (Pattern.matches(pattern,realIp)){
+            operLog.setOperLocation("内网Ip");
+        }else{
+            operLog.setOperLocation("外网Ip");
+        }
+
+        //获取返回参数
         JSONObject jsonObject = (JSONObject) JSONObject.toJSON(result);
         Object o = JSON.toJavaObject(jsonObject, Object.class);
         operLog.setJsonResult(String.valueOf(o));
         // 操作时间
-        operLog.setOperTime(new Date());
+        operLog.setOperTime(LocalDateTime.now()+"");
+        Result result1 = (Result) result;
         if (e != null) {
             operLog.setStatus(1);
             // IotLicenseException为本系统自定义的异常类，读者若要获取异常信息，请根据自身情况变通
             operLog.setErrorMsg(e.getMessage());
+        }else if(result1.getMeta().getErrorCode() != 200){
+            operLog.setStatus(1);
+            // IotLicenseException为本系统自定义的异常类，读者若要获取异常信息，请根据自身情况变通
+            operLog.setErrorMsg(result1.getMeta().getErrorMsg());
         }
-
         // 处理注解上的参数
         getControllerMethodDescription(joinPoint, controllerLog, operLog);
         // 保存数据库
@@ -161,7 +171,8 @@ public class LogAspect {
         // 对方法上的参数进行处理，处理完：userName=xxx,password=xxx
         String optParam = getAnnotationValue(joinPoint, myLog.optParam());
         operLog.setOperParam(optParam);
-
+        //操作类别（0其它 1后台用户 2手机端用户）
+        operLog.setOperatorType(myLog.operatorType().ordinal());
     }
 
     /**

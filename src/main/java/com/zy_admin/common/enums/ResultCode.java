@@ -1,4 +1,4 @@
-package com.zy_admin.util;
+package com.zy_admin.common.enums;
 
 /**
  * @Author yb14672
@@ -43,7 +43,7 @@ public enum ResultCode {
     USER_LOGIN_SUCCESS(2015,"登录成功"),
     USER_LOGOUT_FAIL(2016,"退出失败"),
     USER_LOGOUT_SUCCESS(2017,"退出成功"),
-
+    ADDRESS_GET_FAIL(2018,"地址获取失败"),
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
     DELETE_FAIL(3002, "删除失败，请稍后再试"),
@@ -74,20 +74,36 @@ public enum ResultCode {
     REPEAT_USER_NAME(3024,"用户名重复"),
     DICT_NOCHANGE(3024,"字典信息没有改变" ),
     USER_TELREPEAT(3025,"手机号重复" ),
+    PASSWORD_ILLEGAL(3025,"密码不合规" ),
     USER_REPEAT(3026,"导入有重复" ),
     FILE_REPEAT(3027,"导入文件有重复" ),
     DATA_REPEAT(3027,"数据不能为空" ),
     USERNAME_REPEAT(3028,"用户名有重复" ),
     EMAIL_REPEAT(3029,"邮箱有重复" ),
-    PARENT_CLASS_DEACTIVATE(3030,"父类已被停用" ),
-    PARENT_CANNOT_BE_A_SUBSET(3031,"父类不能是自己的子集" ),
-    EXCEL_EXPORT_FAILURE(3032,"Excel导出失败"),
-    LOGIN_LOG_GET_FAIL(3033,"登录日志获取失败"),
-    LOG_DELETE_FAIL(3034,"登录日志删除失败"),
-    LOG_EMPTY_FAIL(3035,"登录日志清空失败"),
-    TEL_NON_COMPLIANCE(3036,"电话号码不符合规则" ),
-    EMAIL_NON_COMPLIANCE(3037,"邮箱不符合规则" ),
-    MASSAGE_NULL(3038,"信息为空" ),
+    EXCEL_EXPORT_FAILURE(3030,"Excel导出失败"),
+    LOGIN_LOG_GET_FAIL(3031,"登录日志获取失败"),
+    LOG_DELETE_FAIL(3032,"登录日志删除失败"),
+    LOG_EMPTY_FAIL(3033,"登录日志清空失败"),
+    COMMUNITY_GET_FAIL(3034,"小区信息获取失败"),
+    COMMUNITY_ADD_FAIL(3035,"新增小区失败"),
+    REPEAT_COMMUNITY_NAME(3036,"小区名重复"),
+    COMMUNITY_UPDATE_FAIL(3037,"小区修改失败"),
+    COMMUNITY_DELETE_FAIL(3038,"小区删除失败"),
+    PARENT_CLASS_DEACTIVATE(3039,"父类已被停用" ),
+    PARENT_CANNOT_BE_A_SUBSET(3040,"父类不能是自己的子集" ),
+    TEL_NON_COMPLIANCE(3041,"电话号码不符合规则" ),
+    EMAIL_NON_COMPLIANCE(3042,"邮箱不符合规则" ),
+    MASSAGE_NULL(3043,"信息为空" ),
+    BUILDING_REPEAT(3044,"楼层重复" ),
+    BUILDING_NAME_REPEAT(3045,"楼层名字重复" ),
+    BUILD_IDENTICAL(3046,"楼层信息完全相同" ),
+    BUILD_HAVA_CHILD(3046,"楼层下面有单元不允许删除" ),
+    UNIT_ADD_FAIL(3047,"单元新增失败"),
+    UNIT_UPDATE_FAIL(3048,"单元修改失败"),
+    UNIT_NAME_REPEAT(3049,"单元名重复"),
+    UNIT_HAVE_PEOPLE(3050,"单元存在住户，不能删除"),
+    COMMUNITY_HAVE_CHILD(3050,"小区存在楼栋，不能删除"),
+    COMPANY_OWNS_PROPERTY(3050,"公司仍有负责的物业，不能删除"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),
