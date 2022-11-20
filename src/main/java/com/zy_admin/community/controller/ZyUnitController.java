@@ -10,6 +10,8 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.community.dto.GetUnitExcelDto;
 import com.zy_admin.community.entity.ZyUnit;
 import com.zy_admin.community.service.ZyUnitService;
@@ -53,6 +55,7 @@ public class ZyUnitController extends ApiController {
 
     @Autowired
     private SnowflakeManager snowflakeManager;
+
     /**
      * 分页查询所有数据
      *
@@ -111,25 +114,24 @@ public class ZyUnitController extends ApiController {
 
     /**
      * 单元楼查询分页
-
      */
     @GetMapping("/getUnitList")
-    public Result getUnitList( ZyUnit zyUnit, Pageable pageable){
+    public Result getUnitList(ZyUnit zyUnit, Pageable pageable) {
         Result unitList = zyUnitService.getUnitList(zyUnit, pageable);
         return unitList;
-
     }
 
     /**
      * 新增单元楼
+     *
      * @param request
      * @param zyUnit
      * @return
      */
     @PostMapping("/insertUnit")
-    public Result insertUnit(HttpServletRequest request,@RequestBody ZyUnit zyUnit) throws Exception {
-        zyUnit.setUnitId(snowflakeManager.nextId()+"");
-        System.err.println(zyUnit.toString());
+    @MyLog(title = "单元信息", optParam = "#{zyUnit}", businessType = BusinessType.INSERT)
+    public Result insertUnit(HttpServletRequest request, @RequestBody ZyUnit zyUnit) throws Exception {
+        zyUnit.setUnitId(snowflakeManager.nextId() + "");
         SysUser user = this.requestUtil.getUser(request);
         zyUnit.setCreateBy(user.getUserName());
         zyUnit.setCreateTime(LocalDateTime.now().toString());
@@ -138,13 +140,14 @@ public class ZyUnitController extends ApiController {
 
     /**
      * 修改单元楼
+     *
      * @param request
      * @param zyUnit
      * @return
      */
     @PutMapping("/updateUnit")
-    public Result updateUnit(HttpServletRequest request,@RequestBody ZyUnit zyUnit)
-    {
+    @MyLog(title = "单元信息", optParam = "#{zyUnit}", businessType = BusinessType.UPDATE)
+    public Result updateUnit(HttpServletRequest request, @RequestBody ZyUnit zyUnit) {
         SysUser user = this.requestUtil.getUser(request);
         zyUnit.setUpdateBy(user.getUserName());
         zyUnit.setUpdateTime(LocalDateTime.now().toString());
@@ -152,13 +155,13 @@ public class ZyUnitController extends ApiController {
     }
 
     @DeleteMapping("/deleteUnit")
-    public Result deleteUnit(@RequestBody List<String> unitIds){
-        System.err.println(unitIds);
-         return zyUnitService.deleteUnit(unitIds);
+    @MyLog(title = "单元信息", optParam = "#{unitIds}", businessType = BusinessType.DELETE)
+    public Result deleteUnit(@RequestBody List<String> unitIds) {
+        return zyUnitService.deleteUnit(unitIds);
     }
 
-
     @GetMapping("/getExcel")
+    @MyLog(title = "单元信息", optParam = "#{unitIds}", businessType = BusinessType.EXPORT)
     public void getExcel(@RequestParam("unitIds") ArrayList<Integer> unitIds, HttpServletResponse response) throws IOException {
         List<ZyUnit> zyUnits = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
@@ -186,12 +189,9 @@ public class ZyUnitController extends ApiController {
 
     }
 
-
     @GetMapping("/getBuildingList")
-    public Result getBuildingList(ZyUnit zyUnit){
-        System.err.println(zyUnit);
+    public Result getBuildingList(ZyUnit zyUnit) {
         return zyUnitService.getBuildingList(zyUnit.getCommunityId());
     }
-
 }
 

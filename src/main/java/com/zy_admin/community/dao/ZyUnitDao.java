@@ -43,24 +43,21 @@ public interface ZyUnitDao extends BaseMapper<ZyUnit> {
      * 新增单元楼
      * @param zyUnit
      */
-    void insertUnit(ZyUnit zyUnit);
+    int insertUnit(ZyUnit zyUnit);
 
     /**
      * 单元名查重
-     * @param communityId
-     * @param buildingId
-     * @param unitName
+     * @param unit
      * @return
      */
-    @Select("select* from zy_unit where community_id=#{communityId} and building_id = #{buildingId} and unit_name=#{unitName}")
-    ZyUnit selectUnitName(@Param("communityId") String communityId,@Param("buildingId") String buildingId,@Param("unitName") String unitName);
+    ZyUnit selectUnitName(@Param("unit") ZyUnit unit);
 
 
     /**
      * 修改单元楼
      * @param zyUnit
      */
-    void updateUnit(ZyUnit zyUnit);
+    int updateUnit(ZyUnit zyUnit);
 
     /**
      * 根据单元id查单元住户
@@ -73,7 +70,7 @@ public interface ZyUnitDao extends BaseMapper<ZyUnit> {
      * 删除单元
      * @param unitIds
      */
-    void deleteUnit(@Param("unitIds") List<String> unitIds);
+    int deleteUnit(@Param("unitIds") List<String> unitIds);
 
 
     /**
@@ -101,7 +98,7 @@ public interface ZyUnitDao extends BaseMapper<ZyUnit> {
      * @param buildingId
      * @return
      */
-    @Select("SELECT community_id FROM  zy_building where building_id = #{buildingId}")
+    @Select("SELECT community_id FROM zy_building where building_id = #{buildingId}")
     ZyUnit selectBuildingId(String buildingId);
 }
 

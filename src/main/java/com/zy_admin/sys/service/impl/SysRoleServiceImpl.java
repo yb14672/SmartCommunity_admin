@@ -59,7 +59,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
 
     @Override
     public Result getAllRole(SysRole sysRole) {
-        Result result = new Result();
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysRole> allRole = this.baseMapper.getAllRole(sysRole);
         result.setData(allRole);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
@@ -132,6 +132,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
 
     @Override
     public Result insert(RoleAndRoleMenu roleAndRoleMenu) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         if (checkRoleNameUnique(0, roleAndRoleMenu)) {
             if (checkRoleKeyUnique(0, roleAndRoleMenu)) {
                 try {
@@ -141,17 +142,18 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
                     if (roleAndRoleMenu.getMenuIds().length != 0) {
                         sysRoleMenuDao.insertBatch(roleAndRoleMenu.getRoleId(), roleAndRoleMenu.getMenuIds());
                     }
-                    return new Result(null, ResultTool.fail(ResultCode.SUCCESS));
+                    result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+                    return result;
                 }
             } else {
-                return new Result(null, ResultTool.fail(ResultCode.REPEAT_ROLE_KEY));
+                result.setMeta(ResultTool.fail(ResultCode.REPEAT_ROLE_KEY));
             }
         } else {
-            return new Result(null, ResultTool.fail(ResultCode.REPEAT_ROLE_NAME));
+            result.setMeta(ResultTool.fail(ResultCode.REPEAT_ROLE_NAME));
         }
+        return result;
     }
 
     @Override
@@ -169,20 +171,17 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
                             sysRoleMenuDao.insertBatch(roleAndRoleMenu.getRoleId(), roleAndRoleMenu.getMenuIds());
                         }
                         result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
-                        return result;
                     }
-                    return new Result(null, ResultTool.fail(ResultCode.SUCCESS));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+                    result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
                 }
             } else {
-                return new Result(null, ResultTool.fail(ResultCode.REPEAT_ROLE_KEY));
+                result.setMeta(ResultTool.fail(ResultCode.REPEAT_ROLE_KEY));
             }
         } else {
             result.setMeta(ResultTool.fail(ResultCode.REPEAT_ROLE_NAME));
         }
-
         return result;
     }
 

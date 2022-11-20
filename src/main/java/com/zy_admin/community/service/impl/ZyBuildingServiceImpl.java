@@ -131,14 +131,13 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
      */
     @Override
     public Result insertZyBuilding(ZyBuilding zyBuilding, HttpServletRequest request) throws Exception {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         Long now = System.currentTimeMillis();
         zyBuilding.setBuildingCode("BUILDING_" + now.toString().substring(0, 13));
         zyBuilding.setBuildingId(snowflakeManager.nextId() + "");
         zyBuilding.setCreateTime(LocalDateTime.now().toString());
         String id = JwtUtil.getMemberIdByJwtToken(request);
         zyBuilding.setCreateBy(sysUserDao.getUserById(id).getUserName());
-
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断同一小区的楼层是否唯一,type为0是新增
         if (!selectZyBuildingByName(0, zyBuilding)) {
             result.setMeta(ResultTool.fail(ResultCode.BUILDING_NAME_REPEAT));
@@ -153,9 +152,8 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
             }
             return result;
         } catch (Exception e) {
-            return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+            return result;
         }
-
     }
 
     /**

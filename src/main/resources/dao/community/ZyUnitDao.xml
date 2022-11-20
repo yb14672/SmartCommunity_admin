@@ -48,10 +48,10 @@
                 and building_id = #{zyUnit.buildingId}
             </if>
             <if test="zyUnit.unitName != null and zyUnit.unitName != ''">
-                and unit_name = #{zyUnit.unitName}
+                and unit_name like concat('%',#{zyUnit.unitName},'%')
             </if>
             <if test="zyUnit.unitCode != null and zyUnit.unitCode != ''">
-                and unit_code = #{zyUnit.unitCode}
+                and unit_code like concat('%',#{zyUnit.unitCode},'%')
             </if>
             <if test="zyUnit.unitHaveElevator != null and zyUnit.unitHaveElevator != ''">
                 and unit_have_elevator = #{zyUnit.unitHaveElevator}
@@ -72,10 +72,10 @@
                 and building_id = #{zyUnit.buildingId}
             </if>
             <if test="zyUnit.unitName != null and zyUnit.unitName != ''">
-                and unit_name = #{zyUnit.unitName}
+                and unit_name like concat('%',#{zyUnit.unitName},'%')
             </if>
             <if test="zyUnit.unitCode != null and zyUnit.unitCode != ''">
-                and unit_code = #{zyUnit.unitCode}
+                and unit_code like concat('%',#{zyUnit.unitCode},'%')
             </if>
             <if test="zyUnit.unitHaveElevator != null and zyUnit.unitHaveElevator != ''">
                 and unit_have_elevator = #{zyUnit.unitHaveElevator}
@@ -174,10 +174,6 @@
         where unit_id = #{unitId}
     </update>
 
-    <!--通过主键删除-->
-    <delete id="deleteById">
-    </delete>
-
     <insert id="insertUnit">
         insert into zy_unit(unit_id, community_id, building_id, unit_name, unit_code, unit_level, unit_acreage,
                             unit_have_elevator, create_by, create_time, update_by, update_time, remark)
@@ -185,6 +181,15 @@
                 #{unitLevel}, #{unitAcreage}, #{unitHaveElevator}, #{createBy},
                 #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
+
+    <select id="selectUnitName" resultType="com.zy_admin.community.entity.ZyUnit">
+        select *
+        from zy_unit
+        where community_id = #{unit.communityId}
+          and building_id = #{unit.buildingId}
+          and unit_name = #{unit.unitName}
+          and unit_level = #{unit.unitLevel}
+    </select>
 
     <select id="selectAllByUnitByIds" resultType="string">
         select * from zy_room WHERE unit_id in

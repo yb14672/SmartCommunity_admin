@@ -173,7 +173,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
 
     @Override
     public Result getAllPost() {
-        Result result = new Result();
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysPost> postLists = this.baseMapper.getPostLists();
         result.setData(postLists);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
