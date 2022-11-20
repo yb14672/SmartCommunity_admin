@@ -384,8 +384,8 @@
     <insert id="saveBatch">
         insert into sys_user(dept_id,user_name,nick_name,email,phonenumber,password,del_flag)
         VALUES
-        <foreach collection="userEntityList" item="user" separator="," open="(" close=")">
-            #{user.dept_id}, #{user.userName},#{user.nickName},#{user.email},#{user.phonenumber},#{user.password},#{user.delFlag}
+        <foreach collection="userEntityList" item="user" separator=",">
+            (#{user.deptId}, #{user.userName},#{user.nickName},#{user.email},#{user.phonenumber},#{user.password},#{user.delFlag})
         </foreach>
     </insert>
 

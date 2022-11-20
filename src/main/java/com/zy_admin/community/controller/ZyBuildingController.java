@@ -3,10 +3,10 @@ package com.zy_admin.community.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.baomidou.mybatisplus.extension.api.R;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
@@ -48,9 +48,10 @@ public class ZyBuildingController extends ApiController {
      * @param buildingIds
      * @param response
      */
-    @MyLog(title = "导出楼层", optParam = "#{buildingIds}", businessType = BusinessType.EXPORT)
+    @MyLog(title = "楼层导出", optParam = "#{buildingIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
-    public void getExcel(@RequestParam("buildingIds") ArrayList<String> buildingIds, @RequestParam("communityId") String communityId,HttpServletResponse response) throws IOException {
+    public Result getExcel(@RequestParam("buildingIds") ArrayList<String> buildingIds, @RequestParam("communityId") String communityId,HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<ZyBuilding> zyBuildingList = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
         if (buildingIds == null || buildingIds.size() == 0) {
@@ -66,13 +67,16 @@ public class ZyBuildingController extends ApiController {
         // 内容样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), ZyBuilding.class)
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), ZyBuilding.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .autoCloseStream(true)
-                .sheet("楼层信息")
-                .doWrite(zyBuildingList);
+                .sheet("楼层信息");
+        excel.doWrite(zyBuildingList);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
 
     /**
@@ -81,12 +85,10 @@ public class ZyBuildingController extends ApiController {
      * @return
      */
     @DeleteMapping
-    @MyLog(title = "删除楼层类型", optParam = "#{idList}", businessType = BusinessType.DELETE)
+    @MyLog(title = "楼层信息", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result delete(@RequestParam("idList") ArrayList<String> idList){
-
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
-
             //修改楼层表
             result = this.zyBuildingService.deleteByIdList(idList);
         } catch (NumberFormatException e) {
@@ -103,7 +105,7 @@ public class ZyBuildingController extends ApiController {
      */
     @PutMapping("/updateZyBuilding")
     @Transactional(rollbackFor = Exception.class)
-    @MyLog(title = "修改楼层", optParam = "#{zyBuilding}", businessType = BusinessType.UPDATE)
+    @MyLog(title = "楼层信息", optParam = "#{zyBuilding}", businessType = BusinessType.UPDATE)
     public Result updateZyBuilding(@RequestBody ZyBuilding zyBuilding,HttpServletRequest request){
         return zyBuildingService.updateZyBuilding(zyBuilding,request);
     }
@@ -114,7 +116,7 @@ public class ZyBuildingController extends ApiController {
      * @return
      */
     @PostMapping("/addZyBuilding")
-    @MyLog(title = "新增楼层", optParam = "#{zyBuilding}", businessType = BusinessType.INSERT)
+    @MyLog(title = "楼层信息", optParam = "#{zyBuilding}", businessType = BusinessType.INSERT)
     public Result insertDictType(@RequestBody ZyBuilding zyBuilding, HttpServletRequest request) throws Exception {
         return this.zyBuildingService.insertZyBuilding(zyBuilding,request);
     }
@@ -141,28 +143,5 @@ public class ZyBuildingController extends ApiController {
     public Result selectOne(@PathVariable String id) {
         return zyBuildingService.queryById(id);
     }
-
-    /**
-     * 新增数据
-     *
-     * @param zyBuilding 实体对象
-     * @return 新增结果
-     */
-    @PostMapping
-    public R insert(@RequestBody ZyBuilding zyBuilding) {
-        return success(this.zyBuildingService.save(zyBuilding));
-    }
-
-    /**
-     * 修改数据
-     *
-     * @param zyBuilding 实体对象
-     * @return 修改结果
-     */
-    @PutMapping
-    public R update(@RequestBody ZyBuilding zyBuilding) {
-        return success(this.zyBuildingService.updateById(zyBuilding));
-    }
-
 }
 

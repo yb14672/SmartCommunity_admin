@@ -17,9 +17,18 @@
 
     <!--查询单个-->
     <select id="queryById" resultType="com.zy_admin.community.entity.ZyBuilding">
-        select
-          building_id, building_name, building_code, building_acreage, community_id, create_by, create_time, update_by, update_time, remark
-        from zy_building where building_id = #{id}
+        select building_id,
+               building_name,
+               building_code,
+               building_acreage,
+               community_id,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from zy_building
+        where building_id = #{id}
     </select>
 
     <!--查询指定行数据-->
@@ -104,7 +113,9 @@
     </select>
 
     <select id="getZyBuilding" resultType="com.zy_admin.community.entity.ZyBuilding">
-        select * from zy_building where building_id=#{buildId}
+        select *
+        from zy_building
+        where building_id = #{buildId}
     </select>
     <!--选中的地方导出-->
     <select id="queryZyBuildingById" resultType="com.zy_admin.community.entity.ZyBuilding">
@@ -119,11 +130,16 @@
     </select>
     <!--导出全部-->
     <select id="getBuildingLists" resultType="com.zy_admin.community.entity.ZyBuilding">
-        select * from zy_building where community_id = #{communityId}
+        select *
+        from zy_building
+        where community_id = #{communityId}
     </select>
     <!--判断楼层名不重复-->
     <select id="selectZyBuildingByName" resultType="com.zy_admin.community.entity.ZyBuilding">
-        select * from zy_building where building_name = #{buildingName} and community_id = #{communityId}
+        select *
+        from zy_building
+        where building_name = #{buildingName}
+          and community_id = #{communityId}
     </select>
     <!--判断下面有没有子集-->
     <select id="selectChild" resultType="java.lang.Long">
@@ -136,11 +152,23 @@
             )
         </if>
     </select>
+    <!--根据小区id获取对应的楼栋-->
+    <select id="getBuildingListsByIds" resultType="com.zy_admin.community.entity.ZyBuilding">
+        select * from zy_building
+        <if test="list!=null">
+            where zy_building.community_id in
+            <foreach collection="list" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="" useGeneratedKeys="true">
-        insert into zy_building(building_id, building_name, building_code, building_acreage, community_id, create_by, create_time, update_by, update_time, remark)
-        values (#{buildingId}, #{buildingName}, #{buildingCode}, #{buildingAcreage}, #{communityId}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+        insert into zy_building(building_id, building_name, building_code, building_acreage, community_id, create_by,
+                                create_time, update_by, update_time, remark)
+        values (#{buildingId}, #{buildingName}, #{buildingCode}, #{buildingAcreage}, #{communityId}, #{createBy},
+                #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <insert id="insertBatch" keyProperty="" useGeneratedKeys="true">
@@ -176,8 +204,10 @@
         remark = values(remark)
     </insert>
     <insert id="insertZyBuilding">
-        insert into zy_building(building_id,building_name,building_code,building_acreage,community_id,create_by,create_time,update_by,update_time,remark) values
-        (#{buildingId},#{buildingName},#{buildingCode},#{buildingAcreage},#{communityId},#{createBy},#{createTime},#{updateBy},#{updateTime},#{remark})
+        insert into zy_building(building_id, building_name, building_code, building_acreage, community_id, create_by,
+                                create_time, update_by, update_time, remark)
+        values (#{buildingId}, #{buildingName}, #{buildingCode}, #{buildingAcreage}, #{communityId}, #{createBy},
+                #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <!--通过主键修改数据-->

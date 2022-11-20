@@ -5,8 +5,6 @@ import com.zy_admin.common.Pageable;
 import com.zy_admin.community.dto.CommunityExcel;
 import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.SnowflakeManager;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -19,6 +17,13 @@ import java.util.List;
  * @since 2022-11-01 19:49:01
  */
 public interface ZyCommunityService extends IService<ZyCommunity> {
+
+    /**
+     * 根据id删除小区
+     * @param ids
+     * @return
+     */
+    Result deleteByIds(List<String> ids);
 
     /**
      * 根据Id查询导出数据

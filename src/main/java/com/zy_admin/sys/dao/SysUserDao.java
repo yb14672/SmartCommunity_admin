@@ -207,6 +207,6 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @param userEntityList
      * @return
      */
-    boolean saveBatch(List<SysUser> userEntityList);
+    boolean saveBatch(@Param("userEntityList") List<SysUser> userEntityList);
 }
 

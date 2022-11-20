@@ -173,25 +173,27 @@ public class SysUserController extends ApiController {
      * @throws IOException
      */
     @GetMapping("/uploadExcel")
-    @MyLog(title = "用户管理", optParam = "#{response}", businessType = BusinessType.EXPORT)
-    public void uploadExcel(HttpServletResponse response) throws IOException {
+    @MyLog(title = "下载模板", optParam = "#{response}", businessType = BusinessType.EXPORT)
+    public Result uploadExcel(HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysUser> sysUserList = new ArrayList<>();
-        //直接下载模板
-        sysUserList = sysUserService.uploadUserTemplate();
-        String fileName = URLEncoder.encode("下载模板表", "UTF-8");
+        String fileName = URLEncoder.encode("下载模板", "UTF-8");
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader("content-type", "text/html;charset=UTF-8");
         // 内容样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), SysUserUpload.class)
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), SysUserUpload.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .autoCloseStream(true)
-                .sheet("模板")
-                .doWrite(sysUserList);
+                .sheet("模板");
+        excel.doWrite(sysUserList);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
     /**
      * 分页查询所有数据

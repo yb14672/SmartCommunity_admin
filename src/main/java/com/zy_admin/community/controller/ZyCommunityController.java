@@ -120,13 +120,8 @@ public class ZyCommunityController extends ApiController {
      */
     @DeleteMapping("/deleteCommunity")
     @MyLog(title = "小区信息", optParam = "#{communityIds}", businessType = BusinessType.DELETE)
-    public Result delete(@RequestBody List<Long> communityIds) {
-        boolean b = this.zyCommunityService.removeByIds(communityIds);
-        Result result = new Result(b, ResultTool.fail(ResultCode.COMMUNITY_DELETE_FAIL));
-        if(b){
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
-        }
-        return result;
+    public Result delete(@RequestBody List<String> communityIds) {
+        return this.zyCommunityService.deleteByIds(communityIds);
     }
 }
 

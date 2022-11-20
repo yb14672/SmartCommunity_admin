@@ -53,12 +53,6 @@ public interface SysUserService extends IService<SysUser> {
     Result adminUpdateUser(UserDto userDto);
 
     /**
-     * 下载模板
-     * @return
-     */
-    List<SysUser> uploadUserTemplate();
-
-    /**
      *批量导入用户信息
      * @param file
      */

@@ -17,6 +17,13 @@ import java.util.List;
  */
 public interface ZyBuildingDao extends BaseMapper<ZyBuilding> {
     /**
+     * 根据小区id获取对应的楼栋
+     * @param communityId
+     * @return
+     */
+    List<ZyBuilding> getBuildingListsByIds(@Param("list") List<String> communityId);
+
+    /**
      * 判断下面有没有子集
      * @param buildingIds
      * @return
