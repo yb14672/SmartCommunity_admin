@@ -2,7 +2,6 @@ package com.zy_admin.community.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.community.dto.UnitListDto;
 import com.zy_admin.community.entity.ZyUnit;
 import com.zy_admin.util.Result;
 

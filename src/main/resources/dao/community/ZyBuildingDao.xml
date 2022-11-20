@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.community.dao.ZyBuildingDao">
+
+    <resultMap type="com.zy_admin.community.entity.ZyBuilding" id="ZyBuildingMap">
+        <result property="buildingId" column="building_id" jdbcType="INTEGER"/>
+        <result property="buildingName" column="building_name" jdbcType="VARCHAR"/>
+        <result property="buildingCode" column="building_code" jdbcType="VARCHAR"/>
+        <result property="buildingAcreage" column="building_acreage" jdbcType="NUMERIC"/>
+        <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultType="com.zy_admin.community.entity.ZyBuilding">
+        select building_id,
+               building_name,
+               building_code,
+               building_acreage,
+               community_id,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from zy_building
+        where building_id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ZyBuildingMap">
+        select
+        building_id, building_name, building_code, building_acreage, community_id, create_by, create_time, update_by,
+        update_time, remark
+        from zy_building
+        <where>
+            <if test="buildingId != null">
+                and building_id = #{buildingId}
+            </if>
+            <if test="buildingName != null and buildingName != ''">
+                and building_name = #{buildingName}
+            </if>
+            <if test="buildingCode != null and buildingCode != ''">
+                and building_code = #{buildingCode}
+            </if>
+            <if test="buildingAcreage != null">
+                and building_acreage = #{buildingAcreage}
+            </if>
+            <if test="communityId != null">
+                and community_id = #{communityId}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from zy_building b
+        join zy_community c on b.community_id = c.community_id
+        <where>
+            <if test="zyBuilding.buildingId != null">
+                and building_id = #{zyBuilding.buildingId}
+            </if>
+            <if test="zyBuilding.buildingName != null and zyBuilding.buildingName != ''">
+                and building_name like concat ('%',#{zyBuilding.buildingName},'%')
+            </if>
+            <if test="zyBuilding.buildingCode != null and zyBuilding.buildingCode != ''">
+                and building_code like concat ('%',#{zyBuilding.buildingCode},'%')
+            </if>
+            <if test="zyBuilding.communityId != null and zyBuilding.communityId!=''">
+                and b.community_id = #{zyBuilding.communityId}
+            </if>
+        </where>
+    </select>
+    <!--楼栋和分页-->
+    <select id="selectBuildLimit" resultType="com.zy_admin.community.dto.ZyBuildingDto">
+        select * from zy_building b
+        right join zy_community c on b.community_id = c.community_id
+        <where>
+            <if test="zyBuilding.buildingName!=null and zyBuilding.buildingName!=''">
+                and building_name like concat ('%',#{zyBuilding.buildingName},'%')
+            </if>
+            <if test="zyBuilding.buildingCode!=null and zyBuilding.buildingCode!=''">
+                and building_code like concat ('%',#{zyBuilding.buildingCode},'%')
+            </if>
+            <if test="zyBuilding.communityId != null and zyBuilding.communityId != '' ">
+                and b.community_id = #{zyBuilding.communityId}
+            </if>
+        </where>
+        <if test="pageable.pageSize!=null">
+            limit #{pageable.index},#{pageable.pageSize}
+        </if>
+    </select>
+
+    <select id="getZyBuilding" resultType="com.zy_admin.community.entity.ZyBuilding">
+        select *
+        from zy_building
+        where building_id = #{buildId}
+    </select>
+    <!--选中的地方导出-->
+    <select id="queryZyBuildingById" resultType="com.zy_admin.community.entity.ZyBuilding">
+        select * from zy_building
+        <if test="list!=null">
+            where building_id in (
+            <foreach collection="list" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+    </select>
+    <!--导出全部-->
+    <select id="getBuildingLists" resultType="com.zy_admin.community.entity.ZyBuilding">
+        select *
+        from zy_building
+        where community_id = #{communityId}
+    </select>
+    <!--判断楼层名不重复-->
+    <select id="selectZyBuildingByName" resultType="com.zy_admin.community.entity.ZyBuilding">
+        select *
+        from zy_building
+        where building_name = #{buildingName}
+          and community_id = #{communityId}
+    </select>
+    <!--判断下面有没有子集-->
+    <select id="selectChild" resultType="java.lang.Long">
+        select count(*) from zy_building b left join zy_unit u on b.building_id = u.building_id
+        <if test="list!=null">
+            where u.building_id in (
+            <foreach collection="list" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+    </select>
+    <!--根据小区id获取对应的楼栋-->
+    <select id="getBuildingListsByIds" resultType="com.zy_admin.community.entity.ZyBuilding">
+        select * from zy_building
+        <if test="list!=null">
+            where zy_building.community_id in
+            <foreach collection="list" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="" useGeneratedKeys="true">
+        insert into zy_building(building_id, building_name, building_code, building_acreage, community_id, create_by,
+                                create_time, update_by, update_time, remark)
+        values (#{buildingId}, #{buildingName}, #{buildingCode}, #{buildingAcreage}, #{communityId}, #{createBy},
+                #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="" useGeneratedKeys="true">
+        insert into zy_building(building_id, building_name, building_code, building_acreage, community_id, create_by,
+        create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.buildingId}, #{entity.buildingName}, #{entity.buildingCode}, #{entity.buildingAcreage},
+            #{entity.communityId}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime},
+            #{entity.remark})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="" useGeneratedKeys="true">
+        insert into zy_building(building_id, building_name, building_code, building_acreage, community_id, create_by,
+        create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.buildingId}, #{entity.buildingName}, #{entity.buildingCode}, #{entity.buildingAcreage},
+            #{entity.communityId}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime},
+            #{entity.remark})
+        </foreach>
+        on duplicate key update
+        building_id = values(building_id),
+        building_name = values(building_name),
+        building_code = values(building_code),
+        building_acreage = values(building_acreage),
+        community_id = values(community_id),
+        create_by = values(create_by),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        remark = values(remark)
+    </insert>
+    <insert id="insertZyBuilding">
+        insert into zy_building(building_id, building_name, building_code, building_acreage, community_id, create_by,
+                                create_time, update_by, update_time, remark)
+        values (#{buildingId}, #{buildingName}, #{buildingCode}, #{buildingAcreage}, #{communityId}, #{createBy},
+                #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update zy_building
+        <set>
+            <if test="buildingId != null">
+                building_id = #{buildingId},
+            </if>
+            <if test="buildingName != null and buildingName != ''">
+                building_name = #{buildingName},
+            </if>
+            <if test="buildingCode != null and buildingCode != ''">
+                building_code = #{buildingCode},
+            </if>
+            <if test="buildingAcreage != null">
+                building_acreage = #{buildingAcreage},
+            </if>
+            <if test="communityId != null">
+                community_id = #{communityId},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+
+    </update>
+    <!--修改楼层-->
+    <update id="updateZyBuilding">
+        update zy_building
+        <set>
+            <if test="zyBuilding.buildingId != null">
+                building_id = #{zyBuilding.buildingId},
+            </if>
+            <if test="zyBuilding.buildingName != null and zyBuilding.buildingName != ''">
+                building_name = #{zyBuilding.buildingName},
+            </if>
+            <if test="zyBuilding.buildingCode != null and zyBuilding.buildingCode != ''">
+                building_code = #{zyBuilding.buildingCode},
+            </if>
+            <if test="zyBuilding.buildingAcreage != null">
+                building_acreage = #{zyBuilding.buildingAcreage},
+            </if>
+            <if test="zyBuilding.communityId != null">
+                community_id = #{zyBuilding.communityId},
+            </if>
+            <if test="zyBuilding.createBy != null and zyBuilding.createBy != ''">
+                create_by = #{zyBuilding.createBy},
+            </if>
+            <if test="zyBuilding.createTime != null">
+                create_time = #{zyBuilding.createTime},
+            </if>
+            <if test="zyBuilding.updateBy != null and zyBuilding.updateBy != ''">
+                update_by = #{zyBuilding.updateBy},
+            </if>
+            <if test="zyBuilding.updateTime != null">
+                update_time = #{zyBuilding.updateTime},
+            </if>
+            <if test="zyBuilding.remark != null and zyBuilding.remark != ''">
+                remark = #{zyBuilding.remark},
+            </if>
+        </set>
+        where building_id = #{zyBuilding.buildingId}
+    </update>
+
+    <delete id="deleteByIdList" parameterType="integer">
+        delete from zy_building where building_id in
+        <foreach collection="idList" item="building_id" separator="," open="(" close=")">
+            #{building_id}
+        </foreach>
+    </delete>
+
+</mapper>
+

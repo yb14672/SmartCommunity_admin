@@ -1,17 +1,17 @@
 package com.zy_admin.community.service.impl;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.community.dao.ZyBuildingDao;
 import com.zy_admin.community.dao.ZyCommunityDao;
 import com.zy_admin.community.dto.CommunityDto;
 import com.zy_admin.community.dto.CommunityExcel;
 import com.zy_admin.community.dto.ZyCommunityDto;
+import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.community.service.ZyCommunityService;
 import com.zy_admin.sys.dao.SysUserDao;
-import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +35,30 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
     private SnowflakeManager snowflakeManager;
     @Resource
     private SysUserDao sysUserDao;
+    @Resource
+    private ZyBuildingDao zyBuildingDao;
+
+    /**
+     * 根据id删除小区
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Result deleteByIds(List<String> ids) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMUNITY_UPDATE_FAIL));
+        List<ZyBuilding> buildingListsByIds = zyBuildingDao.getBuildingListsByIds(ids);
+        if(buildingListsByIds.size() == 0){
+            int i = this.baseMapper.deleteBatchIds(ids);
+            if(i>=1){
+                result.setData("删除成功");
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            }else{
+                result.setMeta(ResultTool.fail(ResultCode.COMMUNITY_HAVE_CHILD));
+            }
+        }
+        return result;
+    }
 
     @Override
     public List<CommunityExcel> selectByIds(ArrayList<Long> ids) {
@@ -45,6 +69,12 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
     public Result updateCommunityById(ZyCommunity community, HttpServletRequest request) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMUNITY_UPDATE_FAIL));
         try {
+            ZyCommunity zyCommunity1 = this.baseMapper.selectById(community.getCommunityId());
+            String[] fields = new String[]{"communityName", "communityDetailedAddress", "communityProvenceCode", "communityCityCode", "communityTownCode", "remark"};
+            if (ObjUtil.checkEquals(community,zyCommunity1,fields)){
+                result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
+                return result;
+            }
             //判断地区Code是否为空，为空就是修改物业
             if (community.getCommunityProvenceCode() != "") {
                 /* 验证同一地区小区名是否重复 */
@@ -88,7 +118,7 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
             community.setCreateBy(sysUserDao.getUserById(id).getUserName());
             community.setCreateTime(LocalDateTime.now().toString());
             int i = this.baseMapper.insertCommunity(community);
-            result.setData(i);
+            result.setData("新增成功，影响的行数："+i);
             result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
@@ -105,14 +135,20 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
             pageable.setTotal(total);
             long pages = 0;
             if (total > 0) {
-                //总页码数
-                pages = total % pageable.getPageSize() == 0 ? total / pageable.getPageSize() : total / pageable.getPageSize() + 1;
-                pageable.setPages(pages);
-                //页码修正
-                pageable.setPageNum(pageable.getPageNum() < 1 ? 1 : pageable.getPageNum());
-                pageable.setPageNum(pageable.getPageNum() > pages ? pages : pageable.getPageNum());
-                //设置起始下标
-                pageable.setIndex((pageable.getPageNum() - 1) * pageable.getPageSize());
+                if (pageable.getPageSize() != 0) {
+                    //总页码数
+                    pages = total % pageable.getPageSize() == 0 ? total / pageable.getPageSize() : total / pageable.getPageSize() + 1;
+                    pageable.setPages(pages);
+                    //页码修正
+                    pageable.setPageNum(pageable.getPageNum() < 1 ? 1 : pageable.getPageNum());
+                    pageable.setPageNum(pageable.getPageNum() > pages ? pages : pageable.getPageNum());
+                    //设置起始下标
+                    pageable.setIndex((pageable.getPageNum() - 1) * pageable.getPageSize());
+                }else {
+                    pageable.setPageNum(1);
+                    pageable.setPageSize(0);
+                    pageable.setIndex(0);
+                }
             } else {
                 pageable.setPageNum(0);
             }

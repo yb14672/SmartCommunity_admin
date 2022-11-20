@@ -1,14 +1,9 @@
 package com.zy_admin.community.entity;
 
-import java.util.Date;
-
-import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 /**
  * 单元 (ZyUnit)表实体类
@@ -47,7 +42,4 @@ public class ZyUnit extends Model<ZyUnit> {
     private String updateTime;
     //备注
     private String remark;
-
-
 }
-

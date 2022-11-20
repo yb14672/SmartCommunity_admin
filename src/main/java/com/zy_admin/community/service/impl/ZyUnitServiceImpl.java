@@ -8,12 +8,11 @@ import com.zy_admin.community.dto.UnitDto;
 import com.zy_admin.community.dto.UnitListDto;
 import com.zy_admin.community.entity.ZyUnit;
 import com.zy_admin.community.service.ZyUnitService;
+import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -27,12 +26,13 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
 
     /**
      * 单元楼分页查询
+     *
      * @param zyUnit
      * @param pageable
      * @return
      */
     @Override
-    public Result getUnitList(ZyUnit zyUnit,Pageable pageable) {
+    public Result getUnitList(ZyUnit zyUnit, Pageable pageable) {
         Result result = new Result();
         Long total = this.baseMapper.count(zyUnit);
         long pages = 0;
@@ -49,7 +49,7 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
         }
         pageable.setTotal(total);
         List<UnitListDto> unitListDtos = this.baseMapper.queryAllByLimit(zyUnit, pageable);
-        UnitDto unitDto = new UnitDto(unitListDtos,pageable);
+        UnitDto unitDto = new UnitDto(unitListDtos, pageable);
         result.setData(unitDto);
         result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
         return result;
@@ -57,6 +57,7 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
 
     /**
      * 新增单元楼
+     *
      * @param zyUnit
      * @return
      */
@@ -67,14 +68,13 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
         List<ZyUnit> unit = this.baseMapper.getUnit(zyUnit.getBuildingId());
         zyUnit.setCommunityId(unit.get(0).getCommunityId());
         ZyUnit selectUnitName = this.baseMapper.selectUnitName(unit.get(0).getCommunityId(), zyUnit.getBuildingId(), zyUnit.getUnitName());
-        if (selectUnitName!=null)
-        {
+        if (selectUnitName != null) {
             result.setMeta(ResultTool.fail(ResultCode.UNIT_NAME_REPEAT)
             );
-        }else {
+        } else {
 
             Long now = System.currentTimeMillis();
-            zyUnit.setUnitCode("UNIT_"+now.toString().substring(0,13));
+            zyUnit.setUnitCode("UNIT_" + now.toString().substring(0, 13));
             try {
                 this.baseMapper.insertUnit(zyUnit);
                 result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
@@ -90,34 +90,39 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
 
     /**
      * 修改角色
+     *
      * @param zyUnit
      * @return
      */
     @Override
     public Result updateUnit(ZyUnit zyUnit) {
-
         Result result = new Result();
         List<ZyUnit> unit = this.baseMapper.getUnit(zyUnit.getBuildingId());
+        ZyUnit zyUnit1 = this.baseMapper.queryById(zyUnit.getUnitId() + "");
         ZyUnit selectUnitName = this.baseMapper.selectUnitName(unit.get(0).getCommunityId(), zyUnit.getBuildingId(), zyUnit.getUnitName());
-        if (selectUnitName!=null){
-            result.setMeta(ResultTool.fail(ResultCode.UNIT_NAME_REPEAT));
-        }else {
-            zyUnit.setCommunityId(unit.get(0).getCommunityId());
-            try {
-                this.baseMapper.updateUnit(zyUnit);
-                result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
-            } catch (Exception e) {
-                e.printStackTrace();
-                result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        String[] fields = new String[]{"buildingId", "unitName", "unitLevel", "unitAcreage", "unitHaveElevator", "remark"};
+        if (!ObjUtil.checkEquals(zyUnit, zyUnit1, fields)) {
+            if (selectUnitName != null) {
+                result.setMeta(ResultTool.fail(ResultCode.UNIT_NAME_REPEAT));
+            } else {
+                zyUnit.setCommunityId(unit.get(0).getCommunityId());
+                try {
+                    this.baseMapper.updateUnit(zyUnit);
+                    result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+                }
             }
-
+        }else{
+            result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
         }
-
         return result;
     }
 
     /**
      * 删除单元
+     *
      * @param unitIds
      * @return
      */
@@ -125,10 +130,9 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
     public Result deleteUnit(List<String> unitIds) {
         Result result = new Result();
         List<String> list = this.baseMapper.selectAllByUnitByIds(unitIds);
-        if (list.size()>0)
-        {
+        if (list.size() > 0) {
             result.setMeta(ResultTool.fail(ResultCode.UNIT_HAVE_PEOPLE));
-        }else {
+        } else {
             try {
                 this.baseMapper.deleteUnit(unitIds);
                 result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
@@ -152,7 +156,6 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
         }
         return this.baseMapper.getUnitById(ids);
     }
-
 
 
 }

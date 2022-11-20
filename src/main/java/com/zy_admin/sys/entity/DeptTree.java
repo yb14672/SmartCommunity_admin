@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -34,11 +33,11 @@ public class DeptTree {
     //创建者
     private String createBy;
     //创建时间
-    private Date createTime;
+    private String createTime;
     //更新者
     private String updateBy;
     //更新时间
-    private Date updateTime;
+    private String updateTime;
     /**
      * 子菜单列表
      */

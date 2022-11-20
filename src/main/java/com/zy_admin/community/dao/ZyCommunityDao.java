@@ -18,8 +18,16 @@ import java.util.List;
  */
 public interface ZyCommunityDao extends BaseMapper<ZyCommunity> {
 
+
     /**
-     * 查询导出数据
+     * 根据部门ID查询
+     * @param idList
+     * @return
+     */
+    List<ZyCommunity> selectCommunityByDeptId(@Param("idList") List<Integer> idList);
+
+    /**
+     * 根据小区id查询导出数据
      * @param ids
      * @return
      */
@@ -38,6 +46,7 @@ public interface ZyCommunityDao extends BaseMapper<ZyCommunity> {
      * @return
      */
     ZyCommunity checkZyCommunity(ZyCommunity community);
+
     /**
      * 新增小区
      * @param community

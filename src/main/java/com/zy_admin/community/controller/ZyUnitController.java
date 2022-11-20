@@ -10,19 +10,14 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.common.core.annotation.MyLog;
-import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.community.dto.GetUnitExcelDto;
-import com.zy_admin.community.dto.UnitListDto;
 import com.zy_admin.community.entity.ZyUnit;
 import com.zy_admin.community.service.ZyUnitService;
-import com.zy_admin.sys.entity.SysPost;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.SnowflakeManager;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +29,6 @@ import java.io.Serializable;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -122,7 +116,6 @@ public class ZyUnitController extends ApiController {
     @GetMapping("/getUnitList")
     public Result getUnitList( ZyUnit zyUnit, Pageable pageable){
         Result unitList = zyUnitService.getUnitList(zyUnit, pageable);
-        System.out.println(unitList.toString());
         return unitList;
 
     }
@@ -152,7 +145,6 @@ public class ZyUnitController extends ApiController {
     @PutMapping("/updateUnit")
     public Result updateUnit(HttpServletRequest request,@RequestBody ZyUnit zyUnit)
     {
-        System.out.println(zyUnit.toString());
         SysUser user = this.requestUtil.getUser(request);
         zyUnit.setUpdateBy(user.getUserName());
         zyUnit.setUpdateTime(LocalDateTime.now().toString());

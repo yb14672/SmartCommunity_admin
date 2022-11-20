@@ -19,13 +19,23 @@
     </resultMap>
 
 
-
-
     <!--查询单个-->
     <select id="queryById" resultMap="ZyUnitMap">
-        select
-          unit_id, community_id, building_id, unit_name, unit_code, unit_level, unit_acreage, unit_have_elevator, create_by, create_time, update_by, update_time, remark
+        select unit_id,
+               community_id,
+               building_id,
+               unit_name,
+               unit_code,
+               unit_level,
+               unit_acreage,
+               unit_have_elevator,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
         from zy_unit
+        where unit_id = #{unitId}
     </select>
 
     <!--查询指定行数据-->
@@ -35,7 +45,7 @@
         from zy_unit zu
         <where>
             <if test="zyUnit.buildingId != null">
-            and building_id = #{zyUnit.buildingId}
+                and building_id = #{zyUnit.buildingId}
             </if>
             <if test="zyUnit.unitName != null and zyUnit.unitName != ''">
                 and unit_name = #{zyUnit.unitName}
@@ -72,8 +82,10 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="" useGeneratedKeys="true">
-        insert into zy_unit(unit_id, community_id, building_id, unit_name, unit_code, unit_level, unit_acreage, unit_have_elevator, create_by, create_time, update_by, update_time, remark)
-        values (#{unitId}, #{communityId}, #{buildingId}, #{unitName}, #{unitCode}, #{unitLevel}, #{unitAcreage}, #{unitHaveElevator}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+        insert into zy_unit(unit_id, community_id, building_id, unit_name, unit_code, unit_level, unit_acreage,
+                            unit_have_elevator, create_by, create_time, update_by, update_time, remark)
+        values (#{unitId}, #{communityId}, #{buildingId}, #{unitName}, #{unitCode}, #{unitLevel}, #{unitAcreage},
+                #{unitHaveElevator}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <insert id="insertBatch" keyProperty="" useGeneratedKeys="true">
@@ -161,10 +173,11 @@
     </delete>
 
     <insert id="insertUnit">
-        insert  into  zy_unit(unit_id, community_id, building_id, unit_name, unit_code, unit_level, unit_acreage, unit_have_elevator, create_by, create_time, update_by, update_time, remark)
+        insert into zy_unit(unit_id, community_id, building_id, unit_name, unit_code, unit_level, unit_acreage,
+                            unit_have_elevator, create_by, create_time, update_by, update_time, remark)
         values (#{unitId}, #{communityId}, #{buildingId}, #{unitName}, #{unitCode},
-            #{unitLevel}, #{unitAcreage}, #{unitHaveElevator}, #{createBy},
-            #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+                #{unitLevel}, #{unitAcreage}, #{unitHaveElevator}, #{createBy},
+                #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <select id="selectAllByUnitByIds" resultType="string">
@@ -175,7 +188,7 @@
     </select>
 
     <delete id="deleteUnit">
-        delete  from zy_unit where unit_id in
+        delete from zy_unit where unit_id in
         <foreach collection="unitIds" item="unitIds" separator="," open="(" close=")">
             #{unitIds}
         </foreach>
@@ -183,8 +196,9 @@
 
 
     <select id="getAll" resultType="com.zy_admin.community.dto.UnitListDto">
-        select *,(select community_name from zy_community zc where zc.community_id = zu.community_id) communityName,
-        (select building_name from zy_building zb where zb.building_id = zu.building_id ) buildingName
+        select *,
+               (select community_name from zy_community zc where zc.community_id = zu.community_id) communityName,
+               (select building_name from zy_building zb where zb.building_id = zu.building_id)     buildingName
         from zy_unit zu
     </select>
 
@@ -197,8 +211,6 @@
             #{Unit_id}
         </foreach>
     </select>
-
-
 
 
 </mapper>

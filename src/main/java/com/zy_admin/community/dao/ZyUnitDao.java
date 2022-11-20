@@ -3,12 +3,10 @@ package com.zy_admin.community.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.community.dto.UnitListDto;
-import com.zy_admin.community.entity.ZyRoom;
 import com.zy_admin.community.entity.ZyUnit;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -91,6 +89,11 @@ public interface ZyUnitDao extends BaseMapper<ZyUnit> {
      */
     List<ZyUnit> getUnitById(@Param("unitIds") List<Integer> unitIds);
 
-
+    /**
+     * 根据ID获取单元信息
+     * @param unitId
+     * @return
+     */
+    ZyUnit queryById(String unitId);
 }
 
