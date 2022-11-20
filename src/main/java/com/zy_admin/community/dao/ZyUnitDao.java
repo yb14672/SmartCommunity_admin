@@ -95,5 +95,13 @@ public interface ZyUnitDao extends BaseMapper<ZyUnit> {
      * @return
      */
     ZyUnit queryById(String unitId);
+
+    /**
+     * 获取社区ID
+     * @param buildingId
+     * @return
+     */
+    @Select("SELECT community_id FROM  zy_building where building_id = #{buildingId}")
+    ZyUnit selectBuildingId(String buildingId);
 }
 

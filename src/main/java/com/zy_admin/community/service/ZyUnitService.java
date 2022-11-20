@@ -52,5 +52,10 @@ public interface ZyUnitService extends IService<ZyUnit> {
     List<ZyUnit> getAll();
 
     List<ZyUnit> getUnitById(List<Integer> ids);
+
+    /**
+     * 通过社区id获取楼栋
+     */
+    Result getBuildingList(String id);
 }
 

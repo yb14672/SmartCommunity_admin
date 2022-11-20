@@ -186,5 +186,12 @@ public class ZyUnitController extends ApiController {
 
     }
 
+
+    @GetMapping("/getBuildingList")
+    public Result getBuildingList(ZyUnit zyUnit){
+        System.err.println(zyUnit);
+        return zyUnitService.getBuildingList(zyUnit.getCommunityId());
+    }
+
 }
 

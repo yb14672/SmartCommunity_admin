@@ -3,9 +3,11 @@ package com.zy_admin.community.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.community.dao.ZyBuildingDao;
 import com.zy_admin.community.dao.ZyUnitDao;
 import com.zy_admin.community.dto.UnitDto;
 import com.zy_admin.community.dto.UnitListDto;
+import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.entity.ZyUnit;
 import com.zy_admin.community.service.ZyUnitService;
 import com.zy_admin.util.ObjUtil;
@@ -13,6 +15,8 @@ import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +27,9 @@ import java.util.List;
  */
 @Service("zyUnitService")
 public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements ZyUnitService {
+
+    @Resource
+    private ZyBuildingDao zyBuildingDao;
 
     /**
      * 单元楼分页查询
@@ -65,9 +72,9 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
     public Result insertUnit(ZyUnit zyUnit) {
 
         Result result = new Result();
-        List<ZyUnit> unit = this.baseMapper.getUnit(zyUnit.getBuildingId());
-        zyUnit.setCommunityId(unit.get(0).getCommunityId());
-        ZyUnit selectUnitName = this.baseMapper.selectUnitName(unit.get(0).getCommunityId(), zyUnit.getBuildingId(), zyUnit.getUnitName());
+        ZyUnit selectBuildingId = this.baseMapper.selectBuildingId(zyUnit.getBuildingId());
+        zyUnit.setCommunityId(selectBuildingId.getCommunityId());
+        ZyUnit selectUnitName = this.baseMapper.selectUnitName(selectBuildingId.getCommunityId(), zyUnit.getBuildingId(), zyUnit.getUnitName());
         if (selectUnitName != null) {
             result.setMeta(ResultTool.fail(ResultCode.UNIT_NAME_REPEAT)
             );
@@ -97,15 +104,15 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
     @Override
     public Result updateUnit(ZyUnit zyUnit) {
         Result result = new Result();
-        List<ZyUnit> unit = this.baseMapper.getUnit(zyUnit.getBuildingId());
+        ZyUnit selectBuildingId = this.baseMapper.selectBuildingId(zyUnit.getBuildingId());
         ZyUnit zyUnit1 = this.baseMapper.queryById(zyUnit.getUnitId() + "");
-        ZyUnit selectUnitName = this.baseMapper.selectUnitName(unit.get(0).getCommunityId(), zyUnit.getBuildingId(), zyUnit.getUnitName());
+        ZyUnit selectUnitName = this.baseMapper.selectUnitName(selectBuildingId.getCommunityId(), zyUnit.getBuildingId(), zyUnit.getUnitName());
         String[] fields = new String[]{"buildingId", "unitName", "unitLevel", "unitAcreage", "unitHaveElevator", "remark"};
         if (!ObjUtil.checkEquals(zyUnit, zyUnit1, fields)) {
             if (selectUnitName != null) {
                 result.setMeta(ResultTool.fail(ResultCode.UNIT_NAME_REPEAT));
             } else {
-                zyUnit.setCommunityId(unit.get(0).getCommunityId());
+                zyUnit.setCommunityId(selectBuildingId.getCommunityId());
                 try {
                     this.baseMapper.updateUnit(zyUnit);
                     result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
@@ -144,17 +151,48 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
         return result;
     }
 
+    /**
+     * 获取所有单元
+     * @return
+     */
     @Override
     public List<ZyUnit> getAll() {
         return this.baseMapper.getAll();
     }
 
+    /**
+     * 通过id获取对应单元
+     * @param ids
+     * @return
+     */
     @Override
     public List<ZyUnit> getUnitById(List<Integer> ids) {
         if (ids != null) {
             ids = ids.size() == 0 ? null : ids;
         }
         return this.baseMapper.getUnitById(ids);
+    }
+
+    /**
+     * 根据社区id获取对应的楼栋集合
+     * @param id
+     * @return
+     */
+    @Override
+    public Result getBuildingList(String id) {
+        List<String> ids = new ArrayList<>();
+        Result result = new Result();
+        ids.add(id);
+        try {
+            List<ZyBuilding> buildingListsByIds = zyBuildingDao.getBuildingListsByIds(ids);
+            result.setData(buildingListsByIds);
+            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        }
+
+        return result;
     }
 
 

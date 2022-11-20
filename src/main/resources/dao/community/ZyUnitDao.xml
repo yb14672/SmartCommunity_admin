@@ -56,6 +56,9 @@
             <if test="zyUnit.unitHaveElevator != null and zyUnit.unitHaveElevator != ''">
                 and unit_have_elevator = #{zyUnit.unitHaveElevator}
             </if>
+            <if test="zyUnit.communityId != null and zyUnit.communityId != '' ">
+                and community_id = #{zyUnit.communityId}
+            </if>
         </where>
         limit #{pageable.index}, #{pageable.pageSize}
     </select>
@@ -76,6 +79,9 @@
             </if>
             <if test="zyUnit.unitHaveElevator != null and zyUnit.unitHaveElevator != ''">
                 and unit_have_elevator = #{zyUnit.unitHaveElevator}
+            </if>
+            <if test="zyUnit.communityId != null and zyUnit.communityId != '' ">
+                and community_id = #{zyUnit.communityId}
             </if>
         </where>
     </select>
