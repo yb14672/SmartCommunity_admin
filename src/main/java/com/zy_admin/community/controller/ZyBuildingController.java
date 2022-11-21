@@ -143,5 +143,16 @@ public class ZyBuildingController extends ApiController {
     public Result selectOne(@PathVariable String id) {
         return zyBuildingService.queryById(id);
     }
+
+    /**
+     * 根据小区ID获取下面的楼栋、单元集合
+     *
+     * @param id 主键
+     * @return 单条数据
+     */
+    @GetMapping("/buildingList/{id}")
+    public Result getBuildingAndUnitListByCommunityId(@PathVariable String id) {
+        return zyBuildingService.getBuildingAndUnitListByCommunityId(id);
+    }
 }
 

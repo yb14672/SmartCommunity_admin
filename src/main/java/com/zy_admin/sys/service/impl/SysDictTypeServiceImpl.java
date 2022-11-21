@@ -119,9 +119,9 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
                     //新增字典
                     int sysDictType1 = this.baseMapper.insert(sysDictType);
                     result.setData("新增成功，影响的行数：" + sysDictType1);
-                    result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 } catch (Exception e) {
-                    return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+                    return result;
                 }
             } else {
                 result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_TYPE));
@@ -160,7 +160,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
                                 this.sysDictDataDao.changeStatusByDictType(sysDictType.getDictType(), sysDictType.getStatus());
                             }
                             result.setData("修改成功，影响的行数：" + sysDictType1);
-                            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                         }
                     } else {
                         result.setMeta(ResultTool.fail(ResultCode.REPEAT_DICT_TYPE));

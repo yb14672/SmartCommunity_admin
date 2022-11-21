@@ -26,7 +26,7 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuDao, SysRoleM
         try{
             List<Integer> menuIds = this.baseMapper.getMenuIdsByRoleId(id);
             result.setData(menuIds);
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         }catch (Exception e){
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));

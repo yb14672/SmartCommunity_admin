@@ -1,29 +1,94 @@
-package com.zy_admin.community.entity;
+package com.zy_admin.community.dto;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.zy_admin.community.entity.ZyBuilding;
+import com.zy_admin.community.entity.ZyCommunity;
+import com.zy_admin.community.entity.ZyRoom;
+import com.zy_admin.community.entity.ZyUnit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 房间 (ZyRoom)表实体类
- *
- * @author makejava
- * @since 2022-11-01 19:49:03
+ * 房屋连表dto类
+ * @author 吕蔚霖
  */
-@SuppressWarnings("serial")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ZyRoom extends Model<ZyRoom> {
+public class ZyRoomDto{
+    /**
+     * 获取房屋
+     */
+    @ExcelIgnore
+    private ZyRoom zyRoom;
+    /**
+     * 获取小区
+     */
+    @ExcelIgnore
+    private ZyCommunity zyCommunity;
+    /**
+     * 获取单元
+     */
+    @ExcelIgnore
+    private ZyUnit zyUnit;
+    /**
+     * 获取楼层
+     */
+    @ExcelIgnore
+    private ZyBuilding zyBuilding;
+
+
     /**
      * 房间id
      */
     @ExcelProperty("房间id")
     @TableId
     private String roomId;
+    /**
+     * 小区名称
+     */
+    @ExcelProperty("小区名称")
+    private String communityName;
+    /**
+     * 楼栋名称
+     */
+    @ExcelProperty("楼栋名称")
+    private String buildingName;
+    /**
+     * 单元名称
+     */
+    @ExcelProperty("单元名称")
+    private String unitName;
+    /**
+     * 楼层
+     */
+    @ExcelProperty("楼层")
+    private Integer roomLevel;
+    /**
+     * 房间名称
+     */
+    @ExcelProperty("房间名称")
+    private String roomName;
+    /**
+     * 房间编号
+     */
+    @ExcelProperty("房间编号")
+    private String roomCode;
+    /**
+     * 房屋建筑面积
+     */
+    @ExcelProperty("房屋建筑面积")
+    private Double roomAcreage;
+    /**
+     * 算费系数
+     */
+    @ExcelProperty("算费系数")
+    private Double roomCost;
+
+
     /**
      * 小区id
      */
@@ -39,31 +104,6 @@ public class ZyRoom extends Model<ZyRoom> {
      */
     @ExcelProperty("单元id")
     private String unitId;
-    /**
-     * 楼层
-     */
-    @ExcelProperty("楼层")
-    private Integer roomLevel;
-    /**
-     * 房间编号
-     */
-    @ExcelProperty("房间编号")
-    private String roomCode;
-    /**
-     * 房间名称
-     */
-    @ExcelProperty("房间名称")
-    private String roomName;
-    /**
-     * 房屋建筑面积
-     */
-    @ExcelProperty("房屋建筑面积")
-    private Double roomAcreage;
-    /**
-     * 算费系数
-     */
-    @ExcelProperty("算费系数")
-    private Double roomCost;
     /**
      * 房屋状态
      */
@@ -110,4 +150,3 @@ public class ZyRoom extends Model<ZyRoom> {
     @ExcelProperty("备注")
     private String remark;
 }
-

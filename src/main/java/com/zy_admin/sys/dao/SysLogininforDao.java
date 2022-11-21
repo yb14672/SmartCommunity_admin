@@ -26,7 +26,7 @@ public interface SysLogininforDao extends BaseMapper<SysLogininfor> {
      * @param pageable
      * @return
      */
-    List<SysLogininfor> queryLogininfor(@Param("loginInFor") SysLogininfor sysLogininfor,@Param("pageable") Pageable pageable,@Param("startTime") String startTime,@Param("endTime") String endTime);
+    List<SysLogininfor> queryLogininfor(@Param("loginInFor") SysLogininfor sysLogininfor, @Param("pageable") Pageable pageable, @Param("startTime") String startTime, @Param("endTime") String endTime);
 
     /**
      * 统计总数据量
@@ -35,7 +35,7 @@ public interface SysLogininforDao extends BaseMapper<SysLogininfor> {
      * @param endTime
      * @return
      */
-    Long count(@Param("loginInFor") SysLogininfor sysLogininfor,@Param("startTime") String startTime,@Param("endTime") String endTime);
+    Long count(@Param("loginInFor") SysLogininfor sysLogininfor, @Param("startTime") String startTime, @Param("endTime") String endTime);
 
     /**
      * 刪除日志

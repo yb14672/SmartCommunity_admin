@@ -102,7 +102,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
      */
     @Override
     public Result updateDept(SysDept sysDept) {
-        Result result = new Result();
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             //判断是否没有修改就提交
             SysDept DeptById = this.baseMapper.getDeptByDeptId(sysDept.getDeptId() + "");

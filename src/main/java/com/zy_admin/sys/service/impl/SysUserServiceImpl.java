@@ -90,7 +90,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      */
     @Override
     public Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime) {
-        Result result = new Result();
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
         //满足条件的总数据
         long total = this.baseMapper.count(sysUser, startTime, endTime);
@@ -528,17 +528,22 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
 
     @Override
     public Result login(SysUser sysUser) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         SysUser user = baseMapper.login(sysUser);
         String jwtToken = "";
         if (user != null) {
             jwtToken = JwtUtil.getJwtToken(user.getUserId() + "", user.getNickName());
             redisService.set(jwtToken, sysUser.getUserName());
+            result.setData(jwtToken);
             if ("1".equals(user.getStatus())) {
-                return new Result(jwtToken, ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED));
+                result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED));
+                return result;
             }
-            return new Result(jwtToken, ResultTool.fail(ResultCode.USER_LOGIN_SUCCESS));
+            result.setMeta(ResultTool.fail(ResultCode.USER_LOGIN_SUCCESS));
+            return result;
         }
-        return new Result(jwtToken, ResultTool.fail(ResultCode.USER_WRONG_ACCOUNT_OR_PASSWORD));
+        result.setMeta(ResultTool.fail(ResultCode.USER_WRONG_ACCOUNT_OR_PASSWORD));
+        return result;
     }
 
     @Override
@@ -592,7 +597,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             int i = baseMapper.updateUser(user);
             if (i == 1) {
                 result.setData("用户ID为" + user.getUserId() + "的信息修改成功");
-                result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             } else {
                 result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_NOT_EXIST));
             }
@@ -612,7 +617,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             int i = baseMapper.updateUser(user);
             if (i == 1) {
                 result.setData("用户ID为" + user.getUserId() + "的信息修改成功");
-                result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             } else {
                 result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_NOT_EXIST));
             }
@@ -637,7 +642,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result insertUser(UserDto sysUserDto) {
-        Result result = new Result();
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         if (checkUserName(0, sysUserDto)) {
             if (checkNiceName(0, sysUserDto)) {
                 if (checkPhone(0, sysUserDto)) {
@@ -801,7 +806,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      */
     @Override
     public Result resetPassword(SysUser sysUser) {
-        Result result = new Result();
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         SysUser user = this.baseMapper.getUserById(sysUser.getUserId() + "");
 
         if (!sysUser.getPassword().equals(user.getPassword())) {

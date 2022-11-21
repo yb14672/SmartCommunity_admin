@@ -15,6 +15,13 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <!--查询楼栋及其单元-->
+    <select id="getBuildingListByCommunityId" resultType="com.zy_admin.community.dto.BuildUnitDto">
+        select *
+        from zy_building
+        where community_id = #{communityId}
+    </select>
+
     <!--查询单个-->
     <select id="queryById" resultType="com.zy_admin.community.entity.ZyBuilding">
         select building_id,

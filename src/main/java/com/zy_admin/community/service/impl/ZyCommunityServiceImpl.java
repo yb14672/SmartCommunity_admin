@@ -91,7 +91,7 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
             community.setUpdateTime(LocalDateTime.now().toString());
             int i = this.baseMapper.updateCommunityById(community);
             result.setData(i);
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,7 +119,7 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
             community.setCreateTime(LocalDateTime.now().toString());
             int i = this.baseMapper.insertCommunity(community);
             result.setData("新增成功，影响的行数："+i);
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -154,7 +154,7 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
             }
             List<CommunityDto> communityList = this.baseMapper.selectAllByLimit(community, pageable);
             result.setData(new ZyCommunityDto(communityList, pageable));
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
             e.printStackTrace();

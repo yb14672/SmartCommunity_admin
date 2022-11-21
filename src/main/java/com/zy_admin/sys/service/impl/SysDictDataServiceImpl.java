@@ -40,7 +40,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
         try {
             List<SysDictData> dictDataList = this.baseMapper.getDict(deptType);
             result.setData(dictDataList);
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));

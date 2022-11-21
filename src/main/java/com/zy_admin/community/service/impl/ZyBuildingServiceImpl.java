@@ -4,9 +4,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyBuildingDao;
+import com.zy_admin.community.dao.ZyUnitDao;
+import com.zy_admin.community.dto.BuildAndUnit;
+import com.zy_admin.community.dto.BuildUnitDto;
 import com.zy_admin.community.dto.ZyBuildingDto;
 import com.zy_admin.community.dto.ZyBuildingDtoAll;
 import com.zy_admin.community.entity.ZyBuilding;
+import com.zy_admin.community.entity.ZyUnit;
 import com.zy_admin.community.service.ZyBuildingService;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.util.*;
@@ -33,6 +37,32 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
 
     @Resource
     private SysUserDao sysUserDao;
+
+    @Resource
+    private ZyUnitDao zyUnitDao;
+
+    /**
+     * 根据小区id获取楼栋及其对应的单元列表
+     *
+     * @param communityId 小区ID
+     * @return 对应的楼栋列表
+     */
+    @Override
+    public Result getBuildingAndUnitListByCommunityId(String communityId) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        //获取到所有的楼栋
+        List<BuildUnitDto> buildingAndUnitListByCommunityId = this.baseMapper.getBuildingListByCommunityId(communityId);
+        //获取所有的单元
+        List<ZyUnit> unitList = this.zyUnitDao.getAll(communityId);
+        //将其整合为树
+        BuildAndUnit buildAndUnit = new BuildAndUnit(buildingAndUnitListByCommunityId, unitList);
+        buildingAndUnitListByCommunityId = buildAndUnit.build(buildingAndUnitListByCommunityId, unitList);
+        if(buildingAndUnitListByCommunityId.size() != 0){
+            result.setData(buildingAndUnitListByCommunityId);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
 
     /**
      * 导出选中的楼层
@@ -131,14 +161,13 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
      */
     @Override
     public Result insertZyBuilding(ZyBuilding zyBuilding, HttpServletRequest request) throws Exception {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         Long now = System.currentTimeMillis();
         zyBuilding.setBuildingCode("BUILDING_" + now.toString().substring(0, 13));
         zyBuilding.setBuildingId(snowflakeManager.nextId() + "");
         zyBuilding.setCreateTime(LocalDateTime.now().toString());
         String id = JwtUtil.getMemberIdByJwtToken(request);
         zyBuilding.setCreateBy(sysUserDao.getUserById(id).getUserName());
-
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断同一小区的楼层是否唯一,type为0是新增
         if (!selectZyBuildingByName(0, zyBuilding)) {
             result.setMeta(ResultTool.fail(ResultCode.BUILDING_NAME_REPEAT));
@@ -148,14 +177,14 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
             //新增楼层
             int sysDictType1 = this.baseMapper.insertZyBuilding(zyBuilding);
             if (sysDictType1 == 1) {
-                result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 result.setData("新增成功");
             }
             return result;
         } catch (Exception e) {
+            e.printStackTrace();
             return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         }
-
     }
 
     /**
@@ -181,7 +210,7 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
                     zyBuilding.setUpdateBy(sysUserDao.getUserById(id).getUserName());
                     int i = this.baseMapper.updateZyBuilding(zyBuilding);
                     if (i == 1) {
-                        result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                     }
                 } else {
                     result.setMeta(ResultTool.fail(ResultCode.BUILDING_NAME_REPEAT));

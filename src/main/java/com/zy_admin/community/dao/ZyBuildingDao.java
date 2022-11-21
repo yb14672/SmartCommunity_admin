@@ -2,6 +2,7 @@ package com.zy_admin.community.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.community.dto.BuildUnitDto;
 import com.zy_admin.community.dto.ZyBuildingDto;
 import com.zy_admin.community.entity.ZyBuilding;
 import org.apache.ibatis.annotations.Param;
@@ -16,6 +17,14 @@ import java.util.List;
  * @since 2022-11-01 19:49:00
  */
 public interface ZyBuildingDao extends BaseMapper<ZyBuilding> {
+    /**
+     * 根据小区id获取楼栋及其对应的单元列表
+     *
+     * @param communityId 小区ID
+     * @return 对应的楼栋列表
+     */
+    List<BuildUnitDto> getBuildingListByCommunityId(String communityId);
+
     /**
      * 根据小区id获取对应的楼栋
      * @param communityId

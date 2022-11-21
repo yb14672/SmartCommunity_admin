@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.service.ZyOwnerService;
-import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -84,6 +83,5 @@ public class ZyOwnerController extends ApiController {
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.zyOwnerService.removeByIds(idList));
     }
-
 }
 
