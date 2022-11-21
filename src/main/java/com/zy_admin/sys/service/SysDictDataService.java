@@ -23,7 +23,7 @@ public interface SysDictDataService extends IService<SysDictData> {
      * @param deptType
      * @return
      */
-    public Result getDict(String deptType);
+    Result getDict(String deptType);
 
     /**
      * 分页查询所有数据
@@ -32,7 +32,7 @@ public interface SysDictDataService extends IService<SysDictData> {
      * @param sysDictData 查询实体
      * @return 所有数据
      */
-    public Result selectDictDataLimit(SysDictData sysDictData, Page page);
+    Result selectDictDataLimit(SysDictData sysDictData, Page page);
 
     /**
      * 根据ID查询对应字典数据

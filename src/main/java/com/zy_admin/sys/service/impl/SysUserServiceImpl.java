@@ -52,7 +52,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
 
     @Override
     public Result logout(HttpServletRequest request) {
+        //根据token获取当前登录的id
         String userId = JwtUtil.getMemberIdByJwtToken(request);
+        //根据id获取当前的对象
         SysUser user = this.baseMapper.queryById(userId);
         Result result = new Result(user,ResultTool.fail(ResultCode.USER_LOGOUT_FAIL));
         if (redisService.empty()){

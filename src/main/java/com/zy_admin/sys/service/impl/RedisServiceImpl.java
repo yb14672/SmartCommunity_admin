@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
- 
+
 import javax.annotation.Resource;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -21,8 +21,8 @@ public class RedisServiceImpl implements RedisService {
     @Resource
     private RedisTemplate redisTemplate;
 
+
     /**
-     * 设置key并且设置有效时间
      * @param key
      * @param value
      */
@@ -34,6 +34,7 @@ public class RedisServiceImpl implements RedisService {
         ValueOperations<String,Object> vo = redisTemplate.opsForValue();
         //设置key并且设置有效时间
         vo.set(key, value,20, TimeUnit.MINUTES);
+
     }
 
     /**

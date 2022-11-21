@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy_admin.sys.dao.SysUserDao">
-    <!--通过主键删除-->
-    <update id="deleteByIdList">
-        update sys_user set del_flag = 2 where user_id in
-        <foreach collection="idList" item="userId" separator="," open="(" close=")">
-            #{userId}
-        </foreach>
-    </update>
     <!--用户列表分页，条件搜索-->
     <resultMap type="com.zy_admin.sys.dto.SysUserDeptDto" id="SysUserDeptDtoMap">
         <result property="userId" column="user_id" jdbcType="INTEGER"/>
@@ -33,6 +26,13 @@
             <id column="dept_id" property="deptId" jdbcType="INTEGER"/>
         </association>
     </resultMap>
+    <!--通过主键删除-->
+    <delete id="deleteByIdList">
+        update sys_user set del_flag = 2 where user_id in
+        <foreach collection="idList" item="userId" separator="," open="(" close=")">
+            #{userId}
+        </foreach>
+    </delete>
 
     <select id="selectUsers" resultMap="SysUserDeptDtoMap">
         SELECT *,u.user_id userId,d.dept_Id deptId from sys_user u

@@ -113,9 +113,8 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
             pageable.setPageNum(0);
         }
         pageable.setTotal(total);
-            List<ZyBuildingDto> zyBuildingList = this.baseMapper.selectBuildLimit(zyBuilding, pageable);
+        List<ZyBuildingDto> zyBuildingList = this.baseMapper.selectBuildLimit(zyBuilding, pageable);
         //封装一个dto，把对象和分页放进去
-
         ZyBuildingDtoAll zyBuildingDtoAll = new ZyBuildingDtoAll(zyBuildingList,pageable);
         //存到data数据里面
         result.setData(zyBuildingDtoAll);
@@ -134,9 +133,13 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
     @Override
     public Result insertZyBuilding(ZyBuilding zyBuilding, HttpServletRequest request) throws Exception {
         Long now = System.currentTimeMillis();
+        //楼栋编码 时间戳
         zyBuilding.setBuildingCode("BUILDING_" + now.toString().substring(0, 13));
+        //雪花算法 楼栋Id
         zyBuilding.setBuildingId(snowflakeManager.nextId()+"");
+        //创建时间，获取当前时间
         zyBuilding.setCreateTime(LocalDateTime.now().toString());
+        //根据token获取Id再获取当前修改人的名字
         String id = JwtUtil.getMemberIdByJwtToken(request);
         zyBuilding.setCreateBy(sysUserDao.getUserById(id).getUserName());
 
