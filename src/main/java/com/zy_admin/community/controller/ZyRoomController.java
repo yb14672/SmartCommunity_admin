@@ -3,10 +3,10 @@ package com.zy_admin.community.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
@@ -14,7 +14,9 @@ import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dto.ZyRoomDto;
 import com.zy_admin.community.entity.ZyRoom;
 import com.zy_admin.community.service.ZyRoomService;
+import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.ExcelUtil;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultTool;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +25,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URLEncoder;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +44,8 @@ public class ZyRoomController extends ApiController {
      */
     @Resource
     private ZyRoomService zyRoomService;
+    @Resource
+    private RequestUtil requestUtil;
     /**
      * 删除房屋
      * @param idList
@@ -49,7 +53,7 @@ public class ZyRoomController extends ApiController {
      * @throws Exception
      */
     @PostMapping("/deleteZyRoom")
-    @MyLog(title = "删除房屋", optParam = "#{zyRoom}", businessType = BusinessType.DELETE)
+    @MyLog(title = "房屋信息", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result deleteZyRoom(@RequestParam("idList") ArrayList<String> idList){
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
@@ -69,9 +73,12 @@ public class ZyRoomController extends ApiController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/updateZyRoom")
-    @MyLog(title = "修改房屋", optParam = "#{zyRoom}", businessType = BusinessType.UPDATE)
+    @PutMapping("/updateZyRoom")
+    @MyLog(title = "房屋信息", optParam = "#{zyRoom}", businessType = BusinessType.UPDATE)
     public Result updateZyRoom(@RequestBody ZyRoom zyRoom, HttpServletRequest request) throws Exception {
+        SysUser user = requestUtil.getUser(request);
+        zyRoom.setUpdateBy(user.getUserName());
+        zyRoom.setUpdateTime(LocalDateTime.now().toString());
         return this.zyRoomService.updateZyRoom(zyRoom,request);
     }
     /**
@@ -82,8 +89,11 @@ public class ZyRoomController extends ApiController {
      * @throws Exception
      */
     @PostMapping("/insertZyRoom")
-    @MyLog(title = "添加房屋", optParam = "#{zyRoom}", businessType = BusinessType.INSERT)
+    @MyLog(title = "房屋信息", optParam = "#{zyRoom}", businessType = BusinessType.INSERT)
     public Result insertZyRoom(@RequestBody ZyRoom zyRoom, HttpServletRequest request) throws Exception {
+        SysUser user = requestUtil.getUser(request);
+        zyRoom.setCreateBy(user.getUserName());
+        zyRoom.setCreateTime(LocalDateTime.now().toString());
         return this.zyRoomService.insertZyRoom(zyRoom,request);
     }
     /**
@@ -93,7 +103,8 @@ public class ZyRoomController extends ApiController {
      */
     @GetMapping("/getExcel")
     @MyLog(title = "房屋信息", optParam = "#{roomIds}", businessType = BusinessType.EXPORT)
-    public void getExcel(@RequestParam("ids") ArrayList<String> roomIds, HttpServletResponse response) throws IOException {
+    public Result getExcel(@RequestParam("ids") ArrayList<String> roomIds, HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //用于存储要导出的数据列表
         List<ZyRoomDto> zyRoomDtoList = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
@@ -113,13 +124,16 @@ public class ZyRoomController extends ApiController {
         // 内容样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), ZyRoomDto.class)
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), ZyRoomDto.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .autoCloseStream(true)
-                .sheet("模板")
-                .doWrite(zyRoomDtoList);
+                .sheet("房屋信息");
+        excel.doWrite(zyRoomDtoList);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
     /**
      * 分页查询所有数据
@@ -132,50 +146,6 @@ public class ZyRoomController extends ApiController {
     public Result getAllCommunity(Page page, ZyRoom zyRoom) {
         Result result = zyRoomService.getAllCommunity(page,zyRoom);
         return result;
-    }
-
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.zyRoomService.getById(id));
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param zyRoom 实体对象
-     * @return 新增结果
-     */
-    @PostMapping
-    public R insert(@RequestBody ZyRoom zyRoom) {
-        return success(this.zyRoomService.save(zyRoom));
-    }
-
-    /**
-     * 修改数据
-     *
-     * @param zyRoom 实体对象
-     * @return 修改结果
-     */
-    @PutMapping
-    public R update(@RequestBody ZyRoom zyRoom) {
-        return success(this.zyRoomService.updateById(zyRoom));
-    }
-
-    /**
-     * 删除数据
-     *
-     * @param idList 主键结合
-     * @return 删除结果
-     */
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.zyRoomService.removeByIds(idList));
     }
 }
 

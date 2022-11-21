@@ -17,6 +17,8 @@ import java.util.List;
  * @since 2022-11-01 19:49:03
  */
 public interface ZyRoomService extends IService<ZyRoom> {
+
+
     /**
      *
      * 分页查询

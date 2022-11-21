@@ -13,11 +13,12 @@ import lombok.NoArgsConstructor;
 
 /**
  * 房屋连表dto类
+ * @author 吕蔚霖
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ZyRoomDto {
+public class ZyRoomDto{
     /**
      * 获取房屋
      */

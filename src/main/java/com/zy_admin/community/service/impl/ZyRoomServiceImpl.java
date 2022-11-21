@@ -12,17 +12,14 @@ import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.community.entity.ZyRoom;
 import com.zy_admin.community.entity.ZyUnit;
 import com.zy_admin.community.service.ZyRoomService;
-import com.zy_admin.sys.dao.SysDictDataDao;
-import com.zy_admin.sys.dao.SysUserDao;
-import com.zy_admin.util.JwtUtil;
+import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,18 +31,16 @@ import java.util.List;
  */
 @Service("zyRoomService")
 public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements ZyRoomService {
-    private SysDictDataDao sysDictDataDao;
-    private SysUserDao sysUserDao;
-    private ZyRoomDao zyRoomDao;
-    @Autowired
+    @Resource
     private SnowflakeManager snowflakeManager;
+
 
     @Override
     public Result getAllCommunity(Page page, ZyRoom zyRoom) {
-        System.out.println("获得的zyRoom为" + zyRoom);
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         MPJLambdaWrapper<ZyRoom> queryWrapper = new MPJLambdaWrapper<ZyRoom>()
-                .selectAll(ZyRoom.class)    // 查询房屋表全字段
+                // 查询房屋表全字段
+                .selectAll(ZyRoom.class)
                 .select(ZyCommunity::getCommunityName)
                 .select(ZyUnit::getUnitName)
                 .select(ZyBuilding::getBuildingName)
@@ -72,7 +67,7 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             }
         } else {
-            List<ZyRoom> zyRoomList = this.baseMapper.selectList(queryWrapper);
+            List<ZyRoomDto> zyRoomList = this.baseMapper.selectJoinList(ZyRoomDto.class, queryWrapper);
             result.setData(zyRoomList);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
@@ -115,14 +110,10 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
      */
     @Override
     public Result insertZyRoom(ZyRoom zyRoom, HttpServletRequest request) throws Exception {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         Long now = System.currentTimeMillis();
         zyRoom.setRoomCode("ROOM_" + now.toString().substring(0, 13));
         zyRoom.setRoomId(snowflakeManager.nextId() + "");
-        zyRoom.setCreateTime(LocalDateTime.now().toString());
-        String id = JwtUtil.getMemberIdByJwtToken(request);
-        zyRoom.setCreateBy(sysUserDao.getUserById(id).getUserName());
-
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断同一小区的楼层是否唯一,type为0是新增
         if (!selectZyRoomByName(0, zyRoom)) {
             result.setMeta(ResultTool.fail(ResultCode.ROOM_HAVE_BEEN));
@@ -132,14 +123,13 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
             //新增楼层
             int sysDictType1 = this.baseMapper.insertZyRoom(zyRoom);
             if (sysDictType1 == 1) {
-                result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 result.setData("新增成功");
             }
             return result;
         } catch (Exception e) {
             return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         }
-
     }
 
     /**
@@ -156,18 +146,19 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             //判断是不是完全相同
-//            if (checkEquals(zyBuilding1, zyBuilding)) {
-            //type为1是修改
-            if (selectZyRoomByName(1, zyRoom)) {
-                String id = JwtUtil.getMemberIdByJwtToken(request);
-                zyRoom.setUpdateTime(LocalDateTime.now().toString());
-                zyRoom.setUpdateBy(sysUserDao.getUserById(id).getUserName());
-                int i = this.baseMapper.updateZyRoom(zyRoom);
-                if (i == 1) {
-                    result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            String[] fields = new String[]{"communityId", "buildingId", "unitId", "roomLevel", "roomName", "roomAcreage", "roomCost", "roomStatus", "roomIsShop", "roomSCommercialHouse", "roomHouseType", "remark"};
+            if (!ObjUtil.checkEquals(zyRoom, zyRoom1, fields)) {
+                //type为1是修改
+                if (selectZyRoomByName(1, zyRoom)) {
+                    int i = this.baseMapper.updateZyRoom(zyRoom);
+                    if (i == 1) {
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                    }
+                } else {
+                    result.setMeta(ResultTool.fail(ResultCode.ROOM_HAVE_BEEN));
                 }
             } else {
-                result.setMeta(ResultTool.fail(ResultCode.ROOM_HAVE_BEEN));
+                result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -185,19 +176,11 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
     @Override
     public Result deleteZyRoom(ArrayList<String> idList) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        //判断是单个
-        if (idList.size() == 1) {
-            int i = this.baseMapper.deleteZyRoom(idList);
-            result.setData("删除成功，影响的行数：" + i);
+        int i = this.baseMapper.deleteZyRoom(idList);
+        if (i >= 1) {
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-            //多个就是批量删除
         } else {
-            int i = this.baseMapper.deleteZyRoom(idList);
-            if (i >= 1) {
-                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-            } else {
-                result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
-            }
+            result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
         }
         return result;
     }
@@ -210,29 +193,26 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
      * @return
      */
     public boolean selectZyRoomByName(int type, ZyRoom zyRoom) {
-        ZyRoom zyRoom1 = this.baseMapper.selectZyRoomByName
-                (zyRoom.getRoomName(), zyRoom.getUnitId(), zyRoom.getBuildingId(), zyRoom.getCommunityId());
+        List<ZyRoom> zyRooms = this.baseMapper.checkRoomName(zyRoom);
         //类型为0是新增
         if (type == 0) {
             //判断是否为空
-            if (zyRoom1 == null || zyRoom1.getRoomName() == null) {
+            if (zyRooms.size() == 0) {
                 return true;
             }
         } else {
-            if (zyRoom1 == null || zyRoom1.getUnitId() == null) {
+            if (zyRooms.size() == 0) {
                 return true;
                 //判断房屋楼层是否唯一
-            } else if (!zyRoom1.getUnitId().equals(zyRoom.getUnitId())){
-                return false;
-            }else if (!zyRoom1.getBuildingId().equals(zyRoom.getBuildingId())) {
-                return false;
-            } else if (!zyRoom1.getCommunityId().equals(zyRoom.getCommunityId())) {
-                    return false;
-                } else {
-                    return true;
+            } else {
+                if (zyRooms.size() == 1) {
+                    if (zyRooms.get(0).getRoomId().equals(zyRoom.getRoomId())) {
+                        return true;
+                    }
                 }
             }
-            return false;
         }
+        return false;
+    }
 }
 

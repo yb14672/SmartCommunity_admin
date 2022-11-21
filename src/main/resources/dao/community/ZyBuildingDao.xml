@@ -15,6 +15,51 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <resultMap type="com.zy_admin.community.dto.BuildUnitDto" id="BuildingAndUnitMap">
+        <result property="buildingId" column="building_id" jdbcType="INTEGER"/>
+        <result property="buildingName" column="building_name" jdbcType="VARCHAR"/>
+        <result property="buildingCode" column="building_code" jdbcType="VARCHAR"/>
+        <result property="buildingAcreage" column="building_acreage" jdbcType="NUMERIC"/>
+        <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <collection property="children" javaType="java.util.List" ofType="com.zy_admin.community.entity.ZyUnit"
+                    autoMapping="true">
+            <id property="unitId" column="unit_id" jdbcType="INTEGER"/>
+            <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+            <result property="buildingId" column="building_id" jdbcType="INTEGER"/>
+            <result property="unitName" column="unit_name" jdbcType="VARCHAR"/>
+            <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
+            <result property="unitLevel" column="unit_level" jdbcType="INTEGER"/>
+            <result property="unitAcreage" column="unit_acreage" jdbcType="NUMERIC"/>
+            <result property="unitHaveElevator" column="unit_have_elevator" jdbcType="VARCHAR"/>
+            <result property="createBy" column="buildCBy" jdbcType="VARCHAR"/>
+            <result property="createTime" column="buildCTime" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="buildUBy" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="buildUTime" jdbcType="TIMESTAMP"/>
+            <result property="remark" column="buildRemark" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <!--查询楼栋及其单元-->
+    <select id="getBuildingAndUnitListByCommunityId" resultMap="BuildingAndUnitMap">
+        SELECT *,
+               b.create_by   buildCBy,
+               b.create_time buildCTime,
+               b.update_by   buildUBy,
+               b.update_time buildUTime,
+               b.remark      buildRemark
+        FROM zy_unit u
+                 RIGHT JOIN zy_building b ON u.building_id = b.building_id
+        WHERE u.building_id in (
+            SELECT building_id
+            FROM zy_building a1
+            WHERE a1.community_id = #{communityId})
+    </select>
+
     <!--查询单个-->
     <select id="queryById" resultType="com.zy_admin.community.entity.ZyBuilding">
         select building_id,

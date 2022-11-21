@@ -3,23 +3,19 @@ package com.zy_admin.community.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.baomidou.mybatisplus.extension.api.R;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dto.GetUnitExcelDto;
 import com.zy_admin.community.entity.ZyUnit;
 import com.zy_admin.community.service.ZyUnitService;
 import com.zy_admin.sys.entity.SysUser;
-import com.zy_admin.util.ExcelUtil;
-import com.zy_admin.util.RequestUtil;
-import com.zy_admin.util.Result;
-import com.zy_admin.util.SnowflakeManager;
+import com.zy_admin.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +23,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -55,62 +50,6 @@ public class ZyUnitController extends ApiController {
 
     @Autowired
     private SnowflakeManager snowflakeManager;
-
-    /**
-     * 分页查询所有数据
-     *
-     * @param page   分页对象
-     * @param zyUnit 查询实体
-     * @return 所有数据
-     */
-    @GetMapping
-    public R selectAll(Page<ZyUnit> page, ZyUnit zyUnit) {
-        return success(this.zyUnitService.page(page, new QueryWrapper<>(zyUnit)));
-    }
-
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.zyUnitService.getById(id));
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param zyUnit 实体对象
-     * @return 新增结果
-     */
-    @PostMapping
-    public R insert(@RequestBody ZyUnit zyUnit) {
-        return success(this.zyUnitService.save(zyUnit));
-    }
-
-    /**
-     * 修改数据
-     *
-     * @param zyUnit 实体对象
-     * @return 修改结果
-     */
-    @PutMapping
-    public R update(@RequestBody ZyUnit zyUnit) {
-        return success(this.zyUnitService.updateById(zyUnit));
-    }
-
-    /**
-     * 删除数据
-     *
-     * @param idList 主键结合
-     * @return 删除结果
-     */
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.zyUnitService.removeByIds(idList));
-    }
 
     /**
      * 单元楼查询分页
@@ -162,12 +101,13 @@ public class ZyUnitController extends ApiController {
 
     @GetMapping("/getExcel")
     @MyLog(title = "单元信息", optParam = "#{unitIds}", businessType = BusinessType.EXPORT)
-    public void getExcel(@RequestParam("unitIds") ArrayList<Integer> unitIds, HttpServletResponse response) throws IOException {
+    public Result getExcel(@RequestParam("unitIds") ArrayList<String> unitIds,@RequestParam("communityId") String communityId, HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<ZyUnit> zyUnits = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
         //执行查询角色列表的sql语句,但不包括del_flag为2的
         if (unitIds == null || unitIds.size() == 0) {
-            zyUnits = zyUnitService.getAll();
+            zyUnits = zyUnitService.getAll(communityId);
         } else {
             //执行查询角色列表的sql语句
             zyUnits = zyUnitService.getUnitById(unitIds);
@@ -179,14 +119,16 @@ public class ZyUnitController extends ApiController {
         // 内容样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), GetUnitExcelDto.class)
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), GetUnitExcelDto.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .autoCloseStream(true)
-                .sheet("模板")
-                .doWrite(zyUnits);
-
+                .sheet("单元信息");
+        excel.doWrite(zyUnits);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
 
     @GetMapping("/getBuildingList")

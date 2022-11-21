@@ -18,6 +18,13 @@ import java.util.List;
 public interface ZyBuildingService extends IService<ZyBuilding> {
 
     /**
+     * 根据小区id获取楼栋及其对应的单元列表
+     * @param communityId 小区ID
+     * @return 对应的楼栋列表
+     */
+    Result getBuildingAndUnitListByCommunityId(String communityId);
+
+    /**
      * 导出选中的楼层
      *
      * @param buildingIds

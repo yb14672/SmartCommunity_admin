@@ -142,7 +142,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
                     if (roleAndRoleMenu.getMenuIds().length != 0) {
                         sysRoleMenuDao.insertBatch(roleAndRoleMenu.getRoleId(), roleAndRoleMenu.getMenuIds());
                     }
-                    result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 } catch (Exception e) {
                     e.printStackTrace();
                     return result;
@@ -170,7 +170,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
                         if (roleAndRoleMenu.getMenuIds().length != 0) {
                             sysRoleMenuDao.insertBatch(roleAndRoleMenu.getRoleId(), roleAndRoleMenu.getMenuIds());
                         }
-                        result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -233,7 +233,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         int i = this.baseMapper.updateRole(sysRole);
         result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
         if (i == 1) {
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
     }

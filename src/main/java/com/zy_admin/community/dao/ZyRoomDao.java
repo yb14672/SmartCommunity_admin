@@ -5,6 +5,7 @@ import com.zy_admin.community.entity.ZyRoom;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 房间 (ZyRoom)表数据库访问层
@@ -32,24 +33,20 @@ public interface ZyRoomDao extends MPJBaseMapper<ZyRoom> {
      * @param idList
      * @return
      */
-    int deleteZyRoom(ArrayList<String> idList);
+    int deleteZyRoom(@Param("idList") ArrayList<String> idList);
 
-
-    /**
-     *  判断楼层名是否重复
-     * @param roomName
-     * @param unitId
-     * @param buildingId
-     * @param communityId
-     * @return
-     */
-
-    ZyRoom selectZyRoomByName(@Param("roomName")String roomName, @Param("unitId")String unitId,@Param("buildingId") String buildingId,@Param("communityId") String communityId);
     /**
      * 根据id查房屋
      * @param roomId
      * @return
      */
     ZyRoom getZyRoom(String roomId);
+
+    /**
+     * 检查房屋名是否唯一
+     * @param zyRoom
+     * @return
+     */
+    List<ZyRoom> checkRoomName(ZyRoom zyRoom);
 }
 

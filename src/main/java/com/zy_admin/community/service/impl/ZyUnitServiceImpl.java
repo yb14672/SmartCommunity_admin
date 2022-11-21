@@ -58,7 +58,7 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
         List<UnitListDto> unitListDtos = this.baseMapper.queryAllByLimit(zyUnit, pageable);
         UnitDto unitDto = new UnitDto(unitListDtos, pageable);
         result.setData(unitDto);
-        result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
 
@@ -73,18 +73,16 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         ZyUnit selectBuildingId = this.baseMapper.selectBuildingId(zyUnit.getBuildingId());
         zyUnit.setCommunityId(selectBuildingId.getCommunityId());
-        ZyUnit selectUnitName = this.baseMapper.selectUnitName(zyUnit);
-        if (selectUnitName != null) {
-            if (!zyUnit.getUnitId().equals(selectUnitName.getUnitId())) {
-                result.setMeta(ResultTool.fail(ResultCode.UNIT_NAME_REPEAT));
-                return result;
-            }
+        List<ZyUnit> selectUnitName = this.baseMapper.selectUnitName(zyUnit);
+        if (selectUnitName.size() != 0) {
+            result.setMeta(ResultTool.fail(ResultCode.UNIT_NAME_REPEAT));
+            return result;
         }
         Long now = System.currentTimeMillis();
         zyUnit.setUnitCode("UNIT_" + now.toString().substring(0, 13));
         try {
             this.baseMapper.insertUnit(zyUnit);
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         } catch (Exception e) {
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.UNIT_ADD_FAIL));
@@ -104,17 +102,22 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
         ZyUnit originUnit = this.baseMapper.queryById(zyUnit.getUnitId() + "");
         String[] fields = new String[]{"buildingId", "unitName", "unitLevel", "unitAcreage", "unitHaveElevator", "remark"};
         if (!ObjUtil.checkEquals(zyUnit, originUnit, fields)) {
-            ZyUnit checkUnitName = this.baseMapper.selectUnitName(zyUnit);
-            if (checkUnitName != null) {
-                if (!zyUnit.getUnitId().equals(checkUnitName.getUnitId())) {
+            List<ZyUnit> checkUnitName = this.baseMapper.selectUnitName(zyUnit);
+            if (checkUnitName.size() > 0) {
+                if (checkUnitName.size() > 1) {
                     result.setMeta(ResultTool.fail(ResultCode.UNIT_NAME_REPEAT));
                     return result;
+                } else {
+                    if (!zyUnit.getUnitId().equals(checkUnitName.get(0).getUnitId())) {
+                        result.setMeta(ResultTool.fail(ResultCode.UNIT_NAME_REPEAT));
+                        return result;
+                    }
                 }
             }
             zyUnit.setCommunityId(originUnit.getCommunityId());
             try {
                 this.baseMapper.updateUnit(zyUnit);
-                result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             } catch (Exception e) {
                 e.printStackTrace();
                 result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -141,7 +144,7 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
         } else {
             try {
                 this.baseMapper.deleteUnit(unitIds);
-                result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             } catch (Exception e) {
                 e.printStackTrace();
                 result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
@@ -151,13 +154,13 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
     }
 
     /**
-     * 获取所有单元
+     * 根据社区id获取所有单元
      *
      * @return
      */
     @Override
-    public List<ZyUnit> getAll() {
-        return this.baseMapper.getAll();
+    public List<ZyUnit> getAll(String communityId) {
+        return this.baseMapper.getAll(communityId);
     }
 
     /**
@@ -167,7 +170,7 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
      * @return
      */
     @Override
-    public List<ZyUnit> getUnitById(List<Integer> ids) {
+    public List<ZyUnit> getUnitById(List<String> ids) {
         if (ids != null) {
             ids = ids.size() == 0 ? null : ids;
         }
@@ -188,7 +191,7 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
         try {
             List<ZyBuilding> buildingListsByIds = zyBuildingDao.getBuildingListsByIds(ids);
             result.setData(buildingListsByIds);
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         } catch (Exception e) {
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));

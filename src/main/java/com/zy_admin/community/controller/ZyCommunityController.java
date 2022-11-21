@@ -108,8 +108,7 @@ public class ZyCommunityController extends ApiController {
      */
     @GetMapping("{id}")
     public Result selectOne(@PathVariable Serializable id) {
-        Result result = new Result(this.zyCommunityService.getById(id),ResultTool.fail(ResultCode.SUCCESS));
-        return result;
+        return new Result(this.zyCommunityService.getById(id),ResultTool.fail(ResultCode.SUCCESS));
     }
 
     /**

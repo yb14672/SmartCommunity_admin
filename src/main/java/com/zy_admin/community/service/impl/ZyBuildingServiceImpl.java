@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyBuildingDao;
+import com.zy_admin.community.dto.BuildUnitDto;
 import com.zy_admin.community.dto.ZyBuildingDto;
 import com.zy_admin.community.dto.ZyBuildingDtoAll;
 import com.zy_admin.community.entity.ZyBuilding;
@@ -33,6 +34,24 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
 
     @Resource
     private SysUserDao sysUserDao;
+
+    /**
+     * 根据小区id获取楼栋及其对应的单元列表
+     *
+     * @param communityId 小区ID
+     * @return 对应的楼栋列表
+     */
+    @Override
+    public Result getBuildingAndUnitListByCommunityId(String communityId) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        //获取到所有的楼栋和单元
+        List<BuildUnitDto> buildingAndUnitListByCommunityId = this.baseMapper.getBuildingAndUnitListByCommunityId(communityId);
+        if(buildingAndUnitListByCommunityId.size() != 0){
+            result.setData(buildingAndUnitListByCommunityId);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
 
     /**
      * 导出选中的楼层
@@ -147,7 +166,7 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
             //新增楼层
             int sysDictType1 = this.baseMapper.insertZyBuilding(zyBuilding);
             if (sysDictType1 == 1) {
-                result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 result.setData("新增成功");
             }
             return result;
@@ -180,7 +199,7 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
                     zyBuilding.setUpdateBy(sysUserDao.getUserById(id).getUserName());
                     int i = this.baseMapper.updateZyBuilding(zyBuilding);
                     if (i == 1) {
-                        result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                     }
                 } else {
                     result.setMeta(ResultTool.fail(ResultCode.BUILDING_NAME_REPEAT));
@@ -239,6 +258,21 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
             }
         }
         return false;
+    }
+
+    public List<BuildUnitDto> buildTree(List<BuildUnitDto> list){
+        ArrayList<BuildUnitDto> buildUnitDtoList = new ArrayList<BuildUnitDto>;
+        for (int i = 0; i < buildUnitDtoList.size(); i++) {
+            //默认第一个肯定没有，所以直接添加
+            if(buildUnitDtoList.size() == 0){
+                buildUnitDtoList.add(buildUnitDtoList.get(0));
+            }
+            //因为第一次已经把索引为0的加进去了，所以直接从1开始
+            for (int j = 1; j < buildUnitDtoList.size(); j++) {
+
+            }
+        }
+        return buildUnitDtoList;
     }
 }
 

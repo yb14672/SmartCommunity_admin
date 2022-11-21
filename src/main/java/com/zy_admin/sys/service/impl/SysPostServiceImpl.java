@@ -55,7 +55,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
         if (checkPostCode(0, sysPost)) {
             if (checkPostName(0, sysPost)) {
                 this.baseMapper.insert(sysPost);
-                result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
 
             } else {
                 result.setMeta(ResultTool.fail(ResultCode.REPEAT_POST_NAME));

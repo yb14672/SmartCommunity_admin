@@ -50,7 +50,7 @@ public interface ZyUnitDao extends BaseMapper<ZyUnit> {
      * @param unit
      * @return
      */
-    ZyUnit selectUnitName(@Param("unit") ZyUnit unit);
+    List<ZyUnit> selectUnitName(@Param("unit") ZyUnit unit);
 
 
     /**
@@ -77,14 +77,14 @@ public interface ZyUnitDao extends BaseMapper<ZyUnit> {
      * 获取所有单元信息
      * @return
      */
-    List<ZyUnit> getAll();
+    List<ZyUnit> getAll(String communityId);
 
     /**
      * 根据ID获取单元信息
      * @param unitIds
      * @return
      */
-    List<ZyUnit> getUnitById(@Param("unitIds") List<Integer> unitIds);
+    List<ZyUnit> getUnitById(@Param("unitIds") List<String> unitIds);
 
     /**
      * 根据ID获取单元信息

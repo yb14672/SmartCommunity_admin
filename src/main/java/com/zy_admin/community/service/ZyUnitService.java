@@ -49,9 +49,9 @@ public interface ZyUnitService extends IService<ZyUnit> {
      * 获取所有单元
      * @return
      */
-    List<ZyUnit> getAll();
+    List<ZyUnit> getAll(String communityId);
 
-    List<ZyUnit> getUnitById(List<Integer> ids);
+    List<ZyUnit> getUnitById(List<String> ids);
 
     /**
      * 通过社区id获取楼栋

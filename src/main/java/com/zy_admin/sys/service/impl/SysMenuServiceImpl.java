@@ -73,7 +73,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
             List<MenuTree> menuList = this.baseMapper.queryAllMenu(menu);
             Tree tree = new Tree(menuList);
             result.setData(tree.buildTree());
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -316,7 +316,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
             Tree tree = new Tree(menuTree);
             List<MenuTree> menuTrees = tree.buildTree();
             result.setData(menuTrees);
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
             return result;
