@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,5 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BuildUnitDto extends ZyBuilding {
-    private List<ZyUnit> children;
+    /**
+     * 对应的单元
+     */
+    private List<ZyUnit> children = new ArrayList<ZyUnit>();
 }
