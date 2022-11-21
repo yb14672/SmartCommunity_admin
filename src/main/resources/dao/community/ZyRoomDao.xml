@@ -23,7 +23,12 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
-
+    <select id="getRoomByUnitId" resultType="com.zy_admin.community.entity.ZyRoom">
+        select * from zy_room WHERE unit_id in
+        <foreach collection="unitIds" item="unitId" separator="," open="(" close=")">
+            #{unitId}
+        </foreach>
+    </select>
 
     <!--查询单个-->
     <select id="getZyRoom" resultMap="ZyRoomMap">

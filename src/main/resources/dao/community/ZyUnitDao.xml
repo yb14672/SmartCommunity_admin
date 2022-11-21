@@ -190,13 +190,6 @@
           and unit_name = #{unit.unitName}
     </select>
 
-    <select id="selectAllByUnitByIds" resultType="string">
-        select * from zy_room WHERE unit_id in
-        <foreach collection="unitIds" item="unitIds" separator="," open="(" close=")">
-            #{unitIds}
-        </foreach>
-    </select>
-
     <delete id="deleteUnit">
         delete from zy_unit where unit_id in
         <foreach collection="unitIds" item="unitIds" separator="," open="(" close=")">

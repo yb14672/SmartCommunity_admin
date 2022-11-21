@@ -15,6 +15,13 @@ import java.util.List;
  */
 public interface ZyRoomDao extends MPJBaseMapper<ZyRoom> {
     /**
+     * 根据单元ID列表查询所有房屋
+     * @param unitIds
+     * @return
+     */
+    List<ZyRoom> getRoomByUnitId(@Param("unitIds") List<String> unitIds);
+
+    /**
      * 新增
      * @param zyRoom
      * @return
