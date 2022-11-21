@@ -26,7 +26,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaDao, SysArea> impleme
         try {
             AreaTree areaTree = new AreaTree(this.baseMapper.queryAreaTree());
             result.setData(areaTree.buildTree());
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
             return result;

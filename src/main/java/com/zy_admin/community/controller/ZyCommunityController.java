@@ -1,13 +1,15 @@
 package com.zy_admin.community.controller;
 
 
-
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dto.CommunityExcel;
 import com.zy_admin.community.entity.ZyCommunity;
@@ -41,8 +43,10 @@ public class ZyCommunityController extends ApiController {
     @Resource
     private ZyCommunityService zyCommunityService;
 
-    @PostMapping("/getExcel")
-    public void getExcel(@RequestBody ArrayList<Long> ids, HttpServletResponse response) throws IOException {
+    @MyLog(title = "小区信息", optParam = "#{ids}", businessType = BusinessType.EXPORT)
+    @GetMapping("/getExcel")
+    public Result getExcel(@RequestParam("ids") ArrayList<Long> ids, HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<CommunityExcel> communityExcelList = zyCommunityService.selectByIds(ids);
         String fileName = URLEncoder.encode("小区信息", "UTF-8");
         response.setContentType("application/vnd.ms-excel");
@@ -51,13 +55,16 @@ public class ZyCommunityController extends ApiController {
         // 内容样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), CommunityExcel.class)
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), CommunityExcel.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .autoCloseStream(true)
-                .sheet("模板")
-                .doWrite(communityExcelList);
+                .sheet("小区信息");
+        excel.doWrite(communityExcelList);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
 
     /**
@@ -67,8 +74,8 @@ public class ZyCommunityController extends ApiController {
      * @return 修改结果
      */
     @PutMapping("/updateCommunity")
+    @MyLog(title = "小区信息", optParam = "#{community}", businessType = BusinessType.UPDATE)
     public Result update(@RequestBody ZyCommunity community,HttpServletRequest request) {
-        System.out.println(community);
         return this.zyCommunityService.updateCommunityById(community,request);
     }
 
@@ -79,6 +86,7 @@ public class ZyCommunityController extends ApiController {
      * @return 新增结果
      */
     @PostMapping("/insertCommunity")
+    @MyLog(title = "小区信息", optParam = "#{community}", businessType = BusinessType.INSERT)
     public Result insert(@RequestBody ZyCommunity community, HttpServletRequest request) throws Exception {
         return this.zyCommunityService.insertCommunity(community,request);
     }
@@ -100,8 +108,7 @@ public class ZyCommunityController extends ApiController {
      */
     @GetMapping("{id}")
     public Result selectOne(@PathVariable Serializable id) {
-        Result result = new Result(this.zyCommunityService.getById(id),ResultTool.fail(ResultCode.SUCCESS));
-        return result;
+        return new Result(this.zyCommunityService.getById(id),ResultTool.fail(ResultCode.SUCCESS));
     }
 
     /**
@@ -111,14 +118,9 @@ public class ZyCommunityController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping("/deleteCommunity")
-    public Result delete(@RequestBody List<Long> communityIds) {
-        System.err.println(communityIds);
-        boolean b = this.zyCommunityService.removeByIds(communityIds);
-        Result result = new Result(b, ResultTool.fail(ResultCode.COMMUNITY_DELETE_FAIL));
-        if(b){
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
-        }
-        return result;
+    @MyLog(title = "小区信息", optParam = "#{communityIds}", businessType = BusinessType.DELETE)
+    public Result delete(@RequestBody List<String> communityIds) {
+        return this.zyCommunityService.deleteByIds(communityIds);
     }
 }
 

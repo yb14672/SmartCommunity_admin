@@ -23,6 +23,13 @@ import java.util.List;
 public interface SysUserDao extends BaseMapper<SysUser> {
 
     /**
+     * 根据ID获取用户信息--用户管理修改界面
+     * @param id
+     * @return
+     */
+    UserDto getUserInfo(String id);
+
+    /**
      * 下载模板
      * @return
      */
@@ -42,7 +49,7 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @param endTime
      * @return
      */
-    List<SysUserDeptDto> selectUsers(@Param("sysUser") SysUser sysUser, @Param("pageable") Pageable pageable, @Param("startTime") String startTime, @Param("endTime")String endTime);
+    List<SysUserDeptDto> selectUsers(@Param("sysUser") SysUser sysUser, @Param("pageable") Pageable pageable, @Param("startTime") String startTime, @Param("endTime") String endTime);
     /**
      * 统计用户总量
      * @param sysUser
@@ -50,7 +57,7 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @param endTime
      * @return
      */
-    Long count(@Param("sysUser")SysUser sysUser, @Param("startTime")String startTime, @Param("endTime")String endTime);
+    Long count(@Param("sysUser") SysUser sysUser, @Param("startTime") String startTime, @Param("endTime") String endTime);
     /**
      * 根据id获取用户信息
      */
@@ -162,14 +169,14 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @param userId
      * @param roleId
      */
-    void insertRole(@Param("userId") Long userId,@Param("roleId") Integer roleId);
+    void insertRole(@Param("userId") Long userId, @Param("roleId") Integer roleId);
 
     /**
      * 新增用户岗位
      * @param userId
      * @param postId
      */
-    void insertPost(@Param("userId") Long userId,@Param("postId") Integer postId);
+    void insertPost(@Param("userId") Long userId, @Param("postId") Integer postId);
 
     /**
      * 删除用户拥有的角色
@@ -200,6 +207,6 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @param userEntityList
      * @return
      */
-    boolean saveBatch(List<SysUser> userEntityList);
+    boolean saveBatch(@Param("userEntityList") List<SysUser> userEntityList);
 }
 

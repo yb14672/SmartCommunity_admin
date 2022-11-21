@@ -74,6 +74,7 @@ public enum ResultCode {
     REPEAT_USER_NAME(3024,"用户名重复"),
     DICT_NOCHANGE(3024,"字典信息没有改变" ),
     USER_TELREPEAT(3025,"手机号重复" ),
+    PASSWORD_ILLEGAL(3025,"密码不合规" ),
     USER_REPEAT(3026,"导入有重复" ),
     FILE_REPEAT(3027,"导入文件有重复" ),
     DATA_REPEAT(3027,"数据不能为空" ),
@@ -94,9 +95,17 @@ public enum ResultCode {
     EMAIL_NON_COMPLIANCE(3042,"邮箱不符合规则" ),
     MASSAGE_NULL(3043,"信息为空" ),
     BUILDING_REPEAT(3044,"楼层重复" ),
-    BUILDINGNAME_REPEAT(3045,"楼层名字重复" ),
+    BUILDING_NAME_REPEAT(3045,"楼层名字重复" ),
     BUILD_IDENTICAL(3046,"楼层信息完全相同" ),
-    BUILD_HAVA_CHILD(3046,"改楼层下面有单元不允许删除" ),
+    BUILD_HAVA_CHILD(3046,"楼层下面有单元不允许删除" ),
+    UNIT_ADD_FAIL(3047,"单元新增失败"),
+    UNIT_UPDATE_FAIL(3048,"单元修改失败"),
+    UNIT_NAME_REPEAT(3049,"单元名重复"),
+    UNIT_HAVE_PEOPLE(3050,"单元存在住户，不能删除"),
+    COMMUNITY_HAVE_CHILD(3050,"小区存在楼栋，不能删除"),
+    COMPANY_OWNS_PROPERTY(3050,"公司仍有负责的物业，不能删除"),
+    ROOM_HAVE_BEEN(3051,"该房屋名在其他楼层下已存在"),
+
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

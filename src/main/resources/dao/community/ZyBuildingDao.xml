@@ -15,11 +15,65 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <resultMap type="com.zy_admin.community.dto.BuildUnitDto" id="BuildingAndUnitMap">
+        <result property="buildingId" column="building_id" jdbcType="INTEGER"/>
+        <result property="buildingName" column="building_name" jdbcType="VARCHAR"/>
+        <result property="buildingCode" column="building_code" jdbcType="VARCHAR"/>
+        <result property="buildingAcreage" column="building_acreage" jdbcType="NUMERIC"/>
+        <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <collection property="children" javaType="java.util.List" ofType="com.zy_admin.community.entity.ZyUnit"
+                    autoMapping="true">
+            <id property="unitId" column="unit_id" jdbcType="INTEGER"/>
+            <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+            <result property="buildingId" column="building_id" jdbcType="INTEGER"/>
+            <result property="unitName" column="unit_name" jdbcType="VARCHAR"/>
+            <result property="unitCode" column="unit_code" jdbcType="VARCHAR"/>
+            <result property="unitLevel" column="unit_level" jdbcType="INTEGER"/>
+            <result property="unitAcreage" column="unit_acreage" jdbcType="NUMERIC"/>
+            <result property="unitHaveElevator" column="unit_have_elevator" jdbcType="VARCHAR"/>
+            <result property="createBy" column="buildCBy" jdbcType="VARCHAR"/>
+            <result property="createTime" column="buildCTime" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="buildUBy" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="buildUTime" jdbcType="TIMESTAMP"/>
+            <result property="remark" column="buildRemark" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <!--查询楼栋及其单元-->
+    <select id="getBuildingAndUnitListByCommunityId" resultMap="BuildingAndUnitMap">
+        SELECT *,
+               b.create_by   buildCBy,
+               b.create_time buildCTime,
+               b.update_by   buildUBy,
+               b.update_time buildUTime,
+               b.remark      buildRemark
+        FROM zy_unit u
+                 RIGHT JOIN zy_building b ON u.building_id = b.building_id
+        WHERE u.building_id in (
+            SELECT building_id
+            FROM zy_building a1
+            WHERE a1.community_id = #{communityId})
+    </select>
+
     <!--查询单个-->
     <select id="queryById" resultType="com.zy_admin.community.entity.ZyBuilding">
-        select
-          building_id, building_name, building_code, building_acreage, community_id, create_by, create_time, update_by, update_time, remark
-        from zy_building where building_id = #{id}
+        select building_id,
+               building_name,
+               building_code,
+               building_acreage,
+               community_id,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from zy_building
+        where building_id = #{id}
     </select>
 
     <!--查询指定行数据-->
@@ -104,7 +158,9 @@
     </select>
 
     <select id="getZyBuilding" resultType="com.zy_admin.community.entity.ZyBuilding">
-        select * from zy_building where building_id=#{buildId}
+        select *
+        from zy_building
+        where building_id = #{buildId}
     </select>
     <!--选中的地方导出-->
     <select id="queryZyBuildingById" resultType="com.zy_admin.community.entity.ZyBuilding">
@@ -119,11 +175,16 @@
     </select>
     <!--导出全部-->
     <select id="getBuildingLists" resultType="com.zy_admin.community.entity.ZyBuilding">
-        select * from zy_building
+        select *
+        from zy_building
+        where community_id = #{communityId}
     </select>
     <!--判断楼层名不重复-->
     <select id="selectZyBuildingByName" resultType="com.zy_admin.community.entity.ZyBuilding">
-        select * from zy_building where building_name = #{buildingName} and community_id = #{communityId}
+        select *
+        from zy_building
+        where building_name = #{buildingName}
+          and community_id = #{communityId}
     </select>
     <!--判断下面有没有子集-->
     <select id="selectChild" resultType="java.lang.Long">
@@ -136,11 +197,23 @@
             )
         </if>
     </select>
+    <!--根据小区id获取对应的楼栋-->
+    <select id="getBuildingListsByIds" resultType="com.zy_admin.community.entity.ZyBuilding">
+        select * from zy_building
+        <if test="list!=null">
+            where zy_building.community_id in
+            <foreach collection="list" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="" useGeneratedKeys="true">
-        insert into zy_building(building_id, building_name, building_code, building_acreage, community_id, create_by, create_time, update_by, update_time, remark)
-        values (#{buildingId}, #{buildingName}, #{buildingCode}, #{buildingAcreage}, #{communityId}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+        insert into zy_building(building_id, building_name, building_code, building_acreage, community_id, create_by,
+                                create_time, update_by, update_time, remark)
+        values (#{buildingId}, #{buildingName}, #{buildingCode}, #{buildingAcreage}, #{communityId}, #{createBy},
+                #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <insert id="insertBatch" keyProperty="" useGeneratedKeys="true">
@@ -176,8 +249,10 @@
         remark = values(remark)
     </insert>
     <insert id="insertZyBuilding">
-        insert into zy_building(building_id,building_name,building_code,building_acreage,community_id,create_by,create_time,update_by,update_time,remark) values
-        (#{buildingId},#{buildingName},#{buildingCode},#{buildingAcreage},#{communityId},#{createBy},#{createTime},#{updateBy},#{updateTime},#{remark})
+        insert into zy_building(building_id, building_name, building_code, building_acreage, community_id, create_by,
+                                create_time, update_by, update_time, remark)
+        values (#{buildingId}, #{buildingName}, #{buildingCode}, #{buildingAcreage}, #{communityId}, #{createBy},
+                #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <!--通过主键修改数据-->

@@ -17,7 +17,6 @@ class ZyAdminApplicationTests {
     @Test
     void contextLoads() {
         ZyCommunity zyCommunity = communityDao.selectById(1338423709557272577L);
-        System.out.println(zyCommunity);
     }
 
 }

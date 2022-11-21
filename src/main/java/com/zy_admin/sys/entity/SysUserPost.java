@@ -1,6 +1,9 @@
 package com.zy_admin.sys.entity;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -11,28 +14,15 @@ import java.io.Serializable;
  * @since 2022-11-01 19:49:42
  */
 @SuppressWarnings("serial")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SysUserPost extends Model<SysUserPost> {
     //用户ID
     private Long userId;
     //岗位ID
     private Long postId;
 
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getPostId() {
-        return postId;
-    }
-
-    public void setPostId(Long postId) {
-        this.postId = postId;
-    }
 
     /**
      * 获取主键值

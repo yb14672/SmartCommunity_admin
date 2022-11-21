@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.dao.SysRoleDao;
 import com.zy_admin.sys.dao.SysRoleMenuDao;
 import com.zy_admin.sys.dao.SysUserRoleDao;
@@ -13,7 +14,6 @@ import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.entity.SysUserRole;
 import com.zy_admin.sys.service.SysRoleService;
 import com.zy_admin.util.Result;
-import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
@@ -43,11 +43,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
      */
     @Override
     public Result getRoleList(Page page) {
-        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
         //因为超级管理员不允许分配，因此查询条件需要加上id不为1
-        queryWrapper.ne(SysRole::getRoleId,1);
-        queryWrapper.ne(SysRole::getDelFlag,2);
+        queryWrapper.ne(SysRole::getRoleId, 1);
+        queryWrapper.ne(SysRole::getDelFlag, 2);
         queryWrapper.orderByAsc(SysRole::getRoleSort);
         Page page1 = this.baseMapper.selectPage(page, queryWrapper);
         if (page1.getSize() > 0) {
@@ -58,8 +58,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
     }
 
     @Override
-    public Result getAllRole( SysRole sysRole) {
-        Result result = new Result();
+    public Result getAllRole(SysRole sysRole) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysRole> allRole = this.baseMapper.getAllRole(sysRole);
         result.setData(allRole);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
@@ -85,13 +85,13 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         //获取所有分配了的用户列表
         List<SysUserRole> list = this.sysUserRoleDao.getListByIds(idList);
         //若等于0则此次删除的角色没有被分配
-        if(list.size() == 0){
+        if (list.size() == 0) {
             int i = this.baseMapper.deleteByIdList(idList);
             if (i >= 1) {
                 result.setData("删除成功，影响的行数：" + i);
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             }
-        }else{
+        } else {
             result.setMeta(ResultTool.fail(ResultCode.ROLE_HAS_BEEN_ASSIGNED));
         }
         return result;
@@ -99,7 +99,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
 
     @Override
     public Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime) {
-        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //满足条件的总数据
         long total = this.baseMapper.count(sysRole, startTime, endTime);
         long pages = 0;
@@ -132,8 +132,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
 
     @Override
     public Result insert(RoleAndRoleMenu roleAndRoleMenu) {
-        if (checkRoleNameUnique(0,roleAndRoleMenu)) {
-            if (checkRoleKeyUnique(0,roleAndRoleMenu)) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        if (checkRoleNameUnique(0, roleAndRoleMenu)) {
+            if (checkRoleKeyUnique(0, roleAndRoleMenu)) {
                 try {
                     //插入角色
                     this.baseMapper.insert(roleAndRoleMenu);
@@ -141,24 +142,25 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
                     if (roleAndRoleMenu.getMenuIds().length != 0) {
                         sysRoleMenuDao.insertBatch(roleAndRoleMenu.getRoleId(), roleAndRoleMenu.getMenuIds());
                     }
-                    return new Result(null, ResultTool.fail(ResultCode.SUCCESS));
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+                    return result;
                 }
             } else {
-                return new Result(null, ResultTool.fail(ResultCode.REPEAT_ROLE_KEY));
+                result.setMeta(ResultTool.fail(ResultCode.REPEAT_ROLE_KEY));
             }
         } else {
-            return new Result(null, ResultTool.fail(ResultCode.REPEAT_ROLE_NAME));
+            result.setMeta(ResultTool.fail(ResultCode.REPEAT_ROLE_NAME));
         }
+        return result;
     }
 
     @Override
     public Result update(RoleAndRoleMenu roleAndRoleMenu) {
-        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
-        if (checkRoleNameUnique(1,roleAndRoleMenu)) {
-            if (checkRoleKeyUnique(1,roleAndRoleMenu)) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        if (checkRoleNameUnique(1, roleAndRoleMenu)) {
+            if (checkRoleKeyUnique(1, roleAndRoleMenu)) {
                 try {
                     //更新角色
                     int i = this.baseMapper.updateRoleById(roleAndRoleMenu);
@@ -168,24 +170,23 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
                         if (roleAndRoleMenu.getMenuIds().length != 0) {
                             sysRoleMenuDao.insertBatch(roleAndRoleMenu.getRoleId(), roleAndRoleMenu.getMenuIds());
                         }
-                        result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
-                        return result;
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                     }
-                    return new Result(null, ResultTool.fail(ResultCode.SUCCESS));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+                    result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
                 }
             } else {
-                return new Result(null, ResultTool.fail(ResultCode.REPEAT_ROLE_KEY));
+                result.setMeta(ResultTool.fail(ResultCode.REPEAT_ROLE_KEY));
             }
         } else {
-            return new Result(null, ResultTool.fail(ResultCode.REPEAT_ROLE_NAME));
+            result.setMeta(ResultTool.fail(ResultCode.REPEAT_ROLE_NAME));
         }
+        return result;
     }
 
     @Override
-    public Boolean checkRoleNameUnique(int type, RoleAndRoleMenu roleAndRoleMenu){
+    public Boolean checkRoleNameUnique(int type, RoleAndRoleMenu roleAndRoleMenu) {
         SysRole sysRole = this.baseMapper.selectRoleName(roleAndRoleMenu.getRoleName());
         //添加时--必须为空
         if (type == 0) {
@@ -206,7 +207,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
     }
 
     @Override
-    public Boolean checkRoleKeyUnique(int type, RoleAndRoleMenu roleAndRoleMenu){
+    public Boolean checkRoleKeyUnique(int type, RoleAndRoleMenu roleAndRoleMenu) {
         SysRole sysRole = this.baseMapper.selectRoleKey(roleAndRoleMenu.getRoleKey());
         //添加时--必须为空
         if (type == 0) {
@@ -228,11 +229,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
 
     @Override
     public Result changeStatus(SysRole sysRole) {
-        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         int i = this.baseMapper.updateRole(sysRole);
         result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
         if (i == 1) {
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
     }

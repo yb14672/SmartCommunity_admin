@@ -21,6 +21,30 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <select id="selectCommunityByDeptId" resultMap="ZyCommunityMap">
+        select community_id,
+               community_name,
+               community_code,
+               community_provence_code,
+               community_city_code,
+               community_town_code,
+               community_detailed_address,
+               community_longitude,
+               community_latitude,
+               dept_id,
+               community_sort,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from zy_community
+        where dept_id in
+        <foreach collection="idList" item="dept_id" separator="," open="(" close=")">
+            #{dept_id}
+        </foreach>
+    </select>
+
     <!--查询单个-->
     <select id="queryById" resultMap="ZyCommunityMap">
         select community_id,
@@ -51,10 +75,10 @@
         from zy_community zc
         <where>
             <if test="community.communityName != null and community.communityName != ''">
-                and zc.community_name = #{community.communityName}
+                and zc.community_name like concat('%',#{community.communityName},'%')
             </if>
             <if test="community.communityCode != null and community.communityCode != ''">
-                and zc.community_code = #{community.communityCode}
+                and zc.community_code like concat('%',#{community.communityCode},'%')
             </if>
         </where>
         <if test="pageable.pageSize!=0">
@@ -69,10 +93,10 @@
         from zy_community
         <where>
             <if test="community.communityName != null and community.communityName != ''">
-                and community_name = #{community.communityName}
+                and community_name like concat('%',#{community.communityName},'%')
             </if>
             <if test="community.communityCode != null and community.communityCode != ''">
-                and community_code = #{community.communityCode}
+                and community_code like concat('%',#{community.communityCode},'%')
             </if>
         </where>
     </select>

@@ -24,7 +24,7 @@ public interface SysLogininforService extends IService<SysLogininfor> {
      * @param pageable
      * @return
      */
-    Result queryLoginInfor(SysLogininfor sysLogininfor, Pageable pageable,String startTime, String endTime);
+    Result queryLoginInfor(SysLogininfor sysLogininfor, Pageable pageable, String startTime, String endTime);
 
     /**
      * 删除日志

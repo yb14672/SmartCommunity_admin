@@ -18,6 +18,13 @@ import java.util.List;
  */
 public interface SysRoleDao extends BaseMapper<SysRole> {
     /**
+     * 根据ID获取对应的角色和权限
+     * @param roleId
+     * @return
+     */
+    RoleAndRoleMenu getRoleInfo(String roleId);
+
+    /**
      * 查询总数据量
      * @param sysRole
      * @param startTime

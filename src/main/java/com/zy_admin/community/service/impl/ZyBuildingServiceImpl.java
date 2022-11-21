@@ -1,18 +1,16 @@
 package com.zy_admin.community.service.impl;
 
-import com.zy_admin.util.JwtUtil;
-import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultTool;
-import com.zy_admin.util.SnowflakeManager;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyBuildingDao;
+import com.zy_admin.community.dto.BuildUnitDto;
 import com.zy_admin.community.dto.ZyBuildingDto;
 import com.zy_admin.community.dto.ZyBuildingDtoAll;
 import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.service.ZyBuildingService;
 import com.zy_admin.sys.dao.SysUserDao;
+import com.zy_admin.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +36,26 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
     private SysUserDao sysUserDao;
 
     /**
+     * 根据小区id获取楼栋及其对应的单元列表
+     *
+     * @param communityId 小区ID
+     * @return 对应的楼栋列表
+     */
+    @Override
+    public Result getBuildingAndUnitListByCommunityId(String communityId) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        //获取到所有的楼栋和单元
+        List<BuildUnitDto> buildingAndUnitListByCommunityId = this.baseMapper.getBuildingAndUnitListByCommunityId(communityId);
+        if(buildingAndUnitListByCommunityId.size() != 0){
+            result.setData(buildingAndUnitListByCommunityId);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+
+    /**
      * 导出选中的楼层
+     *
      * @param buildingIds
      * @return
      */
@@ -53,27 +70,28 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
 
     /**
      * 导出所有的楼层
+     *
      * @return
      */
     @Override
-    public List<ZyBuilding> getBuildingLists() {
-        return baseMapper.getBuildingLists();
+    public List<ZyBuilding> getBuildingLists(String communityId) {
+        return baseMapper.getBuildingLists(communityId);
     }
 
     /**
      * 删除多条楼层
+     *
      * @param idList
      * @return
      */
     @Override
-    public Result deleteByIdList(List<String > idList) {
+    public Result deleteByIdList(List<String> idList) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         Long aLong = this.baseMapper.selectChild(idList);
-        System.out.println(aLong);
         //判断下面有没有子集
-        if (aLong>0){
+        if (aLong > 0) {
             result.setMeta(ResultTool.fail(ResultCode.BUILD_HAVA_CHILD));
-        }else {
+        } else {
             //判断是单个
             if (idList.size() == 1) {
                 int i = this.baseMapper.deleteByIdList(idList);
@@ -93,7 +111,7 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
     }
 
     @Override
-    public Result selectBuildLimit(ZyBuilding zyBuilding,Pageable pageable) {
+    public Result selectBuildLimit(ZyBuilding zyBuilding, Pageable pageable) {
         //默认给失败的情况
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //满足条件的总数
@@ -115,12 +133,12 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
         pageable.setTotal(total);
         List<ZyBuildingDto> zyBuildingList = this.baseMapper.selectBuildLimit(zyBuilding, pageable);
         //封装一个dto，把对象和分页放进去
-        ZyBuildingDtoAll zyBuildingDtoAll = new ZyBuildingDtoAll(zyBuildingList,pageable);
+
+        ZyBuildingDtoAll zyBuildingDtoAll = new ZyBuildingDtoAll(zyBuildingList, pageable);
         //存到data数据里面
         result.setData(zyBuildingDtoAll);
         //返回信号
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-        System.out.println(result);
         return result;
     }
 
@@ -132,32 +150,30 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
      */
     @Override
     public Result insertZyBuilding(ZyBuilding zyBuilding, HttpServletRequest request) throws Exception {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         Long now = System.currentTimeMillis();
-        //楼栋编码 时间戳
         zyBuilding.setBuildingCode("BUILDING_" + now.toString().substring(0, 13));
-        //雪花算法 楼栋Id
-        zyBuilding.setBuildingId(snowflakeManager.nextId()+"");
-        //创建时间，获取当前时间
+        zyBuilding.setBuildingId(snowflakeManager.nextId() + "");
         zyBuilding.setCreateTime(LocalDateTime.now().toString());
-        //根据token获取Id再获取当前修改人的名字
         String id = JwtUtil.getMemberIdByJwtToken(request);
         zyBuilding.setCreateBy(sysUserDao.getUserById(id).getUserName());
-
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断同一小区的楼层是否唯一,type为0是新增
         if (!selectZyBuildingByName(0, zyBuilding)) {
-            result.setMeta(ResultTool.fail(ResultCode.BUILDING_REPEAT));
+            result.setMeta(ResultTool.fail(ResultCode.BUILDING_NAME_REPEAT));
             return result;
         }
         try {
             //新增楼层
             int sysDictType1 = this.baseMapper.insertZyBuilding(zyBuilding);
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            if (sysDictType1 == 1) {
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                result.setData("新增成功");
+            }
             return result;
         } catch (Exception e) {
+            e.printStackTrace();
             return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         }
-
     }
 
     /**
@@ -170,12 +186,12 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
     public Result updateZyBuilding(ZyBuilding zyBuilding, HttpServletRequest request) {
         //判断楼层的值有没有改变 zyBuilding1是原来的对象
         ZyBuilding zyBuilding1 = this.baseMapper.getZyBuilding(zyBuilding.getBuildingId());
-        System.out.println(zyBuilding1);
         //默认给失败
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             //判断是不是完全相同
-//            if (checkEquals(zyBuilding1, zyBuilding)) {
+            String[] fields = new String[]{"buildingName", "buildingAcreage", "remark"};
+            if (!ObjUtil.checkEquals(zyBuilding1, zyBuilding, fields)) {
                 //type为1是修改
                 if (selectZyBuildingByName(1, zyBuilding)) {
                     String id = JwtUtil.getMemberIdByJwtToken(request);
@@ -183,14 +199,14 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
                     zyBuilding.setUpdateBy(sysUserDao.getUserById(id).getUserName());
                     int i = this.baseMapper.updateZyBuilding(zyBuilding);
                     if (i == 1) {
-                        result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                     }
                 } else {
-                    result.setMeta(ResultTool.fail(ResultCode.BUILDINGNAME_REPEAT));
+                    result.setMeta(ResultTool.fail(ResultCode.BUILDING_NAME_REPEAT));
                 }
-//            } else {
-//                result.setMeta(ResultTool.fail(ResultCode.BUILD_IDENTICAL));
-//            }
+            } else {
+                result.setMeta(ResultTool.fail(ResultCode.BUILD_IDENTICAL));
+            }
         } catch (Exception e) {
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -216,48 +232,47 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
     }
 
     /**
-     * 检查前端输入的值是否和数据库相等
-     *
-     * @param zyBuildingOld
-     * @param zyBuildingNew
-     * @return
-     */
-    public boolean checkEquals(ZyBuilding zyBuildingOld, ZyBuilding zyBuildingNew) {
-        //判断名字，面积和备注是否相同
-        System.out.println(zyBuildingOld);
-        System.out.println(zyBuildingNew);
-        if (zyBuildingOld.getBuildingName().equals(zyBuildingNew.getBuildingName()) && zyBuildingOld.getBuildingAcreage().equals(zyBuildingNew.getBuildingAcreage()) && zyBuildingOld.getRemark().equals(zyBuildingNew.getRemark())) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * 判断楼层号是否重复
+     *
      * @param type
      * @param zyBuilding
      * @return
      */
     public boolean selectZyBuildingByName(int type, ZyBuilding zyBuilding) {
-        ZyBuilding zyBuilding1 = this.baseMapper.selectZyBuildingByName(zyBuilding.getBuildingName(),zyBuilding.getCommunityId());
-//        类型为0是新增
+        ZyBuilding zyBuilding1 = this.baseMapper.selectZyBuildingByName(zyBuilding.getBuildingName(), zyBuilding.getCommunityId());
+        //类型为0是新增
         if (type == 0) {
-//            判断是否为空
+            //判断是否为空
             if (zyBuilding1 == null || zyBuilding1.getBuildingName() == null) {
                 return true;
             }
         } else {
-//            修改
+            //修改
             if (zyBuilding1 == null || zyBuilding1.getBuildingName() == null) {
                 return true;
-//                判断房屋楼层是否唯一
-            } else if (!zyBuilding1.getBuildingName().equals(zyBuilding.getBuildingName())) {
+                //判断房屋楼层是否唯一
+            } else if (!zyBuilding1.getBuildingId().equals(zyBuilding.getBuildingId())) {
                 return false;
             } else {
                 return true;
             }
         }
         return false;
+    }
+
+    public List<BuildUnitDto> buildTree(List<BuildUnitDto> list){
+        ArrayList<BuildUnitDto> buildUnitDtoList = new ArrayList<BuildUnitDto>;
+        for (int i = 0; i < buildUnitDtoList.size(); i++) {
+            //默认第一个肯定没有，所以直接添加
+            if(buildUnitDtoList.size() == 0){
+                buildUnitDtoList.add(buildUnitDtoList.get(0));
+            }
+            //因为第一次已经把索引为0的加进去了，所以直接从1开始
+            for (int j = 1; j < buildUnitDtoList.size(); j++) {
+
+            }
+        }
+        return buildUnitDtoList;
     }
 }
 

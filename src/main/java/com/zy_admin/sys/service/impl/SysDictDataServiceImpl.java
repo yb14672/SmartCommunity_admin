@@ -3,6 +3,7 @@ package com.zy_admin.sys.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.dao.SysDictDataDao;
 import com.zy_admin.sys.dao.SysDictTypeDao;
 import com.zy_admin.sys.dto.DataDictExcelDto;
@@ -10,8 +11,8 @@ import com.zy_admin.sys.entity.SysDictData;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDictDataService;
+import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.StringUtil;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
         try {
             List<SysDictData> dictDataList = this.baseMapper.getDict(deptType);
             result.setData(dictDataList);
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -112,6 +113,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
                 sysDictData.setListClass("primary");
                 int i = this.baseMapper.insert(sysDictData);
                 if (i == 1) {
+                    result.setData("新增成功，影响的行数：" + i);
                     result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 }
             } else {
@@ -142,7 +144,9 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
                 } else {
                     //判断是否没有修改就提交
                     SysDictData dictDataById = this.baseMapper.getDictDataById(sysDictData.getDictCode() + "");
-                    if (!checkEquals(sysDictData, dictDataById)) {
+                    //需要判断的字段名
+                    String[] fields = new String[]{"dictLabel", "dictValue", "cssClass", "dictSort", "listClass", "status", "remark"};
+                    if (!ObjUtil.checkEquals(sysDictData, dictDataById, fields)) {
                         //判断字典标题名是否唯一
                         if (checkUnique(1, sysDictData, this.baseMapper.checkDictLabelUnique(sysDictData))) {
                             //当字典键值不为空时判断其路由是否重复
@@ -241,49 +245,4 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
         return this.baseMapper.getDictListById(idList);
     }
 
-    @Override
-    public Boolean checkEquals(SysDictData updateData, SysDictData originalData) {
-        if (updateData.getDictLabel().equals(originalData.getDictLabel())) {
-            if (updateData.getDictValue().equals(originalData.getDictValue())) {
-                if (updateData.getDictSort().equals(originalData.getDictSort())) {
-                    if (updateData.getListClass().equals(originalData.getListClass())) {
-                        if (updateData.getStatus().equals(originalData.getStatus())) {
-                            if (updateData.getCssClass() != null) {
-                                if (originalData.getCssClass() != null) {
-                                    if (updateData.getCssClass().equals(originalData.getCssClass())) {
-                                        if (updateData.getRemark() != null) {
-                                            if (originalData.getRemark() != null) {
-                                                if (updateData.getRemark().equals(originalData.getRemark())) {
-                                                    return true;
-                                                }
-                                            } else {
-                                                return false;
-                                            }
-                                        } else {
-                                            if (originalData.getRemark() == null) {
-                                                return true;
-                                            } else {
-                                                return false;
-                                            }
-                                        }
-                                        return true;
-                                    }
-                                } else {
-                                    return false;
-                                }
-                            } else {
-                                if (originalData.getCssClass() == null) {
-                                    return true;
-                                } else {
-                                    return false;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
 }
-
