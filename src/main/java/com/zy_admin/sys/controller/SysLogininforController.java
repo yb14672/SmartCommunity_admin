@@ -3,6 +3,7 @@ package com.zy_admin.sys.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -12,11 +13,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.dto.LoginInForExcelDto;
 import com.zy_admin.sys.entity.SysLogininfor;
 import com.zy_admin.sys.service.SysLogininforService;
 import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.Result;
+import com.zy_admin.util.ResultTool;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -42,9 +45,10 @@ public class SysLogininforController extends ApiController {
     @Resource
     private SysLogininforService sysLogininforService;
 
-    @PostMapping("/getExcel")
     @MyLog(title = "登录日志", optParam = "#{ids}", businessType = BusinessType.EXPORT)
-    public void getExcel(@RequestBody ArrayList<Integer> ids, HttpServletResponse response)throws IOException {
+    @GetMapping("/getExcel")
+    public Result getExcel(@RequestParam("ids") ArrayList<Integer> ids, HttpServletResponse response)throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //导出数据
         List<LoginInForExcelDto> loginInForExcelDtoList = sysLogininforService.queryLogininfor(ids);
         String fileName = URLEncoder.encode("日志数据", "UTF-8");
@@ -54,13 +58,16 @@ public class SysLogininforController extends ApiController {
         // 内容样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), LoginInForExcelDto.class)
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), LoginInForExcelDto.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .autoCloseStream(true)
-                .sheet("模板")
-                .doWrite(loginInForExcelDtoList);
+                .sheet("登录日志");
+        excel.doWrite(loginInForExcelDtoList);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
 
     /**

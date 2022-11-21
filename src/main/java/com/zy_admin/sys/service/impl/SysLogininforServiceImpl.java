@@ -1,6 +1,7 @@
 package com.zy_admin.sys.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dao.SysLogininforDao;
 import com.zy_admin.sys.dto.LoginInForDto;
 import com.zy_admin.sys.dto.LoginInForExcelDto;
@@ -11,8 +12,6 @@ import com.zy_admin.util.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
-
-import com.zy_admin.common.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +65,7 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforDao, SysL
 
             List<SysLogininfor> logininforList = this.baseMapper.queryLogininfor(sysLogininfor, pageable, startTime, endTime);
             result.setData(new LoginInForDto(logininforList, pageable, startTime, endTime));
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,7 +78,7 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforDao, SysL
         int i = this.baseMapper.deleteByIds(ids);
         Result result = new Result(null, ResultTool.fail(ResultCode.LOG_DELETE_FAIL));
         if (i > 0) {
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         }
         return result;
@@ -90,7 +89,7 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforDao, SysL
         Result result = new Result(null,ResultTool.fail(ResultCode.LOG_EMPTY_FAIL));
         int i = this.baseMapper.EmptyLog();
         if (i>0){
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         }
         return result;

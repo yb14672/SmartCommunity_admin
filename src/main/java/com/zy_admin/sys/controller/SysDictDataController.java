@@ -2,12 +2,14 @@ package com.zy_admin.sys.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.dto.DataDictExcelDto;
 import com.zy_admin.sys.entity.SysDictData;
 import com.zy_admin.sys.entity.SysUser;
@@ -15,6 +17,7 @@ import com.zy_admin.sys.service.SysDictDataService;
 import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.Result;
+import com.zy_admin.util.ResultTool;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -127,7 +130,8 @@ public class SysDictDataController extends ApiController {
      */
     @GetMapping("/export")
     @MyLog(title = "字典数据", optParam = "#{ids}", businessType = BusinessType.EXPORT)
-    public void export(@RequestParam("ids") ArrayList<Integer> ids,@RequestParam("dictType") String dictType, HttpServletResponse response) throws IOException {
+    public Result export(@RequestParam("ids") ArrayList<Integer> ids, @RequestParam("dictType") String dictType, HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //用于存储要导出的数据列表
         List<DataDictExcelDto> sysDictDataList = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
@@ -145,13 +149,16 @@ public class SysDictDataController extends ApiController {
         // 内容样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), DataDictExcelDto.class)
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), DataDictExcelDto.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .autoCloseStream(true)
-                .sheet("模板")
-                .doWrite(sysDictDataList);
+                .sheet("字典数据");
+        excel.doWrite(sysDictDataList);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
 }
 

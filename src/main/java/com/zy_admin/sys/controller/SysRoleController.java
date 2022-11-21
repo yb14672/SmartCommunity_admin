@@ -3,6 +3,7 @@ package com.zy_admin.sys.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
@@ -63,6 +64,7 @@ public class SysRoleController extends ApiController {
 
     /**
      * 获取所有除去管理员以外的角色并分页
+     *
      * @param page
      * @return
      */
@@ -71,38 +73,42 @@ public class SysRoleController extends ApiController {
         return this.sysRoleService.getRoleList(page);
     }
 
-        /**
-         * 用于批量导出角色列表数据
-         *
-         * @param roleIds
-         * @param response
-         */
-    @PostMapping("/getExcel")
+    /**
+     * 用于批量导出角色列表数据
+     *
+     * @param roleIds
+     * @param response
+     */
     @MyLog(title = "角色管理", optParam = "#{roleIds}", businessType = BusinessType.EXPORT)
-    public void getExcel(@RequestBody ArrayList<Integer> roleIds, HttpServletResponse response)throws IOException{
-            List<SysRole> sysRoles = new ArrayList<>();
-            //如果前台传的集合为空或者长度为0.则全部导出。
-            //执行   查询角色列表的sql语句   但不包括del_flag为2的
-            if (roleIds == null || roleIds.size() == 0) {
-                sysRoles = sysRoleService.getRoleLists();
-            } else {
-                //执行查询角色列表的sql语句
-                sysRoles = sysRoleService.queryRoleById(roleIds);
-            }
-            String fileName = URLEncoder.encode("角色表数据", "UTF-8");
-            response.setContentType("application/vnd.ms-excel");
-            response.setCharacterEncoding("utf-8");
-            response.setHeader("content-type", "text/html;charset=UTF-8");
-            // 内容样式
-            HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
-            response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-            EasyExcel.write(response.getOutputStream(), SysRole.class)
-                    .excelType(ExcelTypeEnum.XLS)
-                    //自适应表格格式
-                    .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
-                    .autoCloseStream(true)
-                    .sheet("模板")
-                    .doWrite(sysRoles);
+    @GetMapping("/getExcel")
+    public Result getExcel(@RequestParam("roleIds") ArrayList<Integer> roleIds, HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<SysRole> sysRoles = new ArrayList<>();
+        //如果前台传的集合为空或者长度为0.则全部导出。
+        //执行   查询角色列表的sql语句   但不包括del_flag为2的
+        if (roleIds == null || roleIds.size() == 0) {
+            sysRoles = sysRoleService.getRoleLists();
+        } else {
+            //执行查询角色列表的sql语句
+            sysRoles = sysRoleService.queryRoleById(roleIds);
+        }
+        String fileName = URLEncoder.encode("角色表数据", "UTF-8");
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("content-type", "text/html;charset=UTF-8");
+        // 内容样式
+        HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), SysRole.class)
+                .excelType(ExcelTypeEnum.XLS)
+                //自适应表格格式
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                .autoCloseStream(true)
+                .sheet("角色信息");
+        excel.doWrite(sysRoles);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
 
     /**

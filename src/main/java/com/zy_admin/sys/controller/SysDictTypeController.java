@@ -3,6 +3,7 @@ package com.zy_admin.sys.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
@@ -47,9 +48,10 @@ public class SysDictTypeController extends ApiController {
      * @param dictIds
      * @param response
      */
-    @GetMapping("/getExcel")
     @MyLog(title = "字典类型", optParam = "#{dictIds}", businessType = BusinessType.EXPORT)
-    public void getExcel(@RequestParam("dictIds") ArrayList<Integer> dictIds, HttpServletResponse response) throws IOException {
+    @GetMapping("/getExcel")
+    public Result getExcel(@RequestParam("dictIds") ArrayList<Integer> dictIds, HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysDictType> sysDictTypeList = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
         //执行   查询角色列表的sql语句   但不包括del_flag为2的
@@ -66,13 +68,16 @@ public class SysDictTypeController extends ApiController {
         // 内容样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), SysDictType.class)
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), SysDictType.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .autoCloseStream(true)
-                .sheet("模板")
-                .doWrite(sysDictTypeList);
+                .sheet("字典类型");
+        excel.doWrite(sysDictTypeList);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
 
     /**

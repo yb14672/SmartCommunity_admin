@@ -1,12 +1,12 @@
 package com.zy_admin.sys.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.dao.SysAreaDao;
 import com.zy_admin.sys.entity.SysArea;
 import com.zy_admin.sys.service.SysAreaService;
 import com.zy_admin.util.AreaTree;
 import com.zy_admin.util.Result;
-import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaDao, SysArea> impleme
         try {
             AreaTree areaTree = new AreaTree(this.baseMapper.queryAreaTree());
             result.setData(areaTree.buildTree());
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
             return result;

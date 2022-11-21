@@ -3,6 +3,7 @@ package com.zy_admin.sys.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -12,10 +13,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.service.SysOperLogService;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ExcelUtil;
+import com.zy_admin.util.ResultTool;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -47,9 +50,10 @@ public class SysOperLogController extends ApiController {
      * @param operLogIds
      * @param response
      */
-    @GetMapping("/getExcel")
     @MyLog(title = "操作日志", optParam = "#{operLogIds}", businessType = BusinessType.EXPORT)
-    public void getExcel(@RequestParam("operLogIds") ArrayList<Integer> operLogIds, HttpServletResponse response) throws IOException {
+    @GetMapping("/getExcel")
+    public Result getExcel(@RequestParam("operLogIds") ArrayList<Integer> operLogIds, HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysOperLog> sysOperLogList = new ArrayList<>();
         //判断操作日志的集合为空或者长度为0.则全部导出。
         if (operLogIds == null || operLogIds.size() == 0) {
@@ -65,13 +69,16 @@ public class SysOperLogController extends ApiController {
         // 内容样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), SysOperLog.class)
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), SysOperLog.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .autoCloseStream(true)
-                .sheet("模板")
-                .doWrite(sysOperLogList);
+                .sheet("操作日志");
+        excel.doWrite(sysOperLogList);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
 
     /**

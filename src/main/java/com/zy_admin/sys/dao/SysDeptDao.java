@@ -18,8 +18,6 @@ import java.util.List;
 @Repository
 public interface SysDeptDao extends BaseMapper<SysDept> {
 
-    Integer hasCommunityDept(@Param("idList") List<Integer> idList);
-
     /**
      * 根据id查数据
      * @param deptId
@@ -105,7 +103,7 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      * @param ancestors
      * @return
      */
-    int updateDeptSon(@Param("status") String status,@Param("ancestors") String ancestors);
+    int updateDeptSon(@Param("status") String status, @Param("ancestors") String ancestors);
 
     /**
      * 检查修改后的菜单是否和子集一致

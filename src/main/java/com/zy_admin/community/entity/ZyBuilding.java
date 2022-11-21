@@ -1,10 +1,11 @@
 package com.zy_admin.community.entity;
 
-import java.util.Date;
-
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 楼栋 (ZyBuilding)表实体类
@@ -13,108 +14,50 @@ import java.io.Serializable;
  * @since 2022-11-01 19:49:00
  */
 @SuppressWarnings("serial")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ZyBuilding extends Model<ZyBuilding> {
     //楼栋id
-    private Long buildingId;
+    @ExcelProperty("楼栋id")
+    @TableId
+    private String buildingId;
+
     //楼栋名称
+    @ExcelProperty("楼栋名称")
     private String buildingName;
+
     //楼栋编码
+    @ExcelProperty("楼栋编码")
     private String buildingCode;
+
     //楼栋面积
+    @ExcelProperty("楼栋面积")
     private Double buildingAcreage;
+
     //小区id
-    private Long communityId;
+    @ExcelProperty("小区id")
+    private String communityId;
+
     //创建者
+    @ExcelProperty("创建者")
     private String createBy;
+
     //创建时间
-    private Date createTime;
+    @ExcelProperty("创建时间")
+    private String createTime;
+
     //更新者
+    @ExcelProperty("更新者")
     private String updateBy;
+
     //更新时间
-    private Date updateTime;
+    @ExcelProperty("更新时间")
+    private String updateTime;
+
     //备注
+    @ExcelProperty("备注")
     private String remark;
-
-
-    public Long getBuildingId() {
-        return buildingId;
-    }
-
-    public void setBuildingId(Long buildingId) {
-        this.buildingId = buildingId;
-    }
-
-    public String getBuildingName() {
-        return buildingName;
-    }
-
-    public void setBuildingName(String buildingName) {
-        this.buildingName = buildingName;
-    }
-
-    public String getBuildingCode() {
-        return buildingCode;
-    }
-
-    public void setBuildingCode(String buildingCode) {
-        this.buildingCode = buildingCode;
-    }
-
-    public Double getBuildingAcreage() {
-        return buildingAcreage;
-    }
-
-    public void setBuildingAcreage(Double buildingAcreage) {
-        this.buildingAcreage = buildingAcreage;
-    }
-
-    public Long getCommunityId() {
-        return communityId;
-    }
-
-    public void setCommunityId(Long communityId) {
-        this.communityId = communityId;
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
 
 }
 

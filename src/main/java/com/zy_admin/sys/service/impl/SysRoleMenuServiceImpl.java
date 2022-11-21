@@ -5,7 +5,6 @@ import com.zy_admin.sys.dao.SysRoleMenuDao;
 import com.zy_admin.sys.entity.SysRoleMenu;
 import com.zy_admin.sys.service.SysRoleMenuService;
 import com.zy_admin.util.Result;
-
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuDao, SysRoleM
         try{
             List<Integer> menuIds = this.baseMapper.getMenuIdsByRoleId(id);
             result.setData(menuIds);
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         }catch (Exception e){
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));

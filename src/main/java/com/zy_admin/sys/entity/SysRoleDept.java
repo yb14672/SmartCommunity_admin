@@ -1,6 +1,9 @@
 package com.zy_admin.sys.entity;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -11,28 +14,15 @@ import java.io.Serializable;
  * @since 2022-11-01 19:49:41
  */
 @SuppressWarnings("serial")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SysRoleDept extends Model<SysRoleDept> {
     //角色ID
     private Long roleId;
     //部门ID
     private Long deptId;
 
-
-    public Long getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
-    }
-
-    public Long getDeptId() {
-        return deptId;
-    }
-
-    public void setDeptId(Long deptId) {
-        this.deptId = deptId;
-    }
 
     /**
      * 获取主键值

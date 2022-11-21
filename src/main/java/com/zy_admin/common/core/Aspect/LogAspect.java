@@ -10,10 +10,12 @@ import com.zy_admin.sys.service.SysDeptService;
 import com.zy_admin.sys.service.SysOperLogService;
 import com.zy_admin.util.IpUtils;
 import com.zy_admin.util.RequestUtil;
+import com.zy_admin.util.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -25,7 +27,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -72,10 +74,10 @@ public class LogAspect {
      * @param joinPoint 切点
      * @param e         异常
      */
-//    @AfterThrowing(value = "logPointCut()", throwing = "e")
-//    public void doAfterThrowing(JoinPoint joinPoint, Exception e) {
-//        handleLog(joinPoint, e,null);
-//    }
+    @AfterThrowing(value = "logPointCut()", throwing = "e")
+    public void doAfterThrowing(JoinPoint joinPoint, Exception e) {
+        handleLog(joinPoint, e,null);
+    }
 
     private void handleLog(final JoinPoint joinPoint, final Exception e,Object result) {
         // 获得MyLog注解
@@ -123,11 +125,16 @@ public class LogAspect {
         Object o = JSON.toJavaObject(jsonObject, Object.class);
         operLog.setJsonResult(String.valueOf(o));
         // 操作时间
-        operLog.setOperTime(new Date());
+        operLog.setOperTime(LocalDateTime.now()+"");
+        Result result1 = (Result) result;
         if (e != null) {
             operLog.setStatus(1);
             // IotLicenseException为本系统自定义的异常类，读者若要获取异常信息，请根据自身情况变通
             operLog.setErrorMsg(e.getMessage());
+        }else if(result1.getMeta().getErrorCode() != 200){
+            operLog.setStatus(1);
+            // IotLicenseException为本系统自定义的异常类，读者若要获取异常信息，请根据自身情况变通
+            operLog.setErrorMsg(result1.getMeta().getErrorMsg());
         }
         // 处理注解上的参数
         getControllerMethodDescription(joinPoint, controllerLog, operLog);

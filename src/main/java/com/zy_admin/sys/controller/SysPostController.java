@@ -3,6 +3,7 @@ package com.zy_admin.sys.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -12,13 +13,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.entity.SysPost;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysPostService;
-import com.zy_admin.util.ExcelUtil;
-import com.zy_admin.util.JwtUtil;
-import com.zy_admin.util.RequestUtil;
-import com.zy_admin.util.Result;
+import com.zy_admin.util.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -169,7 +168,9 @@ public class SysPostController extends ApiController {
      */
     @PostMapping("/getExcel")
     @MyLog(title = "岗位管理", optParam = "#{postIds}", businessType = BusinessType.EXPORT)
-    public void getExcel(@RequestBody ArrayList<Integer> postIds, HttpServletResponse response) throws IOException {
+    @GetMapping("/getExcel")
+    public Result getExcel(@RequestParam("postIds") ArrayList<Integer> postIds, HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysPost> sysPosts = new ArrayList<>();
         //如果前台传的集合为空或者长度为0.则全部导出。
         //执行查询角色列表的sql语句,但不包括del_flag为2的
@@ -186,14 +187,16 @@ public class SysPostController extends ApiController {
         // 内容样式
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        EasyExcel.write(response.getOutputStream(), SysPost.class)
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), SysPost.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .autoCloseStream(true)
-                .sheet("模板")
-                .doWrite(sysPosts);
-
+                .sheet("岗位信息");
+        excel.doWrite(sysPosts);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
 
     /**

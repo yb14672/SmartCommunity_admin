@@ -102,6 +102,45 @@
         </association>
     </resultMap>
 
+    <!--用户列表分页，条件搜索-->
+    <resultMap type="com.zy_admin.sys.dto.UserDto" id="UserDtoMap">
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="userType" column="user_type" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="phonenumber" column="phonenumber" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
+        <result property="loginIp" column="login_ip" jdbcType="VARCHAR"/>
+        <result property="loginDate" column="login_date" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="postId" column="pId" jdbcType="INTEGER"/>
+        <result property="roleId" column="rId" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--用户信息-->
+    <select id="getUserInfo" resultMap="UserDtoMap">
+        SELECT *,
+               r.role_id rId,
+               p.post_id pId
+        FROM sys_user u
+                 LEFT JOIN sys_role_dept rd ON u.dept_id = rd.dept_id
+                 LEFT JOIN sys_user_role ur on u.user_id = ur.user_id
+                 LEFT JOIN sys_role r ON ur.role_id = r.role_id
+                 LEFT JOIN sys_dept d on u.dept_id = d.dept_id
+                 LEFT JOIN sys_user_post up on u.user_id = up.user_id
+                 LEFT JOIN sys_post p on up.post_id = p.post_id
+        where u.user_id = #{userId}
+    </select>
     <!--    个人中心，七表联查-->
     <select id="personal" resultMap="SysUserMap">
         SELECT *,
@@ -345,8 +384,8 @@
     <insert id="saveBatch">
         insert into sys_user(dept_id,user_name,nick_name,email,phonenumber,password,del_flag)
         VALUES
-        <foreach collection="userEntityList" item="user" separator="," open="(" close=")">
-            #{user.dept_id}, #{user.userName},#{user.nickName},#{user.email},#{user.phonenumber},#{user.password},#{user.delFlag}
+        <foreach collection="userEntityList" item="user" separator=",">
+            (#{user.deptId}, #{user.userName},#{user.nickName},#{user.email},#{user.phonenumber},#{user.password},#{user.delFlag})
         </foreach>
     </insert>
 

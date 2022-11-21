@@ -1,15 +1,16 @@
 package com.zy_admin.sys.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import com.zy_admin.sys.dao.SysMenuDao;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.sys.dto.SysUserDto;
 import com.zy_admin.sys.entity.MenuTree;
 import com.zy_admin.sys.entity.SysMenu;
 import com.zy_admin.sys.service.SysMenuService;
-import com.zy_admin.util.*;
+import com.zy_admin.util.Result;
 import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.Tree;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -72,7 +73,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
             List<MenuTree> menuList = this.baseMapper.queryAllMenu(menu);
             Tree tree = new Tree(menuList);
             result.setData(tree.buildTree());
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -315,7 +316,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenu> impleme
             Tree tree = new Tree(menuTree);
             List<MenuTree> menuTrees = tree.buildTree();
             result.setData(menuTrees);
-            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
             return result;
