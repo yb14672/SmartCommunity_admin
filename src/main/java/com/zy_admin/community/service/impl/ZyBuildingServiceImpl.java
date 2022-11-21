@@ -152,7 +152,8 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
             }
             return result;
         } catch (Exception e) {
-            return result;
+            e.printStackTrace();
+            return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         }
     }
 

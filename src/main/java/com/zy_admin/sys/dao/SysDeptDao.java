@@ -57,7 +57,7 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      */
     Integer updateDept(SysDept sysDept);
 
-    int changeStatus(@Param("status") String status,@Param("menuId") String menuId);
+    int changeStatus(@Param("status") String status, @Param("menuId") String menuId);
 
     /**
      * 删除
@@ -97,7 +97,7 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      * @param ancestors
      * @return
      */
-    int updateDeptSon(@Param("status") String status,@Param("ancestors") String ancestors);
+    int updateDeptSon(@Param("status") String status, @Param("ancestors") String ancestors);
 
     /**
      * 检查修改后的菜单是否和子集一致
