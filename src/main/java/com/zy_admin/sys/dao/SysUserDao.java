@@ -51,8 +51,11 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @return
      */
     Long count(@Param("sysUser")SysUser sysUser, @Param("startTime")String startTime, @Param("endTime")String endTime);
+
     /**
-     * 根据id获取用户信息
+     * 根据Id查询用户
+     * @param userId
+     * @return
      */
     @Select("select * from sys_user where user_id = #{userId}")
     SysUser getUserById(String userId);

@@ -49,6 +49,10 @@ public class SysPostController extends ApiController {
     private RequestUtil requestUtil;
 
 
+    /**
+     * 获取所有岗位
+     * @return
+     */
     @GetMapping("/getAllPost")
     public Result getAllPost() {
         Result allPost = sysPostService.getAllPost();
@@ -112,6 +116,12 @@ public class SysPostController extends ApiController {
     }
 
 
+    /**
+     * 岗位的分页搜索
+     * @param sysPost
+     * @param pageable
+     * @return
+     */
     @GetMapping("/getPostList")
     public Result getPostList(SysPost sysPost, Pageable pageable) {
         Result result = this.sysPostService.selectPostByLimit(sysPost, pageable);
@@ -136,6 +146,12 @@ public class SysPostController extends ApiController {
         return result;
     }
 
+    /**
+     * 修改岗位
+     * @param request
+     * @param sysPost
+     * @return
+     */
     @PutMapping("/updatePost")
     @MyLog(title = "岗位管理", optParam = "#{sysPost}", businessType = BusinessType.UPDATE)
     public Result updatePost(HttpServletRequest request, @RequestBody SysPost sysPost) {
@@ -145,6 +161,12 @@ public class SysPostController extends ApiController {
         return this.sysPostService.update(sysPost);
     }
 
+    /**
+     * 岗位导出Excel
+     * @param postIds
+     * @param response
+     * @throws IOException
+     */
     @PostMapping("/getExcel")
     @MyLog(title = "岗位管理", optParam = "#{postIds}", businessType = BusinessType.EXPORT)
     public void getExcel(@RequestBody ArrayList<Integer> postIds, HttpServletResponse response) throws IOException {
@@ -174,6 +196,11 @@ public class SysPostController extends ApiController {
 
     }
 
+    /**
+     * 岗位删除
+     * @param postIds
+     * @return
+     */
     @DeleteMapping("/deletePost")
     @MyLog(title = "岗位管理", optParam = "#{postIds}", businessType = BusinessType.DELETE)
     public Result deletePost(@RequestParam("ids") List<Integer> postIds) {

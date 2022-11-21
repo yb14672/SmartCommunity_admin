@@ -97,6 +97,11 @@ public interface SysPostDao extends BaseMapper<SysPost> {
     int deletePost(@Param("idList") List<Integer> sysPosts);
 
 
+    /**
+     * 根据岗位Id查询岗位
+     * @param postId
+     * @return
+     */
     @Select("select * from sys_post where post_id = #{postId}")
     SysPost queryPostById(long postId);
 }

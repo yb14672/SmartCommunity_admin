@@ -2,6 +2,8 @@ package com.zy_admin.community.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.community.dto.CommunityDto;
+import com.zy_admin.community.dto.CommunityExcel;
 import com.zy_admin.community.entity.ZyCommunity;
 import org.apache.ibatis.annotations.Param;
 

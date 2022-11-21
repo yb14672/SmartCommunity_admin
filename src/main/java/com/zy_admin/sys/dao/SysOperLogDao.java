@@ -23,12 +23,13 @@ public interface SysOperLogDao extends BaseMapper<SysOperLog> {
    long count(@Param("sysOperLog") SysOperLog sysOperLog,@Param("startTime") String startTime,@Param("endTime") String endTime );
 
     /**
-     *
+     * 条件搜索加分页
      * @param sysOperLog
      * @param pageable
      * @return
      */
     List<SysOperLog> queryAllByLimit(@Param("sysOperLog") SysOperLog sysOperLog, @Param("pageable") Pageable pageable, @Param("startTime") String startTime, @Param("endTime") String endTime);
+
     /**
      * 新增操作日志
      * @param sysOperLog

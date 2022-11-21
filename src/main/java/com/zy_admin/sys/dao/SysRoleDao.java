@@ -92,6 +92,11 @@ public interface SysRoleDao extends BaseMapper<SysRole> {
     SysRole selectRoleKey(String roleKey);
 
 
+    /**
+     * 查询所有角色
+     * @param sysRole
+     * @return
+     */
     @Select("select * from sys_role where role_id!=1 and del_flag != 2")
     List<SysRole> getAllRole(SysRole sysRole);
 }

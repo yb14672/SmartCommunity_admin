@@ -1,6 +1,5 @@
 package com.zy_admin.community.service.impl;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.community.dao.ZyCommunityDao;
@@ -10,8 +9,11 @@ import com.zy_admin.community.dto.ZyCommunityDto;
 import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.community.service.ZyCommunityService;
 import com.zy_admin.sys.dao.SysUserDao;
-import com.zy_admin.sys.entity.SysUser;
+
+
 import com.zy_admin.util.*;
+import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.util.SnowflakeManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +57,7 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
                     }
                 }
             }
-            String id = JwtUtils.getMemberIdByJwtToken(request);
+            String id = JwtUtil.getMemberIdByJwtToken(request);
             community.setUpdateBy(sysUserDao.getUserById(id).getUserName());
             community.setUpdateTime(LocalDateTime.now().toString());
             int i = this.baseMapper.updateCommunityById(community);
@@ -81,7 +83,7 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
                 }
             }
             Long now = System.currentTimeMillis();
-            String id = JwtUtils.getMemberIdByJwtToken(request);
+            String id = JwtUtil.getMemberIdByJwtToken(request);
             community.setCommunityId(snowflakeManager.nextId() + "");
             community.setCommunityCode("COMMUNITY_" + now.toString().substring(0, 13));
             community.setCreateBy(sysUserDao.getUserById(id).getUserName());

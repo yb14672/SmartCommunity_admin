@@ -1,6 +1,7 @@
 package com.zy_admin.sys.entity;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.Data;
 
 import java.io.Serializable;
 

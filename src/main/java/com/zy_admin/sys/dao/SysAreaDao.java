@@ -14,6 +14,10 @@ import java.util.List;
  */
 public interface SysAreaDao extends BaseMapper<SysArea> {
 
+    /**
+     * 查询省市区
+     * @return
+     */
     List<AreaDto> queryAreaTree();
 }
 

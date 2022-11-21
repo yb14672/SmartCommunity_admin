@@ -11,12 +11,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
-import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.dto.UserDto;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.entity.SysUserUpload;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.*;
+import com.zy_admin.common.enums.ResultCode;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,6 +48,11 @@ public class SysUserController extends ApiController {
     private RequestUtil requestUtil;
 
 
+    /**
+     * 用户登出日志接口
+     * @param request
+     * @return
+     */
     @PostMapping("/logout")
     public Result logout(HttpServletRequest request){
         return sysUserService.logout(request);
@@ -318,6 +323,12 @@ public class SysUserController extends ApiController {
     }
 
 
+    /**
+     * 用户管理 新增用户
+     * @param request
+     * @param sysUserDto
+     * @return
+     */
     @PostMapping("/insertUser")
     @MyLog(title = "用户管理", optParam = "#{sysUserDto}", businessType = BusinessType.INSERT)
     public Result insertUser(HttpServletRequest request, @RequestBody UserDto sysUserDto) {
@@ -327,6 +338,12 @@ public class SysUserController extends ApiController {
         return sysUserService.insertUser(sysUserDto);
     }
 
+    /**
+     * 用户管理修改用户
+     * @param request
+     * @param userDto
+     * @return
+     */
     @PutMapping("/adminUpdateUser")
     @MyLog(title = "用户管理", optParam = "#{userDto}", businessType = BusinessType.UPDATE)
     public Result updateUser(HttpServletRequest request, @RequestBody UserDto userDto) {
@@ -336,6 +353,12 @@ public class SysUserController extends ApiController {
         return sysUserService.adminUpdateUser(userDto);
     }
 
+    /**
+     * 用户管理重置密码
+     * @param request
+     * @param sysUser
+     * @return
+     */
     @PostMapping("/resetPassword")
     @MyLog(title = "重置密码", optParam = "#{sysUser}", businessType = BusinessType.UPDATE)
     public Result resetPassword(HttpServletRequest request, @RequestBody SysUser sysUser) {

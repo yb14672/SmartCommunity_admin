@@ -63,6 +63,14 @@ public class SysLogininforController extends ApiController {
                 .doWrite(loginInForExcelDtoList);
     }
 
+    /**
+     * 分页搜索查询登录日志
+     * @param sysLogininfor
+     * @param pageable
+     * @param startTime
+     * @param endTime
+     * @return
+     */
     @GetMapping("/queryLoginInfor")
     public Result queryLoginInfor(SysLogininfor sysLogininfor, Pageable pageable, String startTime, String endTime) {
         return sysLogininforService.queryLoginInfor(sysLogininfor,pageable,startTime,endTime);
@@ -125,6 +133,10 @@ public class SysLogininforController extends ApiController {
         return sysLogininforService.deleteByIds(infoIds);
     }
 
+    /**
+     * 清空日志
+     * @return
+     */
     @DeleteMapping("/EmptyLogininfor")
     @MyLog(title = "登录日志", businessType = BusinessType.CLEAR)
     public Result EmptyLogininfor(){

@@ -77,7 +77,10 @@ public interface SysPostService extends IService<SysPost> {
      */
     Result deletePost(List<Integer> ids);
 
-
+    /**
+     * 获取所有岗位
+     * @return
+     */
     Result getAllPost();
 
 }

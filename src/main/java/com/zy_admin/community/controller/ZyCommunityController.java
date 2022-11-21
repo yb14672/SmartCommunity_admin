@@ -7,20 +7,17 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.baomidou.mybatisplus.extension.api.R;
 
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.community.dto.CommunityExcel;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zy_admin.common.Pageable;
 import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.community.service.ZyCommunityService;
-import com.zy_admin.sys.dto.LoginInForExcelDto;
 import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.util.ResultCode;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
-import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -29,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +46,7 @@ public class ZyCommunityController extends ApiController {
     private ZyCommunityService zyCommunityService;
 
     @PostMapping("/getExcel")
+    @MyLog(title = "小区信息", optParam = "#{ids}", businessType = BusinessType.EXPORT )
     public void getExcel(@RequestBody ArrayList<Long> ids, HttpServletResponse response) throws IOException {
         List<CommunityExcel> communityExcelList = zyCommunityService.selectByIds(ids);
         String fileName = URLEncoder.encode("小区信息", "UTF-8");
@@ -75,8 +72,8 @@ public class ZyCommunityController extends ApiController {
      * @return 修改结果
      */
     @PutMapping("/updateCommunity")
+    @MyLog(title = "小区信息", optParam = "#{community}", businessType = BusinessType.UPDATE )
     public Result update(@RequestBody ZyCommunity community,HttpServletRequest request) {
-        System.out.println(community);
         return this.zyCommunityService.updateCommunityById(community,request);
     }
 
@@ -87,6 +84,7 @@ public class ZyCommunityController extends ApiController {
      * @return 新增结果
      */
     @PostMapping("/insertCommunity")
+    @MyLog(title = "小区信息", optParam = "#{community}", businessType = BusinessType.INSERT )
     public Result insert(@RequestBody ZyCommunity community, HttpServletRequest request) throws Exception {
         return this.zyCommunityService.insertCommunity(community,request);
     }
@@ -119,6 +117,7 @@ public class ZyCommunityController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping("/deleteCommunity")
+    @MyLog(title = "小区信息", optParam = "#{communityIds}", businessType = BusinessType.DELETE )
     public Result delete(@RequestBody List<Long> communityIds) {
         System.err.println(communityIds);
         boolean b = this.zyCommunityService.removeByIds(communityIds);

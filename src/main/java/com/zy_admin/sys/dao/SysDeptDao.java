@@ -18,6 +18,8 @@ import java.util.List;
 @Repository
 public interface SysDeptDao extends BaseMapper<SysDept> {
 
+    Integer hasCommunityDept(@Param("idList") List<Integer> idList);
+
     /**
      * 根据id查数据
      * @param deptId
@@ -57,6 +59,12 @@ public interface SysDeptDao extends BaseMapper<SysDept> {
      */
     Integer updateDept(SysDept sysDept);
 
+    /**
+     * 修改状态
+     * @param status
+     * @param menuId
+     * @return
+     */
     int changeStatus(@Param("status") String status,@Param("menuId") String menuId);
 
     /**

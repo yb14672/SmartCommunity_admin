@@ -85,6 +85,11 @@ public class SysRoleMenuController extends ApiController {
         return success(this.sysRoleMenuService.removeByIds(idList));
     }
 
+    /**
+     * 根据角色Id查询对应的权限菜单
+     * @param roleId
+     * @return
+     */
     @GetMapping("/getMenuIds")
     public Result getMenuIds(String roleId){
         return sysRoleMenuService.getMenuIdsByRoleId(roleId);
