@@ -109,7 +109,7 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
         ZyUnit selectUnitName = this.baseMapper.selectUnitName(selectBuildingId.getCommunityId(), zyUnit.getBuildingId(), zyUnit.getUnitName());
         String[] fields = new String[]{"buildingId", "unitName", "unitLevel", "unitAcreage", "unitHaveElevator", "remark"};
         if (!ObjUtil.checkEquals(zyUnit, zyUnit1, fields)) {
-            if (selectUnitName != null) {
+            if (selectUnitName != null&& !selectUnitName.getUnitId().equals(zyUnit.getUnitId())) {
                 result.setMeta(ResultTool.fail(ResultCode.UNIT_NAME_REPEAT));
             } else {
                 zyUnit.setCommunityId(selectBuildingId.getCommunityId());
@@ -156,8 +156,8 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
      * @return
      */
     @Override
-    public List<ZyUnit> getAll() {
-        return this.baseMapper.getAll();
+    public List<ZyUnit> getAll(String communityId) {
+        return this.baseMapper.getAll(communityId);
     }
 
     /**
@@ -166,7 +166,7 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
      * @return
      */
     @Override
-    public List<ZyUnit> getUnitById(List<Integer> ids) {
+        public List<ZyUnit> getUnitById(List<String> ids) {
         if (ids != null) {
             ids = ids.size() == 0 ? null : ids;
         }

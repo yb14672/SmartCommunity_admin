@@ -80,14 +80,15 @@ public interface ZyUnitDao extends BaseMapper<ZyUnit> {
      * 获取所有单元信息
      * @return
      */
-    List<ZyUnit> getAll();
+    @Select("select * from zy_unit where community_id = #{communityId}")
+    List<ZyUnit> getAll(String communityId);
 
     /**
      * 根据ID获取单元信息
      * @param unitIds
      * @return
      */
-    List<ZyUnit> getUnitById(@Param("unitIds") List<Integer> unitIds);
+    List<ZyUnit> getUnitById(@Param("unitIds") List<String> unitIds);
 
     /**
      * 根据ID获取单元信息

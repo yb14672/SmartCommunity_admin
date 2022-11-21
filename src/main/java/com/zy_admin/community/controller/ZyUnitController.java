@@ -159,12 +159,12 @@ public class ZyUnitController extends ApiController {
 
 
     @GetMapping("/getExcel")
-    public void getExcel(@RequestParam("unitIds") ArrayList<Integer> unitIds, HttpServletResponse response) throws IOException {
+    public void getExcel(@RequestParam("unitIds") ArrayList<String> unitIds,@RequestParam("communityId") String communityId, HttpServletResponse response) throws IOException {
         List<ZyUnit> zyUnits = new ArrayList<>();
+        System.err.println(communityId);
         //如果前台传的集合为空或者长度为0.则全部导出。
-        //执行查询角色列表的sql语句,但不包括del_flag为2的
         if (unitIds == null || unitIds.size() == 0) {
-            zyUnits = zyUnitService.getAll();
+            zyUnits = zyUnitService.getAll(communityId);
         } else {
             //执行查询角色列表的sql语句
             zyUnits = zyUnitService.getUnitById(unitIds);
