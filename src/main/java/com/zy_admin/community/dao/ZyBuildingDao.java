@@ -23,7 +23,7 @@ public interface ZyBuildingDao extends BaseMapper<ZyBuilding> {
      * @param communityId 小区ID
      * @return 对应的楼栋列表
      */
-    List<BuildUnitDto> getBuildingAndUnitListByCommunityId(String communityId);
+    List<BuildUnitDto> getBuildingListByCommunityId(String communityId);
 
     /**
      * 根据小区id获取对应的楼栋

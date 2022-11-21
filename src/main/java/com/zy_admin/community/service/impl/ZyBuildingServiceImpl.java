@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyBuildingDao;
+import com.zy_admin.community.dao.ZyUnitDao;
+import com.zy_admin.community.dto.BuildAndUnit;
 import com.zy_admin.community.dto.BuildUnitDto;
 import com.zy_admin.community.dto.ZyBuildingDto;
 import com.zy_admin.community.dto.ZyBuildingDtoAll;
 import com.zy_admin.community.entity.ZyBuilding;
+import com.zy_admin.community.entity.ZyUnit;
 import com.zy_admin.community.service.ZyBuildingService;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.util.*;
@@ -35,6 +38,9 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
     @Resource
     private SysUserDao sysUserDao;
 
+    @Resource
+    private ZyUnitDao zyUnitDao;
+
     /**
      * 根据小区id获取楼栋及其对应的单元列表
      *
@@ -44,8 +50,13 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
     @Override
     public Result getBuildingAndUnitListByCommunityId(String communityId) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        //获取到所有的楼栋和单元
-        List<BuildUnitDto> buildingAndUnitListByCommunityId = this.baseMapper.getBuildingAndUnitListByCommunityId(communityId);
+        //获取到所有的楼栋
+        List<BuildUnitDto> buildingAndUnitListByCommunityId = this.baseMapper.getBuildingListByCommunityId(communityId);
+        //获取所有的单元
+        List<ZyUnit> unitList = this.zyUnitDao.getAll(communityId);
+        //将其整合为树
+        BuildAndUnit buildAndUnit = new BuildAndUnit(buildingAndUnitListByCommunityId, unitList);
+        buildingAndUnitListByCommunityId = buildAndUnit.build(buildingAndUnitListByCommunityId, unitList);
         if(buildingAndUnitListByCommunityId.size() != 0){
             result.setData(buildingAndUnitListByCommunityId);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
@@ -258,21 +269,6 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
             }
         }
         return false;
-    }
-
-    public List<BuildUnitDto> buildTree(List<BuildUnitDto> list){
-        ArrayList<BuildUnitDto> buildUnitDtoList = new ArrayList<BuildUnitDto>;
-        for (int i = 0; i < buildUnitDtoList.size(); i++) {
-            //默认第一个肯定没有，所以直接添加
-            if(buildUnitDtoList.size() == 0){
-                buildUnitDtoList.add(buildUnitDtoList.get(0));
-            }
-            //因为第一次已经把索引为0的加进去了，所以直接从1开始
-            for (int j = 1; j < buildUnitDtoList.size(); j++) {
-
-            }
-        }
-        return buildUnitDtoList;
     }
 }
 

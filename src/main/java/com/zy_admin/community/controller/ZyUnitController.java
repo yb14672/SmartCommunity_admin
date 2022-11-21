@@ -80,9 +80,9 @@ public class ZyUnitController extends ApiController {
     /**
      * 修改单元楼
      *
-     * @param request
-     * @param zyUnit
-     * @return
+     * @param request 前端请求
+     * @param zyUnit 要修改的单元信息
+     * @return 成功或错误信息
      */
     @PutMapping("/updateUnit")
     @MyLog(title = "单元信息", optParam = "#{zyUnit}", businessType = BusinessType.UPDATE)
