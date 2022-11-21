@@ -104,7 +104,8 @@ public enum ResultCode {
     UNIT_HAVE_PEOPLE(3050,"单元存在住户，不能删除"),
     COMMUNITY_HAVE_CHILD(3050,"小区存在楼栋，不能删除"),
     COMPANY_OWNS_PROPERTY(3050,"公司仍有负责的物业，不能删除"),
-    ROOM_HAVE_BEEN(3051,"该房屋名在其他楼层下已存在"),
+    ROOM_HAVE_BEEN(3051,"该房屋名已存在"),
+    ROOM_HAVE_OWNER(3051,"该房屋名已有业主，不允许删除"),
 
 
     /* http自带请求码 */

@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author fangqian
  */
-public class IpUtils {
+public class IpUtil {
 
     /**
      * 获取用户真实IP地址，不使用request.getRemoteAddr();的原因是有可能用户使用了代理软件方式避免真实IP地址,

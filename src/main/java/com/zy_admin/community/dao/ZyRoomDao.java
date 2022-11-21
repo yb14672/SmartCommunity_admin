@@ -29,6 +29,13 @@ public interface ZyRoomDao extends MPJBaseMapper<ZyRoom> {
     int updateZyRoom(ZyRoom zyRoom);
 
     /**
+     * 根据ID列表查询所有的状态
+     * @param idList
+     * @return
+     */
+    List<String> getStatus(@Param("idList") ArrayList<String> idList);
+
+    /**
      * 删除
      * @param idList
      * @return
@@ -47,6 +54,6 @@ public interface ZyRoomDao extends MPJBaseMapper<ZyRoom> {
      * @param zyRoom
      * @return
      */
-    List<ZyRoom> checkRoomName(ZyRoom zyRoom);
+    List<ZyRoom> checkRoomName(@Param("zyRoom") ZyRoom zyRoom);
 }
 

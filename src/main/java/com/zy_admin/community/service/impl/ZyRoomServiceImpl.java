@@ -111,15 +111,15 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
     @Override
     public Result insertZyRoom(ZyRoom zyRoom, HttpServletRequest request) throws Exception {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        Long now = System.currentTimeMillis();
-        zyRoom.setRoomCode("ROOM_" + now.toString().substring(0, 13));
-        zyRoom.setRoomId(snowflakeManager.nextId() + "");
         //判断同一小区的楼层是否唯一,type为0是新增
         if (!selectZyRoomByName(0, zyRoom)) {
             result.setMeta(ResultTool.fail(ResultCode.ROOM_HAVE_BEEN));
             return result;
         }
         try {
+            Long now = System.currentTimeMillis();
+            zyRoom.setRoomCode("ROOM_" + now.toString().substring(0, 13));
+            zyRoom.setRoomId(snowflakeManager.nextId() + "");
             //新增楼层
             int sysDictType1 = this.baseMapper.insertZyRoom(zyRoom);
             if (sysDictType1 == 1) {
@@ -176,6 +176,15 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
     @Override
     public Result deleteZyRoom(ArrayList<String> idList) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        //获取所有状态
+        List<String> status = this.baseMapper.getStatus(idList);
+        //循环所有状态，如果有一个不是未出售，则返回
+        for (String s : status) {
+            if(!"none".equals(s)){
+                result.setMeta(ResultTool.success(ResultCode.ROOM_HAVE_OWNER));
+                return result;
+            }
+        }
         int i = this.baseMapper.deleteZyRoom(idList);
         if (i >= 1) {
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));

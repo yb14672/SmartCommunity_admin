@@ -52,7 +52,7 @@ public class ZyRoomController extends ApiController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/deleteZyRoom")
+    @DeleteMapping("/deleteZyRoom")
     @MyLog(title = "房屋信息", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result deleteZyRoom(@RequestParam("idList") ArrayList<String> idList){
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -66,6 +66,7 @@ public class ZyRoomController extends ApiController {
         }
         return result;
     }
+
     /**
      * 修改房屋
      * @param zyRoom
