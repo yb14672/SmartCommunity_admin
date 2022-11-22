@@ -5,11 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.service.ZyOwnerService;
+import com.zy_admin.util.Result;
+import org.apache.ibatis.annotations.Select;
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 
@@ -82,6 +87,32 @@ public class ZyOwnerController extends ApiController {
     @DeleteMapping
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.zyOwnerService.removeByIds(idList));
+    }
+
+    /**
+     * 获取户主信息并分页
+     * @param zyOwner 户主信息
+     * @param pageable 页码
+     * @return
+     */
+
+    @GetMapping("/getOwnerList")
+    public Result getOwnerList(ZyOwner zyOwner, Pageable pageable){
+        Result ownerList = zyOwnerService.getOwnerList(zyOwner, pageable);
+        System.out.println(ownerList);
+        return ownerList;
+
+    }
+
+    /**
+     * 解绑
+     * @param ownerRoomId
+     * @return
+     */
+    @DeleteMapping("/deleteOwner")
+    public Result deleteOwenRome(HttpServletRequest request, String ownerRoomId){
+        System.out.println(ownerRoomId);
+       return zyOwnerService.deleteOwenRome(request,ownerRoomId);
     }
 }
 
