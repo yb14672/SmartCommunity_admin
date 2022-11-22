@@ -90,18 +90,21 @@ public class SysRoleExcelDto extends Model<SysRoleExcelDto> {
      */
     @ExcelProperty("备注")
     private String remark;
-
+    /**
+     * 结束开始时间
+     */
     @ExcelIgnore
     private String endCreateTime;
-
-    /** 菜单组 */
+    /**
+     * 菜单组
+     */
     @ExcelIgnore
     private Long[] menuIds;
-
-    /** 部门组（数据权限） */
+    /**
+     * 部门组（数据权限）
+     */
     @ExcelIgnore
     private Long[] deptIds;
-
     /**
      * 获取主键值
      *

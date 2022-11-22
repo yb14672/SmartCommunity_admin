@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SysPostExcelDto extends Model<SysPostExcelDto> {
-
     /**
      * 岗位ID
      */

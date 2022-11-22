@@ -15,11 +15,11 @@ import java.util.List;
 @NoArgsConstructor
 public class UnitDto {
     /**
-     *
+     * 单元集合dto
      */
     private List<UnitListDto> unitListDtos;
     /**
-     *
+     * 分页对象
      */
     private Pageable pageable;
 }

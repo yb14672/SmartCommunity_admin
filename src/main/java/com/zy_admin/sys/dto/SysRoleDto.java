@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+/**
+ * @author lvwei
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +25,6 @@ public class SysRoleDto {
      * 开始时间
      */
     private String startTime;
-
     /**
      * 结束时间
      */
