@@ -6,10 +6,7 @@ import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerDao;
 import com.zy_admin.community.dto.OwenrDto;
 import com.zy_admin.community.dto.OwnerListDto;
-import com.zy_admin.community.dto.UnitDto;
-import com.zy_admin.community.dto.UnitListDto;
 import com.zy_admin.community.entity.ZyOwner;
-import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerService;
 import com.zy_admin.sys.entity.SysUser;
@@ -84,12 +81,10 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
             SysUser user = this.requestUtil.getUser(request);
             zyOwnerRoom.setUpdateBy(user.getUserName());
             zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());
-            zyOwnerRoom.setRecordId(snowflakeManager.nextId());
-            System.out.println(zyOwnerRoom);
+            zyOwnerRoom.setRecordId(snowflakeManager.nextId()+"");
             this.baseMapper.updateIntoRoomRecord(zyOwnerRoom);
             //解绑
             this.baseMapper.deletOwnerRoomId(owenRoomId);
-
             result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
         } catch (Exception e) {
             e.printStackTrace();

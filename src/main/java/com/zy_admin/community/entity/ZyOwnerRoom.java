@@ -19,27 +19,27 @@ public class ZyOwnerRoom extends Model<ZyOwnerRoom> {
     /**
      * 房屋绑定id
      */
-    private Long ownerRoomId;
+    private String ownerRoomId;
     /**
      * 小区id
      */
-    private Long communityId;
+    private String communityId;
     /**
      * 楼栋id
      */
-    private Long buildingId;
+    private String buildingId;
     /**
      * 单元id
      */
-    private Long unitId;
+    private String unitId;
     /**
      * 房间id
      */
-    private Long roomId;
+    private String roomId;
     /**
      * 业主id
      */
-    private Long ownerId;
+    private String ownerId;
     /**
      * 业主类型
      */

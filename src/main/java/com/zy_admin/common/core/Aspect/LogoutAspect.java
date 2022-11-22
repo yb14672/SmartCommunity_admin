@@ -67,7 +67,6 @@ public class LogoutAspect {
         //设置参数
         //登录账号
         SysUser user = (SysUser)result.getData();
-        System.out.println(result.getData());
         sysLogininfor.setUserName(user.getUserName());
         //登录IP
         sysLogininfor.setIpaddr(ip);

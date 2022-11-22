@@ -99,7 +99,6 @@ public class ZyOwnerController extends ApiController {
     @GetMapping("/getOwnerList")
     public Result getOwnerList(ZyOwner zyOwner, Pageable pageable){
         Result ownerList = zyOwnerService.getOwnerList(zyOwner, pageable);
-        System.out.println(ownerList);
         return ownerList;
 
     }
@@ -111,7 +110,6 @@ public class ZyOwnerController extends ApiController {
      */
     @DeleteMapping("/deleteOwner")
     public Result deleteOwenRome(HttpServletRequest request, String ownerRoomId){
-        System.out.println(ownerRoomId);
        return zyOwnerService.deleteOwenRome(request,ownerRoomId);
     }
 }

@@ -28,6 +28,8 @@ public class AuthConfig implements WebMvcConfigurer {
                         "/upload",
                         "/tool/swagger",
                         "/**/swagger-ui.html",
+                        "/**/doc.html",
+                        "/**/doc.html#/**",
                         "/swagger-ui/**",
                         "/swagger-resources/**",
                         "/webjars/**",
