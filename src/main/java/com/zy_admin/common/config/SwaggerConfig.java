@@ -1,5 +1,7 @@
 package com.zy_admin.common.config;
 
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -25,25 +27,43 @@ import java.util.List;
 public class SwaggerConfig {
     private static ApiInfo DEFAULT = null;
 
+    /** 是否开启swagger */
+    @Value("${swagger.enabled}")
+    private boolean enabled;
     @Bean
     public Docket createRestApi() {
-        return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
-                .apis(RequestHandlerSelectors.basePackage("com.zy_admin.sys.controller")).paths(PathSelectors.any())
-                .build().globalOperationParameters(setHeaderToken());
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("系统接口")
+                // 是否启用Swagger
+                .enable(enabled)
+                // 用来创建该API的基本信息，展示在文档的页面中（自定义展示的信息）
+                .apiInfo(apiInfo())
+                // 设置哪些接口暴露给Swagger展示
+                .select()
+                // 扫描所有有注解的api，用这种方式更灵活
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                // 扫描指定包中的swagger注解
+                // .apis(RequestHandlerSelectors.basePackage("com.ruoyi.project.tool.swagger"))
+                // 扫描所有 .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build()
+                .globalOperationParameters(setHeaderToken());
+                /* 设置安全模式，swagger可以设置访问token */
+//                .securitySchemes(securitySchemes())
+//                .securityContexts(securityContexts())
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("action-swagger").description("swagger实战").termsOfServiceUrl("")
-                .version("1.0").build();
+        return new ApiInfoBuilder()
+                .title("智慧社区接口文档")
+                .description("描述：用于社区管理系统的接口对接")
+                .version("1.0")
+                .build();
     }
 
     /**
-     * @param
-     * @Description: 设置swagger文档中全局参数
-     * @Date: 2020/9/11 10:15
-     * @return: java.util.List<springfox.documentation.service.Parameter>
+     *设置请求头
      */
-
     private List<Parameter> setHeaderToken() {
         List<Parameter> pars = new ArrayList<>();
         ParameterBuilder userId = new ParameterBuilder();

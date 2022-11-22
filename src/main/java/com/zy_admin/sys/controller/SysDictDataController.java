@@ -18,6 +18,8 @@ import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultTool;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -34,6 +36,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:34
  */
+@Api(tags="字典数据")
 @RestController
 @RequestMapping("/sysDictData")
 public class SysDictDataController extends ApiController {
@@ -53,7 +56,8 @@ public class SysDictDataController extends ApiController {
      * @param sysDictData 查询实体
      * @return 所有数据
      */
-    @GetMapping()
+    @ApiOperation("获取所有字典")
+    @GetMapping
     public Result selectAll(SysDictData sysDictData, Page page) {
         return this.sysDictDataService.selectDictDataLimit(sysDictData, page);
     }
