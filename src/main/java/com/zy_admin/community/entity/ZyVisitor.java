@@ -10,28 +10,52 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
  */
 @SuppressWarnings("serial")
 public class ZyVisitor extends Model<ZyVisitor> {
-    //id
+    /**
+     * id
+     */
     private Long visitorId;
-    //小区id
+    /**
+     * 小区id
+     */
     private Long communityId;
-    //访客姓名
+    /**
+     * 访客姓名
+     */
     private String visitorName;
-    //访客手机号
+    /**
+     * 访客手机号
+     */
     private String visitorPhoneNumber;
-    //到访时间
+    /**
+     * 到访时间
+     */
     private String visitorString;
-    //创建人id
+    /**
+     * 创建人id
+     */
     private Long createById;
-    //创建人openid
+    /**
+     * 创建人openid
+     */
     private String createByOpenId;
-    //创建者
+    /**
+     * 创建者
+     */
     private String createBy;
-    //创建时间
+    /**
+     * 创建时间
+     */
     private String createTime;
-    //更新者
+    /**
+     * 更新者
+     */
     private String updateBy;
-    //更新时间
+    /**
+     * 更新时间
+     */
     private String updateTime;
-    //备注
+    /**
+     * 备注
+     */
     private String remark;
 }

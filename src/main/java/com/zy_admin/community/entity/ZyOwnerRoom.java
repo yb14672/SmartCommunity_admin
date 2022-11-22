@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 /**
  * 房屋绑定表 (ZyOwnerRoom)表实体类
  *
@@ -18,30 +16,56 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ZyOwnerRoom extends Model<ZyOwnerRoom> {
-    //房屋绑定id
+    /**
+     * 房屋绑定id
+     */
     private Long ownerRoomId;
-    //小区id
+    /**
+     * 小区id
+     */
     private Long communityId;
-    //楼栋id
+    /**
+     * 楼栋id
+     */
     private Long buildingId;
-    //单元id
+    /**
+     * 单元id
+     */
     private Long unitId;
-    //房间id
+    /**
+     * 房间id
+     */
     private Long roomId;
-    //业主id
+    /**
+     * 业主id
+     */
     private Long ownerId;
-    //业主类型
+    /**
+     * 业主类型
+     */
     private String ownerType;
-    //绑定状态（0审核中 1绑定 2审核失败）
+    /**
+     * 绑定状态（0审核中 1绑定 2审核失败）
+     */
     private String roomStatus;
-    //创建者
+    /**
+     * 创建者
+     */
     private String createBy;
-    //创建时间
+    /**
+     * 创建时间
+     */
     private String createTime;
-    //更新者
+    /**
+     * 更新者
+     */
     private String updateBy;
-    //更新时间
+    /**
+     * 更新时间
+     */
     private String updateTime;
-    //备注
+    /**
+     * 备注
+     */
     private String remark;
 }

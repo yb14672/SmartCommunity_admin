@@ -236,9 +236,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
 
     /**
      * 删除部门
-     *
-     * @param idList
-     * @return
+     * @param idList 删除的部门集合
+     * @return 被删除的部门结果集
      */
     @Override
     public Result deleteDept(List<Integer> idList) {

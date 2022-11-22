@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 /**
  * 文件管理(ZyFiles)表实体类
  *
@@ -18,27 +16,49 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ZyFiles extends Model<ZyFiles> {
-    //文件ID
+    /**
+     * 文件ID
+     */
     private Long filesId;
-    //文件地址
+    /**
+     * 文件地址
+     */
     private String filesUrl;
-    //创建时间
+    /**
+     * 创建时间
+     */
     private String createTime;
-    //更新者
+    /**
+     * 更新者
+     */
     private String updateBy;
-    //更新时间
+    /**
+     * 更新时间
+     */
     private String updateTime;
-    //创建人者
+    /**
+     * 创建人者
+     */
     private String createBy;
-    //删除状态0默认1删除
+    /**
+     * 删除状态0默认1删除
+     */
     private Integer delFlag;
-    //来源0APP端，1PC端
+    /**
+     * 来源0APP端，1PC端
+     */
     private Integer source;
-    //备注
+    /**
+     * 备注
+     */
     private String remark;
-    //父级ID
+    /**
+     * 父级ID
+     */
     private Long parentId;
-    //创建人ID
+    /**
+     * 创建人ID
+     */
     private Long userId;
 }
 

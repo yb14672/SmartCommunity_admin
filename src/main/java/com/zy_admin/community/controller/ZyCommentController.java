@@ -30,7 +30,6 @@ public class ZyCommentController extends ApiController {
 
     /**
      * 分页查询所有数据
-     *
      * @param page      分页对象
      * @param zyComment 查询实体
      * @return 所有数据

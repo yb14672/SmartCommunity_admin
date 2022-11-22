@@ -23,37 +23,35 @@ import java.util.List;
 
 /**
  * 单元 (ZyUnit)表服务实现类
- *
  * @author makejava
  * @since 2022-11-01 19:49:03
  */
 @Service("zyUnitService")
 public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements ZyUnitService {
-
+    /**
+     * 服务对象
+     */
     @Resource
     private ZyBuildingDao zyBuildingDao;
-
     @Resource
     private ZyRoomDao zyRoomDao;
-
     /**
-     * 单元楼分页查询
-     *
-     * @param zyUnit
-     * @param pageable
-     * @return
+     * 分页查询单元楼信息
+     * @param zyUnit   单元对象
+     * @param pageable 分页对象
+     * @return 返回单元的结果集
      */
     @Override
     public Result getUnitList(ZyUnit zyUnit, Pageable pageable) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         Long total = this.baseMapper.count(zyUnit);
-        long pages = 0;
+        long pages;
         if (total > 0) {
             pages = total % pageable.getPageSize() == 0 ? total / pageable.getPageSize() : total / pageable.getPageSize() + 1;
             pageable.setPages(pages);
             //页码修正
             pageable.setPageNum(pageable.getPageNum() < 1 ? 1 : pageable.getPageNum());
-            pageable.setPageNum(pageable.getPageNum() > pages ? pages : pageable.getPageNum());
+            pageable.setPageNum(Math.min(pageable.getPageNum(), pages));
             //设置起始下标
             pageable.setIndex((pageable.getPageNum() - 1) * pageable.getPageSize());
         } else {
@@ -66,12 +64,10 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
-
     /**
      * 新增单元楼
-     *
-     * @param zyUnit
-     * @return
+     * @param zyUnit 新增的单元信息
+     * @return 新增结果集
      */
     @Override
     public Result insertUnit(ZyUnit zyUnit) {
@@ -83,8 +79,8 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
             result.setMeta(ResultTool.fail(ResultCode.UNIT_NAME_REPEAT));
             return result;
         }
-        Long now = System.currentTimeMillis();
-        zyUnit.setUnitCode("UNIT_" + now.toString().substring(0, 13));
+        long now = System.currentTimeMillis();
+        zyUnit.setUnitCode("UNIT_" + Long.toString(now).substring(0, 13));
         try {
             this.baseMapper.insertUnit(zyUnit);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
@@ -94,12 +90,10 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
         }
         return result;
     }
-
     /**
-     * 修改角色
-     *
-     * @param zyUnit
-     * @return
+     * 修改单元楼
+     * @param zyUnit 要修改的单元信息
+     * @return 成功或错误信息
      */
     @Override
     public Result updateUnit(ZyUnit zyUnit) {
@@ -127,18 +121,15 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
                 e.printStackTrace();
                 result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
             }
-
         } else {
             result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
         }
         return result;
     }
-
     /**
      * 删除单元
-     *
-     * @param unitIds
-     * @return
+     * @param unitIds 需要被删除的单元id
+     * @return 返回删除结果集
      */
     @Override
     public Result deleteUnit(List<String> unitIds) {
@@ -157,22 +148,19 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
         }
         return result;
     }
-
     /**
-     * 根据社区id获取所有单元
-     *
-     * @return
+     * 根据小区id获取指定小区的单元信息
+     * @param communityId 存放小区id
+     * @return 返回小区的集合
      */
     @Override
     public List<ZyUnit> getAll(String communityId) {
         return this.baseMapper.getAll(communityId);
     }
-
     /**
-     * 通过id获取对应单元
-     *
-     * @param ids
-     * @return
+     * 根据单元id获取单元信息
+     * @param ids 存放单元id集合
+     * @return 返回小区的集合
      */
     @Override
     public List<ZyUnit> getUnitById(List<String> ids) {
@@ -181,12 +169,10 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
         }
         return this.baseMapper.getUnitById(ids);
     }
-
     /**
-     * 根据社区id获取对应的楼栋集合
-     *
-     * @param id
-     * @return
+     * 通过小区id获取楼栋
+     * @param id 存放小区id
+     * @return 返回楼栋的结果集
      */
     @Override
     public Result getBuildingList(String id) {
@@ -201,10 +187,7 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
         }
-
         return result;
     }
-
-
 }
 

@@ -1,11 +1,10 @@
 package com.zy_admin.community.dto;
-
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 /**
+ * 小区导出dto
  * @author fangqian
  */
 @Data
@@ -22,7 +21,6 @@ public class CommunityExcel {
      */
     @ExcelProperty("小区名称")
     private String communityName;
-
     /**
      * 小区编码
      */

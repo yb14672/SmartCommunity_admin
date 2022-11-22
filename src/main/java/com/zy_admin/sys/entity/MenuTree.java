@@ -89,5 +89,4 @@ public class MenuTree {
      * 备注
      */
     private String remark;
-
 }
