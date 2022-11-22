@@ -32,7 +32,7 @@
     <select id="count" resultType="java.lang.Long">
         select count(1)
         from zy_building b
-        join zy_community c on b.community_id = c.community_id
+        left join zy_community c on b.community_id = c.community_id
         <where>
             <if test="zyBuilding.buildingId != null">
                 and building_id = #{zyBuilding.buildingId}

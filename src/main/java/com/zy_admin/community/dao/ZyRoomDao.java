@@ -14,6 +14,7 @@ import java.util.List;
  * @since 2022-11-01 19:49:03
  */
 public interface ZyRoomDao extends MPJBaseMapper<ZyRoom> {
+
     /**
      * 根据单元ID列表查询所有房屋
      * @param unitIds 存放单元id
