@@ -97,15 +97,17 @@ public enum ResultCode {
     BUILDING_REPEAT(3044,"楼层重复" ),
     BUILDING_NAME_REPEAT(3045,"楼层名字重复" ),
     BUILD_IDENTICAL(3046,"楼层信息完全相同" ),
-    BUILD_HAVA_CHILD(3046,"楼层下面有单元不允许删除" ),
+    BUILD_HAVE_CHILD(3046,"楼层下面有单元不允许删除" ),
     UNIT_ADD_FAIL(3047,"单元新增失败"),
     UNIT_UPDATE_FAIL(3048,"单元修改失败"),
     UNIT_NAME_REPEAT(3049,"单元名重复"),
     UNIT_HAVE_PEOPLE(3050,"单元存在住户，不能删除"),
-    COMMUNITY_HAVE_CHILD(3050,"小区存在楼栋，不能删除"),
-    COMPANY_OWNS_PROPERTY(3050,"公司仍有负责的物业，不能删除"),
-    ROOM_HAVE_BEEN(3051,"该房屋名已存在"),
-    ROOM_HAVE_OWNER(3051,"该房屋名已有业主，不允许删除"),
+    COMMUNITY_HAVE_CHILD(3051,"小区存在楼栋，不能删除"),
+    COMPANY_OWNS_PROPERTY(3052,"公司仍有负责的物业，不能删除"),
+    ROOM_HAVE_BEEN(3053,"该房屋名在其他楼层下已存在"),
+    FAIL_UNBIND_ROOM(3054,"房屋解绑失败"),
+//    ROOM_HAVE_BEEN(3055,"该房屋名已存在"),
+    ROOM_HAVE_OWNER(3056,"该房屋名已有业主，不允许删除"),
 
 
     /* http自带请求码 */
