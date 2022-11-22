@@ -16,8 +16,20 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SysDictDto {
+    /**
+     * 获取字典类型集合
+     */
     private List<SysDictType> sysDictTypeList;
+    /**
+     * 开始时间
+     */
     private String startTime;
+    /**
+     * 结束时间
+     */
     private String endTime;
+    /**
+     * 分页对象
+     */
     private Pageable pageable;
 }

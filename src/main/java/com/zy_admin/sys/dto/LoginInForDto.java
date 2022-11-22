@@ -12,9 +12,9 @@ import java.util.List;
  * 登录日志分页搜索返回
  * @author fangqian
  */
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoginInForDto  {
     /**
      * 显示数据

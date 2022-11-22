@@ -30,7 +30,6 @@ public class ZyCommunityInteractionController extends ApiController {
 
     /**
      * 分页查询所有数据
-     *
      * @param page                   分页对象
      * @param zyCommunityInteraction 查询实体
      * @return 所有数据

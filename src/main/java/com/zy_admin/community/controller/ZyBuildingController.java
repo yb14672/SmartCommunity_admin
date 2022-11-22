@@ -4,7 +4,6 @@ package com.zy_admin.community.controller;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
-import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.common.Pageable;
@@ -13,7 +12,6 @@ import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.service.ZyBuildingService;
-import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultTool;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,31 +39,30 @@ public class ZyBuildingController extends ApiController {
      */
     @Resource
     private ZyBuildingService zyBuildingService;
-
     /**
      * 用于批量导出楼层数据
-     *
-     * @param buildingIds
-     * @param response
+     * @param buildingIds 获取楼层id
+     * @param communityId 获取小区id
+     * @param response 前端响应
+     * @return 导出的楼层结果集
+     * @throws IOException 抛出数据流异常
      */
     @MyLog(title = "楼层导出", optParam = "#{buildingIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
-    public Result getExcel(@RequestParam("buildingIds") ArrayList<String> buildingIds, @RequestParam("communityId") String communityId,HttpServletResponse response) throws IOException {
+    public Result getExcel(@RequestParam("buildingIds") ArrayList<String> buildingIds, @RequestParam("communityId") String communityId, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        List<ZyBuilding> zyBuildingList = new ArrayList<>();
+        List<ZyBuilding> zyBuildingList;
         //如果前台传的集合为空或者长度为0.则全部导出。
         if (buildingIds == null || buildingIds.size() == 0) {
             zyBuildingList = zyBuildingService.getBuildingLists(communityId);
         } else {
-            //执行查询角色列表的sql语句
             zyBuildingList = zyBuildingService.queryZyBuildingById(buildingIds);
         }
-        String fileName = URLEncoder.encode("楼层表数据", "UTF-8");
+        String fileName = URLEncoder.encode("楼层信息表数据", "UTF-8");
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader("content-type", "text/html;charset=UTF-8");
         // 内容样式
-        HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
         ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), ZyBuilding.class)
                 .excelType(ExcelTypeEnum.XLS)
@@ -80,9 +77,9 @@ public class ZyBuildingController extends ApiController {
     }
 
     /**
-     * 删除
-     * @param idList
-     * @return
+     * 删除楼层
+     * @param idList 要删除的楼层id
+     * @return 返回
      */
     @DeleteMapping
     @MyLog(title = "楼层信息", optParam = "#{idList}", businessType = BusinessType.DELETE)
@@ -91,17 +88,16 @@ public class ZyBuildingController extends ApiController {
         try {
             //修改楼层表
             result = this.zyBuildingService.deleteByIdList(idList);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
     }
-
     /**
-     * 修改楼层
-     * @return
+     * 更新楼层信息
+     * @param zyBuilding 要更新的楼层信息
+     * @param request 前端请求
+     * @return 更新楼层结果集
      */
     @PutMapping("/updateZyBuilding")
     @Transactional(rollbackFor = Exception.class)
@@ -112,8 +108,10 @@ public class ZyBuildingController extends ApiController {
 
     /**
      * 新增楼层
-     * @param zyBuilding
-     * @return
+     * @param zyBuilding 要新增的楼层信息
+     * @param request 前端请求
+     * @return  查询的楼层结果集
+     * @throws Exception 将存在的异常抛出
      */
     @PostMapping("/addZyBuilding")
     @MyLog(title = "楼层信息", optParam = "#{zyBuilding}", businessType = BusinessType.INSERT)
@@ -123,32 +121,28 @@ public class ZyBuildingController extends ApiController {
 
     /**
      * 分页查询
-     * @param zyBuilding
-     * @param pageable
-     * @return
+     * @param zyBuilding  查询的楼层对象
+     * @param pageable 分页对象
+     * @return 返回成功或错误信息
      */
     @GetMapping("/selectBuildLimit")
     public Result selectBuildLimit(ZyBuilding zyBuilding, Pageable pageable){
-        Result result = zyBuildingService.selectBuildLimit(zyBuilding, pageable);
-        return result;
+        return zyBuildingService.selectBuildLimit(zyBuilding, pageable);
     }
 
     /**
-     * 通过主键查询单条数据,修改里面加上id
-     *
-     * @param id 主键
-     * @return 单条数据
+     * 通过主键查询单条数据
+     * @param id 查询的楼层主键id
+     * @return 返回查询数据条数
      */
     @GetMapping("/{id}")
     public Result selectOne(@PathVariable String id) {
         return zyBuildingService.queryById(id);
     }
-
     /**
      * 根据小区ID获取下面的楼栋、单元集合
-     *
-     * @param id 主键
-     * @return 单条数据
+     * @param id 查询的小区主键id
+     * @return 返回查询数据条数
      */
     @GetMapping("/buildingList/{id}")
     public Result getBuildingAndUnitListByCommunityId(@PathVariable String id) {

@@ -14,6 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UnitDto {
+    /**
+     *
+     */
     private List<UnitListDto> unitListDtos;
+    /**
+     *
+     */
     private Pageable pageable;
 }

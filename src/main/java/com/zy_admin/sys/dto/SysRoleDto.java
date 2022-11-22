@@ -13,14 +13,23 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SysRoleDto {
-    //角色集合
+    /**
+     * 角色集合
+     */
     @Autowired
     private List<SysRole> sysRole;
-    //开始时间
+    /**
+     * 开始时间
+     */
     private String startTime;
-    //结束时间
+
+    /**
+     * 结束时间
+     */
     private String endTime;
-    //页码
+    /**
+     * 页码
+     */
     @Autowired
     private Pageable pageable;
 }

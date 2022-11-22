@@ -18,9 +18,13 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SysUserPost extends Model<SysUserPost> {
-    //用户ID
+    /**
+     * 用户ID
+     */
     private Long userId;
-    //岗位ID
+    /**
+     * 岗位ID
+     */
     private Long postId;
 
 

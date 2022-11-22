@@ -33,13 +33,16 @@ import java.util.List;
 public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements ZyRoomService {
     @Resource
     private SnowflakeManager snowflakeManager;
-
-
+    /**
+     * 分页查询小区信息
+     * @param page  分页对象
+     * @param zyRoom 查询的房屋信息
+     * @return 查询分页的结果集
+     */
     @Override
     public Result getAllCommunity(Page page, ZyRoom zyRoom) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         MPJLambdaWrapper<ZyRoom> queryWrapper = new MPJLambdaWrapper<ZyRoom>()
-                // 查询房屋表全字段
                 .selectAll(ZyRoom.class)
                 .select(ZyCommunity::getCommunityName)
                 .select(ZyUnit::getUnitName)
@@ -76,9 +79,8 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
 
     /**
      * 根据id查房屋
-     *
-     * @param roomIds
-     * @return
+     * @param roomIds 存放房屋id的数组
+     * @return 查询房屋的集合
      */
     @Override
     public List<ZyRoomDto> getRoomByIds(ArrayList<String> roomIds) {
@@ -96,20 +98,16 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
                 .leftJoin(ZyBuilding.class, ZyBuilding::getBuildingId, ZyRoom::getBuildingId)
                 .in(ZyRoom::getRoomId, roomIds);
         //连表查询 返回自定义ResultType
-        List<ZyRoomDto> zyRoomDtoList = this.baseMapper.selectJoinList(ZyRoomDto.class, wrapper);
-        return zyRoomDtoList;
+        return this.baseMapper.selectJoinList(ZyRoomDto.class, wrapper);
     }
-
     /**
-     * 新增
-     *
-     * @param zyRoom
-     * @param request
-     * @return
-     * @throws Exception
+     * 新增房屋
+     * @param zyRoom 新增的房屋信息
+     * @param request 前端请求
+     * @return 返回成功或错误信息
      */
     @Override
-    public Result insertZyRoom(ZyRoom zyRoom, HttpServletRequest request) throws Exception {
+    public Result insertZyRoom(ZyRoom zyRoom, HttpServletRequest request) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断同一小区的楼层是否唯一,type为0是新增
         if (!selectZyRoomByName(0, zyRoom)) {
@@ -117,8 +115,8 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
             return result;
         }
         try {
-            Long now = System.currentTimeMillis();
-            zyRoom.setRoomCode("ROOM_" + now.toString().substring(0, 13));
+            long now = System.currentTimeMillis();
+            zyRoom.setRoomCode("ROOM_" + Long.toString(now).substring(0, 13));
             zyRoom.setRoomId(snowflakeManager.nextId() + "");
             //新增楼层
             int sysDictType1 = this.baseMapper.insertZyRoom(zyRoom);
@@ -131,13 +129,11 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
             return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         }
     }
-
     /**
-     * 修改
-     *
-     * @param zyRoom
-     * @param request
-     * @return
+     * 修改房屋
+     * @param zyRoom 修改的房屋信息
+     * @param request 前端请求
+     * @return 返回成功或错误信息
      */
     @Override
     public Result updateZyRoom(ZyRoom zyRoom, HttpServletRequest request) {
@@ -166,12 +162,10 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
         }
         return result;
     }
-
     /**
-     * 删除
-     *
-     * @param idList
-     * @return
+     * 删除房屋
+     * @param idList 存放房屋的id数组
+     * @return 返回正确或错误信息
      */
     @Override
     public Result deleteZyRoom(ArrayList<String> idList) {
@@ -193,31 +187,25 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
         }
         return result;
     }
-
     /**
      * 判断楼层号是否重复
-     *
-     * @param type
-     * @param zyRoom
-     * @return
+     * @param type 判断是新增0还是修改1
+     * @param zyRoom 存放房屋信息
+     * @return 返回布尔值
      */
     public boolean selectZyRoomByName(int type, ZyRoom zyRoom) {
         List<ZyRoom> zyRooms = this.baseMapper.checkRoomName(zyRoom);
         //类型为0是新增
         if (type == 0) {
             //判断是否为空
-            if (zyRooms.size() == 0) {
-                return true;
-            }
+            return zyRooms.size() == 0;
         } else {
             if (zyRooms.size() == 0) {
                 return true;
                 //判断房屋楼层是否唯一
             } else {
                 if (zyRooms.size() == 1) {
-                    if (zyRooms.get(0).getRoomId().equals(zyRoom.getRoomId())) {
-                        return true;
-                    }
+                    return zyRooms.get(0).getRoomId().equals(zyRoom.getRoomId());
                 }
             }
         }

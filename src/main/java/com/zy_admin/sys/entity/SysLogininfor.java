@@ -19,39 +19,57 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SysLogininfor extends Model<SysLogininfor> {
-    //访问ID
+    /**
+     * 访问ID
+     */
     @ExcelProperty("访问ID")
     private Long infoId;
 
-    //用户账号
+    /**
+     * 用户账号
+     */
     @ExcelProperty("用户账号")
     private String userName;
 
-    //登录IP地址
+    /**
+     * 登录IP地址
+     */
     @ExcelProperty("登录IP地址")
     private String ipaddr;
 
-    //登录地点
+    /**
+     * 登录地点
+     */
     @ExcelProperty("登录地点")
     private String loginLocation;
 
-    //浏览器类型
+    /**
+     * 浏览器类型
+     */
     @ExcelProperty("浏览器类型")
     private String browser;
 
-    //操作系统
+    /**
+     * 操作系统
+     */
     @ExcelProperty("操作系统")
     private String os;
 
-    //登录状态（0成功 1失败）
+    /**
+     * 登录状态（0成功 1失败）
+     */
     @ExcelProperty("登录状态")
     private String status;
 
-    //提示消息
+    /**
+     * 提示消息
+     */
     @ExcelProperty("提示消息")
     private String msg;
 
-    //访问时间
+    /**
+     * 访问时间
+     */
     @ExcelProperty("访问时间")
     private String loginTime;
 

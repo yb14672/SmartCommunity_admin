@@ -12,6 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto extends SysUser {
+    /**
+     * 获取岗位id
+     */
     Integer postId;
+    /**
+     * 获取角色id
+     */
     Integer roleId;
 }

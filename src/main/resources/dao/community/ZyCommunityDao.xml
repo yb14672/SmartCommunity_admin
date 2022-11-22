@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy_admin.community.dao.ZyCommunityDao">
-
     <resultMap type="com.zy_admin.community.dto.CommunityDto" id="ZyCommunityMap">
         <result property="communityId" column="community_id" jdbcType="INTEGER"/>
         <result property="communityName" column="community_name" jdbcType="VARCHAR"/>
@@ -20,53 +19,30 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
-
+    <!--根据部门ID查询-->
     <select id="selectCommunityByDeptId" resultMap="ZyCommunityMap">
         select community_id,
-               community_name,
-               community_code,
-               community_provence_code,
-               community_city_code,
-               community_town_code,
-               community_detailed_address,
-               community_longitude,
-               community_latitude,
-               dept_id,
-               community_sort,
-               create_by,
-               create_time,
-               update_by,
-               update_time,
-               remark
+        community_name,
+        community_code,
+        community_provence_code,
+        community_city_code,
+        community_town_code,
+        community_detailed_address,
+        community_longitude,
+        community_latitude,
+        dept_id,
+        community_sort,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        remark
         from zy_community
         where dept_id in
         <foreach collection="idList" item="dept_id" separator="," open="(" close=")">
             #{dept_id}
         </foreach>
     </select>
-
-    <!--查询单个-->
-    <select id="queryById" resultMap="ZyCommunityMap">
-        select community_id,
-               community_name,
-               community_code,
-               community_provence_code,
-               community_city_code,
-               community_town_code,
-               community_detailed_address,
-               community_longitude,
-               community_latitude,
-               dept_id,
-               community_sort,
-               create_by,
-               create_time,
-               update_by,
-               update_time,
-               remark
-        from zy_community
-        where community_id = #{communityId}
-    </select>
-
     <!--分页搜索-->
     <select id="selectAllByLimit" resultMap="ZyCommunityMap">
         select *,(select name from sys_area a1 where a1.`code` = zc.community_provence_code) communityProvenceName,
@@ -85,7 +61,6 @@
             limit #{pageable.index},#{pageable.pageSize}
         </if>
     </select>
-
     <!--统计总数据量-->
     <select id="count" resultType="java.lang.Long">
         select
@@ -100,6 +75,7 @@
             </if>
         </where>
     </select>
+    <!--检查小区的信息-->
     <select id="checkZyCommunity" resultType="com.zy_admin.community.entity.ZyCommunity">
         select *
         from zy_community
@@ -123,7 +99,6 @@
             </foreach>
         </if>
     </select>
-
     <!--新增所有列-->
     <insert id="insert" keyProperty="communityId" useGeneratedKeys="true">
         insert into zy_community(community_name, community_code, community_provence_code, community_city_code,
@@ -135,48 +110,7 @@
                 #{deptId}, #{communitySort}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
-    <insert id="insertBatch" keyProperty="communityId" useGeneratedKeys="true">
-        insert into zy_community(community_name, community_code, community_provence_code, community_city_code,
-        community_town_code, community_detailed_address, community_longitude, community_latitude, dept_id,
-        community_sort, create_by, create_time, update_by, update_time, remark)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.communityName}, #{entity.communityCode}, #{entity.communityProvenceCode},
-            #{entity.communityCityCode}, #{entity.communityTownCode}, #{entity.communityDetailedAddress},
-            #{entity.communityLongitude}, #{entity.communityLatitude}, #{entity.deptId}, #{entity.communitySort},
-            #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
-        </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="communityId" useGeneratedKeys="true">
-        insert into zy_community(community_name, community_code, community_provence_code, community_city_code,
-        community_town_code, community_detailed_address, community_longitude, community_latitude, dept_id,
-        community_sort, create_by, create_time, update_by, update_time, remark)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.communityName}, #{entity.communityCode}, #{entity.communityProvenceCode},
-            #{entity.communityCityCode}, #{entity.communityTownCode}, #{entity.communityDetailedAddress},
-            #{entity.communityLongitude}, #{entity.communityLatitude}, #{entity.deptId}, #{entity.communitySort},
-            #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
-        </foreach>
-        on duplicate key update
-        community_name = values(community_name),
-        community_code = values(community_code),
-        community_provence_code = values(community_provence_code),
-        community_city_code = values(community_city_code),
-        community_town_code = values(community_town_code),
-        community_detailed_address = values(community_detailed_address),
-        community_longitude = values(community_longitude),
-        community_latitude = values(community_latitude),
-        dept_id = values(dept_id),
-        community_sort = values(community_sort),
-        create_by = values(create_by),
-        create_time = values(create_time),
-        update_by = values(update_by),
-        update_time = values(update_time),
-        remark = values(remark)
-    </insert>
-
+    <!--根据获取的信息添加小区-->
     <insert id="insertCommunity">
         insert into zy_community(community_id, community_name, community_code, community_provence_code,
                                  community_city_code, community_town_code, community_detailed_address,
@@ -186,7 +120,6 @@
                 #{communityTownCode}, #{communityDetailedAddress}, #{communityLongitude}, #{communityLatitude},
                 #{deptId}, #{communitySort}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
-
     <!--通过主键修改数据-->
     <update id="update">
         update zy_community
@@ -239,7 +172,6 @@
         </set>
         where community_id = #{communityId}
     </update>
-
     <update id="updateCommunityById">
         update zy_community
         <set>
@@ -291,13 +223,11 @@
         </set>
         where community_id = #{communityId}
     </update>
-
     <!--通过主键删除-->
     <delete id="deleteById">
         delete
         from zy_community
         where community_id = #{communityId}
     </delete>
-
 </mapper>
 
