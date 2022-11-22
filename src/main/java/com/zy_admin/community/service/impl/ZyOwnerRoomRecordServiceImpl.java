@@ -38,5 +38,22 @@ public class ZyOwnerRoomRecordServiceImpl extends ServiceImpl<ZyOwnerRoomRecordD
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
+
+    /**
+     * 新增审核记录
+     *
+     * @param zyOwnerRoomRecord
+     * @return
+     */
+    @Override
+    public Result insertZyOwnerRoomRecord(ZyOwnerRoomRecord zyOwnerRoomRecord) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        int i = this.baseMapper.insert(zyOwnerRoomRecord);
+        if (i==1){
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            result.setData("新增成功");
+        }
+        return result;
+    }
 }
 

@@ -3,7 +3,10 @@ package com.zy_admin.community.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.community.entity.ZyOwnerRoom;
+import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.util.Result;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 房屋绑定表 (ZyOwnerRoom)表服务接口
@@ -19,6 +22,20 @@ public interface ZyOwnerRoomService extends IService<ZyOwnerRoom> {
      * @return
      */
     Result selectAllOwnerRoomLimit(ZyOwnerRoom zyOwnerRoom, Pageable pageable);
+
+    /**
+     * 修改业主审核的状态为绑定
+     * @param zyOwnerRoom
+     * @return
+     */
+    Result updateOwnerRoomStatusBinding(ZyOwnerRoom zyOwnerRoom, ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception;
+
+    /**
+     * 修改业主审核的状态为审核失败
+     * @param zyOwnerRoom
+     * @return
+     */
+    Result updateOwnerRoomStatusReject(ZyOwnerRoom zyOwnerRoom,ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception;
 
 }
 

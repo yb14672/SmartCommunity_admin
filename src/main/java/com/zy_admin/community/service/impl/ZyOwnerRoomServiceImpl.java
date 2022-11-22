@@ -4,14 +4,24 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
+import com.zy_admin.community.dao.ZyOwnerRoomRecordDao;
 import com.zy_admin.community.dto.ZyOwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerRoomDtoAll;
 import com.zy_admin.community.entity.ZyOwnerRoom;
+import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomService;
+import com.zy_admin.sys.dao.SysUserDao;
+import com.zy_admin.util.JwtUtil;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.SnowflakeManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -22,6 +32,15 @@ import java.util.List;
  */
 @Service("zyOwnerRoomService")
 public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerRoom> implements ZyOwnerRoomService {
+
+    @Resource
+    private SysUserDao sysUserDao;
+
+    @Resource
+    private ZyOwnerRoomRecordDao zyOwnerRoomRecordDao;
+
+    @Autowired
+    private SnowflakeManager snowflakeManager;
 
     /**
      * 查询所有业主审核的和分页
@@ -55,6 +74,55 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         //集合存进去
         result.setData(zyOwnerRoomDtoAll);
         //给一个信号
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
+    }
+
+    /**
+     * 修改业主审核的状态为绑定
+     *
+     * @param zyOwnerRoom
+     * @return
+     */
+    @Override
+    public Result updateOwnerRoomStatusBinding(@RequestBody ZyOwnerRoom zyOwnerRoom, ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception {
+        //默认给失败
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+
+        zyOwnerRoomRecord.setRecordId(snowflakeManager.nextId());
+        zyOwnerRoomRecord.setCreateTime(LocalDateTime.now().toString());
+        String id = JwtUtil.getMemberIdByJwtToken(request);
+        zyOwnerRoomRecord.setCreateBy(sysUserDao.getUserById(id).getUserName());
+        zyOwnerRoomRecord.setOwnerType("yz");
+
+        zyOwnerRoomRecordDao.insert(zyOwnerRoomRecord);
+        //修改时间
+        zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());
+        this.baseMapper.updateOwnerRoomStatusBinding(zyOwnerRoom);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
+    }
+
+    /**
+     * 修改业主审核的状态为审核失败
+     *
+     * @param zyOwnerRoom
+     * @return
+     */
+    @Override
+    public Result updateOwnerRoomStatusReject(ZyOwnerRoom zyOwnerRoom,ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception {
+        //默认给失败
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+
+        zyOwnerRoomRecord.setRecordId(snowflakeManager.nextId());
+        zyOwnerRoomRecord.setCreateTime(LocalDateTime.now().toString());
+        String id = JwtUtil.getMemberIdByJwtToken(request);
+        zyOwnerRoomRecord.setCreateBy(sysUserDao.getUserById(id).getUserName());
+        zyOwnerRoomRecord.setOwnerType("zh");
+
+        //修改时间
+        zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());
+        this.baseMapper.updateOwnerRoomStatusReject(zyOwnerRoom);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }

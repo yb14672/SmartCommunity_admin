@@ -17,5 +17,12 @@ public interface ZyOwnerRoomRecordService extends IService<ZyOwnerRoomRecord> {
      * @return
      */
     Result selectZyOwnerRoomRecord(String zyOwnerRoomRecordId);
+
+    /**
+     * 新增审核记录
+     * @param zyOwnerRoomRecord
+     * @return
+     */
+    Result insertZyOwnerRoomRecord(ZyOwnerRoomRecord zyOwnerRoomRecord);
 }
 

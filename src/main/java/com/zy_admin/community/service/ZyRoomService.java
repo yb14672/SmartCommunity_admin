@@ -18,7 +18,6 @@ import java.util.List;
  */
 public interface ZyRoomService extends IService<ZyRoom> {
 
-
     /**
      *
      * 分页查询

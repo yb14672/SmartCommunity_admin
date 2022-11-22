@@ -162,8 +162,8 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="recordId" useGeneratedKeys="true">
-        insert into zy_owner_room_record(owner_room_id, community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status, record_audit_opinion, record_audit_type, create_by_id, create_by, create_time, update_by, update_time, remark)
-        values (#{ownerRoomId}, #{communityId}, #{buildingId}, #{unitId}, #{roomId}, #{ownerId}, #{ownerType}, #{roomStatus}, #{recordAuditOpinion}, #{recordAuditType}, #{createById}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+        insert into zy_owner_room_record (record_id,owner_room_id, community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status, record_audit_opinion, record_audit_type, create_by_id, create_by, create_time, update_by, update_time, remark)
+        values (#{recordId},#{ownerRoomId}, #{communityId}, #{buildingId}, #{unitId}, #{roomId}, #{ownerId}, #{ownerType}, #{roomStatus}, #{recordAuditOpinion}, #{recordAuditType}, #{createById}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <insert id="insertBatch" keyProperty="recordId" useGeneratedKeys="true">

@@ -5,6 +5,7 @@ import com.zy_admin.common.Pageable;
 import com.zy_admin.community.dto.ZyOwnerRoomDto;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -30,6 +31,28 @@ public interface ZyOwnerRoomDao extends BaseMapper<ZyOwnerRoom> {
      * @return
      */
     Long count(@Param("zyOwnerRoom") ZyOwnerRoom zyOwnerRoom);
+
+    /**
+     * 修改业主审核的状态为绑定
+     * @param zyOwnerRoom
+     * @return
+     */
+    int updateOwnerRoomStatusBinding(@Param("zyOwnerRoom") ZyOwnerRoom zyOwnerRoom);
+
+    /**
+     * 修改业主审核的状态为审核失败
+     * @param zyOwnerRoom
+     * @return
+     */
+    int updateOwnerRoomStatusReject(@Param("zyOwnerRoom") ZyOwnerRoom zyOwnerRoom);
+
+    /**
+     * 根据id查业主审核对象
+     * @param ownerRoomId
+     * @return
+     */
+    @Select("select * from zy_owner_room where owner_room_id = #{ownerRoomId}")
+    ZyOwnerRoom selectOwnerRoomById(String ownerRoomId);
 
 }
 

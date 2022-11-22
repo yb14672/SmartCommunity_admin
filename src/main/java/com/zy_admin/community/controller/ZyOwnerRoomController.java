@@ -6,12 +6,19 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.community.entity.ZyOwnerRoom;
+import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomService;
+import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.Result;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 
@@ -29,6 +36,35 @@ public class ZyOwnerRoomController extends ApiController {
      */
     @Resource
     private ZyOwnerRoomService zyOwnerRoomService;
+
+    @Resource
+    private RequestUtil requestUtil;
+
+    /**
+     * 修改业主审核的状态为审核失败
+     * @return
+     */
+    @PutMapping("/updateOwnerRoomStatusReject")
+    @Transactional(rollbackFor = Exception.class)
+    @MyLog(title = "业主审核", optParam = "#{zyOwnerRoom}", businessType = BusinessType.UPDATE)
+    public Result updateOwnerRoomStatusReject(@RequestBody ZyOwnerRoom zyOwnerRoom, ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception {
+        SysUser user = requestUtil.getUser(request);
+        zyOwnerRoom.setUpdateBy(user.getUserName());
+        return zyOwnerRoomService.updateOwnerRoomStatusReject(zyOwnerRoom,zyOwnerRoomRecord,request);
+    }
+
+    /**
+     * 修改业主审核的状态为绑定
+     * @return
+     */
+    @PutMapping("/updateOwnerRoomStatusBinding")
+    @Transactional(rollbackFor = Exception.class)
+    @MyLog(title = "业主审核", optParam = "#{zyOwnerRoom}", businessType = BusinessType.UPDATE)
+    public Result updateOwnerRoomStatusBinding(@RequestBody ZyOwnerRoom zyOwnerRoom,ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception {
+        SysUser user = requestUtil.getUser(request);
+        zyOwnerRoom.setUpdateBy(user.getUserName());
+        return zyOwnerRoomService.updateOwnerRoomStatusBinding(zyOwnerRoom,zyOwnerRoomRecord,request);
+    }
 
     /**
      * 分页和查询业主审核

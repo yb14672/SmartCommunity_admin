@@ -37,10 +37,10 @@ public class BuildAndUnit {
                 }
             }
         }else{
-            for (int i = 0; i < buildingList.size() - 1; i++) {
+            for (int i = 0; i <= buildingList.size() - 1; i++) {
                 ZyBuilding zyBuilding = buildingList.get(i);
                 buildUnitDtoList.add(new BuildUnitDto(zyBuilding.getBuildingName(), zyBuilding.getBuildingId()));
-                for (int j = 0; j < unitList.size() - 1; j++) {
+                for (int j = 0; j <= unitList.size() - 1; j++) {
                     ZyUnit zyUnit = unitList.get(j);
                     if (zyBuilding.getBuildingId().equals(zyUnit.getBuildingId())) {
                         buildUnitDtoList.get(i).getChildren().add(new BuildUnitDto(zyUnit.getUnitName(), zyUnit.getUnitId()));

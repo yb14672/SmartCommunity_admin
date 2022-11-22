@@ -20,5 +20,13 @@ public interface ZyOwnerRoomRecordDao extends BaseMapper<ZyOwnerRoomRecord> {
      * @return
      */
     List<ZyOwnerRoomRecordDto> selectZyOwnerRoomRecord(String zyOwnerRoomRecordId);
+
+    /**
+     * 新增审核记录
+     * @param zyOwnerRoomRecord
+     * @return
+     */
+    @Override
+    int insert(ZyOwnerRoomRecord zyOwnerRoomRecord);
 }
 

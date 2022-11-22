@@ -235,6 +235,18 @@
         where owner_room_id = #{ownerRoomId}
     </update>
 
+    <!--修改业主审核的状态为绑定-->
+    <update id="updateOwnerRoomStatusBinding">
+        update zy_owner_room set room_status = 'Binding',update_by = #{zyOwnerRoom.updateBy}
+        where owner_room_id = #{zyOwnerRoom.ownerRoomId}
+    </update>
+
+    <!--修改业主审核的状态为已拒绝-->
+    <update id="updateOwnerRoomStatusReject">
+        update zy_owner_room set room_status = 'Reject'
+        where owner_room_id = #{zyOwnerRoom.ownerRoomId}
+    </update>
+
     <!--通过主键删除-->
     <delete id="deleteById">
         delete from zy_owner_room where owner_room_id = #{ownerRoomId}

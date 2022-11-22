@@ -34,7 +34,6 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
     @Resource
     private SnowflakeManager snowflakeManager;
 
-
     @Override
     public Result getAllCommunity(Page page, ZyRoom zyRoom) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
