@@ -42,7 +42,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     private SysUserDao sysUserDao;
 
     /**
-     * zy主人房间记录道
+     * 业主房间记录道
      */
     @Resource
     private ZyOwnerRoomRecordDao zyOwnerRoomRecordDao;
@@ -94,8 +94,8 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
      * 更新主人房间状态绑定
      * 修改业主审核的状态为绑定
      *
-     * @param zyOwnerRoom       zy主人房间
-     * @param zyOwnerRoomRecord zy主人房间记录
+     * @param zyOwnerRoom       业主房间
+     * @param zyOwnerRoomRecord 业主房间记录
      * @param request           请求
      * @return {@link Result}
      * @throws Exception 异常
@@ -110,7 +110,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         String id = JwtUtil.getMemberIdByJwtToken(request);
         zyOwnerRoomRecord.setCreateBy(sysUserDao.getUserById(id).getUserName());
         zyOwnerRoomRecord.setOwnerType("yz");
-        zyOwnerRoomRecord.setOwnerRoomId(zyOwnerRoom.getOwnerRoomId());
+        zyOwnerRoomRecord.setOwnerRoomId(zyOwnerRoom.getOwnerRoomId()+"");
 //        zyOwnerRoomRecord.setCommunityId(Long.valueOf(zyOwnerRoom.getCommunityId()));
 //        zyOwnerRoomRecord.setBuildingId(Long.valueOf(zyOwnerRoom.getBuildingId()));
 //        zyOwnerRoomRecord.setUnitId(Long.valueOf(zyOwnerRoom.getUnitId()));
@@ -134,8 +134,8 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
      * 更新拒绝主人房间状态
      * 修改业主审核的状态为审核失败
      *
-     * @param zyOwnerRoom       zy主人房间
-     * @param zyOwnerRoomRecord zy主人房间记录
+     * @param zyOwnerRoom       业主房间
+     * @param zyOwnerRoomRecord 业主房间记录
      * @param request           请求
      * @return {@link Result}
      * @throws Exception 异常

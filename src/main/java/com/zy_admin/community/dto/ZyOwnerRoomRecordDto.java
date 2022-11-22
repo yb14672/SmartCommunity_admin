@@ -1,14 +1,16 @@
 package com.zy_admin.community.dto;
 
-import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author 屈羽星
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ZyOwnerRoomRecordDto extends ZyOwnerRoomRecord{
+public class ZyOwnerRoomRecordDto{
     /**
      * 主人真实姓名
      */
