@@ -11,6 +11,8 @@ import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,6 +29,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("sysDept")
+@Api(value = "部门接口", tags={"部门接口"})
 public class SysDeptController extends ApiController {
     /**
      * 服务对象
@@ -36,13 +39,13 @@ public class SysDeptController extends ApiController {
     @Resource
     private RequestUtil requestUtil;
 
-
     /**
      * 通过条件搜索数据
      *
      * @param sysDept
      * @return
      */
+    @ApiOperation("获取部门列表")
     @GetMapping("/getDeptList")
     public Result getDeptList(SysDept sysDept) {
         return sysDeptService.getDeptList(sysDept);
