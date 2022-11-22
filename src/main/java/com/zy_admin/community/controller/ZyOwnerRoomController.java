@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.service.ZyOwnerRoomService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,6 +29,18 @@ public class ZyOwnerRoomController extends ApiController {
      */
     @Resource
     private ZyOwnerRoomService zyOwnerRoomService;
+
+    /**
+     * 分页和查询业主审核
+     * @param zyOwnerRoom
+     * @param pageable
+     * @return
+     */
+    @GetMapping("selectAllOwnerRoomLimit")
+    public Result selectAllOwnerRoomLimit(ZyOwnerRoom zyOwnerRoom, Pageable pageable){
+        Result result = zyOwnerRoomService.selectAllOwnerRoomLimit(zyOwnerRoom,pageable);
+        return result;
+    }
 
     /**
      * 分页查询所有数据
