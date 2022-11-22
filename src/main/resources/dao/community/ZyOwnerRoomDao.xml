@@ -192,58 +192,46 @@
     </insert>
 
     <!--通过主键修改数据-->
-    <update id="update">
+    <update id="updateOwnerRoomStatus">
         update zy_owner_room
         <set>
-            <if test="communityId != null">
-                community_id = #{communityId},
+            <if test="zyOwnerRoom.communityId != null">
+                community_id = #{zyOwnerRoom.communityId},
             </if>
-            <if test="buildingId != null">
-                building_id = #{buildingId},
+            <if test="zyOwnerRoom.buildingId != null">
+                building_id = #{zyOwnerRoom.buildingId},
             </if>
-            <if test="unitId != null">
-                unit_id = #{unitId},
+            <if test="zyOwnerRoom.unitId != null">
+                unit_id = #{zyOwnerRoom.unitId},
             </if>
-            <if test="roomId != null">
-                room_id = #{roomId},
+            <if test="zyOwnerRoom.roomId != null">
+                room_id = #{zyOwnerRoom.roomId},
             </if>
-            <if test="ownerId != null">
-                owner_id = #{ownerId},
+            <if test="zyOwnerRoom.ownerId != null">
+                owner_id = #{zyOwnerRoom.ownerId},
             </if>
-            <if test="ownerType != null and ownerType != ''">
-                owner_type = #{ownerType},
+            <if test="zyOwnerRoom.ownerType != null and zyOwnerRoom.ownerType != ''">
+                owner_type = #{zyOwnerRoom.ownerType},
             </if>
-            <if test="roomStatus != null and roomStatus != ''">
-                room_status = #{roomStatus},
+            <if test="zyOwnerRoom.roomStatus != null and zyOwnerRoom.roomStatus != ''">
+                room_status = #{zyOwnerRoom.roomStatus},
             </if>
-            <if test="createBy != null and createBy != ''">
-                create_by = #{createBy},
+            <if test="zyOwnerRoom.createBy != null and zyOwnerRoom.createBy != ''">
+                create_by = #{zyOwnerRoom.createBy},
             </if>
-            <if test="createTime != null">
-                create_time = #{createTime},
+            <if test="zyOwnerRoom.createTime != null">
+                create_time = #{zyOwnerRoom.createTime},
             </if>
-            <if test="updateBy != null and updateBy != ''">
-                update_by = #{updateBy},
+            <if test="zyOwnerRoom.updateBy != null and zyOwnerRoom.updateBy != ''">
+                update_by = #{zyOwnerRoom.updateBy},
             </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime},
+            <if test="zyOwnerRoom.updateTime != null">
+                update_time = #{zyOwnerRoom.updateTime},
             </if>
-            <if test="remark != null and remark != ''">
-                remark = #{remark},
+            <if test="zyOwnerRoom.remark != null and zyOwnerRoom.remark != ''">
+                remark = #{zyOwnerRoom.remark},
             </if>
         </set>
-        where owner_room_id = #{ownerRoomId}
-    </update>
-
-    <!--修改业主审核的状态为绑定-->
-    <update id="updateOwnerRoomStatusBinding">
-        update zy_owner_room set room_status = 'Binding',update_by = #{zyOwnerRoom.updateBy}
-        where owner_room_id = #{zyOwnerRoom.ownerRoomId}
-    </update>
-
-    <!--修改业主审核的状态为已拒绝-->
-    <update id="updateOwnerRoomStatusReject">
-        update zy_owner_room set room_status = 'Reject'
         where owner_room_id = #{zyOwnerRoom.ownerRoomId}
     </update>
 

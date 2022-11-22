@@ -92,7 +92,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
 
     /**
      * 更新主人房间状态绑定
-     * 修改业主审核的状态为绑定
+     * 修改业主审核的状态
      *
      * @param zyOwnerRoom       zy主人房间
      * @param zyOwnerRoomRecord zy主人房间记录
@@ -101,7 +101,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
      * @throws Exception 异常
      */
     @Override
-    public Result updateOwnerRoomStatusBinding(@RequestBody ZyOwnerRoom zyOwnerRoom, ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception {
+    public Result updateOwnerRoomStatus(@RequestBody ZyOwnerRoom zyOwnerRoom, ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception {
         //默认给失败
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
 
@@ -125,37 +125,10 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         zyOwnerRoomRecordDao.insert(zyOwnerRoomRecord);
         //修改时间
         zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());
-        this.baseMapper.updateOwnerRoomStatusBinding(zyOwnerRoom);
+        this.baseMapper.updateOwnerRoomStatus(zyOwnerRoom);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
 
-    /**
-     * 更新拒绝主人房间状态
-     * 修改业主审核的状态为审核失败
-     *
-     * @param zyOwnerRoom       zy主人房间
-     * @param zyOwnerRoomRecord zy主人房间记录
-     * @param request           请求
-     * @return {@link Result}
-     * @throws Exception 异常
-     */
-    @Override
-    public Result updateOwnerRoomStatusReject(ZyOwnerRoom zyOwnerRoom,ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception {
-        //默认给失败
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-
-        zyOwnerRoomRecord.setRecordId(snowflakeManager.nextId());
-        zyOwnerRoomRecord.setCreateTime(LocalDateTime.now().toString());
-        String id = JwtUtil.getMemberIdByJwtToken(request);
-        zyOwnerRoomRecord.setCreateBy(sysUserDao.getUserById(id).getUserName());
-        zyOwnerRoomRecord.setOwnerType("zh");
-
-        //修改时间
-        zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());
-        this.baseMapper.updateOwnerRoomStatusReject(zyOwnerRoom);
-        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-        return result;
-    }
 }
 

@@ -41,30 +41,21 @@ public class ZyOwnerRoomController extends ApiController {
     private RequestUtil requestUtil;
 
     /**
-     * 修改业主审核的状态为审核失败
+     * 修改业主审核的状态
      * @return
      */
-    @PutMapping("/updateOwnerRoomStatusReject")
+    @PutMapping("/updateOwnerRoomStatus")
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "业主审核", optParam = "#{zyOwnerRoom}", businessType = BusinessType.UPDATE)
-    public Result updateOwnerRoomStatusReject(@RequestBody ZyOwnerRoom zyOwnerRoom, ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception {
+    public Result updateOwnerRoomStatusReject(@RequestBody ZyOwnerRoom zyOwnerRoom, ZyOwnerRoomRecord zyOwnerRoomRecord,String status, HttpServletRequest request) throws Exception {
+        System.out.println(status);
         SysUser user = requestUtil.getUser(request);
         zyOwnerRoom.setUpdateBy(user.getUserName());
-        return zyOwnerRoomService.updateOwnerRoomStatusReject(zyOwnerRoom,zyOwnerRoomRecord,request);
+        zyOwnerRoom.setRoomStatus(status);
+        System.out.println(zyOwnerRoom);
+        return zyOwnerRoomService.updateOwnerRoomStatus(zyOwnerRoom, zyOwnerRoomRecord, request);
     }
 
-    /**
-     * 修改业主审核的状态为绑定
-     * @return
-     */
-    @PutMapping("/updateOwnerRoomStatusBinding")
-    @Transactional(rollbackFor = Exception.class)
-    @MyLog(title = "业主审核", optParam = "#{zyOwnerRoom}", businessType = BusinessType.UPDATE)
-    public Result updateOwnerRoomStatusBinding(@RequestBody ZyOwnerRoom zyOwnerRoom,ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception {
-        SysUser user = requestUtil.getUser(request);
-        zyOwnerRoom.setUpdateBy(user.getUserName());
-        return zyOwnerRoomService.updateOwnerRoomStatusBinding(zyOwnerRoom,zyOwnerRoomRecord,request);
-    }
 
     /**
      * 分页和查询业主审核
