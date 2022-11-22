@@ -11,6 +11,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MinIOtItem {
+    /**
+     * 对象名
+     */
     private String objectName;
+    /**
+     * 大小
+     */
     private Long size;
 }

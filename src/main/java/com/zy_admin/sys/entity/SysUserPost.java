@@ -3,6 +3,7 @@ package com.zy_admin.sys.entity;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -17,6 +18,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class SysUserPost extends Model<SysUserPost> {
     /**
      * 用户ID
@@ -26,11 +28,8 @@ public class SysUserPost extends Model<SysUserPost> {
      * 岗位ID
      */
     private Long postId;
-
-
     /**
      * 获取主键值
-     *
      * @return 主键值
      */
     @Override

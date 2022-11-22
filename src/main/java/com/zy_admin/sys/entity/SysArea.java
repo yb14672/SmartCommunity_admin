@@ -3,6 +3,7 @@ package com.zy_admin.sys.entity;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -17,6 +18,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class SysArea extends Model<SysArea> {
     /**
      * 唯一主键
@@ -54,7 +56,6 @@ public class SysArea extends Model<SysArea> {
      * 地区范围
      */
     private String region;
-
     /**
      * 获取主键值
      *

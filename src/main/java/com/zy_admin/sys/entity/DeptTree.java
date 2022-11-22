@@ -13,12 +13,10 @@ public class DeptTree {
     /**
      * 部门id
      */
-
     private Long deptId;
     /**
      * 父部门id
      */
-
     private Long parentId;
     /**
      * 祖级列表

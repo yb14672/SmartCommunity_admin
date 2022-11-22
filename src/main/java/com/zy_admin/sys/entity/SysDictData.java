@@ -3,6 +3,7 @@ package com.zy_admin.sys.entity;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -17,6 +18,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class SysDictData extends Model<SysDictData> {
     /**
      * 字典编码
@@ -76,7 +78,6 @@ public class SysDictData extends Model<SysDictData> {
     private String remark;
     /**
      * 获取主键值
-     *
      * @return 主键值
      */
     @Override

@@ -3,6 +3,7 @@ package com.zy_admin.sys.entity;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -17,6 +18,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class SysNotice extends Model<SysNotice> {
     /**
      * 公告ID
@@ -60,7 +62,6 @@ public class SysNotice extends Model<SysNotice> {
     private String remark;
     /**
      * 获取主键值
-     *
      * @return 主键值
      */
     @Override
