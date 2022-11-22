@@ -133,7 +133,7 @@
     <!--查询所有业主审核的和分页-->
     <select id="selectAllOwnerRoomLimit" resultType="com.zy_admin.community.dto.ZyOwnerRoomDto">
         select zor.owner_room_id,zc.community_name,zb.building_name,zu.unit_name,zr.room_name,zo.owner_real_name,zor.owner_id,
-        zor.owner_type,zor.room_status,zor.remark
+        zor.owner_type,zor.room_status,zor.remark,zor.room_id
         from zy_owner_room zor
         left join zy_community zc on zor.community_id = zc.community_id
         left join zy_building zb on zor.building_id = zb.building_id

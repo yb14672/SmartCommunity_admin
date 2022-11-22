@@ -295,6 +295,10 @@
         </set>
         where room_id = #{roomId}
     </update>
+    <!--修改状态-->
+    <update id="updateRoomStatus">
+        update zy_room set room_status = 'has_give' where room_id = #{roomId}
+    </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">

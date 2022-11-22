@@ -5,6 +5,7 @@ import com.zy_admin.common.Pageable;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dao.ZyOwnerRoomRecordDao;
+import com.zy_admin.community.dao.ZyRoomDao;
 import com.zy_admin.community.dto.ZyOwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerRoomDtoAll;
 import com.zy_admin.community.entity.ZyOwnerRoom;
@@ -46,6 +47,12 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
      */
     @Resource
     private ZyOwnerRoomRecordDao zyOwnerRoomRecordDao;
+
+    /**
+     * 房屋
+     */
+    @Resource
+    private ZyRoomDao zyRoomDao;
 
     /**
      * 雪花经理
@@ -125,6 +132,10 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         //修改时间
         zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());
         this.baseMapper.updateOwnerRoomStatus(zyOwnerRoom);
+        //判断审核是不是通过
+        if ("Binding".equals(zyOwnerRoom.getRoomStatus())){
+            zyRoomDao.updateRoomStatus(zyOwnerRoom.getRoomId());
+        }
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
