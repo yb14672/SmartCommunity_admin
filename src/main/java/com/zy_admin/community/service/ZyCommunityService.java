@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.community.dto.CommunityExcel;
 import com.zy_admin.community.entity.ZyCommunity;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;

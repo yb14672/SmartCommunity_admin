@@ -13,7 +13,7 @@ import com.zy_admin.sys.dto.SysRoleDto;
 import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.entity.SysUserRole;
 import com.zy_admin.sys.service.SysRoleService;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
@@ -113,7 +113,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
     /**
      * 选择角色限制
      * @param sysRole   系统作用
-     * @param pageable  可分页
+     * @param pageable  分页对象
      * @param startTime 开始时间
      * @param endTime   结束时间
      * @return 查询角色结果集

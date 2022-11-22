@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerDao;
-import com.zy_admin.community.dto.OwenrDto;
+import com.zy_admin.community.dto.OwnerDto;
 import com.zy_admin.community.dto.OwnerListDto;
 import com.zy_admin.community.dto.*;
 import com.zy_admin.community.entity.ZyOwner;
@@ -12,7 +12,7 @@ import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerService;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
 import org.springframework.stereotype.Service;
@@ -62,8 +62,8 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
         }
         pageable.setTotal(total);
         List<OwnerListDto> ownerList = this.baseMapper.getOwnerList(zyOwner, pageable);
-        OwenrDto owenrDto = new OwenrDto(pageable,ownerList);
-        result.setData(owenrDto);
+        OwnerDto ownerDto = new OwnerDto(pageable,ownerList);
+        result.setData(ownerDto);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }

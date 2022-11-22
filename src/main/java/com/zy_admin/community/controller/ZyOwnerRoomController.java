@@ -9,7 +9,11 @@ import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.service.ZyOwnerRoomService;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author makejava
  * @since 2022-11-01 19:49:02
  */
+@Api(value = "zyOwnerRoom", tags = {"房屋绑定表 (ZyOwnerRoom)表控制层"})
 @RestController
 @RequestMapping("zyOwnerRoom")
 public class ZyOwnerRoomController extends ApiController {
@@ -38,6 +43,13 @@ public class ZyOwnerRoomController extends ApiController {
      * 修改业主审核的状态
      * @return
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyOwnerRoom", name = "zyOwnerRoom", value = "", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "recordAuditOpinion", value = "", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "status", value = "", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
+    })
+    @ApiOperation(value = "修改业主审核的状态", notes = "修改业主审核的状态", httpMethod = "PUT")
     @PutMapping("/updateOwnerRoomStatus")
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "业主审核", optParam = "#{zyOwnerRoom}", businessType = BusinessType.UPDATE)
@@ -54,6 +66,11 @@ public class ZyOwnerRoomController extends ApiController {
      * @param pageable
      * @return
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "ZyOwnerRoom", name = "zyOwnerRoom", value = "", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "", required = true)
+    })
+    @ApiOperation(value = "分页和查询业主审核", notes = "分页和查询业主审核", httpMethod = "GET")
     @GetMapping("selectAllOwnerRoomLimit")
     public Result selectAllOwnerRoomLimit(ZyOwnerRoom zyOwnerRoom, Pageable pageable){
         Result result = zyOwnerRoomService.selectAllOwnerRoomLimit(zyOwnerRoom,pageable);

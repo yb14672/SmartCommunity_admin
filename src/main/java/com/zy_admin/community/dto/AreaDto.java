@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author fangqian
  */
-@ApiModel(description = "地区树")
+@ApiModel(value = "地区树",description = "地区树状菜单")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

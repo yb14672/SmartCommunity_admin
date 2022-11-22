@@ -13,7 +13,7 @@ import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomService;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.util.JwtUtil;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
 import org.springframework.stereotype.Service;
@@ -61,10 +61,10 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
 
 
     /**
-     * 选择所有主人房间限制
+     * 选择所有业主房间限制
      *
      * @param zyOwnerRoom 业主房间
-     * @param pageable    可分页
+     * @param pageable    分页对象
      * @return {@link Result}
      */
     @Override

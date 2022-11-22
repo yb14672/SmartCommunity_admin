@@ -10,8 +10,12 @@ import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +31,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:34
  */
+@Api(value = "sysDictType", tags = {"字典类型表(SysDictType)表控制层"})
 @RestController
 @RequestMapping("sysDictType")
 public class SysDictTypeController extends ApiController {
@@ -42,6 +47,11 @@ public class SysDictTypeController extends ApiController {
      * @return 返回结果集
      * @throws IOException 抛出数据流异常
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<Integer>", name = "dictIds", value = "字典类型的主键", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "前端响应", required = true)
+    })
+    @ApiOperation(value = "批量导出字典类型表数据", notes = "批量导出字典类型表数据", httpMethod = "GET")
     @MyLog(title = "字典类型", optParam = "#{dictIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
     public Result getExcel(@RequestParam("dictIds") ArrayList<Integer> dictIds, HttpServletResponse response) throws IOException {
@@ -74,6 +84,10 @@ public class SysDictTypeController extends ApiController {
      * @param idList 字典类型的主键数组
      * @return 删除的字典类型结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "String[]", name = "idList", value = "字典类型的主键数组", required = true)
+    })
+    @ApiOperation(value = "删除字典类型", notes = "删除字典类型", httpMethod = "DELETE")
     @DeleteMapping
     @MyLog(title = "字典类型", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result delete(@RequestParam String[] idList) {
@@ -96,6 +110,10 @@ public class SysDictTypeController extends ApiController {
      * @param sysDictType 字典类型对象
      * @return 修改的字典类型结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "SysDictType", name = "sysDictType", value = "字典类型对象", required = true)
+    })
+    @ApiOperation(value = "修改字典类型", notes = "修改字典类型", httpMethod = "PUT")
     @PutMapping("/updateDict")
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "字典类型", optParam = "#{sysDictType}", businessType = BusinessType.UPDATE)
@@ -107,6 +125,10 @@ public class SysDictTypeController extends ApiController {
      * @param sysDictType 字典类型对象
      * @return 新增的字典类型结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "SysDictType", name = "sysDictType", value = "字典类型对象", required = true)
+    })
+    @ApiOperation(value = "新增字典", notes = "新增字典", httpMethod = "POST")
     @PostMapping("/addSysDict")
     @MyLog(title = "字典类型", optParam = "#{sysDictType}", businessType = BusinessType.INSERT)
     public Result insertDictType(@RequestBody SysDictType sysDictType) {
@@ -121,6 +143,13 @@ public class SysDictTypeController extends ApiController {
      * @param endTime 结束时间对象
      * @return 查询的字典类型数据对象
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "SysDictType", name = "sysDictType", value = "字典类型数据对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "分页对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "startTime", value = "开始时间对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "endTime", value = "结束时间对象", required = true)
+    })
+    @ApiOperation(value = "分页查询字典类型", notes = "分页查询字典类型", httpMethod = "GET")
     @GetMapping("/selectDictByLimit")
     public Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime) {
         return sysDictTypeService.selectDictByLimit(sysDictType, pageable, startTime, endTime);
@@ -129,6 +158,7 @@ public class SysDictTypeController extends ApiController {
      * 分页查询所有的字典类型数据
      * @return 所有查询的字典类型结果集
      */
+    @ApiOperation(value = "分页查询所有的字典类型数据", notes = "分页查询所有的字典类型数据", httpMethod = "GET")
     @GetMapping
     public Result selectAll() {
         return this.sysDictTypeService.selectDictAll();
@@ -138,6 +168,10 @@ public class SysDictTypeController extends ApiController {
      * @param id 字典类型的主键
      * @return 单条数据结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", dataType = "string", name = "id", value = "字典类型的主键", required = true)
+    })
+    @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("/{id}")
     public Result selectOne(@PathVariable String id) {
         return this.sysDictTypeService.getDictTypeById(id);

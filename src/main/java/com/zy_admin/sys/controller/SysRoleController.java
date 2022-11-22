@@ -13,8 +13,12 @@ import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.service.SysRoleMenuService;
 import com.zy_admin.sys.service.SysRoleService;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +34,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:40
  */
+@Api(value = "sysRole", tags = {"角色信息表(SysRoleExcelDto)表控制层"})
 @RestController
 @RequestMapping("sysRole")
 public class SysRoleController extends ApiController {
@@ -45,6 +50,10 @@ public class SysRoleController extends ApiController {
      * @param sysRole 角色对象
      * @return 查询的所有角色结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "SysRole", name = "sysRole", value = "角色对象", required = true)
+    })
+    @ApiOperation(value = "获取所有角色数据", notes = "获取所有角色数据", httpMethod = "GET")
     @GetMapping("/getAllRole")
     public Result getAllRole(SysRole sysRole) {
         return sysRoleService.getAllRole(sysRole);
@@ -54,6 +63,10 @@ public class SysRoleController extends ApiController {
      * @param page 分页对象
      * @return 查询所有角色结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "Page", name = "page", value = "分页对象", required = true)
+    })
+    @ApiOperation(value = "获取所有除去管理员以外的角色并分页", notes = "获取所有除去管理员以外的角色并分页", httpMethod = "GET")
     @GetMapping("/getRoleList")
     public Result getRoleList(Page page) {
         return this.sysRoleService.getRoleList(page);
@@ -64,6 +77,13 @@ public class SysRoleController extends ApiController {
      * @param sysRole  查询角色对象
      * @return 所有查询的角色数据结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "SysRole", name = "sysRole", value = "查询角色对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "分页对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "startTime", value = "", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "endTime", value = "", required = true)
+    })
+    @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping("/selectRoleByLimit")
     public Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime) {
         return sysRoleService.selectRoleByLimit(sysRole, pageable, startTime, endTime);
@@ -75,6 +95,11 @@ public class SysRoleController extends ApiController {
      * @return 导出的角色信息结果集
      * @throws IOException 抛出数据流异常
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<Integer>", name = "roleIds", value = "角色主键", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "前端响应", required = true)
+    })
+    @ApiOperation(value = "用于批量导出角色列表数据", notes = "用于批量导出角色列表数据", httpMethod = "GET")
     @MyLog(title = "角色管理", optParam = "#{roleIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
     public Result getExcel(@RequestParam("roleIds") ArrayList<Integer> roleIds, HttpServletResponse response) throws IOException {
@@ -110,6 +135,10 @@ public class SysRoleController extends ApiController {
      * @param sysRole 角色对象
      * @return 修改角色信息结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "SysRole", name = "sysRole", value = "角色对象", required = true)
+    })
+    @ApiOperation(value = "修改角色信息", notes = "修改角色信息", httpMethod = "PUT")
     @PutMapping
     @MyLog(title = "角色管理", optParam = "#{sysRole}", businessType = BusinessType.UPDATE)
     public Result update(@RequestBody SysRole sysRole) {
@@ -120,6 +149,10 @@ public class SysRoleController extends ApiController {
      * @param idList 角色主键
      * @return 删除角色信息结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "String[]", name = "idList", value = "角色主键", required = true)
+    })
+    @ApiOperation(value = "删除角色信息", notes = "删除角色信息", httpMethod = "DELETE")
     @DeleteMapping
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "角色管理", optParam = "#{idList}", businessType = BusinessType.DELETE)
@@ -148,6 +181,10 @@ public class SysRoleController extends ApiController {
      * @param roleAndRoleMenu 角色和角色菜单对象
      * @return 返回添加角色及其权限的结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "RoleAndRoleMenu", name = "roleAndRoleMenu", value = "角色和角色菜单对象", required = true)
+    })
+    @ApiOperation(value = "添加角色及其权限", notes = "添加角色及其权限", httpMethod = "POST")
     @PostMapping("/addRole")
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "角色管理", optParam = "#{roleAndRoleMenu}", businessType = BusinessType.INSERT)
@@ -163,6 +200,10 @@ public class SysRoleController extends ApiController {
      * @param roleAndRoleMenu 角色和角色菜单对象
      * @return 返回修改角色及其权限的结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "RoleAndRoleMenu", name = "roleAndRoleMenu", value = "角色和角色菜单对象", required = true)
+    })
+    @ApiOperation(value = "修改角色及其权限", notes = "修改角色及其权限", httpMethod = "PUT")
     @PutMapping("/updateRole")
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "角色管理", optParam = "#{roleAndRoleMenu}", businessType = BusinessType.UPDATE)

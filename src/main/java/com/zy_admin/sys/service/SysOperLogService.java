@@ -3,7 +3,7 @@ package com.zy_admin.sys.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.entity.SysOperLog;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;

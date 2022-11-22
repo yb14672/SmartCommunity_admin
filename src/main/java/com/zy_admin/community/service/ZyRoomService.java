@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.community.dto.ZyRoomDto;
 import com.zy_admin.community.entity.ZyRoom;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;

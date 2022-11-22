@@ -2,13 +2,10 @@ package com.zy_admin.community.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.community.dto.OwenrDto;
 import com.zy_admin.community.dto.OwnerListDto;
 import com.zy_admin.community.dto.OwnerRoomExcel;
 import com.zy_admin.community.entity.ZyOwner;
-import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
-import com.zy_admin.community.entity.ZyUnit;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -41,19 +38,19 @@ public interface ZyOwnerDao extends BaseMapper<ZyOwner> {
     long count( ZyOwner zyOwner);
 
     /**
-     * 删除主人房间id
+     * 删除业主房间id
      * 解绑业主
      *
-     * @param ownerRoomId 主人房间id
+     * @param ownerRoomId 业主房间id
      */
     @Delete("delete from zy_owner_room where owner_room_id = #{ownerRoomId}")
     void deletOwnerRoomId(String ownerRoomId);
 
     /**
-     * 得到主人房间
+     * 得到业主房间
      * 获取被解绑房屋的所有信息
      *
-     * @param ownerRoomId 主人房间id
+     * @param ownerRoomId 业主房间id
      * @return {@link ZyOwnerRoomRecord}
      */
     @Select("select * from zy_owner_room where owner_room_id = #{ownerRoomId}")
@@ -62,7 +59,7 @@ public interface ZyOwnerDao extends BaseMapper<ZyOwner> {
     /**
      * 更新到房间记录
      *
-     * @param zyOwnerRoomRecord 主人房间记录
+     * @param zyOwnerRoomRecord 业主房间记录
      */
     void updateIntoRoomRecord(ZyOwnerRoomRecord zyOwnerRoomRecord);
 

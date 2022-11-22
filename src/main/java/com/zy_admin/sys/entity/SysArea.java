@@ -1,6 +1,7 @@
 package com.zy_admin.sys.entity;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +16,7 @@ import java.io.Serializable;
  * @author makejava
  * @since 2022-11-01 19:49:33
  */
+@ApiModel(description = "区域表(SysArea)表实体类")
 @SuppressWarnings("serial")
 @Data
 @AllArgsConstructor

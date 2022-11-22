@@ -45,9 +45,9 @@ public class ZyFiles extends Model<ZyFiles> {
     @ApiModelProperty("更新时间")
     private String updateTime;
     /**
-     * 创建人者
+     * 创建人
      */
-    @ApiModelProperty("创建人者")
+    @ApiModelProperty("创建人")
     private String createBy;
     /**
      * 删除状态0默认1删除

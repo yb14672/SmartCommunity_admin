@@ -13,7 +13,7 @@ import com.zy_admin.community.entity.ZyRoom;
 import com.zy_admin.community.entity.ZyUnit;
 import com.zy_admin.community.service.ZyUnitService;
 import com.zy_admin.util.ObjUtil;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 

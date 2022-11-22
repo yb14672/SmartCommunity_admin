@@ -4,7 +4,7 @@ package com.zy_admin.common.interceptor;
 import com.alibaba.fastjson.JSON;
 import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.util.JwtUtil;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.beans.factory.annotation.Autowired;

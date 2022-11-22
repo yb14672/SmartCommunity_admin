@@ -5,7 +5,7 @@ import com.zy_admin.sys.entity.SysLogininfor;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysLogininforService;
 import com.zy_admin.util.IpUtil;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.OperatingSystem;
 import eu.bitwalker.useragentutils.UserAgent;

@@ -6,7 +6,7 @@ import com.zy_admin.sys.dao.SysOperLogDao;
 import com.zy_admin.sys.dto.SysOperLogDto;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.service.SysOperLogService;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;

@@ -25,9 +25,9 @@ public class ZyComment extends Model<ZyComment> {
     @ApiModelProperty("id")
     private Long commentId;
     /**
-     * 创建人者
+     * 创建人
      */
-    @ApiModelProperty("创建人者")
+    @ApiModelProperty("创建人")
     private String createBy;
     /**
      * 更新者ID

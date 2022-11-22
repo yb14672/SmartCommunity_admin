@@ -15,8 +15,12 @@ import com.zy_admin.community.dto.OwnerRoomExcel;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.service.ZyOwnerService;
 import com.zy_admin.util.ExcelUtil;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,6 +36,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:02
  */
+@Api(value = "zyOwner", tags = {"业主 (ZyOwner)表控制层"})
 @RestController
 @RequestMapping("zyOwner")
 public class ZyOwnerController extends ApiController {
@@ -49,6 +54,11 @@ public class ZyOwnerController extends ApiController {
      * @return {@link Result}
      */
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "ZyOwner", name = "zyOwner", value = "户主信息", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "页码", required = true)
+    })
+    @ApiOperation(value = "获取户主信息并分页", notes = "获取户主信息并分页", httpMethod = "GET")
     @GetMapping("/getOwnerList")
     public Result getOwnerList(ZyOwner zyOwner, Pageable pageable) {
         return zyOwnerService.getOwnerList(zyOwner, pageable);
@@ -56,12 +66,17 @@ public class ZyOwnerController extends ApiController {
 
 
     /**
-     * 删除欧文罗马
+     * 删除业主房屋关联
      *
      * @param request     请求
      * @param ownerRoomId 房主id
      * @return {@link Result}
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "ownerRoomId", value = "房主id", required = true)
+    })
+    @ApiOperation(value = "删除业主房屋关联", notes = "删除业主房屋关联", httpMethod = "DELETE")
     @MyLog(title = "房主信息", optParam = "#{ownerRoomId}", businessType = BusinessType.DELETE)
     @DeleteMapping("/deleteOwner")
     public Result deleteOwenRome(HttpServletRequest request, String ownerRoomId) {
@@ -69,13 +84,18 @@ public class ZyOwnerController extends ApiController {
     }
 
     /**
-     * 得到excle表格
+     * 得到Excel表格
      *
      * @param ids      id
      * @param response 响应
      * @return {@link Result}
      * @throws IOException ioException
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "List<String>", name = "ids", value = "id", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "响应", required = true)
+    })
+    @ApiOperation(value = "得到Excel表格", notes = "得到Excel表格", httpMethod = "GET")
     @GetMapping("/getExcel")
     @MyLog(title = "房主信息", optParam = "#{ids}", businessType = BusinessType.EXPORT)
     public Result getExcel(@RequestParam("ownerIds") List<String> ids, HttpServletResponse response) throws IOException {

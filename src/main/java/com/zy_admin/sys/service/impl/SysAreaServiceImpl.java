@@ -5,8 +5,8 @@ import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.dao.SysAreaDao;
 import com.zy_admin.sys.entity.SysArea;
 import com.zy_admin.sys.service.SysAreaService;
-import com.zy_admin.util.AreaTree;
-import com.zy_admin.util.Result;
+import com.zy_admin.community.dto.AreaTree;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 

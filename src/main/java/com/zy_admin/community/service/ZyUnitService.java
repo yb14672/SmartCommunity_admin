@@ -3,7 +3,7 @@ package com.zy_admin.community.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.community.entity.ZyUnit;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 
 import java.util.List;
 

@@ -10,8 +10,12 @@ import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysMenuService;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtil;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -26,6 +30,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:39
  */
+@Api(value = "sysMenu", tags = {"菜单权限表(SysMenu)表控制层"})
 @RestController
 @RequestMapping("sysMenu")
 public class SysMenuController extends ApiController {
@@ -40,6 +45,7 @@ public class SysMenuController extends ApiController {
      * 获取菜单树
      * @return 菜单树的结果集
      */
+    @ApiOperation(value = "获取菜单树", notes = "获取菜单树", httpMethod = "GET")
     @GetMapping("/getMenuTree")
     public Result getMenuTree() {
         return this.sysMenuService.getMenuTrees();
@@ -49,6 +55,10 @@ public class SysMenuController extends ApiController {
      * @param menu 查询的菜单对象
      * @return
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "SysMenu", name = "menu", value = "查询的菜单对象", required = true)
+    })
+    @ApiOperation(value = "菜单的条件搜索", notes = "菜单的条件搜索", httpMethod = "GET")
     @GetMapping("/queryMenus")
     public Result queryAllMenu(SysMenu menu) {
         return this.sysMenuService.queryAllMenu(menu);
@@ -59,6 +69,10 @@ public class SysMenuController extends ApiController {
      * @param request 前端请求
      * @return 所有菜单的结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端请求", required = true)
+    })
+    @ApiOperation(value = "获取所有菜单", notes = "获取所有菜单", httpMethod = "GET")
     @GetMapping("/getMenus")
     public Result getMenuList(HttpServletRequest request) {
         String userId = JwtUtil.getMemberIdByJwtToken(request);
@@ -70,6 +84,11 @@ public class SysMenuController extends ApiController {
      * @param request 前端请求
      * @return 新增菜单结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "SysMenu", name = "sysMenu", value = "新增菜单对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端请求", required = true)
+    })
+    @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping("/addMenu")
     @MyLog(title = "菜单管理", optParam = "#{sysMenu}", businessType = BusinessType.INSERT)
     public Result insert(@RequestBody SysMenu sysMenu, HttpServletRequest request) {
@@ -92,6 +111,10 @@ public class SysMenuController extends ApiController {
      * @param sysMenu 修改的菜单信息
      * @return 根据id修改菜单结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "SysMenu", name = "sysMenu", value = "修改的菜单信息", required = true)
+    })
+    @ApiOperation(value = "修改数据", notes = "修改数据", httpMethod = "PUT")
     @PutMapping("/updateMenu")
     @MyLog(title = "菜单管理", optParam = "#{sysMenu}", businessType = BusinessType.UPDATE)
     public Result updateMenu(@RequestBody SysMenu sysMenu) {
@@ -103,6 +126,10 @@ public class SysMenuController extends ApiController {
      * @param id 菜单id
      * @return 根据id查出的菜单结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "id", value = "菜单id", required = true)
+    })
+    @ApiOperation(value = "根据id删除菜单", notes = "根据id删除菜单", httpMethod = "DELETE")
     @DeleteMapping("/deleteById")
     @MyLog(title = "菜单管理", optParam = "#{id}", businessType = BusinessType.DELETE)
     public Result deleteById(@RequestParam String id) {
@@ -113,6 +140,10 @@ public class SysMenuController extends ApiController {
      * @param idList 菜单id数组
      * @return 逻辑删除菜单结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "String[]", name = "idList", value = "菜单id数组", required = true)
+    })
+    @ApiOperation(value = "批量删除菜单", notes = "批量删除菜单", httpMethod = "DELETE")
     @DeleteMapping
     @MyLog(title = "菜单管理", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result deleteByIdList(@RequestParam String[] idList) {

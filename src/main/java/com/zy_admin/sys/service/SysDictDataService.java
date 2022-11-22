@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.sys.dto.DataDictExcelDto;
 import com.zy_admin.sys.entity.SysDictData;
 import com.zy_admin.sys.entity.SysUser;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 
 import java.util.ArrayList;
 import java.util.List;

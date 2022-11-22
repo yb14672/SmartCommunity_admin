@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.entity.SysRole;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public interface SysRoleService extends IService<SysRole> {
     /**
      * 选择角色限制
      * @param sysRole   系统作用
-     * @param pageable  可分页
+     * @param pageable  分页对象
      * @param startTime 开始时间
      * @param endTime   结束时间
      * @return 查询角色结果集

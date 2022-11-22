@@ -11,10 +11,10 @@ import java.util.List;
 /**
  * @author 屈羽星
  */
+@ApiModel(description = "部门树")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel("部门树")
 public class DeptTree extends SysDept{
     /**
      * 子菜单列表

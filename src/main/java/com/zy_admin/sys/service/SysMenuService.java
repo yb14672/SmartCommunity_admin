@@ -2,7 +2,7 @@ package com.zy_admin.sys.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.sys.entity.SysMenu;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 
 import java.util.List;
 

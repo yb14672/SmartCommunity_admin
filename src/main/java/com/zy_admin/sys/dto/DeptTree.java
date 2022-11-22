@@ -1,17 +1,23 @@
 package com.zy_admin.sys.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 部门树状菜单
  * @author xiaozhao
  */
+@ApiModel(description = "部门树状菜单")
 public class DeptTree {
     /**
      * 流程：数据库查出的菜单记录装在承载菜单的列表中
      * 构建树（获取根节点，遍历根节点，对每一个根节点构建子树）---得到最终树形菜单
      * 承载菜单的列表
      */
+    @ApiModelProperty("流程：数据库查出的菜单记录装在承载菜单的列表中 构建树（获取根节点，遍历根节点，对每一个根节点构建子树）---得到最终树形菜单 承载菜单的列表")
     private List<DeptTreeDto> deptList = new ArrayList<>();
     public DeptTree(List<DeptTreeDto> deptList) {
         this.deptList = deptList;

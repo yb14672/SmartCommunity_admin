@@ -10,8 +10,12 @@ import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.service.SysOperLogService;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -26,6 +30,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:39
  */
+@Api(value = "sysOperLog", tags = {"操作日志记录(SysOperLog)表控制层"})
 @RestController
 @RequestMapping("sysOperLog")
 public class SysOperLogController extends ApiController {
@@ -41,6 +46,11 @@ public class SysOperLogController extends ApiController {
      * @return 导出操作日志结果集
      * @throws IOException 抛出数据流异常
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<Integer>", name = "operLogIds", value = "操作日志主键", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "前端响应", required = true)
+    })
+    @ApiOperation(value = "批量导出操作日志数据", notes = "批量导出操作日志数据", httpMethod = "GET")
     @MyLog(title = "操作日志", optParam = "#{operLogIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
     public Result getExcel(@RequestParam("operLogIds") ArrayList<Integer> operLogIds, HttpServletResponse response) throws IOException {
@@ -75,6 +85,10 @@ public class SysOperLogController extends ApiController {
      * @param logIds 操作日志主键
      * @return 删除操作日志结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "List<Integer>", name = "logIds", value = "操作日志主键", required = true)
+    })
+    @ApiOperation(value = "删除操作日志", notes = "删除操作日志", httpMethod = "DELETE")
     @DeleteMapping("/deleteLog")
     @MyLog(title = "操作日志", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result deleteLog(@RequestParam("idList") List<Integer> logIds) {
@@ -93,6 +107,15 @@ public class SysOperLogController extends ApiController {
      * @param isAsc 正序排序对象
      * @return 查询的操作日志结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "SysOperLog", name = "sysOperLog", value = "查询操作日志对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "分页对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "startTime", value = "开始时间对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "endTime", value = "结束时间对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "orderByColumn", value = "按列排序对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "isAsc", value = "正序排序对象", required = true)
+    })
+    @ApiOperation(value = "分页查询所有操作日志数据", notes = "分页查询所有操作日志数据", httpMethod = "GET")
     @GetMapping("/getOperLogList")
     public Result getOperLogList(SysOperLog sysOperLog, Pageable pageable, String startTime, String endTime, @RequestParam(value = "orderByColumn",defaultValue = "oper_time") String orderByColumn, @RequestParam(value = "isAsc",defaultValue = "desc") String isAsc){
         return this.sysOperLogService.getOperLogList(sysOperLog, pageable, startTime, endTime, orderByColumn, isAsc);

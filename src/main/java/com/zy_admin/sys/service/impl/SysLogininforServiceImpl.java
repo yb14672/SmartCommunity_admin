@@ -8,7 +8,7 @@ import com.zy_admin.sys.dto.LoginInForDto;
 import com.zy_admin.sys.dto.LoginInForExcelDto;
 import com.zy_admin.sys.entity.SysLogininfor;
 import com.zy_admin.sys.service.SysLogininforService;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 

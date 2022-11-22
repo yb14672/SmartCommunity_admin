@@ -13,8 +13,12 @@ import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dto.CommunityExcel;
 import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.community.service.ZyCommunityService;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,6 +36,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:01
  */
+@Api(value = "zyCommunity", tags = {"小区 (ZyCommunityDto)表控制层"})
 @RestController
 @RequestMapping("zyCommunity")
 public class ZyCommunityController extends ApiController {
@@ -47,6 +52,11 @@ public class ZyCommunityController extends ApiController {
      * @return 返回成功和错误信息
      * @throws IOException 抛出异常
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<Long>", name = "ids", value = "查询的小区主键id", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "前端响应", required = true)
+    })
+    @ApiOperation(value = "根据所得id导出小区信息", notes = "根据所得id导出小区信息", httpMethod = "GET")
     @MyLog(title = "小区信息", optParam = "#{ids}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
     public Result getExcel(@RequestParam("ids") ArrayList<Long> ids, HttpServletResponse response) throws IOException {
@@ -75,6 +85,11 @@ public class ZyCommunityController extends ApiController {
      * @param request 前端请求
      * @return 修改的小区结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyCommunity", name = "community", value = "更新的小区对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端请求", required = true)
+    })
+    @ApiOperation(value = "修改数据", notes = "修改数据", httpMethod = "PUT")
     @PutMapping("/updateCommunity")
     @MyLog(title = "小区信息", optParam = "#{community}", businessType = BusinessType.UPDATE)
     public Result update(@RequestBody ZyCommunity community,HttpServletRequest request) {
@@ -86,6 +101,11 @@ public class ZyCommunityController extends ApiController {
      * @param request 前端请求
      * @return 新增的小区结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyCommunity", name = "community", value = "新增的小区对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端请求", required = true)
+    })
+    @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping("/insertCommunity")
     @MyLog(title = "小区信息", optParam = "#{community}", businessType = BusinessType.INSERT)
     public Result insert(@RequestBody ZyCommunity community, HttpServletRequest request) {
@@ -97,6 +117,11 @@ public class ZyCommunityController extends ApiController {
      * @param pageable 查询的分页对象
      * @return 返回查询分页的结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "ZyCommunity", name = "community", value = "查询的小区对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "查询的分页对象", required = true)
+    })
+    @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping("/selectAll")
     public Result selectAll(ZyCommunity community, Pageable pageable){
         return zyCommunityService.selectAllByLimit(community,pageable);
@@ -106,6 +131,10 @@ public class ZyCommunityController extends ApiController {
      * @param id 查询的小区id
      * @return 查询数据结果集
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", dataType = "Serializable", name = "id", value = "查询的小区id", required = true)
+    })
+    @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
     public Result selectOne(@PathVariable Serializable id) {
         return new Result(this.zyCommunityService.getById(id),ResultTool.fail(ResultCode.SUCCESS));
@@ -115,6 +144,10 @@ public class ZyCommunityController extends ApiController {
      * @param communityIds 存放小区id
      * @return 删除结果
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "List<String>", name = "communityIds", value = "存放小区id", required = true)
+    })
+    @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping("/deleteCommunity")
     @MyLog(title = "小区信息", optParam = "#{communityIds}", businessType = BusinessType.DELETE)
     public Result delete(@RequestBody List<String> communityIds) {

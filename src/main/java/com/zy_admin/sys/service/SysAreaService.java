@@ -2,7 +2,7 @@ package com.zy_admin.sys.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.sys.entity.SysArea;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 
 /**
  * 区域表(SysArea)表服务接口

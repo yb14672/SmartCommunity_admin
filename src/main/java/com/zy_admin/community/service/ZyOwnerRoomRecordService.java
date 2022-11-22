@@ -2,7 +2,7 @@ package com.zy_admin.community.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 
 /**
  * 房屋绑定记录表 (ZyOwnerRoomRecord)表服务接口

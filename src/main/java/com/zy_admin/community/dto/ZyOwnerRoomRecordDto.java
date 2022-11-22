@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ZyOwnerRoomRecordDto{
     /**
-     * 主人真实姓名
+     * 业主真实姓名
      */
     private String ownerRealName;
     /**
