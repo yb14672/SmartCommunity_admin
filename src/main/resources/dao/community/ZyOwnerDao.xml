@@ -76,7 +76,7 @@
                 and owner_id = #{ownerId}
             </if>
             <if test="ownerNickname != null and ownerNickname != ''">
-                and like concat ('%', #{ownerNickname},'%')
+                and owner_nickname like concat ('%', #{ownerNickname},'%')
             </if>
             <if test="ownerRealName != null and ownerRealName != ''">
                 and owner_real_name like concat('%',#{ownerRealName},'%')
@@ -228,6 +228,34 @@
     <delete id="deleteById">
         delete from zy_owner where owner_id = #{ownerId}
     </delete>
+
+    <select id="getOwenLists" resultType="com.zy_admin.community.dto.OwnerRoomExcel">
+      select   zor.owner_room_id,zo.owner_id, owner_nickname, owner_real_name, owner_gender, owner_age, owner_id_card, owner_phone_number,zor.owner_type,
+        owner_birthday,owner_status,community_name,building_name,room_name,unit_name
+        from zy_owner_room zor
+        left join zy_owner zo on zor.owner_id = zo.owner_id
+        LEFT JOIN zy_building zb on zor.building_id = zb.building_id
+        LEFT JOIN zy_community zc on zc.community_id = zor.community_id
+        LEFT JOIN zy_room zr on zr.room_id = zor.room_id
+        LEFT JOIN zy_unit zu on zu.unit_id = zor.unit_id
+    </select>
+    <select id="queryOwnerById" resultType="com.zy_admin.community.dto.OwnerRoomExcel">
+         select   zor.owner_room_id,zo.owner_id, owner_nickname, owner_real_name, owner_gender, owner_age, owner_id_card, owner_phone_number,zor.owner_type,
+        owner_birthday,owner_status,community_name,building_name,room_name,unit_name
+        from zy_owner_room zor
+        left join zy_owner zo on zor.owner_id = zo.owner_id
+        LEFT JOIN zy_building zb on zor.building_id = zb.building_id
+        LEFT JOIN zy_community zc on zc.community_id = zor.community_id
+        LEFT JOIN zy_room zr on zr.room_id = zor.room_id
+        LEFT JOIN zy_unit zu on zu.unit_id = zor.unit_id
+        where zor.owner_room_id in
+        <foreach collection="OwnerIds" item="Owner_id" separator="," open="(" close=")">
+            #{Owner_id}
+        </foreach>
+    </select>
+
+
+    
 
 </mapper>
 

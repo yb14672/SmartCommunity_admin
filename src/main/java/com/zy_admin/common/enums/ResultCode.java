@@ -106,8 +106,8 @@ public enum ResultCode {
     COMPANY_OWNS_PROPERTY(3052,"公司仍有负责的物业，不能删除"),
     ROOM_HAVE_BEEN(3053,"该房屋名在其他楼层下已存在"),
     FAIL_UNBIND_ROOM(3054,"房屋解绑失败"),
-//    ROOM_HAVE_BEEN(3055,"该房屋名已存在"),
     ROOM_HAVE_OWNER(3056,"该房屋名已有业主，不允许删除"),
+    BUILD_HAVA_CHILD(3046,"楼层下面有单元不允许删除" ),
 
 
     /* http自带请求码 */
