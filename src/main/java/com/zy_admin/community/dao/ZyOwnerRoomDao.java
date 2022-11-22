@@ -33,18 +33,11 @@ public interface ZyOwnerRoomDao extends BaseMapper<ZyOwnerRoom> {
     Long count(@Param("zyOwnerRoom") ZyOwnerRoom zyOwnerRoom);
 
     /**
-     * 修改业主审核的状态为绑定
+     * 修改业主审核的状态
      * @param zyOwnerRoom
      * @return
      */
-    int updateOwnerRoomStatusBinding(@Param("zyOwnerRoom") ZyOwnerRoom zyOwnerRoom);
-
-    /**
-     * 修改业主审核的状态为审核失败
-     * @param zyOwnerRoom
-     * @return
-     */
-    int updateOwnerRoomStatusReject(@Param("zyOwnerRoom") ZyOwnerRoom zyOwnerRoom);
+    int updateOwnerRoomStatus(@Param("zyOwnerRoom") ZyOwnerRoom zyOwnerRoom);
 
     /**
      * 根据id查业主审核对象

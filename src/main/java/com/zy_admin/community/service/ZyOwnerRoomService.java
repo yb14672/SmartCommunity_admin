@@ -24,18 +24,11 @@ public interface ZyOwnerRoomService extends IService<ZyOwnerRoom> {
     Result selectAllOwnerRoomLimit(ZyOwnerRoom zyOwnerRoom, Pageable pageable);
 
     /**
-     * 修改业主审核的状态为绑定
+     * 修改业主审核的状态
      * @param zyOwnerRoom
      * @return
      */
-    Result updateOwnerRoomStatusBinding(ZyOwnerRoom zyOwnerRoom, ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception;
-
-    /**
-     * 修改业主审核的状态为审核失败
-     * @param zyOwnerRoom
-     * @return
-     */
-    Result updateOwnerRoomStatusReject(ZyOwnerRoom zyOwnerRoom,ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception;
+    Result updateOwnerRoomStatus(ZyOwnerRoom zyOwnerRoom, ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception;
 
 }
 
