@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerDao;
-import com.zy_admin.community.dto.OwenrDto;
-import com.zy_admin.community.dto.OwnerListDto;
-import com.zy_admin.community.dto.UnitDto;
-import com.zy_admin.community.dto.UnitListDto;
+import com.zy_admin.community.dto.*;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
@@ -25,9 +22,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
+ * impl zy主人服务
  * 业主 (ZyOwner)表服务实现类
  *
  * @author makejava
+ * @date 2022/11/22
  * @since 2022-11-01 19:49:02
  */
 @Service("zyOwnerService")
@@ -40,8 +39,9 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
     private RequestUtil requestUtil;
 
     /**
+     * 得到业主名单
      *
-     * @param zyOwner 户主信息
+     * @param zyOwner  户主信息
      * @param pageable 页码
      * @return 获取分页结果集
      */
@@ -70,8 +70,10 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
     }
 
     /**
+     *
      * 解绑房间
-     * @param request 获取修改者信息
+     *
+     * @param request    获取修改者信息
      * @param owenRoomId 绑定房间信息
      * @return 修改结果集
      */
@@ -82,6 +84,7 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
             ZyOwnerRoomRecord zyOwnerRoom = this.baseMapper.getZyOwnerRoom(owenRoomId);
             //将解绑记录放入历史表中
             SysUser user = this.requestUtil.getUser(request);
+            zyOwnerRoom.setRecordAuditOpinion("由"+user.getUserName()+"解绑");
             zyOwnerRoom.setUpdateBy(user.getUserName());
             zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());
             zyOwnerRoom.setRecordId(snowflakeManager.nextId());
@@ -96,6 +99,31 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
             result.setMeta(ResultTool.fail(ResultCode.FAIL_UNBIND_ROOM));
         }
         return result;
+    }
+
+    /**
+     * 得到列表
+     *
+     * @return {@link List}<{@link OwnerRoomExcel}>
+     */
+    @Override
+    public List<OwnerRoomExcel> getLists() {
+        return this.baseMapper.getOwenLists();
+    }
+
+    /**
+     * 查询所有房间信息者通过id
+     *
+     * @param ownerIds 房间Id集合
+     * @return {@link List}<{@link OwnerRoomExcel}>
+     */
+    @Override
+    public List<OwnerRoomExcel> queryOwnerById(List<String> ownerIds) {
+
+        if (ownerIds != null) {
+            ownerIds = ownerIds.size() == 0 ? null : ownerIds;
+        }
+        return this.baseMapper.queryOwnerById(ownerIds);
     }
 }
 

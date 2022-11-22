@@ -19,17 +19,20 @@ public interface SysPostDao extends BaseMapper<SysPost> {
 
 
     /**
-     * 获取总行数
-     * @param sysPost
-     * @return
+     * 数
+     *
+     * @param sysPost 系统发布
+     * @return long
      */
     long count(SysPost sysPost);
 
     /**
+     * 查询所有限制
      * 根据条件搜索分页
-     * @param sysPost
-     * @param pageable
-     * @return
+     *
+     * @param sysPost  系统发布
+     * @param pageable 可分页
+     * @return {@link List}<{@link SysPost}>
      */
     List<SysPost>queryAllByLimit(@Param("sysPost") SysPost sysPost, @Param("pageable") Pageable pageable);
 
