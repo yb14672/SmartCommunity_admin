@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 /**
  * 评论表(ZyComment)表实体类
  *
@@ -18,29 +16,53 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ZyComment extends Model<ZyComment> {
-    //id
+    /**
+     * id
+     */
     private Long commentId;
-    //创建人者
+    /**
+     * 创建人者
+     */
     private String createBy;
-    //更新者ID
+    /**
+     * 更新者ID
+     */
     private Long updateBy;
-    //创建时间
+    /**
+     * 创建时间
+     */
     private String createTime;
-    //更新时间
+    /**
+     * 更新时间
+     */
     private String updateTime;
-    //内容
+    /**
+     * 内容
+     */
     private String content;
-    //父级ID
+    /**
+     * 父级ID
+     */
     private Long parentId;
-    //删除状态0默认1删除
+    /**
+     * 删除状态0默认1删除
+     */
     private Integer delFlag;
-    //社区互动ID
+    /**
+     * 社区互动ID
+     */
     private Long interactionId;
-    //创建人ID
+    /**
+     * 创建人ID
+     */
     private Long userId;
-    //备注
+    /**
+     * 备注
+     */
     private String remark;
-    //划属Id
+    /**
+     * 划属Id
+     */
     private Long rootId;
 
 }

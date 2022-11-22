@@ -14,6 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ZyBuildingDtoAll {
+    /**
+     * 获取楼栋集合
+     */
     private List<ZyBuildingDto> zyBuildingList;
+    /**
+     * 获取分页对象
+     */
     private Pageable pageable;
 }

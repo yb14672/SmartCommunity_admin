@@ -1,13 +1,11 @@
 package com.zy_admin.sys.dto;
-
 import com.zy_admin.common.Pageable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.util.List;
-
 /**
  * @author yb14672
  */
@@ -18,7 +16,7 @@ public class SysUsersDto {
     /**
      * 用户集合
      */
-    @Autowired
+    @Resource
     private List<SysUserDeptDto> sysUserDeptDto;
     /**
      * 开始时间
@@ -31,6 +29,6 @@ public class SysUsersDto {
     /**
      * 页码
      */
-    @Autowired
+    @Resource
     private Pageable pageable;
 }

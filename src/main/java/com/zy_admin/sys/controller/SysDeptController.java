@@ -4,13 +4,16 @@ package com.zy_admin.sys.controller;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDeptService;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.Result;
-import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -26,6 +29,7 @@ import java.util.List;
  * @since 2022-11-01 19:49:34
  */
 @RestController
+@Api(tags = "部门接口")
 @RequestMapping("sysDept")
 public class SysDeptController extends ApiController {
     /**
@@ -36,13 +40,13 @@ public class SysDeptController extends ApiController {
     @Resource
     private RequestUtil requestUtil;
 
-
     /**
      * 通过条件搜索数据
      *
-     * @param sysDept
-     * @return
+     * @param sysDept 查询条件
+     * @return 查询结果
      */
+    @ApiOperation("获取部门列表")
     @GetMapping("/getDeptList")
     public Result getDeptList(SysDept sysDept) {
         return sysDeptService.getDeptList(sysDept);
@@ -54,6 +58,7 @@ public class SysDeptController extends ApiController {
      * @param sysDept 实体对象
      * @return 新增结果
      */
+    @ApiOperation("添加部门")
     @PostMapping("/insertDept")
     @MyLog(title = "部门管理", optParam = "#{sysDept}", businessType = BusinessType.INSERT)
     public Result insertDept(@RequestBody SysDept sysDept, HttpServletRequest request) {
@@ -78,6 +83,7 @@ public class SysDeptController extends ApiController {
      * @param sysDept 实体对象
      * @return 修改结果
      */
+    @ApiOperation("修改部门")
     @PutMapping("/updateDept")
     @MyLog(title = "部门管理", optParam = "#{sysDept}", businessType = BusinessType.UPDATE)
     public Result updateDept(@RequestBody SysDept sysDept, HttpServletRequest request) {
@@ -93,7 +99,9 @@ public class SysDeptController extends ApiController {
      * @param idList 主键结合
      * @return 删除结果
      */
+    @ApiOperation("删除部门")
     @DeleteMapping("/deleteDept")
+    @ApiImplicitParam(name="idList",value = "部门ID集合",required = true)
     @MyLog(title = "部门管理", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result deleteDept(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<Integer>();

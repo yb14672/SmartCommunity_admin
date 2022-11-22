@@ -21,6 +21,18 @@ public class AuthConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         //addPathPatterns：哪些路径下的会被拦截
         //excludePathPatterns：哪些路径下不会被拦截
-        registry.addInterceptor(initAuthInterceptor()).addPathPatterns("/**").excludePathPatterns("/**/login").excludePathPatterns("/upload");
+        registry.addInterceptor(initAuthInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/**/login",
+                        "/upload",
+                        "/tool/swagger",
+                        "/**/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/swagger-resources/**",
+                        "/webjars/**",
+                        "/v2/api-docs",
+                        "/v3/api-docs"
+                );
     }
 }

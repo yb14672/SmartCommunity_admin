@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy_admin.community.dao.ZyUnitDao">
-
     <resultMap type="com.zy_admin.community.entity.ZyUnit" id="ZyUnitMap">
         <result property="unitId" column="unit_id" jdbcType="INTEGER"/>
         <result property="communityId" column="community_id" jdbcType="INTEGER"/>
@@ -17,9 +16,7 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
-
-
-    <!--查询单个-->
+    <!--根据单元id查询单个-->
     <select id="queryById" resultMap="ZyUnitMap">
         select unit_id,
                community_id,
@@ -37,8 +34,7 @@
         from zy_unit
         where unit_id = #{unitId}
     </select>
-
-    <!--查询指定行数据-->
+    <!--多条件查询指定行数据-->
     <select id="queryAllByLimit" resultType="com.zy_admin.community.dto.UnitListDto">
         select *,(select community_name from zy_community zc where zc.community_id = zu.community_id) communityName,
         (select building_name from zy_building zb where zb.building_id = zu.building_id ) buildingName
@@ -62,8 +58,7 @@
         </where>
         limit #{pageable.index}, #{pageable.pageSize}
     </select>
-
-    <!--统计总行数-->
+    <!--统计多条件查询后的总行数-->
     <select id="count" resultType="java.lang.Long">
         select count(1)
         from zy_unit
@@ -85,7 +80,6 @@
             </if>
         </where>
     </select>
-
     <!--新增所有列-->
     <insert id="insert" keyProperty="" useGeneratedKeys="true">
         insert into zy_unit(unit_id, community_id, building_id, unit_name, unit_code, unit_level, unit_acreage,
@@ -93,43 +87,6 @@
         values (#{unitId}, #{communityId}, #{buildingId}, #{unitName}, #{unitCode}, #{unitLevel}, #{unitAcreage},
                 #{unitHaveElevator}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
-
-    <insert id="insertBatch" keyProperty="" useGeneratedKeys="true">
-        insert into zy_unit(unit_id, community_id, building_id, unit_name, unit_code, unit_level, unit_acreage,
-        unit_have_elevator, create_by, create_time, update_by, update_time, remark)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.unitId}, #{entity.communityId}, #{entity.buildingId}, #{entity.unitName}, #{entity.unitCode},
-            #{entity.unitLevel}, #{entity.unitAcreage}, #{entity.unitHaveElevator}, #{entity.createBy},
-            #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
-        </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="" useGeneratedKeys="true">
-        insert into zy_unit(unit_id, community_id, building_id, unit_name, unit_code, unit_level, unit_acreage,
-        unit_have_elevator, create_by, create_time, update_by, update_time, remark)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.unitId}, #{entity.communityId}, #{entity.buildingId}, #{entity.unitName}, #{entity.unitCode},
-            #{entity.unitLevel}, #{entity.unitAcreage}, #{entity.unitHaveElevator}, #{entity.createBy},
-            #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
-        </foreach>
-        on duplicate key update
-        unit_id = values(unit_id),
-        community_id = values(community_id),
-        building_id = values(building_id),
-        unit_name = values(unit_name),
-        unit_code = values(unit_code),
-        unit_level = values(unit_level),
-        unit_acreage = values(unit_acreage),
-        unit_have_elevator = values(unit_have_elevator),
-        create_by = values(create_by),
-        create_time = values(create_time),
-        update_by = values(update_by),
-        update_time = values(update_time),
-        remark = values(remark)
-    </insert>
-
     <!--通过主键修改数据-->
     <update id="updateUnit">
         update zy_unit
@@ -173,7 +130,7 @@
         </set>
         where unit_id = #{unitId}
     </update>
-
+    <!--新增单元-->
     <insert id="insertUnit">
         insert into zy_unit(unit_id, community_id, building_id, unit_name, unit_code, unit_level, unit_acreage,
                             unit_have_elevator, create_by, create_time, update_by, update_time, remark)
@@ -181,7 +138,7 @@
                 #{unitLevel}, #{unitAcreage}, #{unitHaveElevator}, #{createBy},
                 #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
-
+    <!--根据社区id,楼层id,单元名称查询单元-->
     <select id="selectUnitName" resultType="com.zy_admin.community.entity.ZyUnit">
         select *
         from zy_unit
@@ -189,22 +146,14 @@
           and building_id = #{unit.buildingId}
           and unit_name = #{unit.unitName}
     </select>
-
-    <select id="selectAllByUnitByIds" resultType="string">
-        select * from zy_room WHERE unit_id in
-        <foreach collection="unitIds" item="unitIds" separator="," open="(" close=")">
-            #{unitIds}
-        </foreach>
-    </select>
-
+    <!--根据id来删除单元-->
     <delete id="deleteUnit">
         delete from zy_unit where unit_id in
         <foreach collection="unitIds" item="unitIds" separator="," open="(" close=")">
             #{unitIds}
         </foreach>
     </delete>
-
-
+    <!--根据小区id获取所有房屋相关信息-->
     <select id="getAll" resultType="com.zy_admin.community.dto.UnitListDto">
         select *,
                (select community_name from zy_community zc where zc.community_id = zu.community_id) communityName,

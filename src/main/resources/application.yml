@@ -53,3 +53,7 @@ com:
       snowflake:
         machine-id: 1
         data-center-id: 1
+# Swagger配置
+swagger:
+  # 是否开启swagger
+  enabled: true

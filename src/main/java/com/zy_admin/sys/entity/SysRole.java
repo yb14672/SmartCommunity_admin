@@ -5,6 +5,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -19,6 +20,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class SysRole extends Model<SysRole> {
     /**
      * 角色ID
@@ -90,10 +92,8 @@ public class SysRole extends Model<SysRole> {
      */
     @ExcelProperty("备注")
     private String remark;
-
     /**
      * 获取主键值
-     *
      * @return 主键值
      */
     @Override

@@ -3,6 +3,7 @@ package com.zy_admin.sys.dto;
 import com.zy_admin.sys.entity.SysUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class UserRoleDto extends SysUser {
     /**
      * 当前用户所拥有的权限

@@ -4,7 +4,7 @@ package com.zy_admin.common.core.Aspect;
 import com.zy_admin.sys.entity.SysLogininfor;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysLogininforService;
-import com.zy_admin.util.IpUtils;
+import com.zy_admin.util.IpUtil;
 import com.zy_admin.util.Result;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.OperatingSystem;
@@ -49,7 +49,7 @@ public class LogoutAspect {
         HttpServletRequest request = (HttpServletRequest) joinPoint.getArgs()[0];
         Result result = (Result) obj;
         //获取登录Ip
-        String ip = IpUtils.getIpAddress(request);
+        String ip = IpUtil.getIpAddress(request);
         String pattern = "^(127\\.0\\.0\\.1)|(localhost)|(10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(172\\.((1[6-9])|(2\\d)|(3[01]))\\.\\d{1,3}\\.\\d{1,3})|(192\\.168\\.\\d{1,3}\\.\\d{1,3})$";
         if (Pattern.matches(pattern,ip)){
             sysLogininfor.setLoginLocation("内网Ip");
