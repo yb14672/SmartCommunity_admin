@@ -56,7 +56,6 @@ public class ZyOwnerRoomController extends ApiController {
         return zyOwnerRoomService.updateOwnerRoomStatus(zyOwnerRoom, zyOwnerRoomRecord, request);
     }
 
-
     /**
      * 分页和查询业主审核
      * @param zyOwnerRoom

@@ -104,20 +104,16 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     public Result updateOwnerRoomStatus(@RequestBody ZyOwnerRoom zyOwnerRoom, ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception {
         //默认给失败
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-
+        //id
         zyOwnerRoomRecord.setRecordId(snowflakeManager.nextId());
+        //创建时间
         zyOwnerRoomRecord.setCreateTime(LocalDateTime.now().toString());
         String id = JwtUtil.getMemberIdByJwtToken(request);
+        //创建人
         zyOwnerRoomRecord.setCreateBy(sysUserDao.getUserById(id).getUserName());
         zyOwnerRoomRecord.setOwnerType("yz");
         zyOwnerRoomRecord.setOwnerRoomId(zyOwnerRoom.getOwnerRoomId());
-//        zyOwnerRoomRecord.setCommunityId(Long.valueOf(zyOwnerRoom.getCommunityId()));
-//        zyOwnerRoomRecord.setBuildingId(Long.valueOf(zyOwnerRoom.getBuildingId()));
-//        zyOwnerRoomRecord.setUnitId(Long.valueOf(zyOwnerRoom.getUnitId()));
-//        zyOwnerRoomRecord.setRoomId(Long.valueOf(zyOwnerRoom.getRoomId()));
-//        zyOwnerRoomRecord.setOwnerId(Long.valueOf(zyOwnerRoom.getOwnerId()));
         zyOwnerRoomRecord.setRoomStatus(zyOwnerRoom.getRoomStatus());
-//        record_audit_opinion 审核意见 x
         String id1 = JwtUtil.getMemberIdByJwtToken(request);
         zyOwnerRoomRecord.setUpdateBy(sysUserDao.getUserById(id1).getUserName());
         zyOwnerRoomRecord.setUpdateTime(LocalDateTime.now().toString());
