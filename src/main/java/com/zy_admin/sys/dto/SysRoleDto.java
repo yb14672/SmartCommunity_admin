@@ -5,8 +5,8 @@ import com.zy_admin.sys.entity.SysRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -19,7 +19,7 @@ public class SysRoleDto {
     /**
      * 角色集合
      */
-    @Autowired
+    @Resource
     private List<SysRole> sysRole;
     /**
      * 开始时间
@@ -32,6 +32,6 @@ public class SysRoleDto {
     /**
      * 页码
      */
-    @Autowired
+    @Resource
     private Pageable pageable;
 }

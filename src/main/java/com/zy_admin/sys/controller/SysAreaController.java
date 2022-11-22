@@ -1,6 +1,5 @@
 package com.zy_admin.sys.controller;
-
-
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.sys.service.SysAreaService;
 import com.zy_admin.util.Result;
@@ -11,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-
+import java.io.Serializable;
+import java.util.List;
 /**
  * 区域表(SysArea)表控制层
- *
  * @author makejava
  * @since 2022-11-01 19:49:33
  */
@@ -29,10 +28,9 @@ public class SysAreaController extends ApiController {
     private SysAreaService sysAreaService;
 
     /**
-     * 获取地区树
-     * @return 查询结果
+     * 生成省市区树形结构
+     * @return 返回关于树的数据结果集
      */
-    @ApiOperation("获取获取树状地区菜单")
     @GetMapping("/queryAreaTree")
     public Result queryAreaTree(){
         return sysAreaService.queryAreaTree();

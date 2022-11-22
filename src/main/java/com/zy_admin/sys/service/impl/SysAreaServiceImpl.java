@@ -20,6 +20,11 @@ import org.springframework.stereotype.Service;
 public class SysAreaServiceImpl extends ServiceImpl<SysAreaDao, SysArea> implements SysAreaService {
 
 
+    /**
+     * 生成省市区树形结构
+     *
+     * @return 省市区的树形信息的结果集
+     */
     @Override
     public Result queryAreaTree() {
         Result result = new Result(null, ResultTool.fail(ResultCode.ADDRESS_GET_FAIL));

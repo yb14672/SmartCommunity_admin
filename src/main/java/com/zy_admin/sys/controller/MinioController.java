@@ -19,7 +19,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * @author 吕蔚霖
+ * 部署MinIO服务
+ * @author lvwei
  */
 @Slf4j
 @CrossOrigin
@@ -37,15 +38,20 @@ public class MinioController {
     @Value("${minio.bucketName}")
     private String bucketName;
 
-    @ApiOperation("上传文件")
+    /**
+     * 下载文件
+     * @param file 存放需要下载的文件
+     * @return 查询下载的文件结果集
+     */
     @PostMapping("/upload")
+    @ApiOperation("上传文件")
     @ApiImplicitParam(name="file",value = "要上传的文件",required = true)
     public Result upload(MultipartFile file) {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         List<String> upload = minioUtil.upload(new MultipartFile[]{file});
         String url = address + "/" + bucketName + "/" + upload.get(0);
-        result.setData(url == null ? null : url);
-        result.setMeta(url == null ? ResultTool.fail(ResultCode.USER_AVATAR_UPLOAD_FAILED) : ResultTool.fail(ResultCode.SUCCESS));
+        result.setData(url);
+        result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
         return result;
     }
 }
