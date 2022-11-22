@@ -26,10 +26,10 @@ public interface SysDictDataDao extends BaseMapper<SysDictData> {
 
     /**
      * 根据字典类型获取所有对应的字典数据
-     * @param deptType
+     * @param dictType
      * @return
      */
-    List<SysDictData> getDict(String deptType);
+    List<SysDictData> getDict(String dictType);
 
     /**
      *检查数据标签是否唯一

@@ -89,7 +89,6 @@ public class LogAspect {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         // 从获取RequestAttributes中获取HttpServletRequest的信息
         HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
-
         SysOperLog operLog = new SysOperLog();
         //给日志赋值
         // 操作状态（0正常 1异常）
@@ -119,7 +118,6 @@ public class LogAspect {
         }else{
             operLog.setOperLocation("外网Ip");
         }
-
         //获取返回参数
         JSONObject jsonObject = (JSONObject) JSONObject.toJSON(result);
         Object o = JSON.toJavaObject(jsonObject, Object.class);

@@ -1,6 +1,4 @@
 package com.zy_admin.sys.controller;
-
-
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
@@ -18,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * 部门表(SysDept)表控制层
  *
@@ -35,29 +32,25 @@ public class SysDeptController extends ApiController {
     private SysDeptService sysDeptService;
     @Resource
     private RequestUtil requestUtil;
-
-
     /**
-     * 通过条件搜索数据
-     *
-     * @param sysDept
-     * @return
+     * 通过条件搜索部门
+     * @param sysDept 部门对象
+     * @return 查询到的部门结果集
      */
     @GetMapping("/getDeptList")
     public Result getDeptList(SysDept sysDept) {
         return sysDeptService.getDeptList(sysDept);
     }
-
     /**
-     * 新增数据
-     *
-     * @param sysDept 实体对象
-     * @return 新增结果
+     * 新增部门
+     * @param sysDept 新增的部门对象
+     * @param request 前端请求
+     * @return 新增部门结果集
      */
     @PostMapping("/insertDept")
     @MyLog(title = "部门管理", optParam = "#{sysDept}", businessType = BusinessType.INSERT)
     public Result insertDept(@RequestBody SysDept sysDept, HttpServletRequest request) {
-        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //从token获值
         try {
             SysUser user = requestUtil.getUser(request);
@@ -71,12 +64,11 @@ public class SysDeptController extends ApiController {
         }
         return result;
     }
-
     /**
-     * 修改数据
-     *
-     * @param sysDept 实体对象
-     * @return 修改结果
+     * 修改部门
+     * @param sysDept 存放部门对象
+     * @param request 前端请求
+     * @return 修改部门的结果集
      */
     @PutMapping("/updateDept")
     @MyLog(title = "部门管理", optParam = "#{sysDept}", businessType = BusinessType.UPDATE)
@@ -86,18 +78,16 @@ public class SysDeptController extends ApiController {
         sysDept.setUpdateTime(LocalDateTime.now().toString());
         return this.sysDeptService.updateDept(sysDept);
     }
-
     /**
-     * 删除数据
-     *
-     * @param idList 主键结合
-     * @return 删除结果
+     * 删除部门
+     * @param idList 被删除部门的主键数组
+     * @return 删除的部门结果集
      */
     @DeleteMapping("/deleteDept")
     @MyLog(title = "部门管理", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result deleteDept(@RequestParam String[] idList) {
-        List<Integer> idList1 = new ArrayList<Integer>();
-        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<Integer> idList1 = new ArrayList<>();
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             for (String str : idList) {
                 //把选中的id传到集合里面
@@ -105,8 +95,6 @@ public class SysDeptController extends ApiController {
             }
             //修改字典表
             result = this.sysDeptService.deleteDept(idList1);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
