@@ -2,6 +2,7 @@ package com.zy_admin.community.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.community.dto.OwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerRoomDto;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.util.RoomTree;
@@ -17,6 +18,14 @@ import java.util.List;
  * @since 2022-11-01 19:49:02
  */
 public interface ZyOwnerRoomDao extends BaseMapper<ZyOwnerRoom> {
+
+    /**
+     * 选择主人房间通过所有者id
+     *
+     * @param ownerId 所有者id
+     * @return {@link List}<{@link OwnerRoomDto}>
+     */
+    List<OwnerRoomDto> selectOwnerRoomByOwnerId(String ownerId);
 
     /**
      * 根据业主ID获取其房屋绑定列表

@@ -11,6 +11,7 @@ import com.zy_admin.community.dao.ZyRoomDao;
 import com.zy_admin.community.dto.OwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerRoomDtoAll;
+import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomService;
@@ -55,7 +56,17 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     @Resource
     private SnowflakeManager snowflakeManager;
 
+    /**
+     * 业主数据持久层
+     */
+    @Resource
+    private ZyOwnerDao zyOwnerDao;
 
+
+    @Override
+    public boolean checkOwnerIdCardExist(String ownerId) {
+        return zyOwnerDao.selectById(ownerId).getOwnerIdCard() == "";
+    }
 
     @Override
     public Result selectOwnerRoomByOwnerId(String ownerId) {
@@ -73,6 +84,12 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     @Override
     public Result ownerInsert(ZyOwnerRoom ownerRoom) throws Exception {
         Result result = new Result("提交失败",ResultTool.fail(ResultCode.OWNER_ROOM_INSERT_FAIL));
+        //检查是否实名认证
+        if (checkOwnerIdCardExist(ownerRoom.getOwnerId())){
+            result.setMeta(ResultTool.fail(ResultCode.OWNER_ROOM_INSERT_FAIL));
+            return result;
+        }
+        //检查该房屋是否已经提交审核
         ZyOwnerRoom zyOwnerRoom = this.baseMapper.checkOwnerRoom(ownerRoom);
         if (zyOwnerRoom != null ){
             result.setData("提交失败");
