@@ -19,6 +19,8 @@ import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.Result;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,8 +38,8 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:34
  */
-@Api(tags="字典数据")
 @RestController
+@Api(tags = "字典数据")
 @RequestMapping("/sysDictData")
 public class SysDictDataController extends ApiController {
     /**
@@ -56,8 +58,8 @@ public class SysDictDataController extends ApiController {
      * @param sysDictData 查询实体
      * @return 所有数据
      */
-    @ApiOperation("获取所有字典")
     @GetMapping
+    @ApiOperation("根据查询条件获取字典数据并分页")
     public Result selectAll(SysDictData sysDictData, Page page) {
         return this.sysDictDataService.selectDictDataLimit(sysDictData, page);
     }
@@ -69,6 +71,8 @@ public class SysDictDataController extends ApiController {
      * @return 单条数据
      */
     @GetMapping("{id}")
+    @ApiOperation("获取单个字典数据")
+    @ApiImplicitParam(name = "id", value = "字典数据ID", required = true)
     public Result selectOne(@PathVariable String id) {
         return this.sysDictDataService.getDictDataById(id);
     }
@@ -80,6 +84,7 @@ public class SysDictDataController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
+    @ApiOperation("添加字典数据")
     @MyLog(title = "字典数据", optParam = "#{sysDictData}", businessType = BusinessType.INSERT)
     public Result insert(@RequestBody SysDictData sysDictData, HttpServletRequest request) {
         //获取当前登录的用户，用于添加创建人
@@ -95,6 +100,7 @@ public class SysDictDataController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
+    @ApiOperation("修改字典数据")
     @MyLog(title = "字典数据", optParam = "#{sysDictData}", businessType = BusinessType.UPDATE)
     public Result update(@RequestBody SysDictData sysDictData, HttpServletRequest request) {
         //获取当前登录的用户，用于添加创建人
@@ -109,6 +115,8 @@ public class SysDictDataController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @ApiOperation("删除字典数据")
+    @ApiImplicitParam(name = "idList", value = "要删除的ID集合", required = true)
     @MyLog(title = "字典数据", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result delete(@RequestParam("idList") List<String> idList) {
         return this.sysDictDataService.removeDictDataByIds(idList);
@@ -121,6 +129,8 @@ public class SysDictDataController extends ApiController {
      * @return
      */
     @GetMapping("/getDict")
+    @ApiOperation("获取对应类型的所有字典")
+    @ApiImplicitParam(name = "dictType", value = "要查询的字典类型", required = true)
     public Result getDict(String dictType) {
         return this.sysDictDataService.getDict(dictType);
     }
@@ -133,6 +143,11 @@ public class SysDictDataController extends ApiController {
      * @return
      */
     @GetMapping("/export")
+    @ApiOperation("导出字典数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "ids", value = "要导出的ID列表，为空时导出对应类型的所有", required = false),
+            @ApiImplicitParam(name = "dictType", value = "要导出的字典类型", required = true)
+    })
     @MyLog(title = "字典数据", optParam = "#{ids}", businessType = BusinessType.EXPORT)
     public Result export(@RequestParam("ids") ArrayList<Integer> ids, @RequestParam("dictType") String dictType, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));

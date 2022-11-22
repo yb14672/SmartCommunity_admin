@@ -19,7 +19,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:34
  */
-@RestController
+//@RestController
 @RequestMapping("sysConfig")
 public class SysConfigController extends ApiController {
     /**
