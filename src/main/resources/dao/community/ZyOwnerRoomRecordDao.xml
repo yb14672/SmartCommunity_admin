@@ -163,12 +163,12 @@
 
 
     <!--审核记录-->
-    <select id="selectZyOwnerRoomRecord" resultMap="OwnerRoomRecordDtoMap">
-        SELECT o.owner_real_name,orr.owner_type,orr.room_status,orr.record_audit_opinion,
+    <select id="selectZyOwnerRoomRecord" resultType="com.zy_admin.community.dto.ZyOwnerRoomRecordDto">
+        SELECT o.owner_real_name,orr.owner_type,orr.room_status,orr.record_audit_opinion,orr.update_by,
         orr.create_by_id,orr.record_audit_type,orr.remark
 				FROM zy_owner_room_record orr
         left JOIN zy_owner o on orr.owner_id = o.owner_id
-        where orr.owner_room_id = #{zyOwnerRoomRecordId}
+        where orr.owner_room_id =  #{zyOwnerRoomRecordId}
     </select>
 
     <!--新增所有列-->

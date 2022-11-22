@@ -51,6 +51,135 @@
         from zy_room
         where room_id = #{roomId}
     </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ZyRoomMap">
+        select
+        room_id, community_id, building_id, unit_id, room_level, room_code, room_name, room_acreage, room_cost,
+        room_status, room_is_shop, room_s_commercial_house, room_house_type, create_by, create_time, update_by,
+        update_time, remark
+        from zy_room
+        <where>
+            <if test="roomId != null">
+                and room_id = #{roomId}
+            </if>
+            <if test="communityId != null">
+                and community_id = #{communityId}
+            </if>
+            <if test="buildingId != null">
+                and building_id = #{buildingId}
+            </if>
+            <if test="unitId != null">
+                and unit_id = #{unitId}
+            </if>
+            <if test="roomLevel != null">
+                and room_level = #{roomLevel}
+            </if>
+            <if test="roomCode != null and roomCode != ''">
+                and room_code = #{roomCode}
+            </if>
+            <if test="roomName != null and roomName != ''">
+                and room_name = #{roomName}
+            </if>
+            <if test="roomAcreage != null">
+                and room_acreage = #{roomAcreage}
+            </if>
+            <if test="roomCost != null">
+                and room_cost = #{roomCost}
+            </if>
+            <if test="roomStatus != null and roomStatus != ''">
+                and room_status = #{roomStatus}
+            </if>
+            <if test="roomIsShop != null and roomIsShop != ''">
+                and room_is_shop = #{roomIsShop}
+            </if>
+            <if test="roomSCommercialHouse != null and roomSCommercialHouse != ''">
+                and room_s_commercial_house = #{roomSCommercialHouse}
+            </if>
+            <if test="roomHouseType != null and roomHouseType != ''">
+                and room_house_type = #{roomHouseType}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from zy_room
+        <where>
+            <if test="roomId != null">
+                and room_id = #{roomId}
+            </if>
+            <if test="communityId != null">
+                and community_id = #{communityId}
+            </if>
+            <if test="buildingId != null">
+                and building_id = #{buildingId}
+            </if>
+            <if test="unitId != null">
+                and unit_id = #{unitId}
+            </if>
+            <if test="roomLevel != null">
+                and room_level = #{roomLevel}
+            </if>
+            <if test="roomCode != null and roomCode != ''">
+                and room_code = #{roomCode}
+            </if>
+            <if test="roomName != null and roomName != ''">
+                and room_name = #{roomName}
+            </if>
+            <if test="roomAcreage != null">
+                and room_acreage = #{roomAcreage}
+            </if>
+            <if test="roomCost != null">
+                and room_cost = #{roomCost}
+            </if>
+            <if test="roomStatus != null and roomStatus != ''">
+                and room_status = #{roomStatus}
+            </if>
+            <if test="roomIsShop != null and roomIsShop != ''">
+                and room_is_shop = #{roomIsShop}
+            </if>
+            <if test="roomSCommercialHouse != null and roomSCommercialHouse != ''">
+                and room_s_commercial_house = #{roomSCommercialHouse}
+            </if>
+            <if test="roomHouseType != null and roomHouseType != ''">
+                and room_house_type = #{roomHouseType}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+        </where>
+    </select>
+
     <!--新增所有列-->
     <insert id="insertZyRoom" keyProperty="roomId" useGeneratedKeys="true">
         insert into zy_room(room_id, community_id, building_id, unit_id, room_level, room_code, room_name, room_acreage,
@@ -60,6 +189,52 @@
                 #{roomAcreage}, #{roomCost}, #{roomStatus}, #{roomIsShop}, #{roomSCommercialHouse}, #{roomHouseType},
                 #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
+
+    <insert id="insertBatch" keyProperty="roomId" useGeneratedKeys="true">
+        insert into zy_room(room_id, community_id, building_id, unit_id, room_level, room_code, room_name, room_acreage,
+        room_cost, room_status, room_is_shop, room_s_commercial_house, room_house_type, create_by, create_time,
+        update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.roomId}, #{entity.communityId}, #{entity.buildingId}, #{entity.unitId}, #{entity.roomLevel},
+            #{entity.roomCode}, #{entity.roomName}, #{entity.roomAcreage}, #{entity.roomCost}, #{entity.roomStatus},
+            #{entity.roomIsShop}, #{entity.roomSCommercialHouse}, #{entity.roomHouseType}, #{entity.createBy},
+            #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="roomId" useGeneratedKeys="true">
+        insert into zy_room(room_id, community_id, building_id, unit_id, room_level, room_code, room_name, room_acreage,
+        room_cost, room_status, room_is_shop, room_s_commercial_house, room_house_type, create_by, create_time,
+        update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.roomId}, #{entity.communityId}, #{entity.buildingId}, #{entity.unitId}, #{entity.roomLevel},
+            #{entity.roomCode}, #{entity.roomName}, #{entity.roomAcreage}, #{entity.roomCost}, #{entity.roomStatus},
+            #{entity.roomIsShop}, #{entity.roomSCommercialHouse}, #{entity.roomHouseType}, #{entity.createBy},
+            #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+        on duplicate key update
+        room_id = values(room_id),
+        community_id = values(community_id),
+        building_id = values(building_id),
+        unit_id = values(unit_id),
+        room_level = values(room_level),
+        room_code = values(room_code),
+        room_name = values(room_name),
+        room_acreage = values(room_acreage),
+        room_cost = values(room_cost),
+        room_status = values(room_status),
+        room_is_shop = values(room_is_shop),
+        room_s_commercial_house = values(room_s_commercial_house),
+        room_house_type = values(room_house_type),
+        create_by = values(create_by),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        remark = values(remark)
+    </insert>
+
     <!--通过主键修改数据-->
     <update id="updateZyRoom">
         update zy_room
@@ -118,7 +293,19 @@
         </set>
         where room_id = #{roomId}
     </update>
-    <!--查询房屋状态-->
+    <!--修改状态-->
+    <update id="updateRoomStatus">
+        update zy_room set room_status = 'has_give' where room_id = #{roomId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from zy_room
+        where room_id = #{roomId}
+    </delete>
+
+    <!--通过ID批量删除-->
     <select id="getStatus" resultType="java.lang.String">
         select room_status
         from zy_room
@@ -127,12 +314,6 @@
             #{id}
         </foreach>
     </select>
-    <!--通过主键删除某个-->
-    <delete id="deleteById">
-        delete
-        from zy_room
-        where room_id = #{roomId}
-    </delete>
 
     <!--通过ID批量删除-->
     <delete id="deleteZyRoom">
@@ -154,5 +335,29 @@
           and room_level = #{zyRoom.roomLevel}
           and room_name = #{zyRoom.roomName}
     </select>
+
+    <!--将实体类属性和数据库字段对应上-->
+    <!--    <resultMap type="com.zy_admin.community.dto.ZyRoomDto" id="ZyRoomDtoMap" autoMapping="true">-->
+    <!--        <collection property="zyRoomList" javaType="com.zy_admin.community.entity.ZyRoom" autoMapping="true">-->
+    <!--            <id column="room_id" property="roomId" javaType="INTEGER"/>-->
+    <!--        </collection>-->
+    <!--    </resultMap>-->
+
+    <!--查询指定行数据-->
+    <select id="selectRoleByLimit" parameterType="com.zy_admin.community.entity.ZyRoom" resultMap='ZyRoomMap'>
+        SELECT * FROM zy_room
+        <where>
+            <if test="unitId != null and unitId !=''">
+                and unit_id = #{unitId}
+            </if>
+            <if test="roomStatus != null and roomStatus !=''">
+                and room_status = #{roomStatus}
+            </if>
+            <if test="pageable.pageSize!=0">
+                limit #{pageable.index},#{pageable.pageSize}
+            </if>
+        </where>
+    </select>
+
 </mapper>
 

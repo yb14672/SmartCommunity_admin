@@ -57,5 +57,12 @@ public interface ZyRoomDao extends MPJBaseMapper<ZyRoom> {
      * @return 房屋集合
      */
     List<ZyRoom> checkRoomName(@Param("zyRoom") ZyRoom zyRoom);
+
+    /**
+     * 修改房屋状态
+     * @param roomId
+     * @return
+     */
+    int updateRoomStatus(String roomId);
 }
 

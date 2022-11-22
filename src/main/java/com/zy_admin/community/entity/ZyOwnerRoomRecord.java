@@ -19,7 +19,7 @@ public class ZyOwnerRoomRecord extends Model<ZyOwnerRoomRecord> {
     /**
      * 房屋绑定记录id
      */
-    private Long recordId;
+    private String recordId;
     /**
      * 房屋绑定id
      */
@@ -27,23 +27,23 @@ public class ZyOwnerRoomRecord extends Model<ZyOwnerRoomRecord> {
     /**
      * 小区id
      */
-    private Long communityId;
+    private String communityId;
     /**
      * 楼栋id
      */
-    private Long buildingId;
+    private String buildingId;
     /**
      * 单元id
      */
-    private Long unitId;
+    private String unitId;
     /**
      * 房间id
      */
-    private Long roomId;
+    private String roomId;
     /**
      * 业主id
      */
-    private Long ownerId;
+    private String ownerId;
     /**
      * 业主类型
      */

@@ -3,7 +3,6 @@ package com.zy_admin.community.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.community.entity.ZyOwnerRoom;
-import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.util.Result;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +27,7 @@ public interface ZyOwnerRoomService extends IService<ZyOwnerRoom> {
      * @param zyOwnerRoom
      * @return
      */
-    Result updateOwnerRoomStatus(ZyOwnerRoom zyOwnerRoom, ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception;
+    Result updateOwnerRoomStatus(ZyOwnerRoom zyOwnerRoom, String recordAuditOpinion, HttpServletRequest request) throws Exception;
 
 }
 
