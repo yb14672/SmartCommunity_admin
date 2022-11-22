@@ -25,29 +25,41 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
+ * zy所有者impl客房服务
  * 房屋绑定表 (ZyOwnerRoom)表服务实现类
  *
  * @author makejava
+ * @date 2022/11/22
  * @since 2022-11-01 19:49:02
  */
 @Service("zyOwnerRoomService")
 public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerRoom> implements ZyOwnerRoomService {
 
+    /**
+     * 系统用户刀
+     */
     @Resource
     private SysUserDao sysUserDao;
 
+    /**
+     * zy主人房间记录道
+     */
     @Resource
     private ZyOwnerRoomRecordDao zyOwnerRoomRecordDao;
 
+    /**
+     * 雪花经理
+     */
     @Autowired
     private SnowflakeManager snowflakeManager;
 
+
     /**
-     * 查询所有业主审核的和分页
+     * 选择所有主人房间限制
      *
-     * @param zyOwnerRoom
-     * @param pageable
-     * @return
+     * @param zyOwnerRoom 业主房间
+     * @param pageable    可分页
+     * @return {@link Result}
      */
     @Override
     public Result selectAllOwnerRoomLimit(ZyOwnerRoom zyOwnerRoom, Pageable pageable) {
@@ -79,10 +91,14 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     }
 
     /**
+     * 更新主人房间状态绑定
      * 修改业主审核的状态为绑定
      *
-     * @param zyOwnerRoom
-     * @return
+     * @param zyOwnerRoom       zy主人房间
+     * @param zyOwnerRoomRecord zy主人房间记录
+     * @param request           请求
+     * @return {@link Result}
+     * @throws Exception 异常
      */
     @Override
     public Result updateOwnerRoomStatusBinding(@RequestBody ZyOwnerRoom zyOwnerRoom, ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception {
@@ -94,6 +110,17 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         String id = JwtUtil.getMemberIdByJwtToken(request);
         zyOwnerRoomRecord.setCreateBy(sysUserDao.getUserById(id).getUserName());
         zyOwnerRoomRecord.setOwnerType("yz");
+        zyOwnerRoomRecord.setOwnerRoomId(zyOwnerRoom.getOwnerRoomId());
+//        zyOwnerRoomRecord.setCommunityId(Long.valueOf(zyOwnerRoom.getCommunityId()));
+//        zyOwnerRoomRecord.setBuildingId(Long.valueOf(zyOwnerRoom.getBuildingId()));
+//        zyOwnerRoomRecord.setUnitId(Long.valueOf(zyOwnerRoom.getUnitId()));
+//        zyOwnerRoomRecord.setRoomId(Long.valueOf(zyOwnerRoom.getRoomId()));
+//        zyOwnerRoomRecord.setOwnerId(Long.valueOf(zyOwnerRoom.getOwnerId()));
+        zyOwnerRoomRecord.setRoomStatus(zyOwnerRoom.getRoomStatus());
+//        record_audit_opinion 审核意见 x
+        String id1 = JwtUtil.getMemberIdByJwtToken(request);
+        zyOwnerRoomRecord.setUpdateBy(sysUserDao.getUserById(id1).getUserName());
+        zyOwnerRoomRecord.setUpdateTime(LocalDateTime.now().toString());
 
         zyOwnerRoomRecordDao.insert(zyOwnerRoomRecord);
         //修改时间
@@ -104,10 +131,14 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     }
 
     /**
+     * 更新拒绝主人房间状态
      * 修改业主审核的状态为审核失败
      *
-     * @param zyOwnerRoom
-     * @return
+     * @param zyOwnerRoom       zy主人房间
+     * @param zyOwnerRoomRecord zy主人房间记录
+     * @param request           请求
+     * @return {@link Result}
+     * @throws Exception 异常
      */
     @Override
     public Result updateOwnerRoomStatusReject(ZyOwnerRoom zyOwnerRoom,ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception {
