@@ -60,13 +60,6 @@ public interface ZyUnitDao extends BaseMapper<ZyUnit> {
     int updateUnit(ZyUnit zyUnit);
 
     /**
-     * 根据单元id查单元住户
-     * @param unitIds
-     * @return
-     */
-    List<String> selectAllByUnitByIds(@Param("unitIds") List<String> unitIds);
-
-    /**
      * 删除单元
      * @param unitIds
      */

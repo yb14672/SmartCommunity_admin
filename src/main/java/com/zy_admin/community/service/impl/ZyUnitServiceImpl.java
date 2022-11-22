@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyBuildingDao;
+import com.zy_admin.community.dao.ZyRoomDao;
 import com.zy_admin.community.dao.ZyUnitDao;
 import com.zy_admin.community.dto.UnitDto;
 import com.zy_admin.community.dto.UnitListDto;
 import com.zy_admin.community.entity.ZyBuilding;
+import com.zy_admin.community.entity.ZyRoom;
 import com.zy_admin.community.entity.ZyUnit;
 import com.zy_admin.community.service.ZyUnitService;
 import com.zy_admin.util.ObjUtil;
@@ -30,6 +32,9 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
 
     @Resource
     private ZyBuildingDao zyBuildingDao;
+
+    @Resource
+    private ZyRoomDao zyRoomDao;
 
     /**
      * 单元楼分页查询
@@ -138,7 +143,7 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
     @Override
     public Result deleteUnit(List<String> unitIds) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        List<String> list = this.baseMapper.selectAllByUnitByIds(unitIds);
+        List<ZyRoom> list = this.zyRoomDao.getRoomByUnitId(unitIds);
         if (list.size() > 0) {
             result.setMeta(ResultTool.fail(ResultCode.UNIT_HAVE_PEOPLE));
         } else {

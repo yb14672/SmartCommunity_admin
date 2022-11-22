@@ -51,14 +51,14 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
     public Result getBuildingAndUnitListByCommunityId(String communityId) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //获取到所有的楼栋
-        List<BuildUnitDto> buildingAndUnitListByCommunityId = this.baseMapper.getBuildingListByCommunityId(communityId);
+        List<ZyBuilding> buildingList = this.baseMapper.getBuildingLists(communityId);
         //获取所有的单元
         List<ZyUnit> unitList = this.zyUnitDao.getAll(communityId);
         //将其整合为树
-        BuildAndUnit buildAndUnit = new BuildAndUnit(buildingAndUnitListByCommunityId, unitList);
-        buildingAndUnitListByCommunityId = buildAndUnit.build(buildingAndUnitListByCommunityId, unitList);
-        if(buildingAndUnitListByCommunityId.size() != 0){
-            result.setData(buildingAndUnitListByCommunityId);
+        BuildAndUnit buildAndUnit = new BuildAndUnit(buildingList, unitList);
+        List<BuildUnitDto> build = buildAndUnit.build();
+        if(build.size() != 0){
+            result.setData(build);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;

@@ -15,6 +15,13 @@ import java.util.List;
  */
 public interface ZyRoomDao extends MPJBaseMapper<ZyRoom> {
     /**
+     * 根据单元ID列表查询所有房屋
+     * @param unitIds
+     * @return
+     */
+    List<ZyRoom> getRoomByUnitId(@Param("unitIds") List<String> unitIds);
+
+    /**
      * 新增
      * @param zyRoom
      * @return
@@ -27,6 +34,13 @@ public interface ZyRoomDao extends MPJBaseMapper<ZyRoom> {
      * @return
      */
     int updateZyRoom(ZyRoom zyRoom);
+
+    /**
+     * 根据ID列表查询所有的状态
+     * @param idList
+     * @return
+     */
+    List<String> getStatus(@Param("idList") ArrayList<String> idList);
 
     /**
      * 删除
@@ -47,6 +61,6 @@ public interface ZyRoomDao extends MPJBaseMapper<ZyRoom> {
      * @param zyRoom
      * @return
      */
-    List<ZyRoom> checkRoomName(ZyRoom zyRoom);
+    List<ZyRoom> checkRoomName(@Param("zyRoom") ZyRoom zyRoom);
 }
 
