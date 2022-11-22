@@ -55,7 +55,11 @@ public class ZyOwnerRoomController extends ApiController {
 
     /**
      * 修改业主审核的状态为绑定
+     * @param zyOwnerRoom
+     * @param zyOwnerRoomRecord
+     * @param request
      * @return
+     * @throws Exception
      */
     @PutMapping("/updateOwnerRoomStatusBinding")
     @Transactional(rollbackFor = Exception.class)

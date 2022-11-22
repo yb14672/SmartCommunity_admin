@@ -36,8 +36,7 @@ public class ZyOwnerRoomRecordController extends ApiController {
      */
     @GetMapping("/selectZyOwnerRoomRecord")
     public Result selectZyOwnerRoomRecord(String zyOwnerRoomRecordId){
-        Result result = zyOwnerRoomRecordService.selectZyOwnerRoomRecord(zyOwnerRoomRecordId);
-        return result;
+        return zyOwnerRoomRecordService.selectZyOwnerRoomRecord(zyOwnerRoomRecordId);
     }
 
     /**

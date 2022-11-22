@@ -157,7 +157,7 @@
         orr.create_by_id,orr.record_audit_type,orr.remark
 				FROM zy_owner_room_record orr
         left JOIN zy_owner o on orr.owner_id = o.owner_id
-        where orr.owner_room_id =  #{zyOwnerRoomRecordId}
+        where orr.owner_room_id = #{zyOwnerRoomRecordId}
     </select>
 
     <!--新增所有列-->
