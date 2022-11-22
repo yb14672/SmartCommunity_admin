@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomRecordService;
+import com.zy_admin.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,6 +28,16 @@ public class ZyOwnerRoomRecordController extends ApiController {
      */
     @Resource
     private ZyOwnerRoomRecordService zyOwnerRoomRecordService;
+
+    /**
+     * 审核记录
+     * @param zyOwnerRoomRecordId
+     * @return
+     */
+    @GetMapping("/selectZyOwnerRoomRecord")
+    public Result selectZyOwnerRoomRecord(String zyOwnerRoomRecordId){
+        return zyOwnerRoomRecordService.selectZyOwnerRoomRecord(zyOwnerRoomRecordId);
+    }
 
     /**
      * 分页查询所有数据

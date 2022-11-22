@@ -20,10 +20,10 @@ public interface SysDictDataService extends IService<SysDictData> {
 
     /**
      * 根据字典类型查询所有数据
-     * @param deptType
+     * @param dictType
      * @return
      */
-    public Result getDict(String deptType);
+    public Result getDict(String dictType);
 
     /**
      * 分页查询所有数据

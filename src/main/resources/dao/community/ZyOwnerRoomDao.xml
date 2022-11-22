@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.community.dao.ZyOwnerRoomDao">
+
+    <resultMap type="com.zy_admin.community.entity.ZyOwnerRoom" id="ZyOwnerRoomMap">
+        <result property="ownerRoomId" column="owner_room_id" jdbcType="INTEGER"/>
+        <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+        <result property="buildingId" column="building_id" jdbcType="INTEGER"/>
+        <result property="unitId" column="unit_id" jdbcType="INTEGER"/>
+        <result property="roomId" column="room_id" jdbcType="INTEGER"/>
+        <result property="ownerId" column="owner_id" jdbcType="INTEGER"/>
+        <result property="ownerType" column="owner_type" jdbcType="VARCHAR"/>
+        <result property="roomStatus" column="room_status" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ZyOwnerRoomMap">
+        select
+          owner_room_id, community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status, create_by, create_time, update_by, update_time, remark
+        from zy_owner_room
+        where owner_room_id = #{ownerRoomId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ZyOwnerRoomMap">
+        select
+        owner_room_id, community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status, create_by,
+        create_time, update_by, update_time, remark
+        from zy_owner_room
+        <where>
+            <if test="ownerRoomId != null">
+                and owner_room_id = #{ownerRoomId}
+            </if>
+            <if test="communityId != null">
+                and community_id = #{communityId}
+            </if>
+            <if test="buildingId != null">
+                and building_id = #{buildingId}
+            </if>
+            <if test="unitId != null">
+                and unit_id = #{unitId}
+            </if>
+            <if test="roomId != null">
+                and room_id = #{roomId}
+            </if>
+            <if test="ownerId != null">
+                and owner_id = #{ownerId}
+            </if>
+            <if test="ownerType != null and ownerType != ''">
+                and owner_type = #{ownerType}
+            </if>
+            <if test="roomStatus != null and roomStatus != ''">
+                and room_status = #{roomStatus}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+        </where>
+        <if test="pageable.pageSize!=null">
+            limit #{pageable.index}, #{pageable.pageSize}
+        </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from zy_owner_room  zor
+        left join zy_community zc on zor.community_id = zc.community_id
+        left join zy_building zb on zor.building_id = zb.building_id
+        LEFT JOIN zy_unit zu on zor.unit_id = zu.unit_id
+        LEFT JOIN zy_room zr on zor.room_id = zr.room_id
+        LEFT JOIN zy_owner zo on zor.owner_id = zo.owner_id
+        <where>
+            <if test="zyOwnerRoom.ownerRoomId != null">
+                and zor.owner_room_id = #{zyOwnerRoom.ownerRoomId}
+            </if>
+            <if test="zyOwnerRoom.communityId != null">
+                and zor.community_id = #{zyOwnerRoom.communityId}
+            </if>
+            <if test="zyOwnerRoom.buildingId != null">
+                and zor.building_id = #{zyOwnerRoom.buildingId}
+            </if>
+            <if test="zyOwnerRoom.unitId != null">
+                and zor.unit_id = #{zyOwnerRoom.unitId}
+            </if>
+            <if test="zyOwnerRoom.roomId != null">
+                and zor.room_id = #{zyOwnerRoom.roomId}
+            </if>
+            <if test="zyOwnerRoom.ownerId != null">
+                and zor.owner_id = #{zyOwnerRoom.ownerId}
+            </if>
+            <if test="zyOwnerRoom.ownerType != null and zyOwnerRoom.ownerType != ''">
+                and zor.owner_type = #{zyOwnerRoom.ownerType}
+            </if>
+            <if test="zyOwnerRoom.roomStatus != null and zyOwnerRoom.roomStatus != ''">
+                and zor.room_status = #{zyOwnerRoom.roomStatus}
+            </if>
+            <if test="zyOwnerRoom.createBy != null and zyOwnerRoom.createBy != ''">
+                and zor.create_by = #{zyOwnerRoom.createBy}
+            </if>
+            <if test="zyOwnerRoom.createTime != null">
+                and zor.create_time = #{zyOwnerRoom.createTime}
+            </if>
+            <if test="zyOwnerRoom.updateBy != null and zyOwnerRoom.updateBy != ''">
+                and zor.update_by = #{zyOwnerRoom.updateBy}
+            </if>
+            <if test="zyOwnerRoom.updateTime != null">
+                and zor.update_time = #{zyOwnerRoom.updateTime}
+            </if>
+            <if test="zyOwnerRoom.remark != null and zyOwnerRoom.remark != ''">
+                and zor.remark = #{zyOwnerRoom.remark}
+            </if>
+        </where>
+    </select>
+
+    <!--查询所有业主审核的和分页-->
+    <select id="selectAllOwnerRoomLimit" resultType="com.zy_admin.community.dto.ZyOwnerRoomDto">
+        select zor.owner_room_id,zc.community_name,zb.building_name,zu.unit_name,zr.room_name,zo.owner_real_name,
+        zor.owner_type,zor.room_status,zor.remark
+        from zy_owner_room zor
+        left join zy_community zc on zor.community_id = zc.community_id
+        left join zy_building zb on zor.building_id = zb.building_id
+        LEFT JOIN zy_unit zu on zor.unit_id = zu.unit_id
+        LEFT JOIN zy_room zr on zor.room_id = zr.room_id
+        LEFT JOIN zy_owner zo on zor.owner_id = zo.owner_id
+        <where>
+            <if test="zyOwnerRoom.roomStatus!=null and zyOwnerRoom.roomStatus!=''">
+                and zor.room_status = #{zyOwnerRoom.roomStatus}
+            </if>
+        </where>
+        <if test="pageable.pageSize!=null">
+            limit #{pageable.index},#{pageable.pageSize}
+        </if>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="ownerRoomId" useGeneratedKeys="true">
+        insert into zy_owner_room(community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status, create_by, create_time, update_by, update_time, remark)
+        values (#{communityId}, #{buildingId}, #{unitId}, #{roomId}, #{ownerId}, #{ownerType}, #{roomStatus}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="ownerRoomId" useGeneratedKeys="true">
+        insert into zy_owner_room(community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status,
+        create_by, create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.communityId}, #{entity.buildingId}, #{entity.unitId}, #{entity.roomId}, #{entity.ownerId},
+            #{entity.ownerType}, #{entity.roomStatus}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy},
+            #{entity.updateTime}, #{entity.remark})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="ownerRoomId" useGeneratedKeys="true">
+        insert into zy_owner_room(community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status,
+        create_by, create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.communityId}, #{entity.buildingId}, #{entity.unitId}, #{entity.roomId}, #{entity.ownerId},
+            #{entity.ownerType}, #{entity.roomStatus}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy},
+            #{entity.updateTime}, #{entity.remark})
+        </foreach>
+        on duplicate key update
+        community_id = values(community_id),
+        building_id = values(building_id),
+        unit_id = values(unit_id),
+        room_id = values(room_id),
+        owner_id = values(owner_id),
+        owner_type = values(owner_type),
+        room_status = values(room_status),
+        create_by = values(create_by),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        remark = values(remark)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="updateOwnerRoomStatus">
+        update zy_owner_room
+        <set>
+            <if test="zyOwnerRoom.communityId != null">
+                community_id = #{zyOwnerRoom.communityId},
+            </if>
+            <if test="zyOwnerRoom.buildingId != null">
+                building_id = #{zyOwnerRoom.buildingId},
+            </if>
+            <if test="zyOwnerRoom.unitId != null">
+                unit_id = #{zyOwnerRoom.unitId},
+            </if>
+            <if test="zyOwnerRoom.roomId != null">
+                room_id = #{zyOwnerRoom.roomId},
+            </if>
+            <if test="zyOwnerRoom.ownerId != null">
+                owner_id = #{zyOwnerRoom.ownerId},
+            </if>
+            <if test="zyOwnerRoom.ownerType != null and zyOwnerRoom.ownerType != ''">
+                owner_type = #{zyOwnerRoom.ownerType},
+            </if>
+            <if test="zyOwnerRoom.roomStatus != null and zyOwnerRoom.roomStatus != ''">
+                room_status = #{zyOwnerRoom.roomStatus},
+            </if>
+            <if test="zyOwnerRoom.createBy != null and zyOwnerRoom.createBy != ''">
+                create_by = #{zyOwnerRoom.createBy},
+            </if>
+            <if test="zyOwnerRoom.createTime != null">
+                create_time = #{zyOwnerRoom.createTime},
+            </if>
+            <if test="zyOwnerRoom.updateBy != null and zyOwnerRoom.updateBy != ''">
+                update_by = #{zyOwnerRoom.updateBy},
+            </if>
+            <if test="zyOwnerRoom.updateTime != null">
+                update_time = #{zyOwnerRoom.updateTime},
+            </if>
+            <if test="zyOwnerRoom.remark != null and zyOwnerRoom.remark != ''">
+                remark = #{zyOwnerRoom.remark},
+            </if>
+        </set>
+        where owner_room_id = #{zyOwnerRoom.ownerRoomId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from zy_owner_room where owner_room_id = #{ownerRoomId}
+    </delete>
+
+</mapper>
+

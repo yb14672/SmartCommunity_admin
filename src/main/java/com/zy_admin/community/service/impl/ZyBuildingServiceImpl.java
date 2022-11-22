@@ -54,7 +54,7 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
         //将其整合为树
         BuildAndUnit buildAndUnit = new BuildAndUnit(buildingList, unitList);
         List<BuildUnitDto> build = buildAndUnit.build();
-        if(build.size() != 0){
+        if(!build.isEmpty()){
             result.setData(build);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
@@ -200,7 +200,7 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
         Long aLong = this.baseMapper.selectChild(idList);
         //判断下面有没有子集
         if (aLong > 0) {
-            result.setMeta(ResultTool.fail(ResultCode.BUILD_HAVA_CHILD));
+            result.setMeta(ResultTool.fail(ResultCode.BUILD_HAVE_CHILD));
         } else {
             //判断是单个
             int i = this.baseMapper.deleteByIdList(idList);

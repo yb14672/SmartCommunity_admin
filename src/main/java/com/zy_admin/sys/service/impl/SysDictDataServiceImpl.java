@@ -35,10 +35,10 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
     private SysDictTypeDao sysDictTypeDao;
 
     @Override
-    public Result getDict(String deptType) {
+    public Result getDict(String dictType) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
-            List<SysDictData> dictDataList = this.baseMapper.getDict(deptType);
+            List<SysDictData> dictDataList = this.baseMapper.getDict(dictType);
             result.setData(dictDataList);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;

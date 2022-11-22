@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.community.dao.ZyOwnerRoomRecordDao">
+
+    <resultMap type="com.zy_admin.community.entity.ZyOwnerRoomRecord" id="ZyOwnerRoomRecordMap">
+        <result property="recordId" column="record_id" jdbcType="INTEGER"/>
+        <result property="ownerRoomId" column="owner_room_id" jdbcType="VARCHAR"/>
+        <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+        <result property="buildingId" column="building_id" jdbcType="INTEGER"/>
+        <result property="unitId" column="unit_id" jdbcType="INTEGER"/>
+        <result property="roomId" column="room_id" jdbcType="INTEGER"/>
+        <result property="ownerId" column="owner_id" jdbcType="INTEGER"/>
+        <result property="ownerType" column="owner_type" jdbcType="VARCHAR"/>
+        <result property="roomStatus" column="room_status" jdbcType="VARCHAR"/>
+        <result property="recordAuditOpinion" column="record_audit_opinion" jdbcType="VARCHAR"/>
+        <result property="recordAuditType" column="record_audit_type" jdbcType="VARCHAR"/>
+        <result property="createById" column="create_by_id" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ZyOwnerRoomRecordMap">
+        select
+          record_id, owner_room_id, community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status, record_audit_opinion, record_audit_type, create_by_id, create_by, create_time, update_by, update_time, remark
+        from zy_owner_room_record
+        where record_id = #{recordId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ZyOwnerRoomRecordMap">
+        select
+        record_id, owner_room_id, community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status,
+        record_audit_opinion, record_audit_type, create_by_id, create_by, create_time, update_by, update_time, remark
+        from zy_owner_room_record
+        <where>
+            <if test="recordId != null">
+                and record_id = #{recordId}
+            </if>
+            <if test="ownerRoomId != null and ownerRoomId != ''">
+                and owner_room_id = #{ownerRoomId}
+            </if>
+            <if test="communityId != null">
+                and community_id = #{communityId}
+            </if>
+            <if test="buildingId != null">
+                and building_id = #{buildingId}
+            </if>
+            <if test="unitId != null">
+                and unit_id = #{unitId}
+            </if>
+            <if test="roomId != null">
+                and room_id = #{roomId}
+            </if>
+            <if test="ownerId != null">
+                and owner_id = #{ownerId}
+            </if>
+            <if test="ownerType != null and ownerType != ''">
+                and owner_type = #{ownerType}
+            </if>
+            <if test="roomStatus != null and roomStatus != ''">
+                and room_status = #{roomStatus}
+            </if>
+            <if test="recordAuditOpinion != null and recordAuditOpinion != ''">
+                and record_audit_opinion = #{recordAuditOpinion}
+            </if>
+            <if test="recordAuditType != null and recordAuditType != ''">
+                and record_audit_type = #{recordAuditType}
+            </if>
+            <if test="createById != null">
+                and create_by_id = #{createById}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from zy_owner_room_record
+        <where>
+            <if test="recordId != null">
+                and record_id = #{recordId}
+            </if>
+            <if test="ownerRoomId != null and ownerRoomId != ''">
+                and owner_room_id = #{ownerRoomId}
+            </if>
+            <if test="communityId != null">
+                and community_id = #{communityId}
+            </if>
+            <if test="buildingId != null">
+                and building_id = #{buildingId}
+            </if>
+            <if test="unitId != null">
+                and unit_id = #{unitId}
+            </if>
+            <if test="roomId != null">
+                and room_id = #{roomId}
+            </if>
+            <if test="ownerId != null">
+                and owner_id = #{ownerId}
+            </if>
+            <if test="ownerType != null and ownerType != ''">
+                and owner_type = #{ownerType}
+            </if>
+            <if test="roomStatus != null and roomStatus != ''">
+                and room_status = #{roomStatus}
+            </if>
+            <if test="recordAuditOpinion != null and recordAuditOpinion != ''">
+                and record_audit_opinion = #{recordAuditOpinion}
+            </if>
+            <if test="recordAuditType != null and recordAuditType != ''">
+                and record_audit_type = #{recordAuditType}
+            </if>
+            <if test="createById != null">
+                and create_by_id = #{createById}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+        </where>
+    </select>
+
+    <resultMap type="com.zy_admin.community.dto.ZyOwnerRoomRecordDto" id="OwnerRoomRecordDtoMap">
+        <result property="ownerRealName" column="owner_real_name" jdbcType="INTEGER"/>
+        <result property="ownerType" column="owner_type" jdbcType="VARCHAR"/>
+        <result property="roomStatus" column="room_status" jdbcType="VARCHAR"/>
+        <result property="recordAuditOpinion" column="record_audit_opinion" jdbcType="VARCHAR"/>
+        <result property="recordAuditType" column="record_audit_type" jdbcType="VARCHAR"/>
+        <result property="createById" column="create_by_id" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <!--审核记录-->
+    <select id="selectZyOwnerRoomRecord" resultMap="OwnerRoomRecordDtoMap">
+        SELECT o.owner_real_name,orr.owner_type,orr.room_status,orr.record_audit_opinion,
+        orr.create_by_id,orr.record_audit_type,orr.remark
+				FROM zy_owner_room_record orr
+        left JOIN zy_owner o on orr.owner_id = o.owner_id
+        where orr.owner_room_id = #{zyOwnerRoomRecordId}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="recordId" useGeneratedKeys="true">
+        insert into zy_owner_room_record (record_id,owner_room_id, community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status, record_audit_opinion, record_audit_type, create_by_id, create_by, create_time, update_by, update_time, remark)
+        values (#{recordId},#{ownerRoomId}, #{communityId}, #{buildingId}, #{unitId}, #{roomId}, #{ownerId}, #{ownerType}, #{roomStatus}, #{recordAuditOpinion}, #{recordAuditType}, #{createById}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="recordId" useGeneratedKeys="true">
+        insert into zy_owner_room_record(owner_room_id, community_id, building_id, unit_id, room_id, owner_id,
+        owner_type, room_status, record_audit_opinion, record_audit_type, create_by_id, create_by, create_time,
+        update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.ownerRoomId}, #{entity.communityId}, #{entity.buildingId}, #{entity.unitId}, #{entity.roomId},
+            #{entity.ownerId}, #{entity.ownerType}, #{entity.roomStatus}, #{entity.recordAuditOpinion},
+            #{entity.recordAuditType}, #{entity.createById}, #{entity.createBy}, #{entity.createTime},
+            #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="recordId" useGeneratedKeys="true">
+        insert into zy_owner_room_record(owner_room_id, community_id, building_id, unit_id, room_id, owner_id,
+        owner_type, room_status, record_audit_opinion, record_audit_type, create_by_id, create_by, create_time,
+        update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.ownerRoomId}, #{entity.communityId}, #{entity.buildingId}, #{entity.unitId}, #{entity.roomId},
+            #{entity.ownerId}, #{entity.ownerType}, #{entity.roomStatus}, #{entity.recordAuditOpinion},
+            #{entity.recordAuditType}, #{entity.createById}, #{entity.createBy}, #{entity.createTime},
+            #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+        on duplicate key update
+        owner_room_id = values(owner_room_id),
+        community_id = values(community_id),
+        building_id = values(building_id),
+        unit_id = values(unit_id),
+        room_id = values(room_id),
+        owner_id = values(owner_id),
+        owner_type = values(owner_type),
+        room_status = values(room_status),
+        record_audit_opinion = values(record_audit_opinion),
+        record_audit_type = values(record_audit_type),
+        create_by_id = values(create_by_id),
+        create_by = values(create_by),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        remark = values(remark)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update zy_owner_room_record
+        <set>
+            <if test="ownerRoomId != null and ownerRoomId != ''">
+                owner_room_id = #{ownerRoomId},
+            </if>
+            <if test="communityId != null">
+                community_id = #{communityId},
+            </if>
+            <if test="buildingId != null">
+                building_id = #{buildingId},
+            </if>
+            <if test="unitId != null">
+                unit_id = #{unitId},
+            </if>
+            <if test="roomId != null">
+                room_id = #{roomId},
+            </if>
+            <if test="ownerId != null">
+                owner_id = #{ownerId},
+            </if>
+            <if test="ownerType != null and ownerType != ''">
+                owner_type = #{ownerType},
+            </if>
+            <if test="roomStatus != null and roomStatus != ''">
+                room_status = #{roomStatus},
+            </if>
+            <if test="recordAuditOpinion != null and recordAuditOpinion != ''">
+                record_audit_opinion = #{recordAuditOpinion},
+            </if>
+            <if test="recordAuditType != null and recordAuditType != ''">
+                record_audit_type = #{recordAuditType},
+            </if>
+            <if test="createById != null">
+                create_by_id = #{createById},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where record_id = #{recordId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from zy_owner_room_record where record_id = #{recordId}
+    </delete>
+
+</mapper>
+
