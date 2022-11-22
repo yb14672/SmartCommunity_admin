@@ -95,17 +95,20 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
      * 修改业主审核的状态
      *
      * @param zyOwnerRoom       zy主人房间
-     * @param zyOwnerRoomRecord zy主人房间记录
+     * @param recordAuditOpinion 审核意见
      * @param request           请求
      * @return {@link Result}
      * @throws Exception 异常
      */
     @Override
-    public Result updateOwnerRoomStatus(@RequestBody ZyOwnerRoom zyOwnerRoom, ZyOwnerRoomRecord zyOwnerRoomRecord, HttpServletRequest request) throws Exception {
+    public Result updateOwnerRoomStatus(@RequestBody ZyOwnerRoom zyOwnerRoom, String recordAuditOpinion, HttpServletRequest request) throws Exception {
         //默认给失败
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        ZyOwnerRoomRecord zyOwnerRoomRecord=new ZyOwnerRoomRecord();
+        zyOwnerRoomRecord.setRecordAuditOpinion(recordAuditOpinion);
+        zyOwnerRoomRecord.setOwnerId(zyOwnerRoom.getOwnerId());
         //id
-        zyOwnerRoomRecord.setRecordId(snowflakeManager.nextId());
+        zyOwnerRoomRecord.setRecordId(snowflakeManager.nextId()+"");
         //创建时间
         zyOwnerRoomRecord.setCreateTime(LocalDateTime.now().toString());
         String id = JwtUtil.getMemberIdByJwtToken(request);
