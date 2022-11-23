@@ -23,12 +23,12 @@ public class ZyCommunityInteraction extends Model<ZyCommunityInteraction> {
      * id
      */
     @ApiModelProperty("id")
-    private Long interactionId;
+    private String interactionId;
     /**
      * 小区ID
      */
     @ApiModelProperty("小区ID")
-    private Long communityId;
+    private String communityId;
     /**
      * 创建人ID
      */
@@ -68,6 +68,6 @@ public class ZyCommunityInteraction extends Model<ZyCommunityInteraction> {
      * 创建人ID
      */
     @ApiModelProperty("创建人ID")
-    private Long userId;
+    private String userId;
 }
 

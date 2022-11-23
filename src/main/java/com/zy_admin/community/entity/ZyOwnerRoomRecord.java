@@ -78,7 +78,7 @@ public class ZyOwnerRoomRecord extends Model<ZyOwnerRoomRecord> {
      * 创建人id
      */
     @ApiModelProperty("创建人id")
-    private Long createById;
+    private String createById;
     /**
      * 创建者
      */
