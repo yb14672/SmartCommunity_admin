@@ -5,7 +5,7 @@ import com.zy_admin.sys.entity.SysLogininfor;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysLogininforService;
 import com.zy_admin.util.IpUtil;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.OperatingSystem;
 import eu.bitwalker.useragentutils.UserAgent;
@@ -67,7 +67,6 @@ public class LogoutAspect {
         //设置参数
         //登录账号
         SysUser user = (SysUser)result.getData();
-        System.out.println(result.getData());
         sysLogininfor.setUserName(user.getUserName());
         //登录IP
         sysLogininfor.setIpaddr(ip);

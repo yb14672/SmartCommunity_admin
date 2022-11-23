@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy_admin.community.dao.ZyRoomDao">
-
     <resultMap type="com.zy_admin.community.entity.ZyRoom" id="ZyRoomMap">
         <result property="roomId" column="room_id" jdbcType="INTEGER"/>
         <result property="communityId" column="community_id" jdbcType="INTEGER"/>
@@ -22,15 +21,14 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
-
+<!--根据单元id获取房屋-->
     <select id="getRoomByUnitId" resultType="com.zy_admin.community.entity.ZyRoom">
         select * from zy_room WHERE unit_id in
         <foreach collection="unitIds" item="unitId" separator="," open="(" close=")">
             #{unitId}
         </foreach>
     </select>
-
-    <!--查询单个-->
+    <!--根据房屋id查询单个-->
     <select id="getZyRoom" resultMap="ZyRoomMap">
         select room_id,
                community_id,

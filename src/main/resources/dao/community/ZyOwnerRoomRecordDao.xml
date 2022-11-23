@@ -151,6 +151,17 @@
         </where>
     </select>
 
+    <resultMap type="com.zy_admin.community.dto.ZyOwnerRoomRecordDto" id="OwnerRoomRecordDtoMap">
+        <result property="ownerRealName" column="owner_real_name" jdbcType="INTEGER"/>
+        <result property="ownerType" column="owner_type" jdbcType="VARCHAR"/>
+        <result property="roomStatus" column="room_status" jdbcType="VARCHAR"/>
+        <result property="recordAuditOpinion" column="record_audit_opinion" jdbcType="VARCHAR"/>
+        <result property="recordAuditType" column="record_audit_type" jdbcType="VARCHAR"/>
+        <result property="createById" column="create_by_id" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
     <!--审核记录-->
     <select id="selectZyOwnerRoomRecord" resultType="com.zy_admin.community.dto.ZyOwnerRoomRecordDto">
         SELECT o.owner_real_name,orr.owner_type,orr.room_status,orr.record_audit_opinion,orr.update_by,

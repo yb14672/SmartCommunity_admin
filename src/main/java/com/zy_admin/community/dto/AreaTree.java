@@ -1,8 +1,7 @@
-package com.zy_admin.util;
+package com.zy_admin.community.dto;
 
-import com.zy_admin.community.dto.AreaDto;
-import com.zy_admin.sys.entity.MenuTree;
-import com.zy_admin.sys.entity.SysArea;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +11,14 @@ import java.util.List;
  *
  * @author fangqian
  */
+@ApiModel(description = "地区三级树形结构")
 public class AreaTree {
-
     /**
      * 流程：数据库查出的菜单记录装在承载菜单的列表中
      * 构建树（获取根节点，遍历根节点，对每一个根节点构建子树）---得到最终树形菜单
      * 承载菜单的列表
      */
+    @ApiModelProperty("子集地区")
     private List<AreaDto> areaList = new ArrayList<>();
 
     public AreaTree(List<AreaDto> areaList) {

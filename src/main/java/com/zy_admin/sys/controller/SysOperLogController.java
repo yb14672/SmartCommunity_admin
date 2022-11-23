@@ -1,40 +1,36 @@
 package com.zy_admin.sys.controller;
-
-
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
-import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.baomidou.mybatisplus.extension.api.R;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.service.SysOperLogService;
-import com.zy_admin.util.Result;
-import com.zy_admin.util.ExcelUtil;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * 操作日志记录(SysOperLog)表控制层
  *
  * @author makejava
  * @since 2022-11-01 19:49:39
  */
+@Api(value = "sysOperLog", tags = {"操作日志记录(SysOperLog)表控制层"})
 @RestController
 @RequestMapping("sysOperLog")
 public class SysOperLogController extends ApiController {
@@ -43,18 +39,23 @@ public class SysOperLogController extends ApiController {
      */
     @Resource
     private SysOperLogService sysOperLogService;
-
     /**
      * 批量导出操作日志数据
-     *
-     * @param operLogIds
-     * @param response
+     * @param operLogIds 操作日志主键
+     * @param response 前端响应
+     * @return 导出操作日志结果集
+     * @throws IOException 抛出数据流异常
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<Integer>", name = "operLogIds", value = "操作日志主键", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "前端响应", required = true)
+    })
+    @ApiOperation(value = "批量导出操作日志数据", notes = "批量导出操作日志数据", httpMethod = "GET")
     @MyLog(title = "操作日志", optParam = "#{operLogIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
     public Result getExcel(@RequestParam("operLogIds") ArrayList<Integer> operLogIds, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        List<SysOperLog> sysOperLogList = new ArrayList<>();
+        List<SysOperLog> sysOperLogList;
         //判断操作日志的集合为空或者长度为0.则全部导出。
         if (operLogIds == null || operLogIds.size() == 0) {
             sysOperLogList = sysOperLogService.getOperLogList();
@@ -67,7 +68,6 @@ public class SysOperLogController extends ApiController {
         response.setCharacterEncoding("utf-8");
         response.setHeader("content-type", "text/html;charset=UTF-8");
         // 内容样式
-        HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtil.getContentStyle();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
         ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), SysOperLog.class)
                 .excelType(ExcelTypeEnum.XLS)
@@ -80,87 +80,45 @@ public class SysOperLogController extends ApiController {
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
-
     /**
-     * 新增操作日志
-     * @param sysOperLog
-     * @return
+     * 删除操作日志
+     * @param logIds 操作日志主键
+     * @return 删除操作日志结果集
      */
-    public void addOperlog(SysOperLog sysOperLog) {
-         sysOperLogService.addOperlog(sysOperLog);
-    }
-
-  /**
-     * 分页查询所有数据
-     *
-     * @param page       分页对象
-     * @param sysOperLog 查询实体
-     * @return 所有数据
-     */
-    @GetMapping
-    public R selectAll(Page<SysOperLog> page, SysOperLog sysOperLog) {
-        return success(this.sysOperLogService.page(page, new QueryWrapper<>(sysOperLog)));
-    }
-
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.sysOperLogService.getById(id));
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param sysOperLog 实体对象
-     * @return 新增结果
-     */
-    @PostMapping
-    public R insert(@RequestBody SysOperLog sysOperLog) {
-        return success(this.sysOperLogService.save(sysOperLog));
-    }
-
-    /**
-     * 修改数据
-     *
-     * @param sysOperLog 实体对象
-     * @return 修改结果
-     */
-    @PutMapping
-    public R update(@RequestBody SysOperLog sysOperLog) {
-        return success(this.sysOperLogService.updateById(sysOperLog));
-    }
-
-    /**
-     * 删除数据
-     *
-     * @param LogIds 主键结合
-     * @return 删除结果
-     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "List<Integer>", name = "logIds", value = "操作日志主键", required = true)
+    })
+    @ApiOperation(value = "删除操作日志", notes = "删除操作日志", httpMethod = "DELETE")
     @DeleteMapping("/deleteLog")
     @MyLog(title = "操作日志", optParam = "#{idList}", businessType = BusinessType.DELETE)
-    public Result deleteLog(@RequestParam("idList") List<Integer> LogIds) {
-        if (LogIds.size()==0){
+    public Result deleteLog(@RequestParam("idList") List<Integer> logIds) {
+        if (logIds.size()==0){
             return this.sysOperLogService.deleteLogs();
         }
-        return sysOperLogService.deleteById(LogIds);
+        return sysOperLogService.deleteById(logIds);
     }
     /**
-     * 分页查询所有数据
-     *
-     * @param pageable       分页对象
-     * @param sysOperLog 查询实体
-     * @return 所有数据
+     * 分页查询所有操作日志数据
+     * @param sysOperLog 查询操作日志对象
+     * @param pageable 分页对象
+     * @param startTime 开始时间对象
+     * @param endTime 结束时间对象
+     * @param orderByColumn 按列排序对象
+     * @param isAsc 正序排序对象
+     * @return 查询的操作日志结果集
      */
-
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "SysOperLog", name = "sysOperLog", value = "查询操作日志对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "分页对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "startTime", value = "开始时间对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "endTime", value = "结束时间对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "orderByColumn", value = "按列排序对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "isAsc", value = "正序排序对象", required = true)
+    })
+    @ApiOperation(value = "分页查询所有操作日志数据", notes = "分页查询所有操作日志数据", httpMethod = "GET")
     @GetMapping("/getOperLogList")
     public Result getOperLogList(SysOperLog sysOperLog, Pageable pageable, String startTime, String endTime, @RequestParam(value = "orderByColumn",defaultValue = "oper_time") String orderByColumn, @RequestParam(value = "isAsc",defaultValue = "desc") String isAsc){
-        Result operLogList = this.sysOperLogService.getOperLogList(sysOperLog, pageable, startTime, endTime, orderByColumn, isAsc);
-        return operLogList;
+        return this.sysOperLogService.getOperLogList(sysOperLog, pageable, startTime, endTime, orderByColumn, isAsc);
     }
 }
 

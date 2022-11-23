@@ -1,6 +1,7 @@
 package com.zy_admin.sys.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyCommunityDao;
 import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.sys.dao.SysDeptDao;
@@ -9,15 +10,13 @@ import com.zy_admin.sys.dto.DeptTreeDto;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.service.SysDeptService;
 import com.zy_admin.util.ObjUtil;
-import com.zy_admin.util.Result;
-import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
-
 /**
  * 部门表(SysDept)表服务实现类
  *
@@ -26,89 +25,47 @@ import java.util.List;
  */
 @Service("sysDeptService")
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> implements SysDeptService {
-
+    /**
+     * 服务对象
+     */
     @Resource
     private ZyCommunityDao zyCommunityDao;
-
     /**
-     * 根据条件查询部门数据
-     *
-     * @param sysDept
-     * @return
+     * 部门名验重方法
+     * @param type 判断是新增0或者修改1
+     * @param sysDept 部门对象
+     * @return 成功或失败的结果集
      */
     @Override
-    public Result getDeptList(SysDept sysDept) {
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        try {
-            List<DeptTreeDto> deptList = this.baseMapper.getDeptList(sysDept);
-            DeptTree tree = new DeptTree(deptList);
-            result.setData(tree.buildTree());
-            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
-            return result;
-        }
-    }
-
-    /**
-     * 新增部门
-     *
-     * @param sysDept
-     * @return
-     */
-    @Override
-    public Result insertDept(SysDept sysDept) {
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        try {
-            //判断部门名是否为空
-            if (sysDept.getDeptName() == null || "".equals(sysDept.getDeptName())) {
-                result.setData(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
-                return result;
+    public Boolean checkDeptNameUnique(int type, SysDept sysDept) {
+        SysDept dept = this.baseMapper.checkDeptNameUnique(sysDept);
+        //添加时--必须为空
+        if (type == 0) {
+            return dept == null || dept.getDeptId() == null;
+        } else {
+            //修改时--先判断是否为空，为空则不重名，即唯一
+            if (dept == null || dept.getDeptId() == null) {
+                return true;
+                //判断ID是否一致，若否，则重名，即不唯一
             } else {
-                //判断部门名称是否唯一，不唯一时提示并返回
-                if (!checkDeptNameUnique(0, sysDept)) {
-                    result.setMeta(ResultTool.fail(ResultCode.REPEAT_DEPTNAME));
-                    return result;
-                }
+                return sysDept.getDeptId().equals(dept.getDeptId());
             }
-            String ancestors = ancestors(sysDept);
-            sysDept.setAncestors(ancestors);
-            Integer i = baseMapper.insertDept(sysDept);
-            if (sysDept.getDeptId() != null) {
-                result.setData("新增成功，影响的行数：" + i);
-                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            result.setMeta(ResultTool.fail(ResultCode.PARAM_IS_BLANK));
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-            result.setMeta(ResultTool.fail(ResultCode.PARAM_TYPE_ERROR));
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
-        } finally {
-            return result;
         }
     }
-
     /**
      * 修改部门
-     *
-     * @param sysDept
-     * @return
+     * @param sysDept 存放部门对象
+     * @return 修改部门的结果集
      */
     @Override
     public Result updateDept(SysDept sysDept) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             //判断是否没有修改就提交
-            SysDept DeptById = this.baseMapper.getDeptByDeptId(sysDept.getDeptId() + "");
+            SysDept deptById = this.baseMapper.getDeptByDeptId(sysDept.getDeptId() + "");
             //需要判断的字段名
             String[] fields = new String[]{"parentId", "deptName", "orderNum", "leader", "phone", "status", "email"};
-            if (!ObjUtil.checkEquals(sysDept, DeptById, fields)) {
+            if (!ObjUtil.checkEquals(sysDept, deptById, fields)) {
                 //判断菜单的父类是否自己
                 if (!sysDept.getParentId().equals(sysDept.getDeptId())) {
                     if (!checkNewParentId(sysDept)) {
@@ -116,14 +73,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
                         if (sysDept.getDeptName() == null || "".equals(sysDept.getDeptName())) {
                             result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
                             return result;
-                        } else {
-                            //判断菜单名称是否唯一
-                            if (checkDeptNameUnique(1, sysDept)) {
-                            } else {
+                        }// 判断菜单名称是否唯一
+                         if (!checkDeptNameUnique(1, sysDept)) {
                                 result.setMeta(ResultTool.fail(ResultCode.REPEAT_DEPTNAME));
                                 return result;
                             }
-                        }
                     } else {
                         result.setMeta(ResultTool.fail(ResultCode.PARENT_CANNOT_BE_A_SUBSET));
                         return result;
@@ -132,7 +86,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
                     sysDept.setAncestors(ancestors);
                     sysDept.setUpdateTime(LocalDateTime.now().toString());
                     //判断状态是否修改
-                    if (!sysDept.getStatus().equals(DeptById.getStatus())) {
+                    if (!sysDept.getStatus().equals(deptById.getStatus())) {
                         //如果已经修改过，则判断父类是否停用
                         SysDept parentDept = this.baseMapper.getDeptByDeptId(sysDept.getParentId() + "");
                         if ("1".equals(parentDept.getStatus())) {
@@ -161,48 +115,19 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
         } catch (NullPointerException e) {
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.PARAM_IS_BLANK));
+            return result;
         } catch (ClassCastException e) {
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.PARAM_TYPE_ERROR));
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
-        } finally {
             return result;
-        }
+        }return result;
     }
-
-    /**
-     * 部门名验重方法
-     *
-     * @param type
-     * @param sysDept
-     * @return
-     */
-    @Override
-    public Boolean checkDeptNameUnique(int type, SysDept sysDept) {
-        SysDept dept = this.baseMapper.checkDeptNameUnique(sysDept);
-        //添加时--必须为空
-        if (type == 0) {
-            if (dept == null || dept.getDeptId() == null) {
-                return true;
-            }
-        } else {
-            //修改时--先判断是否为空，为空则不重名，即唯一
-            if (dept == null || dept.getDeptId() == null) {
-                return true;
-                //判断ID是否一致，若否，则重名，即不唯一
-            } else if (!sysDept.getDeptId().equals(dept.getDeptId())) {
-                return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
     /**
      * 检查修改后的菜单是否和子集一致
-     *
      * @param dept 修改后的部门数据
      * @return true--父类是子集
      */
@@ -213,32 +138,80 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
         //获取到要修改的父类ID
         long newParentId = dept.getParentId();
         //循环遍历，检查修改后的父类是否为子集
-        for (int i = 0; i < childrenById.size(); i++) {
+        for (long childId : childrenById) {
             //获取到子集部门id，用于比较是否相等
-            long childId = childrenById.get(i);
             if (newParentId == childId) {
                 return true;
             }
         }
         return false;
     }
-
     /**
-     * 根据id获取部门信息
-     *
-     * @param deptId
-     * @return
+     * 通过条件搜索部门
+     * @param sysDept 部门对象
+     * @return 查询到的部门结果集
      */
     @Override
-    public SysDept getDeptById(Long deptId) {
-        return this.baseMapper.getDeptById(deptId);
+    public Result getDeptList(SysDept sysDept) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        try {
+            List<DeptTreeDto> deptList = this.baseMapper.getDeptList(sysDept);
+            DeptTree tree = new DeptTree(deptList);
+            result.setData(tree.buildTree());
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+            return result;
+        }
     }
-
+    /**
+     * 新增部门
+     * @param sysDept 新增的部门对象
+     * @return 新增部门结果集
+     */
+    @Override
+    public Result insertDept(SysDept sysDept) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        try {
+            //判断部门名是否为空
+            if (sysDept.getDeptName() == null || "".equals(sysDept.getDeptName())) {
+                result.setData(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
+                return result;
+            } else {
+                //判断部门名称是否唯一，不唯一时提示并返回
+                if (!checkDeptNameUnique(0, sysDept)) {
+                    result.setMeta(ResultTool.fail(ResultCode.REPEAT_DEPTNAME));
+                    return result;
+                }
+            }
+            String ancestors = ancestors(sysDept);
+            sysDept.setAncestors(ancestors);
+            Integer i = baseMapper.insertDept(sysDept);
+            if (sysDept.getDeptId() != null) {
+                result.setData("新增成功，影响的行数：" + i);
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.PARAM_IS_BLANK));
+            return result;
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.PARAM_TYPE_ERROR));
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+            return result;
+        }
+        return result;
+    }
     /**
      * 删除部门
-     *
-     * @param idList
-     * @return
+     * @param idList 删除的部门集合
+     * @return 被删除的部门结果集
      */
     @Override
     public Result deleteDept(List<Integer> idList) {
@@ -271,12 +244,19 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
         }
         return result;
     }
-
+    /**
+     * 根据ID获取部门
+     * @param deptId 部门主键
+     * @return 部门对象
+     */
+    @Override
+    public SysDept getDeptById(Long deptId) {
+        return this.baseMapper.getDeptById(deptId);
+    }
     /**
      * 添加ancestors 属性
-     *
-     * @param sysdept 部门信息
-     * @return
+     * @param sysdept 部门对象
+     * @return ancestors字符串
      */
     private String ancestors(SysDept sysdept) {
         Long parentId = sysdept.getParentId();

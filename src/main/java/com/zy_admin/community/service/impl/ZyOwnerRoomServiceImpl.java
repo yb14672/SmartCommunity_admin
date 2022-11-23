@@ -13,10 +13,9 @@ import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomService;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.util.JwtUtil;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -43,7 +42,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     private SysUserDao sysUserDao;
 
     /**
-     * zy主人房间记录道
+     * 业主房间记录道
      */
     @Resource
     private ZyOwnerRoomRecordDao zyOwnerRoomRecordDao;
@@ -57,15 +56,15 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     /**
      * 雪花经理
      */
-    @Autowired
+    @Resource
     private SnowflakeManager snowflakeManager;
 
 
     /**
-     * 选择所有主人房间限制
+     * 选择所有业主房间限制
      *
      * @param zyOwnerRoom 业主房间
-     * @param pageable    可分页
+     * @param pageable    分页对象
      * @return {@link Result}
      */
     @Override
@@ -75,7 +74,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         //查询出来的总数量
         Long total = this.baseMapper.count(zyOwnerRoom);
         //默认的页面总数设为0
-        long pages = 0;
+        long pages;
         if (total>0){
             pages = total % pageable.getPageSize() == 0 ? total/pageable.getPageSize() : total/pageable.getPageSize() + 1;
             pageable.setPages(pages);
@@ -98,11 +97,11 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     }
 
     /**
-     * 更新主人房间状态绑定
+     *
      * 修改业主审核的状态
      *
-     * @param zyOwnerRoom       zy主人房间
-     * @param recordAuditOpinion 审核意见
+     * @param zyOwnerRoom       业主房间
+     * @param recordAuditOpinion 业主房间记录
      * @param request           请求
      * @return {@link Result}
      * @throws Exception 异常
@@ -113,7 +112,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         ZyOwnerRoomRecord zyOwnerRoomRecord=new ZyOwnerRoomRecord();
         zyOwnerRoomRecord.setRecordAuditOpinion(recordAuditOpinion);
-        zyOwnerRoomRecord.setOwnerId(zyOwnerRoom.getOwnerId());
+        zyOwnerRoomRecord.setOwnerId(zyOwnerRoom.getOwnerId()+"");
         //id
         zyOwnerRoomRecord.setRecordId(snowflakeManager.nextId()+"");
         //创建时间
@@ -133,7 +132,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         this.baseMapper.updateOwnerRoomStatus(zyOwnerRoom);
         //判断审核是不是通过
         if ("Binding".equals(zyOwnerRoom.getRoomStatus())){
-            zyRoomDao.updateRoomStatus(zyOwnerRoom.getRoomId());
+            zyRoomDao.updateRoomStatus(zyOwnerRoom.getRoomId()+"");
         }
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;

@@ -19,41 +19,38 @@ import java.util.List;
  */
 @Repository
 public interface SysLogininforDao extends BaseMapper<SysLogininfor> {
-
     /**
      * 分页查询加条件搜索
-     * @param sysLogininfor
-     * @param pageable
-     * @return
+     * @param sysLogininfor 登录日志对象
+     * @param pageable      分页对象
+     * @param startTime     开始时间
+     * @param endTime       结束时间
+     * @return 登录日志集合
      */
     List<SysLogininfor> queryLogininfor(@Param("loginInFor") SysLogininfor sysLogininfor, @Param("pageable") Pageable pageable, @Param("startTime") String startTime, @Param("endTime") String endTime);
-
     /**
      * 统计总数据量
-     * @param sysLogininfor
-     * @param startTime
-     * @param endTime
-     * @return
+     * @param sysLogininfor 登录日志对象
+     * @param startTime     开始时间
+     * @param endTime       结束时间
+     * @return 登录日志统计条数
      */
     Long count(@Param("loginInFor") SysLogininfor sysLogininfor, @Param("startTime") String startTime, @Param("endTime") String endTime);
-
     /**
-     * 刪除日志
-     * @param ids
-     * @return
+     * 由ids刪除日志
+     * @param ids 登录日志id
+     * @return 删除登录日志条数
      */
     int deleteByIds(@Param("ids") int[] ids);
-
     /**
      * 清空日志
-     * @return
+     * @return 清空日志条数
      */
     int EmptyLog();
-
     /**
      * 查询导出日志
-     * @param infoIds
-     * @return
+     * @param infoIds 登录日志id
+     * @return 登录日志导出集合
      */
     List<LoginInForExcelDto> queryLoginInFor(@Param("list") ArrayList<Integer> infoIds);
 }

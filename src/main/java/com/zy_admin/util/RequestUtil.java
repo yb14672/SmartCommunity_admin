@@ -1,5 +1,6 @@
 package com.zy_admin.util;
 
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
