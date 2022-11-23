@@ -1,6 +1,6 @@
 package com.zy_admin.community.dao;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.github.yulichang.base.MPJBaseMapper;
 import com.zy_admin.community.entity.ZyCommunityInteraction;
 
 /**
@@ -9,7 +9,7 @@ import com.zy_admin.community.entity.ZyCommunityInteraction;
  * @author makejava
  * @since 2022-11-01 19:49:01
  */
-public interface ZyCommunityInteractionDao extends BaseMapper<ZyCommunityInteraction> {
+public interface ZyCommunityInteractionDao extends MPJBaseMapper<ZyCommunityInteraction> {
 
 }
 

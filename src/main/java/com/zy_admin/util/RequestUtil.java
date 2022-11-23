@@ -21,8 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 @ApiModel(description = "获取Request中数据的工具类")
 @Component
 public class RequestUtil {
-    @Autowired
-    private SysUserService sysUserService;
     /**
      * 系统用户服务
      */
@@ -46,8 +44,7 @@ public class RequestUtil {
     public SysUser getUser(HttpServletRequest request) {
         String id = JwtUtil.getMemberIdByJwtToken(request);
         Result result = sysUserService.queryById(id);
-        SysUser user = (SysUser) result.getData();
-        return user;
+        return (SysUser) result.getData();
     }
 
     /**
@@ -59,7 +56,6 @@ public class RequestUtil {
     public ZyOwner getOwner(HttpServletRequest request) {
         String id = JwtUtil.getMemberIdByJwtToken(request);
         Result result = zyOwnerService.getOwnerById(id);
-        ZyOwner owner = (ZyOwner) result.getData();
-        return owner;
+        return (ZyOwner) result.getData();
     }
 }

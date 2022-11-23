@@ -1,6 +1,9 @@
 package com.zy_admin.community.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.community.dto.ZyCommunityInteractionDto;
 import com.zy_admin.community.entity.ZyCommunityInteraction;
 
 /**
@@ -11,5 +14,12 @@ import com.zy_admin.community.entity.ZyCommunityInteraction;
  */
 public interface ZyCommunityInteractionService extends IService<ZyCommunityInteraction> {
 
+    /**
+     * 分页查询所有数据
+     * @param page                   分页对象
+     * @param interactionDto 查询实体
+     * @return 所有数据
+     */
+    Result selectAll(Page page, ZyCommunityInteractionDto interactionDto);
 }
 
