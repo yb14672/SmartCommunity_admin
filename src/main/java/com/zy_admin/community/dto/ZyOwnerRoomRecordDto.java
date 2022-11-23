@@ -55,4 +55,6 @@ public class ZyOwnerRoomRecordDto{
      */
     @ApiModelProperty("备注")
     private String remark;
+
+    private String updateBy;
 }

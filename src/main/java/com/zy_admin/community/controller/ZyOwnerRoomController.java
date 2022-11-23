@@ -40,6 +40,26 @@ public class ZyOwnerRoomController extends ApiController {
     private RequestUtil requestUtil;
 
     /**
+     * 新增数据
+     *
+     * @param ownerRoom 实体对象
+     * @return 新增结果
+     */
+    @PostMapping("/insert")
+    public Result insert(@RequestBody ZyOwnerRoom ownerRoom, HttpServletRequest request) throws Exception {
+        return this.zyOwnerRoomService.ownerInsert(ownerRoom,request);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @GetMapping("/getTree")
+    public Result getTreeData(){
+        return this.zyOwnerRoomService.getTreeData();
+    }
+
+    /**
      * 修改业主审核的状态
      * @return
      */

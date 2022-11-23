@@ -44,6 +44,9 @@ public enum ResultCode {
     USER_LOGOUT_FAIL(2016,"退出失败"),
     USER_LOGOUT_SUCCESS(2017,"退出成功"),
     ADDRESS_GET_FAIL(2018,"地址获取失败"),
+    USER_REGISTER_FAIL(2019,"注册失败"),
+    REPEAT_PHONE_NUMBER(2020,"手机号已被使用"),
+    OWNER_UPDATE_FAIL(2021,"业主信息修改失败"),
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
     DELETE_FAIL(3002, "删除失败，请稍后再试"),
@@ -108,6 +111,9 @@ public enum ResultCode {
     FAIL_UNBIND_ROOM(3054,"房屋解绑失败"),
     ROOM_HAVE_OWNER(3056,"该房屋名已有业主，不允许删除"),
     BUILD_HAVA_CHILD(3046,"楼层下面有单元不允许删除" ),
+    ROOMTREE_GET_FAIL(3057,"获取失败"),
+    OWNER_ROOM_INSERT_FAIL(3058,"提交审核失败"),
+    REPEAT_OWNER_ROOM(3059,"审核已提交，请勿重复提交"),
 
 
     /* http自带请求码 */

@@ -23,7 +23,7 @@ public class ZyOwner extends Model<ZyOwner> {
      * 业主id
      */
     @ApiModelProperty("业主id")
-    private Long ownerId;
+    private String ownerId;
     /**
      * 昵称
      */

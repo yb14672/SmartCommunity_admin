@@ -2,20 +2,20 @@ package com.zy_admin.community.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.community.dao.ZyOwnerDao;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dao.ZyOwnerRoomRecordDao;
 import com.zy_admin.community.dao.ZyRoomDao;
 import com.zy_admin.community.dto.ZyOwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerRoomDtoAll;
+import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomService;
 import com.zy_admin.sys.dao.SysUserDao;
-import com.zy_admin.util.JwtUtil;
-import com.zy_admin.common.core.Result.Result;
-import com.zy_admin.util.ResultTool;
-import com.zy_admin.util.SnowflakeManager;
+import com.zy_admin.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -58,6 +58,49 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
      */
     @Resource
     private SnowflakeManager snowflakeManager;
+
+    @Resource
+    private ZyOwnerDao ownerDao;
+
+    @Override
+    public Result ownerInsert(ZyOwnerRoom ownerRoom, HttpServletRequest request) throws Exception {
+        Result result = new Result("提交失败",ResultTool.fail(ResultCode.OWNER_ROOM_INSERT_FAIL));
+        ZyOwnerRoom zyOwnerRoom = this.baseMapper.checkOwnerRoom(ownerRoom);
+        if (zyOwnerRoom != null ){
+            result.setData("提交失败");
+            result.setMeta(ResultTool.fail(ResultCode.REPEAT_OWNER_ROOM));
+            return result;
+        }
+        String id = JwtUtil.getMemberIdByJwtToken(request);
+        ZyOwner zyOwner = ownerDao.selectById(id);
+        ownerRoom.setOwnerRoomId(snowflakeManager.nextId()+"");
+        ownerRoom.setOwnerId(id);
+        ownerRoom.setOwnerType(zyOwner.getOwnerType());
+        ownerRoom.setCreateBy(zyOwner.getOwnerRealName());
+        ownerRoom.setCreateTime(LocalDateTime.now().toString());
+        Integer i = this.baseMapper.insertOwnerRoom(ownerRoom);
+        if (i == 1){
+            result.setData("提交成功");
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+
+    @Override
+    public Result getTreeData() {
+        Result result = new Result("获取失败！", ResultTool.fail(ResultCode.ROOMTREE_GET_FAIL));
+        try {
+            List<RoomTree> treeRoom = this.baseMapper.getTreeRoom();
+            TreeData treeData = new TreeData(treeRoom);
+            List<RoomTree> roomTrees = treeData.buildTree();
+            result.setData(roomTrees);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return result;
+        }
+    }
 
 
     /**
