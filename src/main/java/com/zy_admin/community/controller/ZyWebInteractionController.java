@@ -1,10 +1,9 @@
 package com.zy_admin.community.controller;
 
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.entity.ZyCommunityInteraction;
 import com.zy_admin.community.service.ZyCommunityInteractionService;
 import io.swagger.annotations.Api;
@@ -18,20 +17,21 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 社区互动表(ZyCommunityInteraction)表控制层
+ * 社区互动Controller
  *
- * @author makejava
- * @since 2022-11-01 19:49:01
+ * @author yb14672
+ * @date 2022/11/23 - 20:58
  */
-@Api(value = "zyCommunityInteraction", tags = {"移动端社区互动"})
+@Api(tags = "web端社区互动")
 @RestController
-@RequestMapping("/mini/interaction")
-public class ZyCommunityInteractionController extends ApiController {
+@RequestMapping("/system/interaction")
+public class ZyWebInteractionController {
     /**
      * 服务对象
      */
     @Resource
     private ZyCommunityInteractionService zyCommunityInteractionService;
+
 
     /**
      * 分页查询所有数据
@@ -45,7 +45,7 @@ public class ZyCommunityInteractionController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
-    public R selectAll(Page<ZyCommunityInteraction> page, ZyCommunityInteraction zyCommunityInteraction) {
+    public Result selectAll(Page<ZyCommunityInteraction> page, ZyCommunityInteraction zyCommunityInteraction) {
         return success(this.zyCommunityInteractionService.page(page, new QueryWrapper<>(zyCommunityInteraction)));
     }
 
@@ -109,4 +109,3 @@ public class ZyCommunityInteractionController extends ApiController {
         return success(this.zyCommunityInteractionService.removeByIds(idList));
     }
 }
-
