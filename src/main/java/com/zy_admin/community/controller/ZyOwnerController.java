@@ -47,6 +47,28 @@ public class ZyOwnerController extends ApiController {
     private ZyOwnerService zyOwnerService;
 
     /**
+     * 用户登录
+     * @param zyOwner 手机号和密码
+     * @return 登陆结果
+     */
+    @PostMapping("/login")
+    public Result login(@RequestBody ZyOwner zyOwner){
+        return zyOwnerService.ownerLogin(zyOwner);
+    }
+
+    /**
+     * 新增数据
+     *
+     * @param zyOwner 实体对象
+     * @return 新增结果
+     */
+    @PostMapping("/register")
+    public Result insert(@RequestBody ZyOwner zyOwner) throws Exception {
+        return zyOwnerService.ownerRegister(zyOwner);
+    }
+
+
+    /**
      * 获取户主信息并分页
      *
      * @param zyOwner  户主信息

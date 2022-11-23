@@ -27,6 +27,76 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <update id="ownerUpdate">
+        update zy_owner
+        <set>
+            <if test="ownerNickname != null and ownerNickname != ''">
+                owner_nickname = #{ownerNickname},
+            </if>
+            <if test="ownerRealName != null and ownerRealName != ''">
+                owner_real_name = #{ownerRealName},
+            </if>
+            <if test="ownerGender != null and ownerGender != ''">
+                owner_gender = #{ownerGender},
+            </if>
+            <if test="ownerAge != null">
+                owner_age = #{ownerAge},
+            </if>
+            <if test="ownerIdCard != null and ownerIdCard != ''">
+                owner_id_card = #{ownerIdCard},
+            </if>
+            <if test="ownerPhoneNumber != null and ownerPhoneNumber != ''">
+                owner_phone_number = #{ownerPhoneNumber},
+            </if>
+            <if test="ownerOpenId != null and ownerOpenId != ''">
+                owner_open_id = #{ownerOpenId},
+            </if>
+            <if test="ownerWechatId != null and ownerWechatId != ''">
+                owner_wechat_id = #{ownerWechatId},
+            </if>
+            <if test="ownerQqNumber != null and ownerQqNumber != ''">
+                owner_qq_number = #{ownerQqNumber},
+            </if>
+            <if test="ownerBirthday != null">
+                owner_birthday = #{ownerBirthday},
+            </if>
+            <if test="ownerPortrait != null and ownerPortrait != ''">
+                owner_portrait = #{ownerPortrait},
+            </if>
+            <if test="ownerSignature != null and ownerSignature != ''">
+                owner_signature = #{ownerSignature},
+            </if>
+            <if test="ownerStatus != null and ownerStatus != ''">
+                owner_status = #{ownerStatus},
+            </if>
+            <if test="ownerLogonMode != null and ownerLogonMode != ''">
+                owner_logon_mode = #{ownerLogonMode},
+            </if>
+            <if test="ownerType != null and ownerType != ''">
+                owner_type = #{ownerType},
+            </if>
+            <if test="ownerPassword != null and ownerPassword != ''">
+                owner_password = #{ownerPassword},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where owner_id = #{ownerId}
+    </update>
+
     <!--查询单个-->
     <select id="queryById" resultMap="ZyOwnerMap">
         select
