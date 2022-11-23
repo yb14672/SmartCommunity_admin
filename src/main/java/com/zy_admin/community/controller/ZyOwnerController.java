@@ -47,6 +47,16 @@ public class ZyOwnerController extends ApiController {
     private ZyOwnerService zyOwnerService;
 
     /**
+     * 修改数据
+     *
+     * @param zyOwner 实体对象
+     * @return 修改结果
+     */
+    @PutMapping("/update")
+    public Result update(@RequestBody ZyOwner zyOwner, HttpServletRequest request) {
+        return this.zyOwnerService.ownerUpdate(zyOwner,request);
+    }
+    /**
      * 用户登录
      * @param zyOwner 手机号和密码
      * @return 登陆结果
