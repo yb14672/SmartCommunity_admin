@@ -1,24 +1,42 @@
 package com.zy_admin.community.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.baomidou.mybatisplus.extension.api.R;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.community.dto.CommunityExcel;
 import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.community.service.ZyCommunityService;
+import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.util.ResultTool;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 小区 (ZyCommunity)表控制层
+ * 小区 (ZyCommunityDto)表控制层
  *
  * @author makejava
  * @since 2022-11-01 19:49:01
  */
+@Api(value = "zyCommunity", tags = {"小区 (ZyCommunityDto)表控制层"})
 @RestController
 @RequestMapping("zyCommunity")
 public class ZyCommunityController extends ApiController {
@@ -27,61 +45,113 @@ public class ZyCommunityController extends ApiController {
      */
     @Resource
     private ZyCommunityService zyCommunityService;
-
     /**
-     * 分页查询所有数据
-     *
-     * @param page        分页对象
-     * @param zyCommunity 查询实体
-     * @return 所有数据
+     * 根据所得id导出小区信息
+     * @param ids 查询的小区主键id
+     * @param response 前端响应
+     * @return 返回成功和错误信息
+     * @throws IOException 抛出异常
      */
-    @GetMapping
-    public R selectAll(Page<ZyCommunity> page, ZyCommunity zyCommunity) {
-        return success(this.zyCommunityService.page(page, new QueryWrapper<>(zyCommunity)));
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<Long>", name = "ids", value = "查询的小区主键id", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "前端响应", required = true)
+    })
+    @ApiOperation(value = "根据所得id导出小区信息", notes = "根据所得id导出小区信息", httpMethod = "GET")
+    @MyLog(title = "小区信息", optParam = "#{ids}", businessType = BusinessType.EXPORT)
+    @GetMapping("/getExcel")
+    public Result getExcel(@RequestParam("ids") ArrayList<Long> ids, HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<CommunityExcel> communityExcelList = zyCommunityService.selectByIds(ids);
+        String fileName = URLEncoder.encode("小区信息", "UTF-8");
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("content-type", "text/html;charset=UTF-8");
+        // 内容样式
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), CommunityExcel.class)
+                .excelType(ExcelTypeEnum.XLS)
+                //自适应表格格式
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                .autoCloseStream(true)
+                .sheet("小区信息");
+        excel.doWrite(communityExcelList);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
-
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.zyCommunityService.getById(id));
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param zyCommunity 实体对象
-     * @return 新增结果
-     */
-    @PostMapping
-    public R insert(@RequestBody ZyCommunity zyCommunity) {
-        return success(this.zyCommunityService.save(zyCommunity));
-    }
-
     /**
      * 修改数据
-     *
-     * @param zyCommunity 实体对象
-     * @return 修改结果
+     *  @param community 更新的小区对象
+     * @param request 前端请求
+     * @return 修改的小区结果集
      */
-    @PutMapping
-    public R update(@RequestBody ZyCommunity zyCommunity) {
-        return success(this.zyCommunityService.updateById(zyCommunity));
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyCommunity", name = "community", value = "更新的小区对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端请求", required = true)
+    })
+    @ApiOperation(value = "修改数据", notes = "修改数据", httpMethod = "PUT")
+    @PutMapping("/updateCommunity")
+    @MyLog(title = "小区信息", optParam = "#{community}", businessType = BusinessType.UPDATE)
+    public Result update(@RequestBody ZyCommunity community,HttpServletRequest request) {
+        return this.zyCommunityService.updateCommunityById(community,request);
     }
-
+    /**
+     * 新增数据
+     * @param community 新增的小区对象
+     * @param request 前端请求
+     * @return 新增的小区结果集
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyCommunity", name = "community", value = "新增的小区对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端请求", required = true)
+    })
+    @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
+    @PostMapping("/insertCommunity")
+    @MyLog(title = "小区信息", optParam = "#{community}", businessType = BusinessType.INSERT)
+    public Result insert(@RequestBody ZyCommunity community, HttpServletRequest request) {
+        return this.zyCommunityService.insertCommunity(community,request);
+    }
+    /**
+     *  分页查询所有数据
+     * @param community 查询的小区对象
+     * @param pageable 查询的分页对象
+     * @return 返回查询分页的结果集
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "ZyCommunity", name = "community", value = "查询的小区对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "查询的分页对象", required = true)
+    })
+    @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
+    @GetMapping("/selectAll")
+    public Result selectAll(ZyCommunity community, Pageable pageable){
+        return zyCommunityService.selectAllByLimit(community,pageable);
+    }
+    /**
+     * 通过主键查询单条数据
+     * @param id 查询的小区id
+     * @return 查询数据结果集
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", dataType = "Serializable", name = "id", value = "查询的小区id", required = true)
+    })
+    @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
+    @GetMapping("{id}")
+    public Result selectOne(@PathVariable Serializable id) {
+        return new Result(this.zyCommunityService.getById(id),ResultTool.fail(ResultCode.SUCCESS));
+    }
     /**
      * 删除数据
-     *
-     * @param idList 主键结合
+     * @param communityIds 存放小区id
      * @return 删除结果
      */
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.zyCommunityService.removeByIds(idList));
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "List<String>", name = "communityIds", value = "存放小区id", required = true)
+    })
+    @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
+    @DeleteMapping("/deleteCommunity")
+    @MyLog(title = "小区信息", optParam = "#{communityIds}", businessType = BusinessType.DELETE)
+    public Result delete(@RequestBody List<String> communityIds) {
+        return this.zyCommunityService.deleteByIds(communityIds);
     }
 }
 

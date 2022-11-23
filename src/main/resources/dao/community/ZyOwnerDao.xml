@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.community.dao.ZyOwnerDao">
+
+    <resultMap type="com.zy_admin.community.entity.ZyOwner" id="ZyOwnerMap">
+        <result property="ownerId" column="owner_id" jdbcType="INTEGER"/>
+        <result property="ownerNickname" column="owner_nickname" jdbcType="VARCHAR"/>
+        <result property="ownerRealName" column="owner_real_name" jdbcType="VARCHAR"/>
+        <result property="ownerGender" column="owner_gender" jdbcType="VARCHAR"/>
+        <result property="ownerAge" column="owner_age" jdbcType="INTEGER"/>
+        <result property="ownerIdCard" column="owner_id_card" jdbcType="VARCHAR"/>
+        <result property="ownerPhoneNumber" column="owner_phone_number" jdbcType="VARCHAR"/>
+        <result property="ownerOpenId" column="owner_open_id" jdbcType="VARCHAR"/>
+        <result property="ownerWechatId" column="owner_wechat_id" jdbcType="VARCHAR"/>
+        <result property="ownerQqNumber" column="owner_qq_number" jdbcType="VARCHAR"/>
+        <result property="ownerBirthday" column="owner_birthday" jdbcType="TIMESTAMP"/>
+        <result property="ownerPortrait" column="owner_portrait" jdbcType="VARCHAR"/>
+        <result property="ownerSignature" column="owner_signature" jdbcType="VARCHAR"/>
+        <result property="ownerStatus" column="owner_status" jdbcType="VARCHAR"/>
+        <result property="ownerLogonMode" column="owner_logon_mode" jdbcType="VARCHAR"/>
+        <result property="ownerType" column="owner_type" jdbcType="VARCHAR"/>
+        <result property="ownerPassword" column="owner_password" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <update id="ownerUpdate">
+        update zy_owner
+        <set>
+            <if test="ownerNickname != null and ownerNickname != ''">
+                owner_nickname = #{ownerNickname},
+            </if>
+            <if test="ownerRealName != null and ownerRealName != ''">
+                owner_real_name = #{ownerRealName},
+            </if>
+            <if test="ownerGender != null and ownerGender != ''">
+                owner_gender = #{ownerGender},
+            </if>
+            <if test="ownerAge != null">
+                owner_age = #{ownerAge},
+            </if>
+            <if test="ownerIdCard != null and ownerIdCard != ''">
+                owner_id_card = #{ownerIdCard},
+            </if>
+            <if test="ownerPhoneNumber != null and ownerPhoneNumber != ''">
+                owner_phone_number = #{ownerPhoneNumber},
+            </if>
+            <if test="ownerOpenId != null and ownerOpenId != ''">
+                owner_open_id = #{ownerOpenId},
+            </if>
+            <if test="ownerWechatId != null and ownerWechatId != ''">
+                owner_wechat_id = #{ownerWechatId},
+            </if>
+            <if test="ownerQqNumber != null and ownerQqNumber != ''">
+                owner_qq_number = #{ownerQqNumber},
+            </if>
+            <if test="ownerBirthday != null">
+                owner_birthday = #{ownerBirthday},
+            </if>
+            <if test="ownerPortrait != null and ownerPortrait != ''">
+                owner_portrait = #{ownerPortrait},
+            </if>
+            <if test="ownerSignature != null and ownerSignature != ''">
+                owner_signature = #{ownerSignature},
+            </if>
+            <if test="ownerStatus != null and ownerStatus != ''">
+                owner_status = #{ownerStatus},
+            </if>
+            <if test="ownerLogonMode != null and ownerLogonMode != ''">
+                owner_logon_mode = #{ownerLogonMode},
+            </if>
+            <if test="ownerType != null and ownerType != ''">
+                owner_type = #{ownerType},
+            </if>
+            <if test="ownerPassword != null and ownerPassword != ''">
+                owner_password = #{ownerPassword},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where owner_id = #{ownerId}
+    </update>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ZyOwnerMap">
+        select owner_id,
+               owner_nickname,
+               owner_real_name,
+               owner_gender,
+               owner_age,
+               owner_id_card,
+               owner_phone_number,
+               owner_open_id,
+               owner_wechat_id,
+               owner_qq_number,
+               owner_birthday,
+               owner_portrait,
+               owner_signature,
+               owner_status,
+               owner_logon_mode,
+               owner_type,
+               owner_password,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from zy_owner
+        where owner_id = #{ownerId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="getOwnerList" resultType="com.zy_admin.community.dto.OwnerListDto">
+        select zor.owner_room_id,zo.owner_id, owner_nickname, owner_real_name, owner_gender, owner_age, owner_id_card,
+        owner_phone_number,zor.owner_type,
+        owner_birthday,owner_status,community_name,building_name,room_name,unit_name
+        from zy_owner_room zor
+        left join zy_owner zo on zor.owner_id = zo.owner_id
+        LEFT JOIN zy_building zb on zor.building_id = zb.building_id
+        LEFT JOIN zy_community zc on zc.community_id = zor.community_id
+        LEFT JOIN zy_room zr on zr.room_id = zor.room_id
+        LEFT JOIN zy_unit zu on zu.unit_id = zor.unit_id
+        where zor.room_status ='Binding'
+        <where>
+            <if test="zyOwner.ownerId != null">
+                and owner_id = #{zyOwner.ownerId}
+            </if>
+            <if test="zyOwner.ownerNickname != null and zyOwner.ownerNickname != ''">
+                and owner_nickname like concat ('%', #{zyOwner.ownerNickname},'%')
+            </if>
+            <if test="zyOwner.ownerRealName != null and zyOwner.ownerRealName != ''">
+                and owner_real_name like concat('%',#{zyOwner.ownerRealName},'%')
+            </if>
+            <if test="zyOwner.ownerIdCard != null and zyOwner.ownerIdCard != ''">
+                and owner_id_card like concat ('%',#{zyOwner.ownerIdCard},'%')
+            </if>
+            <if test="zyOwner.ownerPhoneNumber != null and zyOwner.ownerPhoneNumber != ''">
+                and owner_phone_number like concat('%', #{zyOwner.ownerPhoneNumber},'%')
+            </if>
+
+        </where>
+        limit #{pageable.index}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from zy_owner_room zor left join zy_owner zo on zor.owner_id=zo.owner_id
+        where zor.room_status ='Binding'
+        <where>
+            <if test="ownerId != null">
+                and owner_id = #{ownerId}
+            </if>
+            <if test="ownerNickname != null and ownerNickname != ''">
+                and owner_nickname like concat ('%', #{ownerNickname},'%')
+            </if>
+            <if test="ownerRealName != null and ownerRealName != ''">
+                and owner_real_name like concat('%',#{ownerRealName},'%')
+            </if>
+            <if test="ownerIdCard != null and ownerIdCard != ''">
+                and owner_id_card like concat ('%',#{ownerIdCard},'%')
+            </if>
+            <if test="ownerPhoneNumber != null and ownerPhoneNumber != ''">
+                and owner_phone_number like concat('%', #{ownerPhoneNumber},'%')
+            </if>
+
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="ownerId" useGeneratedKeys="true">
+        insert into zy_owner(owner_nickname, owner_real_name, owner_gender, owner_age, owner_id_card,
+                             owner_phone_number, owner_open_id, owner_wechat_id, owner_qq_number, owner_birthday,
+                             owner_portrait, owner_signature, owner_status, owner_logon_mode, owner_type,
+                             owner_password, create_by, create_time, update_by, update_time, remark)
+        values (#{ownerNickname}, #{ownerRealName}, #{ownerGender}, #{ownerAge}, #{ownerIdCard}, #{ownerPhoneNumber},
+                #{ownerOpenId}, #{ownerWechatId}, #{ownerQqNumber}, #{ownerBirthday}, #{ownerPortrait},
+                #{ownerSignature}, #{ownerStatus}, #{ownerLogonMode}, #{ownerType}, #{ownerPassword}, #{createBy},
+                #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="ownerId" useGeneratedKeys="true">
+        insert into zy_owner(owner_nickname, owner_real_name, owner_gender, owner_age, owner_id_card,
+        owner_phone_number, owner_open_id, owner_wechat_id, owner_qq_number, owner_birthday, owner_portrait,
+        owner_signature, owner_status, owner_logon_mode, owner_type, owner_password, create_by, create_time, update_by,
+        update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.ownerNickname}, #{entity.ownerRealName}, #{entity.ownerGender}, #{entity.ownerAge},
+            #{entity.ownerIdCard}, #{entity.ownerPhoneNumber}, #{entity.ownerOpenId}, #{entity.ownerWechatId},
+            #{entity.ownerQqNumber}, #{entity.ownerBirthday}, #{entity.ownerPortrait}, #{entity.ownerSignature},
+            #{entity.ownerStatus}, #{entity.ownerLogonMode}, #{entity.ownerType}, #{entity.ownerPassword},
+            #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="ownerId" useGeneratedKeys="true">
+        insert into zy_owner(owner_nickname, owner_real_name, owner_gender, owner_age, owner_id_card,
+        owner_phone_number, owner_open_id, owner_wechat_id, owner_qq_number, owner_birthday, owner_portrait,
+        owner_signature, owner_status, owner_logon_mode, owner_type, owner_password, create_by, create_time, update_by,
+        update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.ownerNickname}, #{entity.ownerRealName}, #{entity.ownerGender}, #{entity.ownerAge},
+            #{entity.ownerIdCard}, #{entity.ownerPhoneNumber}, #{entity.ownerOpenId}, #{entity.ownerWechatId},
+            #{entity.ownerQqNumber}, #{entity.ownerBirthday}, #{entity.ownerPortrait}, #{entity.ownerSignature},
+            #{entity.ownerStatus}, #{entity.ownerLogonMode}, #{entity.ownerType}, #{entity.ownerPassword},
+            #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+        on duplicate key update
+        owner_nickname = values(owner_nickname),
+        owner_real_name = values(owner_real_name),
+        owner_gender = values(owner_gender),
+        owner_age = values(owner_age),
+        owner_id_card = values(owner_id_card),
+        owner_phone_number = values(owner_phone_number),
+        owner_open_id = values(owner_open_id),
+        owner_wechat_id = values(owner_wechat_id),
+        owner_qq_number = values(owner_qq_number),
+        owner_birthday = values(owner_birthday),
+        owner_portrait = values(owner_portrait),
+        owner_signature = values(owner_signature),
+        owner_status = values(owner_status),
+        owner_logon_mode = values(owner_logon_mode),
+        owner_type = values(owner_type),
+        owner_password = values(owner_password),
+        create_by = values(create_by),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        remark = values(remark)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update zy_owner
+        <set>
+            <if test="ownerNickname != null and ownerNickname != ''">
+                owner_nickname = #{ownerNickname},
+            </if>
+            <if test="ownerRealName != null and ownerRealName != ''">
+                owner_real_name = #{ownerRealName},
+            </if>
+            <if test="ownerGender != null and ownerGender != ''">
+                owner_gender = #{ownerGender},
+            </if>
+            <if test="ownerAge != null">
+                owner_age = #{ownerAge},
+            </if>
+            <if test="ownerIdCard != null and ownerIdCard != ''">
+                owner_id_card = #{ownerIdCard},
+            </if>
+            <if test="ownerPhoneNumber != null and ownerPhoneNumber != ''">
+                owner_phone_number = #{ownerPhoneNumber},
+            </if>
+            <if test="ownerOpenId != null and ownerOpenId != ''">
+                owner_open_id = #{ownerOpenId},
+            </if>
+            <if test="ownerWechatId != null and ownerWechatId != ''">
+                owner_wechat_id = #{ownerWechatId},
+            </if>
+            <if test="ownerQqNumber != null and ownerQqNumber != ''">
+                owner_qq_number = #{ownerQqNumber},
+            </if>
+            <if test="ownerBirthday != null">
+                owner_birthday = #{ownerBirthday},
+            </if>
+            <if test="ownerPortrait != null and ownerPortrait != ''">
+                owner_portrait = #{ownerPortrait},
+            </if>
+            <if test="ownerSignature != null and ownerSignature != ''">
+                owner_signature = #{ownerSignature},
+            </if>
+            <if test="ownerStatus != null and ownerStatus != ''">
+                owner_status = #{ownerStatus},
+            </if>
+            <if test="ownerLogonMode != null and ownerLogonMode != ''">
+                owner_logon_mode = #{ownerLogonMode},
+            </if>
+            <if test="ownerType != null and ownerType != ''">
+                owner_type = #{ownerType},
+            </if>
+            <if test="ownerPassword != null and ownerPassword != ''">
+                owner_password = #{ownerPassword},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where owner_id = #{ownerId}
+    </update>
+
+    <insert id="updateIntoRoomRecord">
+        insert into zy_owner_room_record(record_id, owner_room_id, community_id, building_id, unit_id, room_id,
+                                         owner_id, owner_type, room_status, record_audit_opinion, record_audit_type,
+                                         create_by_id, create_by, create_time, update_by, update_time, remark)
+        values (#{recordId}, #{ownerRoomId}, #{communityId}, #{buildingId}, #{unitId}, #{roomId}, #{ownerId},
+                #{ownerType}, #{roomStatus}, #{recordAuditOpinion}, #{recordAuditType}, #{createById}, #{createBy},
+                #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    </insert>
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from zy_owner
+        where owner_id = #{ownerId}
+    </delete>
+
+    <select id="getOwenLists" resultType="com.zy_admin.community.dto.OwnerRoomExcel">
+        select zor.owner_room_id,
+               zo.owner_id,
+               owner_nickname,
+               owner_real_name,
+               owner_gender,
+               owner_age,
+               owner_id_card,
+               owner_phone_number,
+               zor.owner_type,
+               owner_birthday,
+               owner_status,
+               community_name,
+               building_name,
+               room_name,
+               unit_name
+        from zy_owner_room zor
+                 left join zy_owner zo on zor.owner_id = zo.owner_id
+                 LEFT JOIN zy_building zb on zor.building_id = zb.building_id
+                 LEFT JOIN zy_community zc on zc.community_id = zor.community_id
+                 LEFT JOIN zy_room zr on zr.room_id = zor.room_id
+                 LEFT JOIN zy_unit zu on zu.unit_id = zor.unit_id
+        where zor.room_status = 'Binding'
+    </select>
+    <select id="queryOwnerById" resultType="com.zy_admin.community.dto.OwnerRoomExcel">
+        select zor.owner_room_id,zo.owner_id, owner_nickname, owner_real_name, owner_gender, owner_age, owner_id_card,
+        owner_phone_number,zor.owner_type,
+        owner_birthday,owner_status,community_name,building_name,room_name,unit_name
+        from zy_owner_room zor
+        left join zy_owner zo on zor.owner_id = zo.owner_id
+        LEFT JOIN zy_building zb on zor.building_id = zb.building_id
+        LEFT JOIN zy_community zc on zc.community_id = zor.community_id
+        LEFT JOIN zy_room zr on zr.room_id = zor.room_id
+        LEFT JOIN zy_unit zu on zu.unit_id = zor.unit_id
+        where zor.owner_room_id in
+        <foreach collection="OwnerIds" item="Owner_id" separator="," open="(" close=")">
+            #{Owner_id}
+        </foreach>
+    </select>
+
+
+</mapper>
+

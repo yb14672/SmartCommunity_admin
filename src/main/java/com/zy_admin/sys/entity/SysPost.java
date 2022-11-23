@@ -1,10 +1,13 @@
 package com.zy_admin.sys.entity;
 
-import java.util.Date;
-
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-
-import java.io.Serializable;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * 岗位信息表(SysPost)表实体类
@@ -12,118 +15,72 @@ import java.io.Serializable;
  * @author makejava
  * @since 2022-11-01 19:49:40
  */
+@ApiModel(description = "岗位信息表(SysPost)表实体类")
 @SuppressWarnings("serial")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class SysPost extends Model<SysPost> {
-    //岗位ID
-    private Long postId;
-    //岗位编码
-    private String postCode;
-    //岗位名称
-    private String postName;
-    //显示顺序
-    private Integer postSort;
-    //状态（0正常 1停用）
-    private String status;
-    //创建者
-    private String createBy;
-    //创建时间
-    private Date createTime;
-    //更新者
-    private String updateBy;
-    //更新时间
-    private Date updateTime;
-    //备注
-    private String remark;
-
-
-    public Long getPostId() {
-        return postId;
-    }
-
-    public void setPostId(Long postId) {
-        this.postId = postId;
-    }
-
-    public String getPostCode() {
-        return postCode;
-    }
-
-    public void setPostCode(String postCode) {
-        this.postCode = postCode;
-    }
-
-    public String getPostName() {
-        return postName;
-    }
-
-    public void setPostName(String postName) {
-        this.postName = postName;
-    }
-
-    public Integer getPostSort() {
-        return postSort;
-    }
-
-    public void setPostSort(Integer postSort) {
-        this.postSort = postSort;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
     /**
-     * 获取主键值
-     *
-     * @return 主键值
+     * 岗位ID
      */
-    @Override
-    protected Serializable pkVal() {
-        return this.postId;
-    }
+    @ApiModelProperty("岗位ID")
+    @ExcelProperty("岗位ID")
+    private Long postId;
+    /**
+     * 岗位编码
+     */
+    @ApiModelProperty("岗位编码")
+    @ExcelProperty("岗位编码")
+    private String postCode;
+    /**
+     * 岗位名称
+     */
+    @ApiModelProperty("岗位名称")
+    @ExcelProperty("岗位名称")
+    private String postName;
+    /**
+     * 显示顺序
+     */
+    @ApiModelProperty("显示顺序")
+    @ExcelProperty("显示顺序")
+    private Integer postSort;
+    /**
+     * 状态（0正常 1停用）
+     */
+    @ApiModelProperty("状态（0正常 1停用）")
+    @ExcelProperty("状态（0正常 1停用）")
+    private String status;
+    /**
+     * 创建者
+     */
+    @ApiModelProperty("创建者")
+    @ExcelProperty("创建者")
+    private String createBy;
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty("创建时间")
+    @ExcelProperty("创建时间")
+    private String createTime;
+    /**
+     * 更新者
+     */
+    @ApiModelProperty("更新者")
+    @ExcelProperty("更新者")
+    private String updateBy;
+    /**
+     * 更新时间
+     */
+    @ApiModelProperty("更新时间")
+    @ExcelProperty("更新时间")
+    private String updateTime;
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
+    @ExcelProperty("备注")
+    private String remark;
 }
 

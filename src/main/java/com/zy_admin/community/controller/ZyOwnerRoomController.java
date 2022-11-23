@@ -1,17 +1,24 @@
 package com.zy_admin.community.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.baomidou.mybatisplus.extension.api.R;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.service.ZyOwnerRoomService;
+import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.util.RequestUtil;
+import com.zy_admin.common.core.Result.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.Serializable;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 房屋绑定表 (ZyOwnerRoom)表控制层
@@ -19,6 +26,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:02
  */
+@Api(value = "zyOwnerRoom", tags = {"房屋绑定表 (ZyOwnerRoom)表控制层"})
 @RestController
 @RequestMapping("zyOwnerRoom")
 public class ZyOwnerRoomController extends ApiController {
@@ -28,60 +36,65 @@ public class ZyOwnerRoomController extends ApiController {
     @Resource
     private ZyOwnerRoomService zyOwnerRoomService;
 
-    /**
-     * 分页查询所有数据
-     *
-     * @param page        分页对象
-     * @param zyOwnerRoom 查询实体
-     * @return 所有数据
-     */
-    @GetMapping
-    public R selectAll(Page<ZyOwnerRoom> page, ZyOwnerRoom zyOwnerRoom) {
-        return success(this.zyOwnerRoomService.page(page, new QueryWrapper<>(zyOwnerRoom)));
-    }
-
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.zyOwnerRoomService.getById(id));
-    }
+    @Resource
+    private RequestUtil requestUtil;
 
     /**
      * 新增数据
      *
-     * @param zyOwnerRoom 实体对象
+     * @param ownerRoom 实体对象
      * @return 新增结果
      */
-    @PostMapping
-    public R insert(@RequestBody ZyOwnerRoom zyOwnerRoom) {
-        return success(this.zyOwnerRoomService.save(zyOwnerRoom));
+    @PostMapping("/insert")
+    public Result insert(@RequestBody ZyOwnerRoom ownerRoom, HttpServletRequest request) throws Exception {
+        return this.zyOwnerRoomService.ownerInsert(ownerRoom,request);
     }
 
     /**
-     * 修改数据
      *
-     * @param zyOwnerRoom 实体对象
-     * @return 修改结果
+     * @return
      */
-    @PutMapping
-    public R update(@RequestBody ZyOwnerRoom zyOwnerRoom) {
-        return success(this.zyOwnerRoomService.updateById(zyOwnerRoom));
+    @GetMapping("/getTree")
+    public Result getTreeData(){
+        return this.zyOwnerRoomService.getTreeData();
     }
 
     /**
-     * 删除数据
-     *
-     * @param idList 主键结合
-     * @return 删除结果
+     * 修改业主审核的状态
+     * @return
      */
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.zyOwnerRoomService.removeByIds(idList));
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyOwnerRoom", name = "zyOwnerRoom", value = "", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "recordAuditOpinion", value = "", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "status", value = "", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
+    })
+    @ApiOperation(value = "修改业主审核的状态", notes = "修改业主审核的状态", httpMethod = "PUT")
+    @PutMapping("/updateOwnerRoomStatus")
+    @Transactional(rollbackFor = Exception.class)
+    @MyLog(title = "业主审核", optParam = "#{zyOwnerRoom}", businessType = BusinessType.UPDATE)
+    public Result updateOwnerRoomStatusReject(@RequestBody ZyOwnerRoom zyOwnerRoom, String recordAuditOpinion,String status, HttpServletRequest request) throws Exception {
+        SysUser user = requestUtil.getUser(request);
+        zyOwnerRoom.setUpdateBy(user.getUserName());
+        zyOwnerRoom.setRoomStatus(status);
+        return zyOwnerRoomService.updateOwnerRoomStatus(zyOwnerRoom, recordAuditOpinion, request);
+    }
+
+    /**
+     * 分页和查询业主审核
+     * @param zyOwnerRoom
+     * @param pageable
+     * @return
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "ZyOwnerRoom", name = "zyOwnerRoom", value = "", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "", required = true)
+    })
+    @ApiOperation(value = "分页和查询业主审核", notes = "分页和查询业主审核", httpMethod = "GET")
+    @GetMapping("selectAllOwnerRoomLimit")
+    public Result selectAllOwnerRoomLimit(ZyOwnerRoom zyOwnerRoom, Pageable pageable){
+        Result result = zyOwnerRoomService.selectAllOwnerRoomLimit(zyOwnerRoom,pageable);
+        return result;
     }
 }
 

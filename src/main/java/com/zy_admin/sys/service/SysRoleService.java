@@ -1,10 +1,11 @@
 package com.zy_admin.sys.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.entity.SysRole;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,77 +18,75 @@ import java.util.List;
  */
 public interface SysRoleService extends IService<SysRole> {
     /**
+     * 获取所有角色数据
+     * @param sysRole 角色对象
+     * @return 查询的所有角色结果集
+     */
+    Result getAllRole(SysRole sysRole);
+    /**
      * 根据id列表查询
-     *
-     * @param roleIds
-     * @return
+     * @param roleIds 角色主键集合
+     * @return 角色集合
      */
     List<SysRole> queryRoleById(ArrayList<Integer> roleIds);
-
     /**
-     * 获取所有角色
-     *
-     * @return
+     * 获取所有角色id
+     * @return 角色集合
      */
     List<SysRole> getRoleLists();
-
     /**
      * 根据ID集合批量删除
-     *
-     * @param idList 角色ID列表
-     * @return
+     * @param idList 角色ID集合
+     * @return 删除的角色结果集
      */
     Result deleteByIdList(List<Integer> idList);
-
     /**
-     * 角色搜索并分页
-     *
-     * @param sysRole
-     * @param pageable
-     * @param startTime
-     * @param endTime
-     * @return
+     * 选择角色限制
+     * @param sysRole   系统作用
+     * @param pageable  分页对象
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @return 查询角色结果集
      */
     Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime);
-
     /**
      * 添加角色及其权限
-     *
-     * @param roleAndRoleMenu
-     * @return
+     * @param roleAndRoleMenu 角色和角色菜单
+     * @return 查询角色结果集
      */
     Result insert(RoleAndRoleMenu roleAndRoleMenu);
-
     /**
-     * 修改角色及其权限
-     *
-     * @param roleAndRoleMenu
-     * @return
+     * 更新角色及其权限
+     * @param roleAndRoleMenu 角色和角色菜单
+     * @return 更新角色结果集
      */
     Result update(RoleAndRoleMenu roleAndRoleMenu);
-
     /**
      * 修改角色状态
-     *
-     * @param sysRole
-     * @return
+     * @param sysRole 角色对象
+     * @return 修改角色结果集
      */
     Result changeStatus(SysRole sysRole);
-
+    /**
+     * 检查角色名唯一
+     * @param type 类型用于新增为0或者修改1
+     * @param roleAndRoleMenu 角色和角色菜单
+     * @return 查询角色结果集
+     */
+    Boolean checkRoleNameUnique(int type, RoleAndRoleMenu roleAndRoleMenu);
     /**
      * 检查角色名是否唯一
-     * @param type
-     * @param roleAndRoleMenu
-     * @return
+     *
+     * @param type 类型用于新增为0或者修改1
+     * @param roleAndRoleMenu 角色和角色菜单
+     * @return 成功或失败的结果集
      */
-    Boolean checkRoleNameUnique(int type,RoleAndRoleMenu roleAndRoleMenu);
-
+    Boolean checkRoleKeyUnique(int type, RoleAndRoleMenu roleAndRoleMenu);
     /**
-     * 检查角色名是否唯一
-     * @param type
-     * @param roleAndRoleMenu
-     * @return
+     * 获取所有除去管理员以外的角色并分页
+     * @param page 分页对象
+     * @return 查询角色结果集
      */
-    Boolean checkRoleKeyUnique(int type,RoleAndRoleMenu roleAndRoleMenu);
+    Result getRoleList(Page page);
 }
 
