@@ -23,7 +23,7 @@ public class ZyRepair extends Model<ZyRepair> {
      * 报修ID
      */
     @ApiModelProperty("报修ID")
-    private Long repairId;
+    private String repairId;
     /**
      * 报修编号
      */
@@ -63,12 +63,12 @@ public class ZyRepair extends Model<ZyRepair> {
      * 分派人id
      */
     @ApiModelProperty("分派人id")
-    private Long assignmentId;
+    private String assignmentId;
     /**
      * 处理人id
      */
     @ApiModelProperty("处理人id")
-    private Long completeId;
+    private String completeId;
     /**
      * 处理人电话
      */
@@ -108,7 +108,7 @@ public class ZyRepair extends Model<ZyRepair> {
      * 创建人id
      */
     @ApiModelProperty("创建人id")
-    private Long userId;
+    private String userId;
     /**
      * 删除状态0默认1删除
      */
@@ -123,7 +123,7 @@ public class ZyRepair extends Model<ZyRepair> {
      * 小区ID
      */
     @ApiModelProperty("小区ID")
-    private Long communityId;
+    private String communityId;
     /**
      * 详细地址
      */

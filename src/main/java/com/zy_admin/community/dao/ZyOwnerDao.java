@@ -59,7 +59,7 @@ public interface ZyOwnerDao extends BaseMapper<ZyOwner> {
      * @param zyOwner zy所有者
      * @return long
      */
-    long count( ZyOwner zyOwner);
+    long countOwner(ZyOwner zyOwner);
 
     /**
      * 删除业主房间id
@@ -102,5 +102,7 @@ public interface ZyOwnerDao extends BaseMapper<ZyOwner> {
      * @return {@link List}<{@link OwnerRoomExcel}>
      */
     List<OwnerRoomExcel> queryOwnerById(@Param("OwnerIds") List<String> OwnerIds);
+
+    int insertOwner(ZyOwner zyOwner);
 }
 

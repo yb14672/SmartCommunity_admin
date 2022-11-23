@@ -20,12 +20,28 @@ import java.util.List;
 public interface ZyOwnerService extends IService<ZyOwner> {
 
     /**
+     * 通过id获取业主
+     *
+     * @param ownerId 业主id
+     * @return {@link Result}
+     */
+    Result getOwnerById(String ownerId);
+
+    /**
+     * 检查电话号码唯一
+     *
+     * @param type    类型
+     * @param owner 业主
+     * @return boolean
+     */
+    boolean checkPhoneNumberUnique(int type,ZyOwner owner);
+
+    /**
      * 业主个人信息设置
      * @param owner 需要修改的信息
-     * @param request 请求
      * @return 修改结果
      */
-    Result ownerUpdate(ZyOwner owner, HttpServletRequest request);
+    Result ownerUpdate(ZyOwner owner);
 
     /**
      * 业主登录

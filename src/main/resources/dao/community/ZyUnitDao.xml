@@ -132,9 +132,9 @@
     </update>
     <!--新增单元-->
     <insert id="insertUnit">
-        insert into zy_unit(unit_id, community_id, building_id, unit_name, unit_code, unit_level, unit_acreage,
+        insert into zy_unit(owner_id，unit_id, community_id, building_id, unit_name, unit_code, unit_level, unit_acreage,
                             unit_have_elevator, create_by, create_time, update_by, update_time, remark)
-        values (#{unitId}, #{communityId}, #{buildingId}, #{unitName}, #{unitCode},
+        values (#{ownerId},#{unitId}, #{communityId}, #{buildingId}, #{unitName}, #{unitCode},
                 #{unitLevel}, #{unitAcreage}, #{unitHaveElevator}, #{createBy},
                 #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
