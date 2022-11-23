@@ -277,7 +277,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
      * @return 字典数据的集合
      */
     @Override
-    public List<DataDictExcelDto> getDictListById(ArrayList<Integer> idList) {
+    public List<DataDictExcelDto> getDictListById(List<Integer> idList) {
         return this.baseMapper.getDictListById(idList);
     }
 }

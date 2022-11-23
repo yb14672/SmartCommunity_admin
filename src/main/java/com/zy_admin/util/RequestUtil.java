@@ -16,9 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class RequestUtil {
     @Autowired
-    private  SysUserService sysUserService;
+    private SysUserService sysUserService;
 
-    public  SysUser getUser(HttpServletRequest request){
+    public SysUser getUser(HttpServletRequest request){
         String id = JwtUtil.getMemberIdByJwtToken(request);
         Result result = sysUserService.queryById(id);
         SysUser user = (SysUser) result.getData();

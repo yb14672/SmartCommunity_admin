@@ -146,18 +146,18 @@ public class SysDictDataController extends ApiController {
      * @return 所查询的字典数据结果集
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<Integer>", name = "ids", value = "字典数据主键", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "string", name = "dictType", value = "", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<Integer>", name = "ids", value = "字典数据主键", required = false),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "dictType", value = "字典类型", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "前端响应", required = true)
     })
     @ApiOperation(value = "导出字典数据", notes = "导出字典数据", httpMethod = "GET")
     @GetMapping("/export")
     @MyLog(title = "字典数据", optParam = "#{ids}", businessType = BusinessType.EXPORT)
-    public Result export(@RequestParam("ids") ArrayList<Integer> ids, @RequestParam("dictType") String dictType, HttpServletResponse response) throws IOException {
+    public Result export(@RequestParam("ids") List<Integer> ids, @RequestParam("dictType") String dictType, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //用于存储要导出的数据列表
         List<DataDictExcelDto> sysDictDataList;
-        if (ids == null || ids.size() == 0) {
+        if (ids == null || ids.isEmpty()) {
             sysDictDataList = sysDictDataService.getDictList(dictType);
         } else {
             sysDictDataList = sysDictDataService.getDictListById(ids);

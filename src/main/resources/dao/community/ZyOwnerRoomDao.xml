@@ -235,10 +235,6 @@
         where owner_room_id = #{zyOwnerRoom.ownerRoomId}
     </update>
 
-    <!--通过主键删除-->
-    <delete id="deleteById">
-        delete from zy_owner_room where owner_room_id = #{ownerRoomId}
-    </delete>
 
     <!--新增所有列-->
     <insert id="insertOwnerRoom" keyProperty="ownerRoomId" useGeneratedKeys="true">
@@ -246,26 +242,6 @@
         values (#{ownerRoomId},#{communityId}, #{buildingId}, #{unitId}, #{roomId}, #{ownerId}, #{ownerType}, #{roomStatus}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
-    <insert id="insertOrUpdateBatch" keyProperty="ownerRoomId" useGeneratedKeys="true">
-        insert into zy_owner_room(community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status, create_by, create_time, update_by, update_time, remark)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.communityId}, #{entity.buildingId}, #{entity.unitId}, #{entity.roomId}, #{entity.ownerId}, #{entity.ownerType}, #{entity.roomStatus}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
-        </foreach>
-        on duplicate key update
-        community_id = values(community_id),
-        building_id = values(building_id),
-        unit_id = values(unit_id),
-        room_id = values(room_id),
-        owner_id = values(owner_id),
-        owner_type = values(owner_type),
-        room_status = values(room_status),
-        create_by = values(create_by),
-        create_time = values(create_time),
-        update_by = values(update_by),
-        update_time = values(update_time),
-        remark = values(remark)
-    </insert>
 
     <!--通过主键修改数据-->
     <update id="update">

@@ -33,7 +33,7 @@ public class ZyComment extends Model<ZyComment> {
      * 更新者ID
      */
     @ApiModelProperty("更新者ID")
-    private Long updateBy;
+    private String updateBy;
     /**
      * 创建时间
      */
