@@ -303,7 +303,7 @@
         where menu_id = #{menuId}
     </delete>
 
-    <select id="getAllMenu" resultType="com.zy_admin.sys.entity.MenuTree">
+    <select id="getAllMenu" resultType="com.zy_admin.sys.dto.MenuTree">
         select *
         from sys_menu
         where menu_type != 'F' and visible = 0 and menu_id
@@ -316,7 +316,7 @@
         order by order_num asc
     </select>
 
-    <select id="queryAllMenu" resultType="com.zy_admin.sys.entity.MenuTree">
+    <select id="queryAllMenu" resultType="com.zy_admin.sys.dto.MenuTree">
         select * from sys_menu
         <where>
             <if test="menuName != '' and menuName != null">
@@ -415,7 +415,7 @@
         select count(1) from sys_menu where parent_id = #{menuId}
     </select>
 
-    <select id="getMenuTree" resultType="com.zy_admin.sys.entity.MenuTree">
+    <select id="getMenuTree" resultType="com.zy_admin.sys.dto.MenuTree">
         select * from sys_menu where visible = '0' order by parent_id,order_num
     </select>
 </mapper>

@@ -5,7 +5,7 @@ import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.dao.SysMenuDao;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.sys.dto.SysUserDto;
-import com.zy_admin.sys.entity.MenuTree;
+import com.zy_admin.sys.dto.MenuTree;
 import com.zy_admin.sys.entity.SysMenu;
 import com.zy_admin.sys.service.SysMenuService;
 import com.zy_admin.common.core.Result.Result;

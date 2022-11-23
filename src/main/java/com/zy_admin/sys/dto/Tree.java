@@ -1,7 +1,6 @@
 package com.zy_admin.sys.dto;
 
 
-import com.zy_admin.sys.entity.MenuTree;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 

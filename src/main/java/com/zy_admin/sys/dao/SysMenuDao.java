@@ -1,7 +1,7 @@
 package com.zy_admin.sys.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zy_admin.sys.entity.MenuTree;
+import com.zy_admin.sys.dto.MenuTree;
 import com.zy_admin.sys.entity.SysMenu;
 import org.apache.ibatis.annotations.Param;
 
