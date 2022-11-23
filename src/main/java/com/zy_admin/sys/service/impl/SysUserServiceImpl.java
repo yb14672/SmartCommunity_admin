@@ -67,7 +67,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         SysUser user = this.baseMapper.queryById(userId);
         Result result = new Result(user, ResultTool.fail(ResultCode.USER_LOGOUT_FAIL));
         if (Boolean.TRUE.equals(redisService.empty())) {
-            result.setMeta(ResultTool.success(ResultCode.USER_LOGOUT_SUCCESS));
+            result.setMeta(ResultTool.fail(ResultCode.USER_LOGOUT_SUCCESS));
         }
         return result;
     }

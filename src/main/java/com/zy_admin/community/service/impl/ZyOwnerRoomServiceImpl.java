@@ -126,7 +126,6 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         String id1 = JwtUtil.getMemberIdByJwtToken(request);
         zyOwnerRoomRecord.setUpdateBy(sysUserDao.getUserById(id1).getUserName());
         zyOwnerRoomRecord.setUpdateTime(LocalDateTime.now().toString());
-
         zyOwnerRoomRecordDao.insert(zyOwnerRoomRecord);
         //修改时间
         zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());

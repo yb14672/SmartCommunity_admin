@@ -1,6 +1,7 @@
 package com.zy_admin.common.enums;
 
 /**
+ * 返回码
  * @Author yb14672
  * @Description: 返回码定义
  * 规定:
@@ -8,7 +9,6 @@ package com.zy_admin.common.enums;
  * #1001～1999 区间表示参数错误
  * #2001～2999 区间表示用户错误
  * #3001～3999 区间表示接口异常
- * @Date Create in
  */
 public enum ResultCode {
     /* 成功 */
