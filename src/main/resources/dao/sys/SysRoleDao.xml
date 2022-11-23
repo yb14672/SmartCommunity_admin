@@ -42,6 +42,16 @@
         from sys_role
         where role_id = #{roleId}
     </select>
+    <!--根据用户ID查询角色-->
+    <select id="getRoleListByUserId" resultType="com.zy_admin.sys.entity.SysRole">
+        SELECT
+            r.*
+        FROM
+            sys_role r
+                LEFT JOIN sys_user_role ur ON r.role_id = ur.role_id
+                LEFT JOIN sys_user u ON ur.user_id = u.user_id
+        WHERE u.user_id=#{userId}
+    </select>
 
     <!--查询单个-->
     <select id="queryById" resultMap="SysRoleMap">

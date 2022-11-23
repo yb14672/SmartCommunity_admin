@@ -4,17 +4,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
-import com.zy_admin.sys.dao.SysDeptDao;
+import com.zy_admin.sys.dao.SysRoleDao;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.sys.dao.SysUserRoleDao;
 import com.zy_admin.sys.dto.*;
+import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtil;
 import com.zy_admin.util.ObjUtil;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -51,7 +52,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Resource
     private RedisService redisService;
     @Resource
-    private SysDeptDao sysDeptDao;
+    private SysRoleDao sysRoleDao;
 
     /**
      * 注销
@@ -140,10 +141,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Transactional
     public Result insertAuthRole(Integer userId, String roleId) throws Exception {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        //先删除原本用户拥有的所有角色
-        int i = this.sysUserRoleDao.deleteByUserId(userId + "");
-        if (i == 0) {
-            throw new Exception("修改用户角色时出错，请稍后再试");
+        List<SysRole> roleListByUserId = sysRoleDao.getRoleListByUserId(userId + "");
+        //判断该用户之前是否有角色，避免空删除
+        if(roleListByUserId.size()!=0){
+            //先删除原本用户拥有的所有角色
+            int i = this.sysUserRoleDao.deleteByUserId(userId + "");
+            if (i == 0) {
+                throw new Exception("修改用户角色时出错，请稍后再试");
+            }
         }
         //再插入修改后的所有角色
         int i1 = this.sysUserRoleDao.insertBatchByRoleId(userId + "", roleId);
@@ -168,6 +173,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         if (userRoleDto != null) {
             result.setData(userRoleDto);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }else{
+            SysUser user = this.baseMapper.queryById(userId+"");
+            result.setData(user);
+            result.setMeta(ResultTool.fail(ResultCode.NO_ROLE));
         }
         return result;
     }

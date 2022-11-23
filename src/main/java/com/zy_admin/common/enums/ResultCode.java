@@ -47,6 +47,8 @@ public enum ResultCode {
     USER_REGISTER_FAIL(2019,"注册失败"),
     REPEAT_PHONE_NUMBER(2020,"手机号已被使用"),
     OWNER_UPDATE_FAIL(2021,"业主信息修改失败"),
+    NO_ROLE(2022,"该用户没有角色"),
+
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
     DELETE_FAIL(3002, "删除失败，请稍后再试"),
