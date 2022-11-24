@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
  * @author yb14672
  * @date 2022-11-23
  */
-@ApiModel(description = "评论对象 存储评论信息")
+@ApiModel(description = "评论对象 zy_comment 存储评论信息")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -77,4 +77,11 @@ public class ZyCommentDto {
     @ApiModelProperty("业主头像")
     @ExcelProperty("业主头像")
     private String ownerPortrait;
+
+    /**
+     * 业主姓名(被回复者姓名)
+     */
+    @ApiModelProperty("被回复者姓名")
+    @ExcelProperty("被回复者姓名")
+    private String passiveOwnerName;
 }

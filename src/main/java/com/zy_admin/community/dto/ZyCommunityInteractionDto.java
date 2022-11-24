@@ -28,7 +28,7 @@ public class ZyCommunityInteractionDto extends ZyCommunityInteraction {
      * 图片ID
      */
     @ApiModelProperty("图片ID")
-    @ExcelProperty("图片ID")
+    @ExcelIgnore
     private String filesId;
 
     /**
@@ -64,7 +64,7 @@ public class ZyCommunityInteractionDto extends ZyCommunityInteraction {
      */
     @ApiModelProperty("文件表")
     @ExcelIgnore
-    private ZyFiles[] zyFiles;
+    private List<ZyFiles> zyFiles;
 
     /**
      * 评论表
