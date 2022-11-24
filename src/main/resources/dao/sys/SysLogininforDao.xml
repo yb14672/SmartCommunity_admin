@@ -14,21 +14,6 @@
         <result property="loginTime" column="login_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <!--查询单个-->
-    <select id="queryById" resultMap="SysLogininforMap">
-        select info_id,
-               user_name,
-               ipaddr,
-               login_location,
-               browser,
-               os,
-               status,
-               msg,
-               login_time
-        from sys_logininfor
-        where info_id = #{infoId}
-    </select>
-
     <!--查询指定行数据-->
     <select id="queryLogininfor" resultType="com.zy_admin.sys.entity.SysLogininfor">
         select
@@ -77,42 +62,6 @@
         </where>
     </select>
 
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="SysLogininforMap">
-        select
-        info_id, user_name, ipaddr, login_location, browser, os, status, msg, login_time
-        from sys_logininfor
-        <where>
-            <if test="infoId != null">
-                and info_id = #{infoId}
-            </if>
-            <if test="userName != null and userName != ''">
-                and user_name = #{userName}
-            </if>
-            <if test="ipaddr != null and ipaddr != ''">
-                and ipaddr = #{ipaddr}
-            </if>
-            <if test="loginLocation != null and loginLocation != ''">
-                and login_location = #{loginLocation}
-            </if>
-            <if test="browser != null and browser != ''">
-                and browser = #{browser}
-            </if>
-            <if test="os != null and os != ''">
-                and os = #{os}
-            </if>
-            <if test="status != null and status != ''">
-                and status = #{status}
-            </if>
-            <if test="msg != null and msg != ''">
-                and msg = #{msg}
-            </if>
-            <if test="loginTime != null">
-                and login_time = #{loginTime}
-            </if>
-        </where>
-        limit #{pageable.offset}, #{pageable.pageSize}
-    </select>
     <!--查询导出日志-->
     <select id="queryLoginInFor" resultType="com.zy_admin.sys.dto.LoginInForExcelDto">
         select
@@ -131,33 +80,6 @@
     <insert id="insert" keyProperty="infoId" useGeneratedKeys="true">
         insert into sys_logininfor(user_name, ipaddr, login_location, browser, os, status, msg, login_time)
         values (#{userName}, #{ipaddr}, #{loginLocation}, #{browser}, #{os}, #{status}, #{msg}, #{loginTime})
-    </insert>
-
-    <insert id="insertBatch" keyProperty="infoId" useGeneratedKeys="true">
-        insert into sys_logininfor(user_name, ipaddr, login_location, browser, os, status, msg, login_time)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.userName}, #{entity.ipaddr}, #{entity.loginLocation}, #{entity.browser}, #{entity.os},
-            #{entity.status}, #{entity.msg}, #{entity.loginTime})
-        </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="infoId" useGeneratedKeys="true">
-        insert into sys_logininfor(user_name, ipaddr, login_location, browser, os, status, msg, login_time)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.userName}, #{entity.ipaddr}, #{entity.loginLocation}, #{entity.browser}, #{entity.os},
-            #{entity.status}, #{entity.msg}, #{entity.loginTime})
-        </foreach>
-        on duplicate key update
-        user_name = values(user_name),
-        ipaddr = values(ipaddr),
-        login_location = values(login_location),
-        browser = values(browser),
-        os = values(os),
-        status = values(status),
-        msg = values(msg),
-        login_time = values(login_time)
     </insert>
 
     <!--通过主键修改数据-->
@@ -205,6 +127,7 @@
             #{info_id}
         </foreach>
     </delete>
+
     <delete id="EmptyLog">
         delete from sys_logininfor;
     </delete>

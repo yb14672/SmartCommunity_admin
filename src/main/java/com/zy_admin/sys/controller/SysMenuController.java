@@ -2,6 +2,7 @@ package com.zy_admin.sys.controller;
 
 
 import com.baomidou.mybatisplus.extension.api.ApiController;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
@@ -9,8 +10,7 @@ import com.zy_admin.sys.entity.SysMenu;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysMenuService;
 import com.zy_admin.sys.service.SysUserService;
-import com.zy_admin.util.JwtUtil;
-import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -41,6 +41,8 @@ public class SysMenuController extends ApiController {
     private SysMenuService sysMenuService;
     @Resource
     private SysUserService sysUserService;
+    @Resource
+    private RequestUtil requestUtil;
     /**
      * 获取菜单树
      * @return 菜单树的结果集
@@ -75,7 +77,7 @@ public class SysMenuController extends ApiController {
     @ApiOperation(value = "获取所有菜单", notes = "获取所有菜单", httpMethod = "GET")
     @GetMapping("/getMenus")
     public Result getMenuList(HttpServletRequest request) {
-        String userId = JwtUtil.getMemberIdByJwtToken(request);
+        String userId = requestUtil.getUserId(request);
         return this.sysMenuService.getAllMenu(userId);
     }
     /**
@@ -92,7 +94,7 @@ public class SysMenuController extends ApiController {
     @PostMapping("/addMenu")
     @MyLog(title = "菜单管理", optParam = "#{sysMenu}", businessType = BusinessType.INSERT)
     public Result insert(@RequestBody SysMenu sysMenu, HttpServletRequest request) {
-        String userId = JwtUtil.getMemberIdByJwtToken(request);
+        String userId = requestUtil.getUserId(request);
         Result result = this.sysUserService.queryById(userId);
         try {
             SysUser user = (SysUser) result.getData();
@@ -118,8 +120,7 @@ public class SysMenuController extends ApiController {
     @PutMapping("/updateMenu")
     @MyLog(title = "菜单管理", optParam = "#{sysMenu}", businessType = BusinessType.UPDATE)
     public Result updateMenu(@RequestBody SysMenu sysMenu) {
-        Result result = this.sysMenuService.updateMenu(sysMenu);
-        return result;
+        return this.sysMenuService.updateMenu(sysMenu);
     }
     /**
      * 根据id删除菜单

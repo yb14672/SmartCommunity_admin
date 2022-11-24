@@ -11,9 +11,13 @@ import java.util.Date;
 
 public class JwtUtil {
 
-    // token时效：24小时
+    /**
+     * token时效：24小时
+     */
     public static final long EXPIRE = 1000 * 60 * 60 * 24;
-    // 签名哈希的密钥，对于不同的加密算法来说含义不同
+    /**
+     * 签名哈希的密钥，对于不同的加密算法来说含义不同
+     */
     public static final String APP_SECRET = "ukc8BDbRigUDaY6pZFfWus2jZWLPHO";
 
     /**
@@ -56,11 +60,12 @@ public class JwtUtil {
 
     /**
      * 根据token获取会员id
-     * @param request Http请求对象
+     * @param request       Http请求对象
+     * @param tokenName     要获取的token名
      * @return 解析token后获得的用户id
      */
-    public static String getMemberIdByJwtToken(HttpServletRequest request) {
-        String jwtToken = request.getHeader("token");
+    public static String getMemberIdByJwtToken(HttpServletRequest request,String tokenName) {
+        String jwtToken = request.getHeader(tokenName);
         if(StringUtils.isEmpty(jwtToken)) { return ""; }
         Jws<Claims> claimsJws = Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(jwtToken);
         Claims claims = claimsJws.getBody();

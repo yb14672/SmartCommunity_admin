@@ -16,6 +16,7 @@ import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtil;
 import com.zy_admin.util.ObjUtil;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -53,6 +54,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private RedisService redisService;
     @Resource
     private SysRoleDao sysRoleDao;
+    @Resource
+    private RequestUtil requestUtil;
 
     /**
      * 注销
@@ -62,10 +65,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      */
     @Override
     public Result logout(HttpServletRequest request) {
-        //根据token获取当前登录的id
-        String userId = JwtUtil.getMemberIdByJwtToken(request);
-        //根据id获取当前的对象
-        SysUser user = this.baseMapper.queryById(userId);
+        SysUser user = requestUtil.getUser(request);
         Result result = new Result(user, ResultTool.fail(ResultCode.USER_LOGOUT_FAIL));
         if (Boolean.TRUE.equals(redisService.empty())) {
             result.setMeta(ResultTool.fail(ResultCode.USER_LOGOUT_SUCCESS));
@@ -138,7 +138,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      * @throws Exception 异常
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Result insertAuthRole(Integer userId, String roleId) throws Exception {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysRole> roleListByUserId = sysRoleDao.getRoleListByUserId(userId + "");

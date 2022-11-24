@@ -37,28 +37,31 @@
 
     <!--查询单个-->
     <select id="getRoleInfo" resultMap="RoleAndRoleMenu">
-        select
-          role_id, role_name, role_key, role_sort, data_scope, menu_check_strictly, dept_check_strictly, status, del_flag, create_by, create_time, update_by, update_time, remark
+        select role_id,
+               role_name,
+               role_key,
+               role_sort,
+               data_scope,
+               menu_check_strictly,
+               dept_check_strictly,
+               status,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
         from sys_role
         where role_id = #{roleId}
-    </select>
-    <!--根据用户ID查询角色-->
-    <select id="getRoleListByUserId" resultType="com.zy_admin.sys.entity.SysRole">
-        SELECT
-            r.*
-        FROM
-            sys_role r
-                LEFT JOIN sys_user_role ur ON r.role_id = ur.role_id
-                LEFT JOIN sys_user u ON ur.user_id = u.user_id
-        WHERE u.user_id=#{userId}
     </select>
 
-    <!--查询单个-->
-    <select id="queryById" resultMap="SysRoleMap">
-        select
-          role_id, role_name, role_key, role_sort, data_scope, menu_check_strictly, dept_check_strictly, status, del_flag, create_by, create_time, update_by, update_time, remark
-        from sys_role
-        where role_id = #{roleId}
+    <!--根据用户ID查询角色-->
+    <select id="getRoleListByUserId" resultType="com.zy_admin.sys.entity.SysRole">
+        SELECT r.*
+        FROM sys_role r
+                 LEFT JOIN sys_user_role ur ON r.role_id = ur.role_id
+                 LEFT JOIN sys_user u ON ur.user_id = u.user_id
+        WHERE u.user_id = #{userId}
     </select>
 
     <!--查询指定行数据-->
@@ -110,7 +113,6 @@
         </if>
     </select>
 
-
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long" parameterType="com.zy_admin.sys.entity.SysRole">
         select count(*)
@@ -156,44 +158,10 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="roleId" useGeneratedKeys="true" keyColumn="role_id">
-        insert into sys_role(role_name, role_key, role_sort, data_scope, menu_check_strictly, dept_check_strictly, status, del_flag, create_by, create_time, update_by, update_time, remark)
-        values (#{roleName}, #{roleKey}, #{roleSort}, #{dataScope}, #{menuCheckStrictly}, #{deptCheckStrictly}, #{status}, #{delFlag}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
-    </insert>
-
-    <insert id="insertBatch" keyProperty="roleId" useGeneratedKeys="true">
         insert into sys_role(role_name, role_key, role_sort, data_scope, menu_check_strictly, dept_check_strictly,
-        status, del_flag, create_by, create_time, update_by, update_time, remark)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.roleName}, #{entity.roleKey}, #{entity.roleSort}, #{entity.dataScope},
-            #{entity.menuCheckStrictly}, #{entity.deptCheckStrictly}, #{entity.status}, #{entity.delFlag},
-            #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
-        </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="roleId" useGeneratedKeys="true">
-        insert into sys_role(role_name, role_key, role_sort, data_scope, menu_check_strictly, dept_check_strictly,
-        status, del_flag, create_by, create_time, update_by, update_time, remark)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.roleName}, #{entity.roleKey}, #{entity.roleSort}, #{entity.dataScope},
-            #{entity.menuCheckStrictly}, #{entity.deptCheckStrictly}, #{entity.status}, #{entity.delFlag},
-            #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
-        </foreach>
-        on duplicate key update
-        role_name = values(role_name),
-        role_key = values(role_key),
-        role_sort = values(role_sort),
-        data_scope = values(data_scope),
-        menu_check_strictly = values(menu_check_strictly),
-        dept_check_strictly = values(dept_check_strictly),
-        status = values(status),
-        del_flag = values(del_flag),
-        create_by = values(create_by),
-        create_time = values(create_time),
-        update_by = values(update_by),
-        update_time = values(update_time),
-        remark = values(remark)
+                             status, del_flag, create_by, create_time, update_by, update_time, remark)
+        values (#{roleName}, #{roleKey}, #{roleSort}, #{dataScope}, #{menuCheckStrictly}, #{deptCheckStrictly},
+                #{status}, #{delFlag}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <!--通过主键修改数据-->
@@ -251,11 +219,13 @@
         </foreach>
     </delete>
 
-<!--批量查询所有未被删除的角色-->
+    <!--批量查询所有未被删除的角色-->
     <select id="getRoleLists" resultType="com.zy_admin.sys.entity.SysRole">
-        select * from sys_role where del_flag='0'
+        select *
+        from sys_role
+        where del_flag = '0'
     </select>
-<!--通过角色id数组-->
+    <!--通过角色id数组-->
     <select id="queryRoleById" resultType="com.zy_admin.sys.entity.SysRole">
         select * from sys_role
         <if test="list!=null">

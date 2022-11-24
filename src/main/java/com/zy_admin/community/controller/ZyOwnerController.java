@@ -90,7 +90,7 @@ public class ZyOwnerController extends ApiController {
     /**
      * 新增数据
      *
-     * @param zyOwner 实体对象
+     * @param zyOwner 业主对象
      * @return 新增结果
      */
     @ApiImplicitParams({
@@ -106,9 +106,9 @@ public class ZyOwnerController extends ApiController {
     /**
      * 获取户主信息并分页
      *
-     * @param zyOwner  户主信息
-     * @param pageable 页码
-     * @return {@link Result}
+     * @param zyOwner  业主信息
+     * @param pageable 分页对象
+     * @return 查询户主结果集
      */
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "ZyOwner", name = "zyOwner", value = "户主信息", required = true),
@@ -124,9 +124,9 @@ public class ZyOwnerController extends ApiController {
     /**
      * 删除业主房屋关联
      *
-     * @param request     请求
-     * @param ownerRoomId 房主id
-     * @return {@link Result}
+     * @param request     前端请求
+     * @param ownerRoomId 业主id
+     * @return 删除业主结果集
      */
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true),

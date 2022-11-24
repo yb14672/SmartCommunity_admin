@@ -18,10 +18,9 @@ public interface ZyOwnerRoomService extends IService<ZyOwnerRoom> {
     /**
      * 提交审核记录
      * @param ownerRoom 审核信息
-     * @param request 请求
      * @return 提交结果
      */
-    Result ownerInsert(ZyOwnerRoom ownerRoom, HttpServletRequest request) throws Exception;
+    Result ownerInsert(ZyOwnerRoom ownerRoom) throws Exception;
 
     /**
      * 获取小区，楼栋，单元，房屋四级联动的树形结构
@@ -42,7 +41,7 @@ public interface ZyOwnerRoomService extends IService<ZyOwnerRoom> {
      * @param zyOwnerRoom
      * @return
      */
-    Result updateOwnerRoomStatus(ZyOwnerRoom zyOwnerRoom, String recordAuditOpinion, HttpServletRequest request) throws Exception;
+    Result updateOwnerRoomStatus(ZyOwnerRoom zyOwnerRoom, String recordAuditOpinion) throws Exception;
 
 }
 

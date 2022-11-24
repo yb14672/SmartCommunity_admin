@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author yb14672
  * Time:2022/11/10 - 10:41
- * @date 2022/11/23
  */
 @ApiModel(description = "获取Request中数据的工具类")
 @Component
@@ -43,10 +42,9 @@ public class RequestUtil {
      * @return {@link SysUser}
      */
     public SysUser getUser(HttpServletRequest request) {
-        String id = JwtUtil.getMemberIdByJwtToken(request);
+        String id = JwtUtil.getMemberIdByJwtToken(request,"token");
         Result result = sysUserService.queryById(id);
-        SysUser user = (SysUser) result.getData();
-        return user;
+        return (SysUser) result.getData();
     }
 
     /**
@@ -56,9 +54,26 @@ public class RequestUtil {
      * @return {@link ZyOwner}
      */
     public ZyOwner getOwner(HttpServletRequest request) {
-        String id = JwtUtil.getMemberIdByJwtToken(request);
+        String id = JwtUtil.getMemberIdByJwtToken(request,"Authorization");
         Result result = zyOwnerService.getOwnerById(id);
-        ZyOwner owner = (ZyOwner) result.getData();
-        return owner;
+        return (ZyOwner) result.getData();
+    }
+
+    /**
+     * 获取用户ID
+     * @param request 前端发送的请求
+     * @return 当前请求的用户ID
+     */
+    public String getUserId(HttpServletRequest request) {
+        return JwtUtil.getMemberIdByJwtToken(request,"token");
+    }
+
+    /**
+     * 获取业主ID
+     * @param request 前端发送的请求
+     * @return 当前请求的业主ID
+     */
+    public String getOwnerId(HttpServletRequest request) {
+        return JwtUtil.getMemberIdByJwtToken(request,"Authorization");
     }
 }

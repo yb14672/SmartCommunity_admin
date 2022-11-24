@@ -14,6 +14,8 @@ import com.zy_admin.community.dto.CommunityExcel;
 import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.community.service.ZyCommunityService;
 import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -44,7 +46,11 @@ public class ZyCommunityController extends ApiController {
      * 服务对象
      */
     @Resource
-    private ZyCommunityService zyCommunityService;
+    private ZyCommunityService zyCommunityService;/**
+     * 服务对象
+     */
+    @Resource
+    private RequestUtil requestUtil;
     /**
      * 根据所得id导出小区信息
      * @param ids 查询的小区主键id
@@ -93,7 +99,9 @@ public class ZyCommunityController extends ApiController {
     @PutMapping("/updateCommunity")
     @MyLog(title = "小区信息", optParam = "#{community}", businessType = BusinessType.UPDATE)
     public Result update(@RequestBody ZyCommunity community,HttpServletRequest request) {
-        return this.zyCommunityService.updateCommunityById(community,request);
+        SysUser user = requestUtil.getUser(request);
+        community.setUpdateBy(user.getUserName());
+        return this.zyCommunityService.updateCommunityById(community);
     }
     /**
      * 新增数据
@@ -109,7 +117,9 @@ public class ZyCommunityController extends ApiController {
     @PostMapping("/insertCommunity")
     @MyLog(title = "小区信息", optParam = "#{community}", businessType = BusinessType.INSERT)
     public Result insert(@RequestBody ZyCommunity community, HttpServletRequest request) {
-        return this.zyCommunityService.insertCommunity(community,request);
+        SysUser user = requestUtil.getUser(request);
+        community.setCreateBy(user.getUserName());
+        return this.zyCommunityService.insertCommunity(community);
     }
     /**
      *  分页查询所有数据

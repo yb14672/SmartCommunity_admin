@@ -23,9 +23,9 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:01
  */
-@Api(value = "zyCommunityInteraction", tags = {"社区互动表(ZyCommunityInteraction)表控制层"})
+@Api(value = "zyCommunityInteraction", tags = {"移动端社区互动"})
 @RestController
-@RequestMapping("zyCommunityInteraction")
+@RequestMapping("/mini/interaction")
 public class ZyCommunityInteractionController extends ApiController {
     /**
      * 服务对象

@@ -408,12 +408,4 @@
         </set>
         where user_id = #{userId}
     </update>
-
-    <!--    <insert id="insertBatch">-->
-    <!--        insert into sys_user(role_id,menu_id)-->
-    <!--        values-->
-    <!--        <foreach collection="menuIdList" item="menuId" separator=",">-->
-    <!--            (#{id},#{menuId})-->
-    <!--        </foreach>-->
-    <!--    </insert>-->
 </mapper>

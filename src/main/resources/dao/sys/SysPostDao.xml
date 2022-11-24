@@ -108,36 +108,6 @@
         values (#{postCode}, #{postName}, #{postSort}, #{status}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
-    <insert id="insertBatch" keyProperty="postId" useGeneratedKeys="true">
-        insert into sys_post(post_code, post_name, post_sort, status, create_by, create_time, update_by, update_time,
-        remark)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.postCode}, #{entity.postName}, #{entity.postSort}, #{entity.status}, #{entity.createBy},
-            #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
-        </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="postId" useGeneratedKeys="true">
-        insert into sys_post(post_code, post_name, post_sort, status, create_by, create_time, update_by, update_time,
-        remark)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.postCode}, #{entity.postName}, #{entity.postSort}, #{entity.status}, #{entity.createBy},
-            #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
-        </foreach>
-        on duplicate key update
-        post_code = values(post_code),
-        post_name = values(post_name),
-        post_sort = values(post_sort),
-        status = values(status),
-        create_by = values(create_by),
-        create_time = values(create_time),
-        update_by = values(update_by),
-        update_time = values(update_time),
-        remark = values(remark)
-    </insert>
-
     <!--通过主键修改数据-->
     <update id="updateById">
         update sys_post
@@ -178,14 +148,12 @@
         delete from sys_post where post_id = #{postId}
     </delete>
 
-
    <delete id="deletePost" parameterType="integer">
     delete from sys_post where post_id in
     <foreach collection="idList" item="post_id" separator="," open="(" close=")">
         #{post_id}
     </foreach>
 </delete>
-
 
     <!--通过角色id数组-->
     <select id="queryRoleById" resultType="com.zy_admin.sys.entity.SysPost">
@@ -199,8 +167,6 @@
         </if>
     </select>
 
-
-
     <select id="getPostLists" resultType="com.zy_admin.sys.entity.SysPost">
         select * from sys_post
     </select>
@@ -212,7 +178,5 @@
         </foreach>
         order by post_id asc
     </select>
-
-
 </mapper>
 
