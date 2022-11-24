@@ -38,7 +38,7 @@ public class AuthConfig implements WebMvcConfigurer {
                         "/zyOwner/**",
                         "/zyOwnerRoom/**",
                         "/zyVisitor/**",
-                        "/zyRepair/**",
+                        "/zyRepair/**"
                 );
     }
 }
