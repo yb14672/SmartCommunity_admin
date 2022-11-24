@@ -18,6 +18,14 @@ import java.util.List;
  * @since 2022-11-01 19:49:02
  */
 public interface ZyOwnerService extends IService<ZyOwner> {
+
+    /**
+     * 通过id获取业主
+     *
+     * @param ownerId 业主id
+     * @return {@link Result}
+     */
+    Result getOwnerById(String ownerId);
     /**
      * 得到业主名单
      * 获取户主信息并分页

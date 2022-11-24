@@ -2,17 +2,18 @@ package com.zy_admin.community.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerDao;
 import com.zy_admin.community.dto.OwnerDto;
 import com.zy_admin.community.dto.OwnerListDto;
-import com.zy_admin.community.dto.*;
+import com.zy_admin.community.dto.OwnerRoomExcel;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerService;
 import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.RequestUtil;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,24 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
 
     @Resource
     private RequestUtil requestUtil;
+
+
+    /**
+     * 通过id获取业主
+     *
+     * @param ownerId 业主id
+     * @return {@link Result}
+     */
+    @Override
+    public Result getOwnerById(String ownerId) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        ZyOwner owner = this.baseMapper.selectById(ownerId);
+        if (ObjUtil.isNotEmpty(owner)||"".equals(owner.getOwnerId())) {
+            result.setData(owner);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
 
     /**
      * 根据条件查询业主列表并分页

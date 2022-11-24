@@ -30,7 +30,7 @@
         select
         visitor_id, community_id, visitor_name, visitor_phone_number, visitor_date, create_by_id, create_by_open_id,status,
         create_by, create_time, update_by, update_time, remark,(select community_name from zy_community where community_id = zo.community_id )communityName
-        from zy_visitor zo
+        from zy_visitor zo order by  visitor_date desc
         <where>
             <if test="zyVisitor.visitorId != null">
                 and visitor_id = #{zyVisitor.visitorId}
