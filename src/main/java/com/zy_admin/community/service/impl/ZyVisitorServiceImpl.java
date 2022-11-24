@@ -5,10 +5,7 @@ import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyVisitorDao;
-import com.zy_admin.community.dto.OwnerDto;
-import com.zy_admin.community.dto.OwnerListDto;
-import com.zy_admin.community.dto.VisitorDto;
-import com.zy_admin.community.dto.VisitorListDto;
+import com.zy_admin.community.dto.*;
 import com.zy_admin.community.entity.ZyVisitor;
 import com.zy_admin.community.service.ZyVisitorService;
 import com.zy_admin.util.ResultTool;
@@ -24,6 +21,19 @@ import java.util.List;
  */
 @Service("zyVisitorService")
 public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> implements ZyVisitorService {
+
+    @Override
+    public List<VisitorGetExcelDto> getLists(String communityId) {
+        return this.baseMapper.getLists(communityId);
+    }
+
+    @Override
+    public List<VisitorGetExcelDto> queryVisitorrById(List<String> visitorIds) {
+        if (visitorIds != null) {
+            visitorIds = visitorIds.size() == 0 ? null : visitorIds;
+        }
+        return this.baseMapper.queryVisitorById(visitorIds);
+    }
 
     /**
      * 得到访客名单

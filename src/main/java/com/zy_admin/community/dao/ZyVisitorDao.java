@@ -2,11 +2,11 @@ package com.zy_admin.community.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.community.dto.VisitorGetExcelDto;
 import com.zy_admin.community.dto.VisitorListDto;
 import com.zy_admin.community.entity.ZyVisitor;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -19,6 +19,21 @@ import java.util.List;
 
 
 public interface ZyVisitorDao extends BaseMapper<ZyVisitor> {
+
+
+    /**通过社区Id获取所有访客信息
+     * @param communityId 社区Id
+     * @return {@link List}<{@link VisitorGetExcelDto}>
+     */
+    List<VisitorGetExcelDto> getLists(String communityId);
+
+    /**
+     * 根据id查询访客
+     *
+     * @param visitorIds 游客id
+     * @return {@link List}<{@link VisitorGetExcelDto}>
+     */
+    List<VisitorGetExcelDto> queryVisitorById(@Param("visitorIds") List<String> visitorIds);
 
 
     /**

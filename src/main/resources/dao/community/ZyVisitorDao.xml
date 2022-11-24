@@ -30,7 +30,7 @@
         select
         visitor_id, community_id, visitor_name, visitor_phone_number, visitor_date, create_by_id, create_by_open_id,status,
         create_by, create_time, update_by, update_time, remark,(select community_name from zy_community where community_id = zo.community_id )communityName
-        from zy_visitor zo order by  visitor_date desc
+        from zy_visitor zo
         <where>
             <if test="zyVisitor.visitorId != null">
                 and visitor_id = #{zyVisitor.visitorId}
@@ -44,7 +44,9 @@
             <if test="zyVisitor.visitorDate != null">
                 and visitor_date = #{zyVisitor.visitorDate}
             </if>
+            and community_id =#{zyVisitor.communityId}
         </where>
+        order by  create_time desc
         limit #{pageable.index}, #{pageable.pageSize}
     </select>
 
@@ -65,13 +67,14 @@
             <if test="visitorDate != null">
                 and visitor_date = #{visitorDate}
             </if>
+              and community_id =#{communityId}
         </where>
     </select>
 
     <!--新增所有列-->
     <insert id="insertVisitor">
-        insert into zy_visitor(visitor_id, community_id, visitor_name, visitor_phone_number, visitor_date, create_by_id, create_by_open_id, create_by, create_time, update_by, update_time, remark)
-        values (#{visitorId},#{communityId}, #{visitorName}, #{visitorPhoneNumber}, #{visitorDate}, #{createById}, #{createByOpenId}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+        insert into zy_visitor(visitor_id, community_id, visitor_name, visitor_phone_number, visitor_date, create_by_id, create_by_open_id, create_by, create_time, update_by, update_time, remark,status)
+        values (#{visitorId},#{communityId}, #{visitorName}, #{visitorPhoneNumber}, #{visitorDate}, #{createById}, #{createByOpenId}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark},#{status})
     </insert>
 
     <insert id="insertBatch" keyProperty="visitorId" useGeneratedKeys="true">
@@ -153,6 +156,21 @@
     <delete id="deleteById">
         delete from zy_visitor where visitor_id = #{visitorId}
     </delete>
+
+    <select id="queryVisitorById" resultType="com.zy_admin.community.dto.VisitorGetExcelDto">
+        select community_id, visitor_name, visitor_phone_number, visitor_date, create_by_id, create_by_open_id,status,
+        create_by, create_time, update_by, update_time, remark,(select community_name from zy_community where community_id = zo.community_id )communityName
+        from zy_visitor zo  where visitor_id in
+        <foreach collection="visitorIds" item="visitorId" separator="," open="(" close=")">
+        #{visitorId}
+        </foreach>
+    </select>
+
+    <select id="getLists" resultType="com.zy_admin.community.dto.VisitorGetExcelDto">
+         select community_id, visitor_name, visitor_phone_number, visitor_date, create_by_id, create_by_open_id,status,
+        create_by, create_time, update_by, update_time, remark,(select community_name from zy_community where community_id = zo.community_id )communityName
+        from zy_visitor zo where community_id = #{communityId}
+    </select>
 
 </mapper>
 

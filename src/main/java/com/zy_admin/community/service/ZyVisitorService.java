@@ -3,7 +3,10 @@ package com.zy_admin.community.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.community.dto.VisitorGetExcelDto;
 import com.zy_admin.community.entity.ZyVisitor;
+
+import java.util.List;
 
 /**
  * 访客邀请 (ZyVisitor)表服务接口
@@ -13,6 +16,8 @@ import com.zy_admin.community.entity.ZyVisitor;
  */
 public interface ZyVisitorService extends IService<ZyVisitor> {
 
+    List<VisitorGetExcelDto>getLists(String communityId);
+    List<VisitorGetExcelDto> queryVisitorrById(List<String> ids);
     /**
      * 得到访客名单
      *
