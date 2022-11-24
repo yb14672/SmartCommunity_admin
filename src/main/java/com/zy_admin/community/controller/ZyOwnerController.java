@@ -54,6 +54,18 @@ public class ZyOwnerController extends ApiController {
     private RequestUtil requestUtil;
 
     /**
+     * 获取业主信息
+     *
+     * @param request 请求
+     * @return {@link Result}
+     */
+    @GetMapping("/getOwner")
+    public Result getOwner(HttpServletRequest request){
+        String ownerId = requestUtil.getOwnerId(request);
+        return this.zyOwnerService.getOwnerById(ownerId);
+    }
+
+    /**
      * 修改数据
      *
      * @param zyOwner 实体对象
