@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @ApiModel(description = "投诉建议dto")
 @Data
 @AllArgsConstructor
@@ -66,7 +68,7 @@ public class ZyComplaintSuggestDto {
      */
     @ApiModelProperty("投诉建议图片")
     @ExcelProperty("投诉建议图片")
-    private String filesUrl;
+    private List<String> filesUrl;
 
     /**
      * 更新者

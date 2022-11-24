@@ -18,6 +18,13 @@ import java.util.List;
 public interface ZyComplaintSuggestDao extends BaseMapper<ZyComplaintSuggest> {
 
     /**
+     * 根据id查询投诉建议
+     * @param suggestId id
+     * @return
+     */
+    ZyComplaintSuggestDto selectSuggestById(String suggestId);
+
+    /**
      * 查询投诉建议和分页
      * @param zyComplaintSuggest 投诉建议
      * @param pageable 分页
@@ -53,24 +60,24 @@ public interface ZyComplaintSuggestDao extends BaseMapper<ZyComplaintSuggest> {
 
     /**
      * 修改投诉建议
-     * @param complaintSuggestId 投诉建议id
+     * @param zyComplaintSuggest 投诉建议
      * @return
      */
-    Integer updateSuggest(Integer complaintSuggestId);
-
-    /**
-     * 删除投诉建议通过id
-     * @param complaintSuggestId 投诉建议id
-     * @return
-     */
-    Integer deleteSuggestById(Integer complaintSuggestId);
+    Integer updateSuggest(@Param("zyComplaintSuggest") ZyComplaintSuggest zyComplaintSuggest);
 
     /**
      * 批量删除
      * @param idList id集合
      * @return
      */
-    Integer deleteSuggestByIds(@Param("idList") List<Integer> idList);
+    Integer deleteSuggestByIds(@Param("idList") List<String> idList);
+
+    /**
+     * 根据id查对象
+     * @param complaintSuggestId 投诉建议的id
+     * @return
+     */
+    ZyComplaintSuggest queryById(String complaintSuggestId);
 
 
 }

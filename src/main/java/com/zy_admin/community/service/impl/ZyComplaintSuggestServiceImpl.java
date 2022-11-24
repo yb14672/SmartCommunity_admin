@@ -1,19 +1,21 @@
 package com.zy_admin.community.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zy_admin.common.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyComplaintSuggestDao;
 import com.zy_admin.community.dao.ZyFilesDao;
 import com.zy_admin.community.dto.ZyComplaintSuggestDto;
-import com.zy_admin.community.dto.ZyComplaintSuggestDtoAll;
 import com.zy_admin.community.entity.ZyComplaintSuggest;
 import com.zy_admin.community.service.ZyComplaintSuggestService;
 import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.SnowflakeManager;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,24 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
 
     @Resource
     private ZyFilesDao zyFilesDao;
+    @Resource
+    private SnowflakeManager snowflakeManager;
+
+    /**
+     * 根据id查投诉建议
+     *
+     * @param suggestId id
+     * @return
+     */
+    @Override
+    public Result selectSuggestById(String suggestId) {
+        //默认给失败
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        ZyComplaintSuggestDto zyComplaintSuggestDto = this.baseMapper.selectSuggestById(suggestId);
+        result.setData(zyComplaintSuggestDto);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
+    }
 
     /**
      * 投诉建议和分页
@@ -56,18 +76,20 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         //总数量
         pageable.setTotal(total);
         //根据id获取到的图片的地址
-        List<ZyComplaintSuggestDto> fileUrlList = zyFilesDao.queryAllFileUrl(zyComplaintSuggest.getComplaintSuggestId());
-        System.out.println(fileUrlList);
         List<ZyComplaintSuggestDto> zyComplaintSuggestList = this.baseMapper.selectSuggestLimit(zyComplaintSuggest,pageable);
-        System.out.println(zyComplaintSuggestList);
-        //把图片的值给dto里,循环存进去
-        for (int i=0;i<fileUrlList.size();i++){
-            zyComplaintSuggestList.get(8).setFilesUrl(fileUrlList.get(i).getFilesUrl());
+        if (zyComplaintSuggestList.size()!=0){
+            //把图片的值给dto里,循环存进去
+            for (ZyComplaintSuggestDto zyComplaintSuggestDto : zyComplaintSuggestList) {
+                //循环查图片，把所有图片渲染上去
+                List<String> list = zyFilesDao.queryAllFileUrl(zyComplaintSuggestDto.getComplaintSuggestId(), "ComplaintSuggest");
+                //把获取到的图片地址的list放入dto中
+                zyComplaintSuggestDto.setFilesUrl(list);
+            }
         }
-        ZyComplaintSuggestDtoAll zyComplaintSuggestDtoAll = new ZyComplaintSuggestDtoAll(zyComplaintSuggestList, pageable);
-        System.out.println(zyComplaintSuggestDtoAll);
+        Page<ZyComplaintSuggestDto> page = new Page<>(zyComplaintSuggestList,pageable);
         //存入数据
-        result.setData(zyComplaintSuggestDtoAll);
+        result.setData(page);
+        System.out.println(page);
         //返回信号
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
@@ -105,48 +127,73 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
      * @return
      */
     @Override
-    public Result insertSuggest(ZyComplaintSuggest zyComplaintSuggest) {
+    public Result insertSuggest(ZyComplaintSuggest zyComplaintSuggest) throws Exception {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
-        Integer i = this.baseMapper.insertSuggest(zyComplaintSuggest);
-
-        //判断重复
-        return result;
+        zyComplaintSuggest.setComplaintSuggestId(snowflakeManager.nextId() + "");
+        zyComplaintSuggest.setCreateTime(LocalDateTime.now().toString());
+        //判断是否重复x
+        try {
+            //新增
+            Integer i = this.baseMapper.insertSuggest(zyComplaintSuggest);
+            if (i == 1) {
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                result.setData("新增成功");
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        }
     }
 
     /**
      * 修改投诉建议
      *
-     * @param complaintSuggestId 投诉建议id
+     * @param zyComplaintSuggest 投诉建议对象
      * @return
      */
     @Override
-    public Result updateSuggest(Integer complaintSuggestId) {
-        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
-        //判断重复
-        return result;
-    }
+    public Result updateSuggest(ZyComplaintSuggest zyComplaintSuggest) {
+        //判断数据的值有没有改变 zyComplaintSuggest1是原来的对象
+        ZyComplaintSuggest zyComplaintSuggest1 = this.baseMapper.queryById(zyComplaintSuggest.getComplaintSuggestId());
+        //默认给失败
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        try {
+            //判断重复x
+            zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
+            int i = this.baseMapper.updateSuggest(zyComplaintSuggest);
+            if (i == 1) {
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            }
 
-    /**
-     * 删除投诉建议通过id
-     *
-     * @param complaintSuggestId 投诉建议id
-     * @return
-     */
-    @Override
-    public Result deleteSuggestById(Integer complaintSuggestId) {
-        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        }
         return result;
     }
 
     /**
      * 批量删除
-     *
      * @param idList id的集合
      * @return
      */
     @Override
-    public Result deleteSuggestByIds(List<Integer> idList) {
-        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+    public Result deleteSuggestByIds(List<String> idList) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+            //判断是单个
+            int i = this.baseMapper.deleteSuggestByIds(idList);
+            if (idList.size() == 1) {
+                result.setData("删除成功，影响的行数：" + i);
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                //多个就是批量删除
+            } else {
+                if (i >= 1) {
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                } else {
+                    result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
+                }
+            }
         return result;
     }
 }

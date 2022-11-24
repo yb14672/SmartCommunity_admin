@@ -108,16 +108,20 @@
             </if>
         </where>
     </select>
+
     <!--根据id查询图片-->
-    <select id="queryAllFileUrl" resultType="com.zy_admin.community.dto.ZyComplaintSuggestDto">
+    <select id="queryAllFileUrl" resultType="java.lang.String">
         select files_url from zy_files
-        where parent_id = #{id} and remark = 'ComplaintSuggest'
+        where parent_id = #{id} and remark = #{remark}
+    </select>
+    <!--根据id查询文件信息-->
+    <select id="queryAllFile" resultType="com.zy_admin.community.entity.ZyFiles">
+        select * from zy_files
+        where parent_id = #{id} and remark = #{remark}
     </select>
 
-
-
     <!--新增所有列-->
-    <insert id="insert" keyProperty="filesId" useGeneratedKeys="true">
+    <insert id="insertFile" keyProperty="filesId" useGeneratedKeys="true">
         insert into zy_files(files_url, create_time, update_by, update_time, create_by, del_flag, source, remark, parent_id, user_id)
         values (#{filesUrl}, #{createTime}, #{updateBy}, #{updateTime}, #{createBy}, #{delFlag}, #{source}, #{remark}, #{parentId}, #{userId})
     </insert>
@@ -154,7 +158,7 @@
     </insert>
 
     <!--通过主键修改数据-->
-    <update id="update">
+    <update id="updateFile">
         update zy_files
         <set>
             <if test="filesUrl != null and filesUrl != ''">
@@ -192,7 +196,7 @@
     </update>
 
     <!--通过主键删除-->
-    <delete id="deleteById">
+    <delete id="deleteFileById">
         delete from zy_files where files_id = #{filesId}
     </delete>
 

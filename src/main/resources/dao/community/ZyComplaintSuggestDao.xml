@@ -136,6 +136,15 @@
             )
         </if>
     </select>
+    <select id="selectSuggestById" resultType="com.zy_admin.community.dto.ZyComplaintSuggestDto">
+        select DISTINCT zcs.*,zo.owner_real_name,zo.owner_phone_number
+        from zy_complaint_suggest zcs
+        left join zy_owner zo
+        on zcs.user_id = zo.owner_id
+        left join zy_files zf
+        on zcs.complaint_suggest_id = zf.parent_id
+        where complaint_suggest_id = #{suggestId}
+    </select>
 
     <!--新增所有列-->
     <insert id="insertSuggest" keyProperty="complaintSuggestId" useGeneratedKeys="true">
@@ -179,35 +188,35 @@
     <update id="updateSuggest">
         update zy_complaint_suggest
         <set>
-            <if test="communityId != null">
-                community_id = #{communityId},
+            <if test="zyComplaintSuggest.communityId != null">
+                community_id = #{zyComplaintSuggest.communityId},
             </if>
-            <if test="complaintSuggestType != null and complaintSuggestType != ''">
-                complaint_suggest_type = #{complaintSuggestType},
+            <if test="zyComplaintSuggest.complaintSuggestType != null and zyComplaintSuggest.complaintSuggestType != ''">
+                complaint_suggest_type = #{zyComplaintSuggest.complaintSuggestType},
             </if>
-            <if test="complaintSuggestContent != null and complaintSuggestContent != ''">
-                complaint_suggest_content = #{complaintSuggestContent},
+            <if test="zyComplaintSuggest.complaintSuggestContent != null and zyComplaintSuggest.complaintSuggestContent != ''">
+                complaint_suggest_content = #{zyComplaintSuggest.complaintSuggestContent},
             </if>
-            <if test="createBy != null and createBy != ''">
-                create_by = #{createBy},
+            <if test="zyComplaintSuggest.createBy != null and zyComplaintSuggest.createBy != ''">
+                create_by = #{zyComplaintSuggest.createBy},
             </if>
-            <if test="createTime != null">
-                create_time = #{createTime},
+            <if test="zyComplaintSuggest.createTime != null">
+                create_time = #{zyComplaintSuggest.createTime},
             </if>
-            <if test="updateBy != null and updateBy != ''">
-                update_by = #{updateBy},
+            <if test="zyComplaintSuggest.updateBy != null and zyComplaintSuggest.updateBy != ''">
+                update_by = #{zyComplaintSuggest.updateBy},
             </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime},
+            <if test="zyComplaintSuggest.updateTime != null">
+                update_time = #{zyComplaintSuggest.updateTime},
             </if>
-            <if test="remark != null and remark != ''">
-                remark = #{remark},
+            <if test="zyComplaintSuggest.remark != null and zyComplaintSuggest.remark != ''">
+                remark = #{zyComplaintSuggest.remark},
             </if>
-            <if test="userId != null">
-                user_id = #{userId},
+            <if test="zyComplaintSuggest.userId != null">
+                user_id = #{zyComplaintSuggest.userId},
             </if>
         </set>
-        where complaint_suggest_id = #{complaintSuggestId}
+        where complaint_suggest_id = #{zyComplaintSuggest.complaintSuggestId}
     </update>
 
     <!--通过主键删除-->

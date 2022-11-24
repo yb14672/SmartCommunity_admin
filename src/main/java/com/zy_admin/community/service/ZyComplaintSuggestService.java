@@ -17,6 +17,14 @@ import java.util.List;
  * @since 2022-11-01 19:49:01
  */
 public interface ZyComplaintSuggestService extends IService<ZyComplaintSuggest> {
+
+    /**
+     * 根据id查投诉建议
+     * @param suggestId id
+     * @return
+     */
+    Result selectSuggestById(String suggestId);
+
     /**
      * 投诉建议和分页
      * @param zyComplaintSuggest 投诉建议
@@ -43,27 +51,20 @@ public interface ZyComplaintSuggestService extends IService<ZyComplaintSuggest> 
      * @param zyComplaintSuggest 投诉建议对象
      * @return
      */
-    Result insertSuggest(ZyComplaintSuggest zyComplaintSuggest);
+    Result insertSuggest(ZyComplaintSuggest zyComplaintSuggest) throws Exception;
 
     /**
      * 修改投诉建议
-     * @param complaintSuggestId 投诉建议id
+     * @param zyComplaintSuggest 投诉建议对象
      * @return
      */
-    Result updateSuggest(Integer complaintSuggestId);
-
-    /**
-     * 删除投诉建议通过id
-     * @param complaintSuggestId 投诉建议id
-     * @return
-     */
-    Result deleteSuggestById(Integer complaintSuggestId);
+    Result updateSuggest(ZyComplaintSuggest zyComplaintSuggest);
 
     /**
      * 批量删除
      * @param idList id的集合
      * @return
      */
-    Result deleteSuggestByIds(@Param("idList") List<Integer> idList);
+    Result deleteSuggestByIds(@Param("idList") List<String> idList);
 }
 
