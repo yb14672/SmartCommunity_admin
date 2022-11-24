@@ -15,6 +15,26 @@ import java.util.List;
  * @since 2022-11-01 19:49:01
  */
 public interface ZyCommunityInteractionDao extends MPJBaseMapper<ZyCommunityInteraction> {
+    /**
+     * 根据ID查询单个文章
+     * @param interactionId 互动文章id
+     * @return 文章信息
+     */
+    ZyCommunityInteractionDto selectInteractionById(String interactionId);
+
+    /**
+     * 根据id集合查询所有数据
+     * @param ids id集合
+     * @return 数据列表
+     */
+    List<ZyCommunityInteractionDto> getDtoList(@Param("ids") List<String> ids);
+
+    /**
+     * 根据小区查询所有数据
+     * @param communityId 小区id
+     * @return 数据列表
+     */
+    List<ZyCommunityInteractionDto> getAllDtoList(String communityId);
 
     /**
      * 通过id列表删除社区互动
@@ -31,7 +51,6 @@ public interface ZyCommunityInteractionDao extends MPJBaseMapper<ZyCommunityInte
      * @return {@link Long}
      */
     Long countNum(ZyCommunityInteractionDto interactionDto);
-
 
     /**
      * 查询并分页符合条件的数据

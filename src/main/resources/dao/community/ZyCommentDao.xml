@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.community.dao.ZyCommentDao">
+
+    <resultMap type="com.zy_admin.community.entity.ZyComment" id="ZyCommentMap">
+        <result property="commentId" column="comment_id" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <result property="interactionId" column="interaction_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="rootId" column="root_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--逻辑删除评论-->
+    <update id="deleteCommentById">
+        update zy_comment set del_flag = 1
+        where zy_comment.comment_id = #{commentId}
+    </update>
+
+    <!--查询单个-->
+    <select id="queryByInteractionId" resultType="com.zy_admin.community.dto.ZyCommentDto">
+        select wc.comment_id, wc.user_id, wc.update_by, wc.create_time, wc.update_time, wc.content, wc.parent_id,
+        wc.del_flag, wc.interaction_id,wo.owner_real_name ownerName,wo.owner_portrait ownerPortrait,
+        (SELECT owner_real_name FROM zy_owner wo1 WHERE wo1.owner_id =
+        (SELECT wc1.user_id FROM zy_comment wc1 WHERE wc1.comment_id = wc.parent_id ) ) passiveOwnerName
+        from zy_comment wc left join zy_owner wo on wc.user_id = wo.owner_id
+        <where>
+            <if test="userId != null ">and wc.user_id = #{userId}</if>
+            <if test="content != null  and content != ''">and wc.content = #{content}</if>
+            <if test="parentId == 1 ">and wc.parent_id = -1</if>
+            <if test="parentId == 2 ">and wc.parent_id != -1</if>
+            <if test="interactionId != null ">and wc.interaction_id = #{interactionId}</if>
+            and wc.del_flag = 0
+        </where>
+        order by wc.create_time asc
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ZyCommentMap">
+        select
+        comment_id, create_by, update_by, create_time, update_time, content, parent_id, del_flag, interaction_id,
+        user_id, remark, root_id
+        from zy_comment
+        <where>
+            <if test="commentId != null">
+                and comment_id = #{commentId}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="parentId != null">
+                and parent_id = #{parentId}
+            </if>
+            <if test="delFlag != null">
+                and del_flag = #{delFlag}
+            </if>
+            <if test="interactionId != null">
+                and interaction_id = #{interactionId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="rootId != null">
+                and root_id = #{rootId}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from zy_comment
+        <where>
+            <if test="commentId != null">
+                and comment_id = #{commentId}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="parentId != null">
+                and parent_id = #{parentId}
+            </if>
+            <if test="delFlag != null">
+                and del_flag = #{delFlag}
+            </if>
+            <if test="interactionId != null">
+                and interaction_id = #{interactionId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="rootId != null">
+                and root_id = #{rootId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="commentId" useGeneratedKeys="true">
+        insert into zy_comment(create_by, update_by, create_time, update_time, content, parent_id, del_flag,
+                               interaction_id, user_id, remark, root_id)
+        values (#{createBy}, #{updateBy}, #{createTime}, #{updateTime}, #{content}, #{parentId}, #{delFlag},
+                #{interactionId}, #{userId}, #{remark}, #{rootId})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="commentId" useGeneratedKeys="true">
+        insert into zy_comment(create_by, update_by, create_time, update_time, content, parent_id, del_flag,
+        interaction_id, user_id, remark, root_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.createBy}, #{entity.updateBy}, #{entity.createTime}, #{entity.updateTime}, #{entity.content},
+            #{entity.parentId}, #{entity.delFlag}, #{entity.interactionId}, #{entity.userId}, #{entity.remark},
+            #{entity.rootId})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="commentId" useGeneratedKeys="true">
+        insert into zy_comment(create_by, update_by, create_time, update_time, content, parent_id, del_flag,
+        interaction_id, user_id, remark, root_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.createBy}, #{entity.updateBy}, #{entity.createTime}, #{entity.updateTime}, #{entity.content},
+            #{entity.parentId}, #{entity.delFlag}, #{entity.interactionId}, #{entity.userId}, #{entity.remark},
+            #{entity.rootId})
+        </foreach>
+        on duplicate key update
+        create_by = values(create_by),
+        update_by = values(update_by),
+        create_time = values(create_time),
+        update_time = values(update_time),
+        content = values(content),
+        parent_id = values(parent_id),
+        del_flag = values(del_flag),
+        interaction_id = values(interaction_id),
+        user_id = values(user_id),
+        remark = values(remark),
+        root_id = values(root_id)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update zy_comment
+        <set>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="parentId != null">
+                parent_id = #{parentId},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag},
+            </if>
+            <if test="interactionId != null">
+                interaction_id = #{interactionId},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="rootId != null">
+                root_id = #{rootId},
+            </if>
+        </set>
+        where comment_id = #{commentId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from zy_comment
+        where comment_id = #{commentId}
+    </delete>
+
+</mapper>
+

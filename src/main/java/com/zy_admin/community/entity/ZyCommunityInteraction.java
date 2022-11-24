@@ -1,5 +1,7 @@
 package com.zy_admin.community.entity;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,51 +25,61 @@ public class ZyCommunityInteraction extends Model<ZyCommunityInteraction> {
      * id
      */
     @ApiModelProperty("id")
+    @ExcelProperty("文章ID")
     private String interactionId;
     /**
      * 小区ID
      */
     @ApiModelProperty("小区ID")
+    @ExcelProperty("小区ID")
     private String communityId;
     /**
      * 创建人ID
      */
     @ApiModelProperty("创建人ID")
+    @ExcelProperty("创建人ID")
     private String createBy;
     /**
      * 更新者ID
      */
     @ApiModelProperty("更新者ID")
+    @ExcelProperty("更新者ID")
     private String updateBy;
     /**
      * 创建时间
      */
     @ApiModelProperty("创建时间")
+    @ExcelProperty("创建时间")
     private String createTime;
     /**
      * 更新时间
      */
     @ApiModelProperty("更新时间")
+    @ExcelProperty("更新时间")
     private String updateTime;
     /**
      * 内容
      */
     @ApiModelProperty("内容")
+    @ExcelProperty("内容")
     private String content;
     /**
      * 删除状态0默认1删除
      */
     @ApiModelProperty("删除状态0默认1删除")
+    @ExcelIgnore
     private Integer delFlag;
     /**
      * 备注
      */
     @ApiModelProperty("备注")
+    @ExcelProperty("备注")
     private String remark;
     /**
      * 创建人ID
      */
     @ApiModelProperty("创建人ID")
+    @ExcelProperty("创建人ID")
     private String userId;
 }
 

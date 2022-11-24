@@ -209,6 +209,4 @@ public class MinioUtil {
         Iterable<Result<DeleteError>> results = minioClient.removeObjects(RemoveObjectsArgs.builder().bucket(bucketName).objects(dos).build());
         return results;
     }
-
-
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy_admin.community.dao.ZyCommunityInteractionDao">
-
     <resultMap type="com.zy_admin.community.entity.ZyCommunityInteraction" id="ZyCommunityInteractionMap">
         <result property="interactionId" column="interaction_id" jdbcType="INTEGER"/>
         <result property="communityId" column="community_id" jdbcType="INTEGER"/>
@@ -14,21 +13,47 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
         <result property="userId" column="user_id" jdbcType="INTEGER"/>
     </resultMap>
+    <!--根据id集合查询所有数据-->
+    <select id="getDtoList" resultMap="InteractionDtoMap">
+        select ci.*,
+        o.owner_nickname,
+        o.owner_real_name,
+        o.owner_phone_number,
+        o.owner_portrait
+        from zy_community_interaction ci
+        left join zy_owner o
+        on ci.user_id = o.owner_id
+        where del_flag = 0
+        and interaction_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    <!--根据小区查询所有数据-->
+    <select id="getAllDtoList" resultMap="InteractionDtoMap">
+        select ci.*,
+               o.owner_nickname,
+               o.owner_real_name,
+               o.owner_phone_number,
+               o.owner_portrait
+        from zy_community_interaction ci
+                 left join zy_owner o
+                           on ci.user_id = o.owner_id
+        where del_flag = 0
+          and community_id = #{communityId}
+        order by (select count(1) from zy_comment where interaction_id = ci.interaction_id), ci.create_time desc
+    </select>
 
     <!--查询单个-->
-    <select id="queryById" resultMap="ZyCommunityInteractionMap">
-        select interaction_id,
-               community_id,
-               create_by,
-               update_by,
-               create_time,
-               update_time,
-               content,
-               del_flag,
-               remark,
-               user_id
-        from zy_community_interaction
-        where interaction_id = #{interactionId}
+    <select id="selectInteractionById" resultType="com.zy_admin.community.dto.ZyCommunityInteractionDto">
+        SELECT a.interaction_id,
+               a.create_time,
+               a.content,
+               b.owner_nickname,
+               b.owner_portrait
+        FROM zy_community_interaction a
+                 LEFT JOIN zy_owner b on a.user_id = b.owner_id
+        where a.interaction_id = #{interactionId}
     </select>
 
     <!--查询指定行数据-->
@@ -143,7 +168,7 @@
         <result property="ownerPhoneNumber" column="owner_phone_number" jdbcType="VARCHAR"/>
         <result property="ownerPortrait" column="owner_portrait" jdbcType="VARCHAR"/>
     </resultMap>
-
+    <!--条件查询-->
     <select id="selectAllLimit" resultMap="InteractionDtoMap">
         select
         ci.*,o.owner_nickname,o.owner_real_name,o.owner_phone_number,o.owner_portrait
