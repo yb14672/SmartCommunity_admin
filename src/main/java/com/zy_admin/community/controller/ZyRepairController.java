@@ -7,19 +7,14 @@ import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
-import com.zy_admin.community.dao.ZyRepairDao;
 import com.zy_admin.community.dto.RepairDto;
-import com.zy_admin.community.dto.ZyRoomDto;
-import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyRepair;
-import com.zy_admin.community.entity.ZyRoom;
 import com.zy_admin.community.service.ZyRepairService;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
@@ -38,7 +33,6 @@ import java.io.Serializable;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -146,7 +140,7 @@ public class ZyRepairController extends ApiController {
             String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
             zyRepair.setCancelTime(format);
         }
-        return this.zyRepairService.updateRepair(zyRepair,request);
+        return this.zyRepairService.updateRepair(zyRepair);
     }
     /**
      * 新增报修

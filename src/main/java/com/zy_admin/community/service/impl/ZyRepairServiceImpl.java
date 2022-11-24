@@ -111,13 +111,11 @@ public class ZyRepairServiceImpl extends ServiceImpl<ZyRepairDao, ZyRepair> impl
      * 更新修复
      *
      * @param zyRepair 报修对象
-     * @param request  前端请求
      * @return 更新的结果集
      */
     @Override
-    public Result updateRepair(ZyRepair zyRepair, HttpServletRequest request) {
+    public Result updateRepair(ZyRepair zyRepair) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-
         //更新报修
         int num = this.baseMapper.updateRepair(zyRepair);
         if (num == 1) {

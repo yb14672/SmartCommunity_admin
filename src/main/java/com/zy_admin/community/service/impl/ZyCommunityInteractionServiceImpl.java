@@ -18,10 +18,12 @@ import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.service.ZyCommunityInteractionService;
 import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.SnowflakeManager;
 import com.zy_admin.util.StringUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -38,6 +40,8 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
     @Resource
     private ZyCommentDao zyCommentDao;
 
+    @Resource
+    private SnowflakeManager snowflakeManager;
 
     /**
      * 通过id获取互动文章信息
@@ -172,6 +176,25 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
         int i = this.baseMapper.deleteInteractionByIdList(idList);
         if (i > 0) {
             result.setData("删除成功");
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+
+    /**
+     * 添加互动信息
+     *
+     * @param zyCommunityInteraction 互动信息
+     * @return {@link Result}
+     */
+    @Override
+    public Result insert(ZyCommunityInteraction zyCommunityInteraction) throws Exception {
+        Result result = new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
+        zyCommunityInteraction.setCreateTime(LocalDateTime.now().toString());
+        zyCommunityInteraction.setInteractionId(snowflakeManager.nextId() + "");
+        int insert = this.baseMapper.insert(zyCommunityInteraction);
+        if(insert==1){
+            result.setData("添加成功");
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;

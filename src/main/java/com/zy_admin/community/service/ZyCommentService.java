@@ -19,5 +19,12 @@ public interface ZyCommentService extends IService<ZyComment> {
      * @return {@link Result}
      */
     Result delCommentById(String commentId);
+
+    /**
+     * 添加评论
+     * @param zyComment 评论信息
+     * @return 执行结果
+     */
+    Result insert(ZyComment zyComment) throws Exception;
 }
 

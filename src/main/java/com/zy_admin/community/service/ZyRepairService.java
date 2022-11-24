@@ -52,10 +52,9 @@ public interface ZyRepairService extends IService<ZyRepair> {
      * 更新修复
      *
      * @param zyRepair 报修对象
-     * @param request  前端请求
      * @return 更新的结果集
      */
-    Result updateRepair(ZyRepair zyRepair, HttpServletRequest request);
+    Result updateRepair(ZyRepair zyRepair);
 
     /**
      * 删除报修信息
