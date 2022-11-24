@@ -2,7 +2,9 @@ package com.zy_admin.community.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.community.dao.ZyOwnerDao;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dao.ZyOwnerRoomRecordDao;
 import com.zy_admin.community.dao.ZyRoomDao;
@@ -12,15 +14,13 @@ import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomService;
 import com.zy_admin.sys.dao.SysUserDao;
-import com.zy_admin.util.JwtUtil;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.RoomTree;
 import com.zy_admin.util.SnowflakeManager;
+import com.zy_admin.util.TreeData;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -58,6 +58,44 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
      */
     @Resource
     private SnowflakeManager snowflakeManager;
+
+    @Resource
+    private ZyOwnerDao ownerDao;
+
+    @Override
+    public Result ownerInsert(ZyOwnerRoom ownerRoom) throws Exception {
+        Result result = new Result("提交失败",ResultTool.fail(ResultCode.OWNER_ROOM_INSERT_FAIL));
+        ZyOwnerRoom zyOwnerRoom = this.baseMapper.checkOwnerRoom(ownerRoom);
+        if (zyOwnerRoom != null ){
+            result.setData("提交失败");
+            result.setMeta(ResultTool.fail(ResultCode.REPEAT_OWNER_ROOM));
+            return result;
+        }
+        ownerRoom.setOwnerRoomId(snowflakeManager.nextId()+"");
+        ownerRoom.setCreateTime(LocalDateTime.now().toString());
+        Integer i = this.baseMapper.insertOwnerRoom(ownerRoom);
+        if (i == 1){
+            result.setData("提交成功");
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+
+    @Override
+    public Result getTreeData() {
+        Result result = new Result("获取失败！", ResultTool.fail(ResultCode.ROOMTREE_GET_FAIL));
+        try {
+            List<RoomTree> treeRoom = this.baseMapper.getTreeRoom();
+            TreeData treeData = new TreeData(treeRoom);
+            List<RoomTree> roomTrees = treeData.buildTree();
+            result.setData(roomTrees);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return result;
+        }
+    }
 
 
     /**
@@ -102,12 +140,11 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
      *
      * @param zyOwnerRoom       业主房间
      * @param recordAuditOpinion 业主房间记录
-     * @param request           请求
      * @return {@link Result}
      * @throws Exception 异常
      */
     @Override
-    public Result updateOwnerRoomStatus(@RequestBody ZyOwnerRoom zyOwnerRoom, String recordAuditOpinion, HttpServletRequest request) throws Exception {
+    public Result updateOwnerRoomStatus(ZyOwnerRoom zyOwnerRoom, String recordAuditOpinion) throws Exception {
         //默认给失败
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         ZyOwnerRoomRecord zyOwnerRoomRecord=new ZyOwnerRoomRecord();
@@ -115,18 +152,10 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         zyOwnerRoomRecord.setOwnerId(zyOwnerRoom.getOwnerId()+"");
         //id
         zyOwnerRoomRecord.setRecordId(snowflakeManager.nextId()+"");
-        //创建时间
-        zyOwnerRoomRecord.setCreateTime(LocalDateTime.now().toString());
-        String id = JwtUtil.getMemberIdByJwtToken(request);
-        //创建人
-        zyOwnerRoomRecord.setCreateBy(sysUserDao.getUserById(id).getUserName());
         zyOwnerRoomRecord.setOwnerType("yz");
         zyOwnerRoomRecord.setOwnerRoomId(zyOwnerRoom.getOwnerRoomId());
         zyOwnerRoomRecord.setRoomStatus(zyOwnerRoom.getRoomStatus());
-        String id1 = JwtUtil.getMemberIdByJwtToken(request);
-        zyOwnerRoomRecord.setUpdateBy(sysUserDao.getUserById(id1).getUserName());
         zyOwnerRoomRecord.setUpdateTime(LocalDateTime.now().toString());
-
         zyOwnerRoomRecordDao.insert(zyOwnerRoomRecord);
         //修改时间
         zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());

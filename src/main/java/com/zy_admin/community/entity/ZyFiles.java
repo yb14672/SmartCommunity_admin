@@ -23,7 +23,7 @@ public class ZyFiles extends Model<ZyFiles> {
      * 文件ID
      */
     @ApiModelProperty("文件ID")
-    private Long filesId;
+    private String filesId;
     /**
      * 文件地址
      */
@@ -68,11 +68,11 @@ public class ZyFiles extends Model<ZyFiles> {
      * 父级ID
      */
     @ApiModelProperty("父级ID")
-    private Long parentId;
+    private String parentId;
     /**
      * 创建人ID
      */
     @ApiModelProperty("创建人ID")
-    private Long userId;
+    private String userId;
 }
 

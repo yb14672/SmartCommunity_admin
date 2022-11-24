@@ -1,5 +1,6 @@
 package com.zy_admin.community.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,7 +24,8 @@ public class ZyOwner extends Model<ZyOwner> {
      * 业主id
      */
     @ApiModelProperty("业主id")
-    private Long ownerId;
+    @TableId
+    private String ownerId;
     /**
      * 昵称
      */

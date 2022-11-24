@@ -23,12 +23,12 @@ public class ZyComplaintSuggest extends Model<ZyComplaintSuggest> {
      * id
      */
     @ApiModelProperty("id")
-    private Long complaintSuggestId;
+    private String complaintSuggestId;
     /**
      * 小区id
      */
     @ApiModelProperty("小区id")
-    private Long communityId;
+    private String communityId;
     /**
      * 类型(投诉、建议)
      */
@@ -68,6 +68,6 @@ public class ZyComplaintSuggest extends Model<ZyComplaintSuggest> {
      * 投诉人ID
      */
     @ApiModelProperty("投诉人ID")
-    private Long userId;
+    private String userId;
 }
 

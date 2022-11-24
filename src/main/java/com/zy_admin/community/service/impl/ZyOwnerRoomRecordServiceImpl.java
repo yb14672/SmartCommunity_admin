@@ -1,12 +1,12 @@
 package com.zy_admin.community.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerRoomRecordDao;
 import com.zy_admin.community.dto.ZyOwnerRoomRecordDto;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomRecordService;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 

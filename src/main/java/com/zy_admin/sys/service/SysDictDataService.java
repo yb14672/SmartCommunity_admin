@@ -71,7 +71,7 @@ public interface SysDictDataService extends IService<SysDictData> {
      * @param idList 字典数据主键
      * @return 字典数据的集合
      */
-    List<DataDictExcelDto> getDictListById(ArrayList<Integer> idList);
+    List<DataDictExcelDto> getDictListById(List<Integer> idList);
 
 }
 

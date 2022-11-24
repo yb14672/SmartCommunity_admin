@@ -21,6 +21,30 @@ import java.util.List;
  * @since 2022-11-01 19:49:02
  */
 public interface ZyOwnerDao extends BaseMapper<ZyOwner> {
+
+    /**
+     * 业主个人信息设置
+     * @param owner 修改的信息
+     * @return 修改影响的行数
+     */
+    Integer ownerUpdate(ZyOwner owner);
+
+    /**
+     * 用户登录
+     * @param owner 手机号与密码
+     * @return 业主对象
+     */
+    @Select("select * from zy_owner where owner_phone_number = #{ownerPhoneNumber} and owner_password = #{ownerPassword}")
+    ZyOwner ownerLogin(ZyOwner owner);
+
+    /**
+     * 注册验重
+     * @param phoneNumber 手机号
+     * @return 业主对象
+     */
+    @Select("select * from zy_owner where owner_phone_number = #{phoneNumber}")
+    ZyOwner checkPhoneNumber(String phoneNumber);
+
     /**
      * @param zyOwner  户主信息
      * @param pageable 页码
@@ -35,7 +59,7 @@ public interface ZyOwnerDao extends BaseMapper<ZyOwner> {
      * @param zyOwner zy所有者
      * @return long
      */
-    long count( ZyOwner zyOwner);
+    long countOwner(ZyOwner zyOwner);
 
     /**
      * 删除业主房间id
@@ -78,5 +102,7 @@ public interface ZyOwnerDao extends BaseMapper<ZyOwner> {
      * @return {@link List}<{@link OwnerRoomExcel}>
      */
     List<OwnerRoomExcel> queryOwnerById(@Param("OwnerIds") List<String> OwnerIds);
+
+    int insertOwner(ZyOwner zyOwner);
 }
 

@@ -16,6 +16,7 @@ import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.service.ZyOwnerService;
 import com.zy_admin.util.ExcelUtil;
 import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -47,11 +48,65 @@ public class ZyOwnerController extends ApiController {
     private ZyOwnerService zyOwnerService;
 
     /**
+     * 请求工具类
+     */
+    @Resource
+    private RequestUtil requestUtil;
+
+    /**
+     * 修改数据
+     *
+     * @param zyOwner 实体对象
+     * @return 修改结果
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyOwner", name = "zyOwner", value = "实体对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
+    })
+    @ApiOperation(value = "修改数据", notes = "修改数据", httpMethod = "PUT")
+    @PutMapping("/update")
+    public Result update(@RequestBody ZyOwner zyOwner, HttpServletRequest request) {
+        ZyOwner owner = requestUtil.getOwner(request);
+        zyOwner.setOwnerId(owner.getOwnerId());
+        zyOwner.setUpdateBy(zyOwner.getOwnerNickname());
+        return this.zyOwnerService.ownerUpdate(zyOwner);
+    }
+    /**
+     * 用户登录
+     * @param zyOwner 手机号和密码
+     * @return 登陆结果
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyOwner", name = "zyOwner", value = "手机号和密码", required = true)
+    })
+    @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
+    @PostMapping("/login")
+    public Result login(@RequestBody ZyOwner zyOwner){
+        return zyOwnerService.ownerLogin(zyOwner);
+    }
+
+    /**
+     * 新增数据
+     *
+     * @param zyOwner 业主对象
+     * @return 新增结果
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyOwner", name = "zyOwner", value = "实体对象", required = true)
+    })
+    @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
+    @PostMapping("/register")
+    public Result insert(@RequestBody ZyOwner zyOwner) throws Exception {
+        return zyOwnerService.ownerRegister(zyOwner);
+    }
+
+
+    /**
      * 获取户主信息并分页
      *
-     * @param zyOwner  户主信息
-     * @param pageable 页码
-     * @return {@link Result}
+     * @param zyOwner  业主信息
+     * @param pageable 分页对象
+     * @return 查询户主结果集
      */
 
     @ApiImplicitParams({
@@ -68,9 +123,9 @@ public class ZyOwnerController extends ApiController {
     /**
      * 删除业主房屋关联
      *
-     * @param request     请求
-     * @param ownerRoomId 房主id
-     * @return {@link Result}
+     * @param request     前端请求
+     * @param ownerRoomId 业主id
+     * @return 删除业主结果集
      */
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true),
@@ -79,7 +134,7 @@ public class ZyOwnerController extends ApiController {
     @ApiOperation(value = "删除业主房屋关联", notes = "删除业主房屋关联", httpMethod = "DELETE")
     @MyLog(title = "房主信息", optParam = "#{ownerRoomId}", businessType = BusinessType.DELETE)
     @DeleteMapping("/deleteOwner")
-    public Result deleteOwenRome(HttpServletRequest request, String ownerRoomId) {
+    public Result deleteOwnerHome(HttpServletRequest request, String ownerRoomId) {
         return zyOwnerService.deleteOwenRome(request, ownerRoomId);
     }
 

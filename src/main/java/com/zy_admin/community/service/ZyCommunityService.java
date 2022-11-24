@@ -2,11 +2,10 @@ package com.zy_admin.community.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.dto.CommunityExcel;
 import com.zy_admin.community.entity.ZyCommunity;
-import com.zy_admin.common.core.Result.Result;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,17 +31,15 @@ public interface ZyCommunityService extends IService<ZyCommunity> {
     /**
      * 修改数据
      *  @param community 更新的小区对象
-     * @param request 前端请求
      * @return 修改的小区结果集
      */
-    Result updateCommunityById(ZyCommunity community,HttpServletRequest request);
+    Result updateCommunityById(ZyCommunity community);
     /**
      * 新增数据
      * @param community 新增的小区对象
-     * @param request 前端请求
      * @return 新增的小区结果集
      */
-    Result insertCommunity(ZyCommunity community, HttpServletRequest request);
+    Result insertCommunity(ZyCommunity community);
     /**
      *  分页查询所有数据
      * @param community 查询的小区对象

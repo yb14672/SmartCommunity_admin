@@ -4,17 +4,19 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
-import com.zy_admin.sys.dao.SysDeptDao;
+import com.zy_admin.sys.dao.SysRoleDao;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.sys.dao.SysUserRoleDao;
 import com.zy_admin.sys.dto.*;
+import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtil;
 import com.zy_admin.util.ObjUtil;
-import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -51,7 +53,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Resource
     private RedisService redisService;
     @Resource
-    private SysDeptDao sysDeptDao;
+    private SysRoleDao sysRoleDao;
+    @Resource
+    private RequestUtil requestUtil;
 
     /**
      * 注销
@@ -61,13 +65,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      */
     @Override
     public Result logout(HttpServletRequest request) {
-        //根据token获取当前登录的id
-        String userId = JwtUtil.getMemberIdByJwtToken(request);
-        //根据id获取当前的对象
-        SysUser user = this.baseMapper.queryById(userId);
+        SysUser user = requestUtil.getUser(request);
         Result result = new Result(user, ResultTool.fail(ResultCode.USER_LOGOUT_FAIL));
         if (Boolean.TRUE.equals(redisService.empty())) {
-            result.setMeta(ResultTool.success(ResultCode.USER_LOGOUT_SUCCESS));
+            result.setMeta(ResultTool.fail(ResultCode.USER_LOGOUT_SUCCESS));
         }
         return result;
     }
@@ -137,13 +138,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      * @throws Exception 异常
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Result insertAuthRole(Integer userId, String roleId) throws Exception {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        //先删除原本用户拥有的所有角色
-        int i = this.sysUserRoleDao.deleteByUserId(userId + "");
-        if (i == 0) {
-            throw new Exception("修改用户角色时出错，请稍后再试");
+        List<SysRole> roleListByUserId = sysRoleDao.getRoleListByUserId(userId + "");
+        //判断该用户之前是否有角色，避免空删除
+        if(roleListByUserId.size()!=0){
+            //先删除原本用户拥有的所有角色
+            int i = this.sysUserRoleDao.deleteByUserId(userId + "");
+            if (i == 0) {
+                throw new Exception("修改用户角色时出错，请稍后再试");
+            }
         }
         //再插入修改后的所有角色
         int i1 = this.sysUserRoleDao.insertBatchByRoleId(userId + "", roleId);
@@ -168,6 +173,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         if (userRoleDto != null) {
             result.setData(userRoleDto);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }else{
+            SysUser user = this.baseMapper.queryById(userId+"");
+            result.setData(user);
+            result.setMeta(ResultTool.fail(ResultCode.NO_ROLE));
         }
         return result;
     }
@@ -190,7 +199,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Override
     public List<SysUser> queryUserById(ArrayList<Integer> userIds) {
         //如果有选中列表，就执行导出多个
-        userIds = userIds.size() == 0 ? null : userIds;
+        userIds = userIds.isEmpty() ? null : userIds;
         return baseMapper.queryUserById(userIds);
     }
 
@@ -222,39 +231,39 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                 }
                 SysUser userEntity = new SysUser();
                 // 添加姓名
-                checkRequire(i, 0, sheet.getRow(i));
+                checkRequire(0, sheet.getRow(i));
                 userEntity.setUserName(getCellValue(sheet.getRow(i).getCell(0)));
                 // 添加邮箱
                 userEntity.setEmail(getCellValue(sheet.getRow(i).getCell(2)));
                 // 验证用户名重复
-                if (!checkUserName(i, 0, getCellValue(sheet.getRow(i).getCell(0)))) {
+                if (!checkUserName(getCellValue(sheet.getRow(i).getCell(0)))) {
                     result.setMeta(ResultTool.fail(ResultCode.USERNAME_REPEAT));
                     errorMsg.append("第").append(i).append("条用户名重复,");
                 }
                 //判断为空
-                if (!checkRequire(i, 0, sheet.getRow(i))) {
+                if (!checkRequire(0, sheet.getRow(i))) {
                     result.setMeta(ResultTool.fail(ResultCode.MASSAGE_NULL));
                     errorMsg.append("第").append(i).append("条用户名为空,");
                 }
-                if (!checkRequire(i, 1, sheet.getRow(i))) {
+                if (!checkRequire(1, sheet.getRow(i))) {
                     result.setMeta(ResultTool.fail(ResultCode.MASSAGE_NULL));
                     errorMsg.append("第").append(i).append("条昵称为空,");
                 }
-                if (!checkRequire(i, 2, sheet.getRow(i))) {
+                if (!checkRequire(2, sheet.getRow(i))) {
                     result.setMeta(ResultTool.fail(ResultCode.MASSAGE_NULL));
                     errorMsg.append("第").append(i).append("条邮箱为空,");
                 }
-                if (!checkRequire(i, 3, sheet.getRow(i))) {
+                if (!checkRequire( 3, sheet.getRow(i))) {
                     result.setMeta(ResultTool.fail(ResultCode.MASSAGE_NULL));
                     errorMsg.append("第").append(i).append("条手机号为空,");
                 }
                 // 验证邮箱重复
-                if (!checkEmail(i, 2, getCellValue(sheet.getRow(i).getCell(2)))) {
+                if (!checkEmail(getCellValue(sheet.getRow(i).getCell(2)))) {
                     result.setMeta(ResultTool.fail(ResultCode.EMAIL_REPEAT));
                     errorMsg.append("第").append(i).append("条邮箱重复,");
                 }
                 //验证邮箱正则
-                if (!checkEmailJudge(i, 2, getCellValue(sheet.getRow(i).getCell(2)))) {
+                if (!checkEmailJudge(getCellValue(sheet.getRow(i).getCell(2)))) {
                     result.setMeta(ResultTool.fail(ResultCode.EMAIL_NON_COMPLIANCE));
                     errorMsg.append("第").append(i).append("条邮箱不符合规则,");
                 }
@@ -263,17 +272,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                 //添加昵称
                 userEntity.setNickName(getCellValue(sheet.getRow(i).getCell(1)));
                 // 添加手机号 colNum是列数
-                if (!checkRequire(i, 3, sheet.getRow(i))) {
+                if (!checkRequire(3, sheet.getRow(i))) {
                     result.setMeta(ResultTool.fail(ResultCode.DATA_REPEAT));
                 }
                 if (!checkRepeat(i, 3, phoneNumber, getCellValue(sheet.getRow(i).getCell(3)))) {
                     result.setMeta(ResultTool.fail(ResultCode.FILE_REPEAT));
                 }
-                if (!checkPhoneNumber(i, 3, getCellValue(sheet.getRow(i).getCell(3)))) {
+                if (!checkPhoneNumber(getCellValue(sheet.getRow(i).getCell(3)))) {
                     result.setMeta(ResultTool.fail(ResultCode.USER_TELREPEAT));
                     errorMsg.append("第").append(i).append("条电话号重复,");
                 }
-                if (!checkPhoneNumberJudge(i, 3, getCellValue(sheet.getRow(i).getCell(3)))) {
+                if (!checkPhoneNumberJudge(getCellValue(sheet.getRow(i).getCell(3)))) {
                     result.setMeta(ResultTool.fail(ResultCode.USER_TELREPEAT));
                     errorMsg.append("第").append(i).append("条电话号不符合规范,");
                 }
@@ -305,7 +314,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             result.setData(errorMsg.toString());
             return result;
         }
-        if ((int) rowNumber == (int) emptyRow) {
+        if (rowNumber == emptyRow) {
             boolean b = baseMapper.saveBatch(userEntityList);
             if (b) {
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
@@ -320,12 +329,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      * 检查电话号码
      * 验证手机号不能重复
      *
-     * @param i
-     * @param i1
      * @param stringCellValue 字符串单元格值
      * @return boolean
      */
-    private boolean checkPhoneNumber(int i, int i1, String stringCellValue) {
+    private boolean checkPhoneNumber(String stringCellValue) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("phonenumber", stringCellValue);
         if (baseMapper.selectList(queryWrapper).size() > 0) {
@@ -336,12 +343,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     /**
      * 检查电话号码判断
      *
-     * @param i
-     * @param i1
      * @param stringCellValue 字符串单元格值
      * @return boolean
      */
-    private boolean checkPhoneNumberJudge(int i, int i1, String stringCellValue) {
+    private boolean checkPhoneNumberJudge(String stringCellValue) {
         //判断手机号的正则
         String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(16[5,6])|(17[0-8])|(18[0-9])|(19[1、5、8、9]))\\d{8}$";
         Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
@@ -351,12 +356,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     /**
      * 检查用户名
      * 验证用户名不能重复
-     * @param i
-     * @param i1
      * @param stringCellValue 字符串单元格值
      * @return boolean
      */
-    private boolean checkUserName(int i, int i1, String stringCellValue) {
+    private boolean checkUserName(String stringCellValue) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_name", stringCellValue);
         return baseMapper.selectList(queryWrapper).size() <= 0;
@@ -366,12 +369,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      * 检查电子邮件
      * 验证邮箱不能重复
      *
-     * @param rowNum          行num
-     * @param colNum          列num
      * @param stringCellValue 字符串单元格值
      * @return boolean
      */
-    private boolean checkEmail(int rowNum, int colNum, String stringCellValue) {
+    private boolean checkEmail(String stringCellValue) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("email", stringCellValue);
         if (baseMapper.selectList(queryWrapper).size() > 0) {
@@ -384,12 +385,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      * 查看邮件法官
      * 邮箱判断正则
      *
-     * @param rowNum          行num
-     * @param colNum          列num
      * @param stringCellValue 字符串单元格值
      * @return boolean
      */
-    private boolean checkEmailJudge(int rowNum, int colNum, String stringCellValue) {
+    private boolean checkEmailJudge(String stringCellValue) {
         String regEx1 = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         Pattern p = Pattern.compile(regEx1);
         Matcher m = p.matcher(stringCellValue);
@@ -423,12 +422,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
      * 检查要求
      * 检验必填项 数据不能为空
      *
-     * @param rowNum 行num
-     * @param colNum 列num
-     * @param row    行
+     * @param colNum 列数
+     * @param row    当前行的数据
      * @return boolean
      */
-    private boolean checkRequire(int rowNum, int colNum, Row row) {
+    private boolean checkRequire(int colNum, Row row) {
         Cell cell = row.getCell(colNum);
         if (cell == null || CellType.BLANK.equals(cell.getCellType())) {
             return false;
@@ -662,7 +660,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         SysUser sysUser = this.baseMapper.queryById(user.getUserId() + "");
         String[] fields = new String[]{"nickName", "phonenumber", "email", "sex"};
-        if (!ObjUtil.checkEquals(sysUser, user, fields)) {
+        if (Boolean.FALSE.equals(ObjUtil.checkEquals(sysUser, user, fields))) {
             int i = baseMapper.updateUser(user);
             if (i == 1) {
                 result.setData("用户ID为" + user.getUserId() + "的信息修改成功");
@@ -765,7 +763,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         UserDto user = this.baseMapper.getUserInfo(userDto.getUserId() + "");
         //需要判断的字段名
         String[] fields = new String[]{"nickName", "deptId", "phonenumber", "sex", "email", "status", "postId", "roleId", "remark"};
-        if (ObjUtil.checkEquals(user, userDto, fields)) {
+        if (Boolean.TRUE.equals(ObjUtil.checkEquals(user, userDto, fields))) {
             result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
             return result;
         }

@@ -28,7 +28,7 @@ public class ZyVisitor extends Model<ZyVisitor> {
      * 小区id
      */
     @ApiModelProperty("小区id")
-    private Long communityId;
+    private String communityId;
     /**
      * 访客姓名
      */
@@ -48,7 +48,7 @@ public class ZyVisitor extends Model<ZyVisitor> {
      * 创建人id
      */
     @ApiModelProperty("创建人id")
-    private Long createById;
+    private String createById;
     /**
      * 创建人openid
      */

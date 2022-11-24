@@ -13,6 +13,8 @@ import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.service.ZyBuildingService;
 import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -44,6 +46,9 @@ public class ZyBuildingController extends ApiController {
      */
     @Resource
     private ZyBuildingService zyBuildingService;
+    @Resource
+    private RequestUtil requestUtil;
+
     /**
      * 用于批量导出楼层数据
      * @param buildingIds 获取楼层id
@@ -123,7 +128,9 @@ public class ZyBuildingController extends ApiController {
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "楼层信息", optParam = "#{zyBuilding}", businessType = BusinessType.UPDATE)
     public Result updateZyBuilding(@RequestBody ZyBuilding zyBuilding,HttpServletRequest request){
-        return zyBuildingService.updateZyBuilding(zyBuilding,request);
+        SysUser user = requestUtil.getUser(request);
+        zyBuilding.setUpdateBy(user.getUserName());
+        return zyBuildingService.updateZyBuilding(zyBuilding);
     }
 
     /**
@@ -141,7 +148,9 @@ public class ZyBuildingController extends ApiController {
     @PostMapping("/addZyBuilding")
     @MyLog(title = "楼层信息", optParam = "#{zyBuilding}", businessType = BusinessType.INSERT)
     public Result insertDictType(@RequestBody ZyBuilding zyBuilding, HttpServletRequest request) throws Exception {
-        return this.zyBuildingService.insertZyBuilding(zyBuilding,request);
+        SysUser user = requestUtil.getUser(request);
+        zyBuilding.setCreateBy(user.getUserName());
+        return this.zyBuildingService.insertZyBuilding(zyBuilding);
     }
 
     /**

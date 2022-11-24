@@ -14,11 +14,12 @@ import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.entity.ZyUnit;
 import com.zy_admin.community.service.ZyBuildingService;
 import com.zy_admin.sys.dao.SysUserDao;
-import com.zy_admin.util.*;
+import com.zy_admin.util.ObjUtil;
+import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.SnowflakeManager;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +113,6 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
         pageable.setTotal(total);
         List<ZyBuildingDto> zyBuildingList = this.baseMapper.selectBuildLimit(zyBuilding, pageable);
         //封装一个dto，把对象和分页放进去
-
         ZyBuildingDtoAll zyBuildingDtoAll = new ZyBuildingDtoAll(zyBuildingList, pageable);
         //存到data数据里面
         result.setData(zyBuildingDtoAll);
@@ -123,18 +123,15 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
     /**
      * 新增楼层
      * @param zyBuilding 要新增的楼层信息
-     * @param request 前端请求
      * @return  查询的楼层结果集
      */
     @Override
-    public Result insertZyBuilding(ZyBuilding zyBuilding, HttpServletRequest request) throws Exception {
+    public Result insertZyBuilding(ZyBuilding zyBuilding) throws Exception {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         long now = System.currentTimeMillis();
         zyBuilding.setBuildingCode("BUILDING_" + Long.toString(now).substring(0, 13));
         zyBuilding.setBuildingId(snowflakeManager.nextId() + "");
         zyBuilding.setCreateTime(LocalDateTime.now().toString());
-        String id = JwtUtil.getMemberIdByJwtToken(request);
-        zyBuilding.setCreateBy(sysUserDao.getUserById(id).getUserName());
         //判断同一小区的楼层是否唯一,type为0是新增
         if (!selectZyBuildingByName(0, zyBuilding)) {
             result.setMeta(ResultTool.fail(ResultCode.BUILDING_NAME_REPEAT));
@@ -156,11 +153,10 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
     /**
      * 更新楼层信息
      * @param zyBuilding 要更新的楼层信息
-     * @param request 前端请求
      * @return 更新楼层结果集
      */
     @Override
-    public Result updateZyBuilding(ZyBuilding zyBuilding, HttpServletRequest request) {
+    public Result updateZyBuilding(ZyBuilding zyBuilding) {
         //判断楼层的值有没有改变 zyBuilding1是原来的对象
         ZyBuilding zyBuilding1 = this.baseMapper.getZyBuilding(zyBuilding.getBuildingId());
         //默认给失败
@@ -171,9 +167,7 @@ public class ZyBuildingServiceImpl extends ServiceImpl<ZyBuildingDao, ZyBuilding
             if (!ObjUtil.checkEquals(zyBuilding1, zyBuilding, fields)) {
                 //type为1是修改
                 if (selectZyBuildingByName(1, zyBuilding)) {
-                    String id = JwtUtil.getMemberIdByJwtToken(request);
                     zyBuilding.setUpdateTime(LocalDateTime.now().toString());
-                    zyBuilding.setUpdateBy(sysUserDao.getUserById(id).getUserName());
                     int i = this.baseMapper.updateZyBuilding(zyBuilding);
                     if (i == 1) {
                         result.setMeta(ResultTool.success(ResultCode.SUCCESS));

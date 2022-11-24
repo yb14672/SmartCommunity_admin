@@ -23,7 +23,7 @@ public class ZyComment extends Model<ZyComment> {
      * id
      */
     @ApiModelProperty("id")
-    private Long commentId;
+    private String commentId;
     /**
      * 创建人
      */
@@ -33,7 +33,7 @@ public class ZyComment extends Model<ZyComment> {
      * 更新者ID
      */
     @ApiModelProperty("更新者ID")
-    private Long updateBy;
+    private String updateBy;
     /**
      * 创建时间
      */
@@ -53,7 +53,7 @@ public class ZyComment extends Model<ZyComment> {
      * 父级ID
      */
     @ApiModelProperty("父级ID")
-    private Long parentId;
+    private String parentId;
     /**
      * 删除状态0默认1删除
      */
@@ -63,12 +63,12 @@ public class ZyComment extends Model<ZyComment> {
      * 社区互动ID
      */
     @ApiModelProperty("社区互动ID")
-    private Long interactionId;
+    private String interactionId;
     /**
      * 创建人ID
      */
     @ApiModelProperty("创建人ID")
-    private Long userId;
+    private String userId;
     /**
      * 备注
      */
@@ -78,7 +78,7 @@ public class ZyComment extends Model<ZyComment> {
      * 划属Id
      */
     @ApiModelProperty("划属Id")
-    private Long rootId;
+    private String rootId;
 
 }
 
