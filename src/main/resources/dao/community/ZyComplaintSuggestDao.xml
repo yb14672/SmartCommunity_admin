@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.community.dao.ZyComplaintSuggestDao">
+
+    <resultMap type="com.zy_admin.community.entity.ZyComplaintSuggest" id="ZyComplaintSuggestMap">
+        <result property="complaintSuggestId" column="complaint_suggest_id" jdbcType="INTEGER"/>
+        <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+        <result property="complaintSuggestType" column="complaint_suggest_type" jdbcType="VARCHAR"/>
+        <result property="complaintSuggestContent" column="complaint_suggest_content" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ZyComplaintSuggestMap">
+        select
+          complaint_suggest_id, community_id, complaint_suggest_type, complaint_suggest_content, create_by, create_time, update_by, update_time, remark, user_id
+        from zy_complaint_suggest
+        where complaint_suggest_id = #{complaintSuggestId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ZyComplaintSuggestMap">
+        select
+        complaint_suggest_id, community_id, complaint_suggest_type, complaint_suggest_content, create_by, create_time,
+        update_by, update_time, remark, user_id
+        from zy_complaint_suggest
+        <where>
+            <if test="complaintSuggestId != null">
+                and complaint_suggest_id = #{complaintSuggestId}
+            </if>
+            <if test="communityId != null">
+                and community_id = #{communityId}
+            </if>
+            <if test="complaintSuggestType != null and complaintSuggestType != ''">
+                and complaint_suggest_type = #{complaintSuggestType}
+            </if>
+            <if test="complaintSuggestContent != null and complaintSuggestContent != ''">
+                and complaint_suggest_content = #{complaintSuggestContent}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from zy_complaint_suggest zcs left join zy_owner zo on zcs.user_id = zo.owner_id
+        left join zy_files zf on zcs.complaint_suggest_id = zf.parent_id
+        <where>
+            <if test="zyComplaintSuggest.complaintSuggestId != null">
+                and complaint_suggest_id = #{zyComplaintSuggest.complaintSuggestId}
+            </if>
+            <if test="zyComplaintSuggest.communityId != null">
+                and community_id = #{zyComplaintSuggest.communityId}
+            </if>
+            <if test="zyComplaintSuggest.complaintSuggestType != null and zyComplaintSuggest.complaintSuggestType != ''">
+                and complaint_suggest_type like concat ('%',#{zyComplaintSuggest.complaintSuggestType},'%')
+            </if>
+            <if test="zyComplaintSuggest.complaintSuggestContent != null and zyComplaintSuggest.complaintSuggestContent != ''">
+                and complaint_suggest_content = #{zyComplaintSuggest.complaintSuggestContent}
+            </if>
+            <if test="zyComplaintSuggest.createBy != null and zyComplaintSuggest.createBy != ''">
+                and create_by = #{zyComplaintSuggest.createBy}
+            </if>
+            <if test="zyComplaintSuggest.createTime != null">
+                and create_time = #{zyComplaintSuggest.createTime}
+            </if>
+            <if test="zyComplaintSuggest.updateBy != null and zyComplaintSuggest.updateBy != ''">
+                and update_by = #{zyComplaintSuggest.updateBy}
+            </if>
+            <if test="zyComplaintSuggest.updateTime != null">
+                and update_time = #{zyComplaintSuggest.updateTime}
+            </if>
+            <if test="zyComplaintSuggest.remark != null and zyComplaintSuggest.remark != ''">
+                and remark = #{zyComplaintSuggest.remark}
+            </if>
+            <if test="zyComplaintSuggest.userId != null">
+                and user_id = #{zyComplaintSuggest.userId}
+            </if>
+        </where>
+    </select>
+    <!--投诉建议和分页-->
+    <select id="selectSuggestLimit" resultType="com.zy_admin.community.dto.ZyComplaintSuggestDto">
+        select zcs.*,zo.owner_real_name,zo.owner_phone_number,zf.files_url
+        from zy_complaint_suggest zcs left join zy_owner zo on zcs.user_id = zo.owner_id
+        left join zy_files zf on zcs.complaint_suggest_id = zf.parent_id
+        <where>
+            <if test="zyComplaintSuggest.complaintSuggestType!=null and zyComplaintSuggest.complaintSuggestType!=''">
+                and zcs.complaint_suggest_type like concat ('%',#{zyComplaintSuggest.complaintSuggestType},'%')
+            </if>
+        </where>
+        <if test="pageable.pageSize!=null">
+            limit #{pageable.index},#{pageable.pageSize}
+        </if>
+    </select>
+
+    <!--所有的导出-->
+    <select id="querySuggestAll" resultType="com.zy_admin.community.dto.ZyComplaintSuggestDto">
+         select zcs.*,zo.owner_real_name,zo.owner_phone_number,zf.files_url
+        from zy_complaint_suggest zcs left join zy_owner zo on zcs.user_id = zo.owner_id
+        left join zy_files zf on zcs.complaint_suggest_id = zf.parent_id
+    </select>
+    <!--选中的导出-->
+    <select id="querySuggestByIds" resultType="com.zy_admin.community.dto.ZyComplaintSuggestDto">
+        select zcs.*,zo.owner_real_name,zo.owner_phone_number,zf.files_url
+        from zy_complaint_suggest zcs left join zy_owner zo on zcs.user_id = zo.owner_id
+        left join zy_files zf on zcs.complaint_suggest_id = zf.parent_id
+        <if test="list!=null">
+            where complaint_suggest_id in (
+            <foreach collection="list" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insertSuggest" keyProperty="complaintSuggestId" useGeneratedKeys="true">
+        insert into zy_complaint_suggest(community_id, complaint_suggest_type, complaint_suggest_content, create_by, create_time, update_by, update_time, remark, user_id)
+        values (#{zyComplaintSuggest.communityId}, #{zyComplaintSuggest.complaintSuggestType}, #{zyComplaintSuggest.complaintSuggestContent}, #{zyComplaintSuggest.createBy}, #{zyComplaintSuggest.createTime}, #{zyComplaintSuggest.updateBy}, #{zyComplaintSuggest.updateTime}, #{zyComplaintSuggest.remark}, #{zyComplaintSuggest.userId})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="complaintSuggestId" useGeneratedKeys="true">
+        insert into zy_complaint_suggest(community_id, complaint_suggest_type, complaint_suggest_content, create_by,
+        create_time, update_by, update_time, remark, user_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.communityId}, #{entity.complaintSuggestType}, #{entity.complaintSuggestContent},
+            #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark},
+            #{entity.userId})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="complaintSuggestId" useGeneratedKeys="true">
+        insert into zy_complaint_suggest(community_id, complaint_suggest_type, complaint_suggest_content, create_by,
+        create_time, update_by, update_time, remark, user_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.communityId}, #{entity.complaintSuggestType}, #{entity.complaintSuggestContent},
+            #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark},
+            #{entity.userId})
+        </foreach>
+        on duplicate key update
+        community_id = values(community_id),
+        complaint_suggest_type = values(complaint_suggest_type),
+        complaint_suggest_content = values(complaint_suggest_content),
+        create_by = values(create_by),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        remark = values(remark),
+        user_id = values(user_id)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="updateSuggest">
+        update zy_complaint_suggest
+        <set>
+            <if test="communityId != null">
+                community_id = #{communityId},
+            </if>
+            <if test="complaintSuggestType != null and complaintSuggestType != ''">
+                complaint_suggest_type = #{complaintSuggestType},
+            </if>
+            <if test="complaintSuggestContent != null and complaintSuggestContent != ''">
+                complaint_suggest_content = #{complaintSuggestContent},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+        </set>
+        where complaint_suggest_id = #{complaintSuggestId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteSuggestById">
+        delete from zy_complaint_suggest where complaint_suggest_id = #{complaintSuggestId}
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteSuggestByIds">
+        delete
+        from zy_complaint_suggest
+        where complaint_suggest_id in
+        <foreach collection="idList" item="complaint_suggest_id" separator="," open="(" close=")">
+            #{complaint_suggest_id}
+        </foreach>
+    </delete>
+
+</mapper>
+

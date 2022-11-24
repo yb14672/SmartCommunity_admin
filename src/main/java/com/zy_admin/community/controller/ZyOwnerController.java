@@ -71,8 +71,10 @@ public class ZyOwnerController extends ApiController {
         zyOwner.setUpdateBy(zyOwner.getOwnerNickname());
         return this.zyOwnerService.ownerUpdate(zyOwner);
     }
+
     /**
      * 用户登录
+     *
      * @param zyOwner 手机号和密码
      * @return 登陆结果
      */
@@ -81,7 +83,7 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
     @PostMapping("/login")
-    public Result login(@RequestBody ZyOwner zyOwner){
+    public Result login(@RequestBody ZyOwner zyOwner) {
         return zyOwnerService.ownerLogin(zyOwner);
     }
 
@@ -108,7 +110,6 @@ public class ZyOwnerController extends ApiController {
      * @param pageable 页码
      * @return {@link Result}
      */
-
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "ZyOwner", name = "zyOwner", value = "户主信息", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "页码", required = true)

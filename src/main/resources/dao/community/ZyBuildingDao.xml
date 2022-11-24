@@ -54,10 +54,10 @@
         right join zy_community c on b.community_id = c.community_id
         <where>
             <if test="zyBuilding.buildingName!=null and zyBuilding.buildingName!=''">
-                and building_name like concat ('%',#{zyBuilding.buildingName},'%')
+                and b.building_name like concat ('%',#{zyBuilding.buildingName},'%')
             </if>
             <if test="zyBuilding.buildingCode!=null and zyBuilding.buildingCode!=''">
-                and building_code like concat ('%',#{zyBuilding.buildingCode},'%')
+                and b.building_code like concat ('%',#{zyBuilding.buildingCode},'%')
             </if>
             <if test="zyBuilding.communityId != null and zyBuilding.communityId != '' ">
                 and b.community_id = #{zyBuilding.communityId}

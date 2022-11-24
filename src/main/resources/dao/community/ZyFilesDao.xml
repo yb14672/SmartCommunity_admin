@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.community.dao.ZyFilesDao">
+
+    <resultMap type="com.zy_admin.community.entity.ZyFiles" id="ZyFilesMap">
+        <result property="filesId" column="files_id" jdbcType="INTEGER"/>
+        <result property="filesUrl" column="files_url" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <result property="source" column="source" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ZyFilesMap">
+        select
+          files_id, files_url, create_time, update_by, update_time, create_by, del_flag, source, remark, parent_id, user_id
+        from zy_files
+        where files_id = #{filesId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ZyFilesMap">
+        select
+        files_id, files_url, create_time, update_by, update_time, create_by, del_flag, source, remark, parent_id,
+        user_id
+        from zy_files
+        <where>
+            <if test="filesId != null">
+                and files_id = #{filesId}
+            </if>
+            <if test="filesUrl != null and filesUrl != ''">
+                and files_url = #{filesUrl}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="delFlag != null">
+                and del_flag = #{delFlag}
+            </if>
+            <if test="source != null">
+                and source = #{source}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="parentId != null">
+                and parent_id = #{parentId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from zy_files
+        <where>
+            <if test="filesId != null">
+                and files_id = #{filesId}
+            </if>
+            <if test="filesUrl != null and filesUrl != ''">
+                and files_url = #{filesUrl}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="delFlag != null">
+                and del_flag = #{delFlag}
+            </if>
+            <if test="source != null">
+                and source = #{source}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="parentId != null">
+                and parent_id = #{parentId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </select>
+    <!--根据id查询图片-->
+    <select id="queryAllFileUrl" resultType="com.zy_admin.community.dto.ZyComplaintSuggestDto">
+        select files_url from zy_files
+        where parent_id = #{id} and remark = 'ComplaintSuggest'
+    </select>
+
+
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="filesId" useGeneratedKeys="true">
+        insert into zy_files(files_url, create_time, update_by, update_time, create_by, del_flag, source, remark, parent_id, user_id)
+        values (#{filesUrl}, #{createTime}, #{updateBy}, #{updateTime}, #{createBy}, #{delFlag}, #{source}, #{remark}, #{parentId}, #{userId})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="filesId" useGeneratedKeys="true">
+        insert into zy_files(files_url, create_time, update_by, update_time, create_by, del_flag, source, remark,
+        parent_id, user_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.filesUrl}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.createBy},
+            #{entity.delFlag}, #{entity.source}, #{entity.remark}, #{entity.parentId}, #{entity.userId})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="filesId" useGeneratedKeys="true">
+        insert into zy_files(files_url, create_time, update_by, update_time, create_by, del_flag, source, remark,
+        parent_id, user_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.filesUrl}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.createBy},
+            #{entity.delFlag}, #{entity.source}, #{entity.remark}, #{entity.parentId}, #{entity.userId})
+        </foreach>
+        on duplicate key update
+        files_url = values(files_url),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        create_by = values(create_by),
+        del_flag = values(del_flag),
+        source = values(source),
+        remark = values(remark),
+        parent_id = values(parent_id),
+        user_id = values(user_id)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update zy_files
+        <set>
+            <if test="filesUrl != null and filesUrl != ''">
+                files_url = #{filesUrl},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag},
+            </if>
+            <if test="source != null">
+                source = #{source},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="parentId != null">
+                parent_id = #{parentId},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+        </set>
+        where files_id = #{filesId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from zy_files where files_id = #{filesId}
+    </delete>
+
+</mapper>
+
