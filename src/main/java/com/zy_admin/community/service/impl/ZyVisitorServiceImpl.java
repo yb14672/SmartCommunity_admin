@@ -62,7 +62,6 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
         List<VisitorListDto> visitorListDtos = null;
         try {
             List<VisitorListDto> visitorListDtoList = this.baseMapper.queryAllByLimit(zyVisitor, pageable);
-
             VisitorDto visitorList = new VisitorDto(visitorListDtoList, pageable);
             result.setData(visitorList);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
