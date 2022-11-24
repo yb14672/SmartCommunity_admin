@@ -45,6 +45,9 @@
         LEFT JOIN zy_community zc on zc.community_id = zor.community_id
         LEFT JOIN zy_room zr on zr.room_id = zor.room_id
         LEFT JOIN zy_unit zu on zu.unit_id = zor.unit_id
+        where zor.room_status ='Binding'
+
+
 
         <where>
             <if test="zyOwner.ownerId != null">
@@ -63,6 +66,7 @@
                 and owner_phone_number like concat('%', #{zyOwner.ownerPhoneNumber},'%')
             </if>
 
+
         </where>
         limit #{pageable.index}, #{pageable.pageSize}
     </select>
@@ -70,7 +74,7 @@
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
         select count(1)
-        from zy_owner_room zor left join zy_owner zo on zor.owner_id=zo.owner_id
+        from zy_owner_room zor left join zy_owner zo on zor.owner_id=zo.owner_id where zor.room_status ='Binding'
         <where>
             <if test="ownerId != null">
                 and owner_id = #{ownerId}
@@ -238,6 +242,8 @@
         LEFT JOIN zy_community zc on zc.community_id = zor.community_id
         LEFT JOIN zy_room zr on zr.room_id = zor.room_id
         LEFT JOIN zy_unit zu on zu.unit_id = zor.unit_id
+        where zor.room_status ='Binding'
+
     </select>
     <select id="queryOwnerById" resultType="com.zy_admin.community.dto.OwnerRoomExcel">
          select   zor.owner_room_id,zo.owner_id, owner_nickname, owner_real_name, owner_gender, owner_age, owner_id_card, owner_phone_number,zor.owner_type,

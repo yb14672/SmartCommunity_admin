@@ -108,6 +108,9 @@ public enum ResultCode {
     FAIL_UNBIND_ROOM(3054,"房屋解绑失败"),
     ROOM_HAVE_OWNER(3056,"该房屋名已有业主，不允许删除"),
     BUILD_HAVA_CHILD(3046,"楼层下面有单元不允许删除" ),
+    VISITOR_APPLICATION_SUCCESSFULLY(3047,"提交访客申请成功，等待管理员允许"),
+    VISITOR_APPLICATION_FAIL(3048,"访客提申请交失败"),
+
 
 
     /* http自带请求码 */

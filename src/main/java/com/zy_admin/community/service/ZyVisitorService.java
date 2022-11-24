@@ -1,6 +1,8 @@
 package com.zy_admin.community.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.entity.ZyVisitor;
 
 /**
@@ -11,5 +13,31 @@ import com.zy_admin.community.entity.ZyVisitor;
  */
 public interface ZyVisitorService extends IService<ZyVisitor> {
 
+    /**
+     * 得到访客名单
+     *
+     * @param zyVisitor zy访客
+     * @param pageable  可分页
+     * @return {@link Result}
+     */
+    Result getVisitorList(ZyVisitor zyVisitor, Pageable pageable);
+
+
+    /**
+     * 更新状态
+     *
+     * @param zyVisitor 修改条件
+     * @return {@link Result}
+     */
+    Result updateStatus(ZyVisitor zyVisitor);
+
+
+    /**
+     * 访客申请
+     *
+     * @param zyVisitor zy访客
+     * @return {@link Result}
+     */
+    Result insertVisitor( ZyVisitor zyVisitor);
 }
 

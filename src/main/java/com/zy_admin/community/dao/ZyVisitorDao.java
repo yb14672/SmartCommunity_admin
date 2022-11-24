@@ -1,7 +1,14 @@
 package com.zy_admin.community.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zy_admin.common.Pageable;
+import com.zy_admin.community.dto.VisitorListDto;
 import com.zy_admin.community.entity.ZyVisitor;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 /**
  * 访客邀请 (ZyVisitor)表数据库访问层
@@ -9,7 +16,42 @@ import com.zy_admin.community.entity.ZyVisitor;
  * @author makejava
  * @since 2022-11-01 19:49:04
  */
+
+
 public interface ZyVisitorDao extends BaseMapper<ZyVisitor> {
+
+
+    /**
+     * 插入访客申请
+     *
+     * @param zyVisitor zy访客
+     */
+    void insertVisitor(ZyVisitor zyVisitor);
+    /**
+     * 访客总数
+     *
+     * @param zyVisitor zy访客
+     * @return long
+     */
+    long count(ZyVisitor zyVisitor);
+
+    /**
+     * 查询分页
+     *
+     * @param zyVisitor 访客
+     * @param pageable  可分页
+     * @return {@link List}<{@link VisitorListDto}>
+     */
+    List<VisitorListDto> queryAllByLimit(@Param("zyVisitor") ZyVisitor zyVisitor, @Param("pageable") Pageable pageable);
+
+
+    /**
+     * 更新状态
+     *
+     * @param zyVisitor 状态
+     */
+    @Update("update zy_visitor set status =#{status} where visitor_id =#{visitorId}")
+    void updateStatus( ZyVisitor zyVisitor);
 
 }
 
