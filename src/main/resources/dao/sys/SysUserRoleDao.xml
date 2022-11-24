@@ -8,14 +8,6 @@
         <result property="roleId" column="role_id" jdbcType="INTEGER"/>
     </resultMap>
 
-    <!--查询单个-->
-    <select id="queryById" resultMap="BaseResultMap">
-        select
-          user_id, role_id
-        from sys_user_role
-        where user_id = #{userId}
-    </select>
-
     <select id="getListByIds" resultMap="BaseResultMap">
         select
           user_id, role_id
@@ -24,44 +16,6 @@
         <foreach collection="roleIdList" item="role_id" separator="," open="(" close=")">
             #{role_id}
         </foreach>
-    </select>
-
-
-
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="BaseResultMap">
-        select
-          user_id, role_id
-        from sys_user_role
-        <where>
-            <if test="userId != null">
-                and user_id = #{userId}
-            </if>
-            <if test="roleId != null">
-                and role_id = #{roleId}
-            </if>
-        </where>
-        limit #{pageable.offset}, #{pageable.pageSize}
-    </select>
-
-    <!--通过实体作为筛选条件查询-->
-    <select id="queryAll" resultMap="BaseResultMap">
-        select
-          user_id, role_id
-        from sys_user_role
-    </select>
-    <!--统计总行数-->
-    <select id="count" resultType="java.lang.Long">
-        select count(1)
-        from sys_user_role
-        <where>
-            <if test="userId != null">
-                and user_id = #{userId}
-            </if>
-            <if test="roleId != null">
-                and role_id = #{roleId}
-            </if>
-        </where>
     </select>
 
     <!--新增所有列-->
@@ -73,16 +27,6 @@
     <insert id="insertBatchByRoleId">
         insert into sys_user_role
         values (${userId},${roleId})
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="userId" useGeneratedKeys="true">
-        insert into sys_user_role()
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            ()
-        </foreach>
-        on duplicate key update
-        
     </insert>
 
     <!--通过主键修改数据-->

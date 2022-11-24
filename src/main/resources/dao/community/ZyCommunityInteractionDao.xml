@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.community.dao.ZyCommunityInteractionDao">
+
+    <resultMap type="com.zy_admin.community.entity.ZyCommunityInteraction" id="ZyCommunityInteractionMap">
+        <result property="interactionId" column="interaction_id" jdbcType="INTEGER"/>
+        <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ZyCommunityInteractionMap">
+        select interaction_id,
+               community_id,
+               create_by,
+               update_by,
+               create_time,
+               update_time,
+               content,
+               del_flag,
+               remark,
+               user_id
+        from zy_community_interaction
+        where interaction_id = #{interactionId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ZyCommunityInteractionMap">
+        select
+        interaction_id, community_id, create_by, update_by, create_time, update_time, content, del_flag, remark, user_id
+        from zy_community_interaction
+        <where>
+            <if test="interactionId != null">
+                and interaction_id = #{interactionId}
+            </if>
+            <if test="communityId != null">
+                and community_id = #{communityId}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="delFlag != null">
+                and del_flag = #{delFlag}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from zy_community_interaction
+        <where>
+            <if test="interactionId != null">
+                and interaction_id = #{interactionId}
+            </if>
+            <if test="communityId != null">
+                and community_id = #{communityId}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="delFlag != null">
+                and del_flag = #{delFlag}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="countNum" resultType="java.lang.Long">
+        SELECT
+        count(1)
+        FROM zy_community_interaction ci
+        LEFT JOIN zy_owner o
+        ON ci.user_id=o.owner_id
+        WHERE del_flag = 0 and community_id = #{communityId}
+        <if test="ownerNickname != null and ownerNickname != ''">
+            and owner_nickname like concat('%',#{ownerNickname},'%')
+        </if>
+        <if test="ownerRealName != null and ownerRealName != ''">
+            and owner_real_name like concat('%',#{ownerRealName},'%')
+        </if>
+        <if test="content != null and content != ''">
+            and owner_phone_number like concat('%',#{ownerPhoneNumber},'%')
+        </if>
+    </select>
+
+    <resultMap type="com.zy_admin.community.dto.ZyCommunityInteractionDto" id="InteractionDtoMap">
+        <result property="interactionId" column="interaction_id" jdbcType="INTEGER"/>
+        <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="ownerNickname" column="owner_nickname" jdbcType="VARCHAR"/>
+        <result property="ownerRealName" column="owner_real_name" jdbcType="VARCHAR"/>
+        <result property="ownerPhoneNumber" column="owner_phone_number" jdbcType="VARCHAR"/>
+        <result property="ownerPortrait" column="owner_portrait" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectAllLimit" resultMap="InteractionDtoMap">
+        select
+        ci.*,o.owner_nickname,o.owner_real_name,o.owner_phone_number,o.owner_portrait
+        from zy_community_interaction ci
+        left join zy_owner o
+        on ci.user_id=o.owner_id
+        where del_flag = 0 and community_id = #{dto.communityId}
+        <if test="dto.ownerNickname != null and dto.ownerNickname != ''">
+            and owner_nickname like concat('%',#{dto.ownerNickname},'%')
+        </if>
+        <if test="dto.ownerRealName != null and dto.ownerRealName != ''">
+            and owner_real_name like concat('%',#{dto.ownerRealName},'%')
+        </if>
+        <if test="dto.ownerPhoneNumber != null and dto.ownerPhoneNumber != ''">
+            and owner_phone_number like concat('%',#{dto.ownerPhoneNumber},'%')
+        </if>
+        order by
+        (select count(1) from zy_comment where interaction_id = ci.interaction_id),ci.create_time desc
+        <if test="pageable.pageSize!=0">
+            limit #{pageable.index},#{pageable.pageSize}
+        </if>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insertInteraction" keyProperty="interactionId" useGeneratedKeys="true">
+        insert into zy_community_interaction(community_id, create_by, update_by, create_time, update_time, content,
+                                             del_flag, remark, user_id)
+        values (#{communityId}, #{createBy}, #{updateBy}, #{createTime}, #{updateTime}, #{content}, #{delFlag},
+                #{remark}, #{userId})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="interactionId" useGeneratedKeys="true">
+        insert into zy_community_interaction(community_id, create_by, update_by, create_time, update_time, content,
+        del_flag, remark, user_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.communityId}, #{entity.createBy}, #{entity.updateBy}, #{entity.createTime}, #{entity.updateTime},
+            #{entity.content}, #{entity.delFlag}, #{entity.remark}, #{entity.userId})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="interactionId" useGeneratedKeys="true">
+        insert into zy_community_interaction(community_id, create_by, update_by, create_time, update_time, content,
+        del_flag, remark, user_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.communityId}, #{entity.createBy}, #{entity.updateBy}, #{entity.createTime}, #{entity.updateTime},
+            #{entity.content}, #{entity.delFlag}, #{entity.remark}, #{entity.userId})
+        </foreach>
+        on duplicate key update
+        community_id = values(community_id),
+        create_by = values(create_by),
+        update_by = values(update_by),
+        create_time = values(create_time),
+        update_time = values(update_time),
+        content = values(content),
+        del_flag = values(del_flag),
+        remark = values(remark),
+        user_id = values(user_id)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="updateInteraction">
+        update zy_community_interaction
+        <set>
+            <if test="communityId != null">
+                community_id = #{communityId},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+        </set>
+        where interaction_id = #{interactionId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteByIdInteraction">
+        delete
+        from zy_community_interaction
+        where interaction_id = #{interactionId}
+    </delete>
+
+    <!--根据ID列表逻辑删除-->
+    <update id="deleteInteractionByIdList">
+        update zy_community_interaction set del_flag = 1
+        where interaction_id in
+        <foreach collection="idList" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>
+

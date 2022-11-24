@@ -47,17 +47,15 @@ public interface ZyBuildingService extends IService<ZyBuilding> {
     /**
      * 新增楼层
      * @param zyBuilding 要新增的楼层信息
-     * @param request 前端请求
      * @return  查询的楼层结果集
      */
-    Result insertZyBuilding(ZyBuilding zyBuilding, HttpServletRequest request) throws Exception;
+    Result insertZyBuilding(ZyBuilding zyBuilding) throws Exception;
     /**
      * 更新楼层信息
      * @param zyBuilding 要更新的楼层信息
-     * @param request 前端请求
      * @return 更新楼层结果集
      */
-    Result updateZyBuilding(ZyBuilding zyBuilding, HttpServletRequest request);
+    Result updateZyBuilding(ZyBuilding zyBuilding);
     /**
      * 通过主键查询单条数据
      * @param id 查询的楼层主键id

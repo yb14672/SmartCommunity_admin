@@ -160,8 +160,6 @@
                (select building_name from zy_building zb where zb.building_id = zu.building_id)     buildingName
         from zy_unit zu where community_id = #{communityId}
     </select>
-
-
     <select id="getUnitById" resultType="com.zy_admin.community.dto.UnitListDto">
         select *,(select community_name from zy_community zc where zc.community_id = zu.community_id) communityName,
         (select building_name from zy_building zb where zb.building_id = zu.building_id ) buildingName

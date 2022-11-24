@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.service.ZyOwnerRoomService;
 import com.zy_admin.sys.entity.SysUser;
@@ -59,7 +60,11 @@ public class ZyOwnerRoomController extends ApiController {
     @ApiOperation(value = "插入 新增数据", notes = "插入 新增数据", httpMethod = "POST")
     @PostMapping("/insert")
     public Result insert(@RequestBody ZyOwnerRoom ownerRoom, HttpServletRequest request) throws Exception {
-        return this.zyOwnerRoomService.ownerInsert(ownerRoom,request);
+        ZyOwner owner = requestUtil.getOwner(request);
+        ownerRoom.setOwnerId(owner.getOwnerId());
+        ownerRoom.setOwnerType(owner.getOwnerType());
+        ownerRoom.setCreateBy(owner.getOwnerRealName());
+        return this.zyOwnerRoomService.ownerInsert(ownerRoom);
     }
 
     /**
@@ -98,7 +103,7 @@ public class ZyOwnerRoomController extends ApiController {
         SysUser user = requestUtil.getUser(request);
         zyOwnerRoom.setUpdateBy(user.getUserName());
         zyOwnerRoom.setRoomStatus(status);
-        return zyOwnerRoomService.updateOwnerRoomStatus(zyOwnerRoom, recordAuditOpinion, request);
+        return zyOwnerRoomService.updateOwnerRoomStatus(zyOwnerRoom, recordAuditOpinion);
     }
 
     /**

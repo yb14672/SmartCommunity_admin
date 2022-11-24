@@ -13,7 +13,6 @@
                  (	select @pid:=#{deptId}) t2
             )t3 where ischild!=0
     </select>
-
     <!--更新状态-->
     <update id="updateDeptSon">
         update sys_dept set status=#{status} where ancestors like concat(#{ancestors},'%')

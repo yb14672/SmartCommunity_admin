@@ -250,7 +250,7 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "根据用户ID获取头像", notes = "根据用户ID获取头像", httpMethod = "GET")
     @GetMapping("/getAvatarById")
     public Result getAvatarById(HttpServletRequest request) {
-        String id = JwtUtil.getMemberIdByJwtToken(request);
+        String id = JwtUtil.getMemberIdByJwtToken(request,"token");
         return this.sysUserService.getAvatarById(id);
     }
     /**
@@ -290,8 +290,8 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "根据ID获取用户信息", notes = "根据ID获取用户信息", httpMethod = "GET")
     @GetMapping("/personal")
     public Result personal(HttpServletRequest request) {
-        String memberIdByJwtToken = JwtUtil.getMemberIdByJwtToken(request);
-        return this.sysUserService.personal(memberIdByJwtToken);
+        String userId = requestUtil.getUserId(request);
+        return this.sysUserService.personal(userId);
     }
     /**
      * 通过主键查询单条数据

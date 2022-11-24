@@ -42,7 +42,7 @@ public class RequestUtil {
      * @return {@link SysUser}
      */
     public SysUser getUser(HttpServletRequest request) {
-        String id = JwtUtil.getMemberIdByJwtToken(request);
+        String id = JwtUtil.getMemberIdByJwtToken(request,"token");
         Result result = sysUserService.queryById(id);
         return (SysUser) result.getData();
     }
@@ -54,8 +54,26 @@ public class RequestUtil {
      * @return {@link ZyOwner}
      */
     public ZyOwner getOwner(HttpServletRequest request) {
-        String id = JwtUtil.getMemberIdByJwtToken(request);
+        String id = JwtUtil.getMemberIdByJwtToken(request,"Authorization");
         Result result = zyOwnerService.getOwnerById(id);
         return (ZyOwner) result.getData();
+    }
+
+    /**
+     * 获取用户ID
+     * @param request 前端发送的请求
+     * @return 当前请求的用户ID
+     */
+    public String getUserId(HttpServletRequest request) {
+        return JwtUtil.getMemberIdByJwtToken(request,"token");
+    }
+
+    /**
+     * 获取业主ID
+     * @param request 前端发送的请求
+     * @return 当前请求的业主ID
+     */
+    public String getOwnerId(HttpServletRequest request) {
+        return JwtUtil.getMemberIdByJwtToken(request,"Authorization");
     }
 }
