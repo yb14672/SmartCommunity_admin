@@ -5,11 +5,17 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.service.ZyOwnerService;
+import com.zy_admin.util.Result;
+import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.SnowflakeManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 
@@ -28,38 +34,9 @@ public class ZyOwnerController extends ApiController {
     @Resource
     private ZyOwnerService zyOwnerService;
 
-    /**
-     * 分页查询所有数据
-     *
-     * @param page    分页对象
-     * @param zyOwner 查询实体
-     * @return 所有数据
-     */
-    @GetMapping
-    public R selectAll(Page<ZyOwner> page, ZyOwner zyOwner) {
-        return success(this.zyOwnerService.page(page, new QueryWrapper<>(zyOwner)));
-    }
-
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.zyOwnerService.getById(id));
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param zyOwner 实体对象
-     * @return 新增结果
-     */
-    @PostMapping
-    public R insert(@RequestBody ZyOwner zyOwner) {
-        return success(this.zyOwnerService.save(zyOwner));
+    @GetMapping("/getOwner")
+    public Result getOwner(HttpServletRequest request){
+        return this.zyOwnerService.getOwner(request);
     }
 
     /**
@@ -68,20 +45,32 @@ public class ZyOwnerController extends ApiController {
      * @param zyOwner 实体对象
      * @return 修改结果
      */
-    @PutMapping
-    public R update(@RequestBody ZyOwner zyOwner) {
-        return success(this.zyOwnerService.updateById(zyOwner));
+    @PutMapping("/update")
+    public Result update(@RequestBody ZyOwner zyOwner, HttpServletRequest request) {
+        return this.zyOwnerService.ownerUpdate(zyOwner,request);
+    }
+
+
+    /**
+     * 用户登录
+     * @param zyOwner 手机号和密码
+     * @return 登陆结果
+     */
+    @PostMapping("/login")
+    public Result login(@RequestBody ZyOwner zyOwner){
+        return zyOwnerService.ownerLogin(zyOwner);
     }
 
     /**
-     * 删除数据
+     * 新增数据
      *
-     * @param idList 主键结合
-     * @return 删除结果
+     * @param zyOwner 实体对象
+     * @return 新增结果
      */
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.zyOwnerService.removeByIds(idList));
+    @PostMapping("/register")
+    public Result insert(@RequestBody ZyOwner zyOwner) throws Exception {
+        return zyOwnerService.ownerRegister(zyOwner);
     }
+
 }
 

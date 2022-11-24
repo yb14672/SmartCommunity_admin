@@ -7,9 +7,12 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.service.ZyOwnerRoomService;
+import com.zy_admin.util.Result;
+import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 
@@ -27,6 +30,26 @@ public class ZyOwnerRoomController extends ApiController {
      */
     @Resource
     private ZyOwnerRoomService zyOwnerRoomService;
+
+    /**
+     * 新增数据
+     *
+     * @param ownerRoom 实体对象
+     * @return 新增结果
+     */
+    @PostMapping("/insert")
+    public Result insert(@RequestBody ZyOwnerRoom ownerRoom, HttpServletRequest request) throws Exception {
+        return this.zyOwnerRoomService.ownerInsert(ownerRoom,request);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @GetMapping("/getTree")
+    public Result getTreeData(){
+        return this.zyOwnerRoomService.getTreeData();
+    }
 
     /**
      * 分页查询所有数据
@@ -49,17 +72,6 @@ public class ZyOwnerRoomController extends ApiController {
     @GetMapping("{id}")
     public R selectOne(@PathVariable Serializable id) {
         return success(this.zyOwnerRoomService.getById(id));
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param zyOwnerRoom 实体对象
-     * @return 新增结果
-     */
-    @PostMapping
-    public R insert(@RequestBody ZyOwnerRoom zyOwnerRoom) {
-        return success(this.zyOwnerRoomService.save(zyOwnerRoom));
     }
 
     /**

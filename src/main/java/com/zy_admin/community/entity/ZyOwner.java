@@ -1,5 +1,6 @@
 package com.zy_admin.community.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +20,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class ZyOwner extends Model<ZyOwner> {
     //业主id
-    private Long ownerId;
+    @TableId
+    private String ownerId;
     //昵称
     private String ownerNickname;
     //真实姓名

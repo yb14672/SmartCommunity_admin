@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.community.dao.ZyOwnerRoomDao">
+
+    <resultMap type="com.zy_admin.community.entity.ZyOwnerRoom" id="ZyOwnerRoomMap">
+        <result property="ownerRoomId" column="owner_room_id" jdbcType="INTEGER"/>
+        <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+        <result property="buildingId" column="building_id" jdbcType="INTEGER"/>
+        <result property="unitId" column="unit_id" jdbcType="INTEGER"/>
+        <result property="roomId" column="room_id" jdbcType="INTEGER"/>
+        <result property="ownerId" column="owner_id" jdbcType="INTEGER"/>
+        <result property="ownerType" column="owner_type" jdbcType="VARCHAR"/>
+        <result property="roomStatus" column="room_status" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--新增所有列-->
+    <insert id="insertOwnerRoom" keyProperty="ownerRoomId" useGeneratedKeys="true">
+        insert into zy_owner_room(owner_room_id,community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status, create_by, create_time, update_by, update_time, remark)
+        values (#{ownerRoomId},#{communityId}, #{buildingId}, #{unitId}, #{roomId}, #{ownerId}, #{ownerType}, #{roomStatus}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="ownerRoomId" useGeneratedKeys="true">
+        insert into zy_owner_room(community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status, create_by, create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.communityId}, #{entity.buildingId}, #{entity.unitId}, #{entity.roomId}, #{entity.ownerId}, #{entity.ownerType}, #{entity.roomStatus}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+        on duplicate key update
+        community_id = values(community_id),
+        building_id = values(building_id),
+        unit_id = values(unit_id),
+        room_id = values(room_id),
+        owner_id = values(owner_id),
+        owner_type = values(owner_type),
+        room_status = values(room_status),
+        create_by = values(create_by),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        remark = values(remark)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update zy_owner_room
+        <set>
+            <if test="communityId != null">
+                community_id = #{communityId},
+            </if>
+            <if test="buildingId != null">
+                building_id = #{buildingId},
+            </if>
+            <if test="unitId != null">
+                unit_id = #{unitId},
+            </if>
+            <if test="roomId != null">
+                room_id = #{roomId},
+            </if>
+            <if test="ownerId != null">
+                owner_id = #{ownerId},
+            </if>
+            <if test="ownerType != null and ownerType != ''">
+                owner_type = #{ownerType},
+            </if>
+            <if test="roomStatus != null and roomStatus != ''">
+                room_status = #{roomStatus},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where owner_room_id = #{ownerRoomId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from zy_owner_room where owner_room_id = #{ownerRoomId}
+    </delete>
+
+    <!-- 验重记录已提交-->
+    <select id="checkOwnerRoom" resultType="com.zy_admin.community.entity.ZyOwnerRoom">
+        select * from zy_owner_room where community_id = #{communityId} and building_id = #{buildingId} and unit_id = #{unitId} and room_id = #{roomId}
+    </select>
+
+</mapper>
+
