@@ -3,6 +3,7 @@ package com.zy_admin.sys.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.dao.SysDictDataDao;
 import com.zy_admin.sys.dao.SysDictTypeDao;
 import com.zy_admin.sys.dto.DataDictExcelDto;
@@ -11,8 +12,7 @@ import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDictDataService;
 import com.zy_admin.util.ObjUtil;
-import com.zy_admin.util.Result;
-import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.StringUtil;
 import org.springframework.stereotype.Service;
@@ -30,15 +30,21 @@ import java.util.List;
  */
 @Service("sysDictDataService")
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictData> implements SysDictDataService {
-
+    /**
+     * 服务对象
+     */
     @Resource
     private SysDictTypeDao sysDictTypeDao;
-
+    /**
+     * 根据字典类型获取所有字典数据
+     * @param dictType 字典类型
+     * @return 根据字典类型获取所有字典数据结果集
+     */
     @Override
-    public Result getDict(String deptType) {
+    public Result getDict(String dictType) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
-            List<SysDictData> dictDataList = this.baseMapper.getDict(deptType);
+            List<SysDictData> dictDataList = this.baseMapper.getDict(dictType);
             result.setData(dictDataList);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
@@ -47,7 +53,12 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
             return result;
         }
     }
-
+    /**
+     * 分页查询所有字典数据
+     * @param page 分页对象
+     * @param sysDictData 查询字典数据对象
+     * @return 分页查询的结果集
+     */
     @Override
     public Result selectDictDataLimit(SysDictData sysDictData, Page page) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -67,7 +78,11 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
         }
         return result;
     }
-
+    /**
+     * 通过字典数据id查询单条数据
+     * @param id 字典数据主键
+     * @return 单条数据结果集
+     */
     @Override
     public Result getDictDataById(String id) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -78,13 +93,17 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
         }
         return result;
     }
-
+    /**
+     * 新增字典数据
+     * @param sysDictData 字典数据对象
+     * @return 新增的字典数据结果集
+     */
     @Override
     public Result insert(SysDictData sysDictData, SysUser user) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             //判断用户是否登录
-            if (user != null || user.getUserId() != null) {
+            if (user != null) {
                 //因为字典标题名为必填字段，所以判断是否为空
                 if (sysDictData.getDictLabel() == null || "".equals(sysDictData.getDictLabel())) {
                     result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
@@ -131,13 +150,17 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
         }
         return result;
     }
-
+    /**
+     * 修改字典数据
+     * @param sysDictData 字典数据对象
+     * @return 修改的字典数据结果集
+     */
     @Override
     public Result updateDictData(SysDictData sysDictData, SysUser user) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             //判断用户是否登录
-            if (user != null || user.getUserId() != null) {
+            if (user != null) {
                 //因为字典标题名为必填字段，所以判断是否为空
                 if (sysDictData.getDictLabel() == null || "".equals(sysDictData.getDictLabel())) {
                     result.setMeta(ResultTool.fail(ResultCode.PARAM_NOT_COMPLETE));
@@ -200,27 +223,32 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
         }
         return result;
     }
-
+    /**
+     * 检查数据键值是否唯一
+     * @param type 判断是新增0还是修改1
+     * @param dictData 字典数据对象
+     * @return 成功或失败的结果集
+     */
     @Override
     public Boolean checkUnique(int type, SysDictData dictData, SysDictData sysDictData) {
         //添加时--必须为空
         if (type == 0) {
-            if (sysDictData == null || sysDictData.getDictCode() == null) {
-                return true;
-            }
+            return sysDictData == null || sysDictData.getDictCode() == null;
         } else {
             //修改时--先判断是否为空，为空则不重名，即唯一
             if (sysDictData == null || sysDictData.getDictCode() == null) {
                 return true;
                 //判断ID是否一致，若否，则重名，即不唯一
-            } else if (!sysDictData.getDictCode().equals(dictData.getDictCode())) {
-                return false;
+            } else {
+                return sysDictData.getDictCode().equals(dictData.getDictCode());
             }
-            return true;
         }
-        return false;
     }
-
+    /**
+     * 删除字典数据
+     * @param idList 字典数据主键集合
+     * @return 删除的字典结果集
+     */
     @Override
     public Result removeDictDataByIds(List<String> idList) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -234,15 +262,22 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
         }
         return result;
     }
-
+    /**
+     * 查询所有字典数据
+     * @param dictType 字典数据对象
+     * @return 导出字典数据的集合
+     */
     @Override
     public List<DataDictExcelDto> getDictList(String dictType) {
         return this.baseMapper.getDictList(dictType);
     }
-
+    /**
+     * 根据ID查询字典列表
+     * @param idList 字典数据主键
+     * @return 字典数据的集合
+     */
     @Override
-    public List<DataDictExcelDto> getDictListById(ArrayList<Integer> idList) {
+    public List<DataDictExcelDto> getDictListById(List<Integer> idList) {
         return this.baseMapper.getDictListById(idList);
     }
-
 }

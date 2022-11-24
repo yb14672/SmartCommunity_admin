@@ -7,7 +7,7 @@ import com.zy_admin.sys.dto.PostDto;
 import com.zy_admin.sys.entity.SysPost;
 import com.zy_admin.sys.service.SysPostService;
 import com.zy_admin.util.ObjUtil;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
@@ -16,14 +16,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * sys post service impl
  * 岗位信息表(SysPost)表服务实现类
  *
  * @author makejava
+ * @date 2022/11/22
  * @since 2022-11-01 19:49:40
  */
 @Service("sysPostService")
 public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> implements SysPostService {
-
+    /**
+     * 分页查询所有岗位数据
+     * @param pageable    分页对象
+     * @param sysPost 查询岗位对象
+     * @return 所有查到的岗位结果集
+     */
     @Override
     public Result selectPostByLimit(SysPost sysPost, Pageable pageable) {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -48,7 +55,11 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
-
+    /**
+     * 添加岗位信息
+     * @param sysPost 岗位对象
+     * @return 添加的岗位结果集
+     */
     @Override
     public Result addPost(SysPost sysPost) {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -56,7 +67,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
             if (checkPostName(0, sysPost)) {
                 this.baseMapper.insert(sysPost);
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-
             } else {
                 result.setMeta(ResultTool.fail(ResultCode.REPEAT_POST_NAME));
             }
@@ -65,7 +75,11 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
         }
         return result;
     }
-
+    /**
+     * 修改岗位信息
+     * @param sysPost 岗位对象
+     * @return 修改的岗位结果集
+     */
     @Override
     public Result update(SysPost sysPost) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -102,7 +116,12 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
         return result;
     }
 
-
+    /**
+     * 岗位名查重
+     * @param sysPost 岗位对象
+     * @param type 判断是新增0还是修改1
+     * @return  成功或失败结果集
+     */
     @Override
     public Boolean checkPostName(int type, SysPost sysPost) {
         SysPost checkPostName = this.baseMapper.selectPostName(sysPost.getPostName());
@@ -123,7 +142,12 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
         }
         return false;
     }
-
+    /**
+     * 岗位编码查重
+     * @param sysPost 岗位对象
+     * @param type 判断是新增0还是修改1
+     * @return 成功或失败结果集
+     */
     @Override
     public Boolean checkPostCode(int type, SysPost sysPost) {
         SysPost postCode = this.baseMapper.selectPostCode(sysPost.getPostCode());
@@ -144,23 +168,31 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
         }
         return false;
     }
-
-
-
-
+    /**
+     * 根据id列表查询
+     * @param postIds 岗位主键
+     * @return  查询岗位的集合
+     */
     @Override
-    public List<SysPost> queryRoleById(ArrayList<Integer> roleIds) {
-        if (roleIds != null) {
-            roleIds = roleIds.size() == 0 ? null : roleIds;
+    public List<SysPost> queryRoleById(ArrayList<Integer> postIds) {
+        if (postIds != null) {
+            postIds = postIds.size() == 0 ? null : postIds;
         }
-        return this.baseMapper.queryRoleById(roleIds);
+        return this.baseMapper.queryRoleById(postIds);
     }
-
+    /**
+     * 获取所有岗位数据
+     * @return 查询岗位的集合
+     */
     @Override
     public List<SysPost> getPostLists() {
         return this.baseMapper.getPostLists();
     }
-
+    /**
+     * 删除岗位
+     * @param ids 岗位主键
+     * @return 删除岗位结果集
+     */
     @Override
     public Result deletePost(List<Integer> ids) {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -173,7 +205,10 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPost> impleme
         }
         return result;
     }
-
+    /**
+     * 获取所有的岗位
+     * @return 返回所有岗位结果集
+     */
     @Override
     public Result getAllPost() {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));

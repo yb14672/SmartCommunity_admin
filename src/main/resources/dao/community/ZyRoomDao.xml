@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy_admin.community.dao.ZyRoomDao">
-
     <resultMap type="com.zy_admin.community.entity.ZyRoom" id="ZyRoomMap">
         <result property="roomId" column="room_id" jdbcType="INTEGER"/>
         <result property="communityId" column="community_id" jdbcType="INTEGER"/>
@@ -22,10 +21,14 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
-
-
-
-    <!--查询单个-->
+<!--根据单元id获取房屋-->
+    <select id="getRoomByUnitId" resultType="com.zy_admin.community.entity.ZyRoom">
+        select * from zy_room WHERE unit_id in
+        <foreach collection="unitIds" item="unitId" separator="," open="(" close=")">
+            #{unitId}
+        </foreach>
+    </select>
+    <!--根据房屋id查询单个-->
     <select id="getZyRoom" resultMap="ZyRoomMap">
         select room_id,
                community_id,
@@ -178,7 +181,7 @@
     </select>
 
     <!--新增所有列-->
-    <insert id="insertZyRoom" keyProperty="" useGeneratedKeys="true">
+    <insert id="insertZyRoom" keyProperty="roomId" useGeneratedKeys="true">
         insert into zy_room(room_id, community_id, building_id, unit_id, room_level, room_code, room_name, room_acreage,
                             room_cost, room_status, room_is_shop, room_s_commercial_house, room_house_type, create_by,
                             create_time, update_by, update_time, remark)
@@ -187,7 +190,7 @@
                 #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
-    <insert id="insertBatch" keyProperty="" useGeneratedKeys="true">
+    <insert id="insertBatch" keyProperty="roomId" useGeneratedKeys="true">
         insert into zy_room(room_id, community_id, building_id, unit_id, room_level, room_code, room_name, room_acreage,
         room_cost, room_status, room_is_shop, room_s_commercial_house, room_house_type, create_by, create_time,
         update_by, update_time, remark)
@@ -200,7 +203,7 @@
         </foreach>
     </insert>
 
-    <insert id="insertOrUpdateBatch" keyProperty="" useGeneratedKeys="true">
+    <insert id="insertOrUpdateBatch" keyProperty="roomId" useGeneratedKeys="true">
         insert into zy_room(room_id, community_id, building_id, unit_id, room_level, room_code, room_name, room_acreage,
         room_cost, room_status, room_is_shop, room_s_commercial_house, room_house_type, create_by, create_time,
         update_by, update_time, remark)
@@ -290,6 +293,10 @@
         </set>
         where room_id = #{roomId}
     </update>
+    <!--修改状态-->
+    <update id="updateRoomStatus">
+        update zy_room set room_status = 'has_give' where room_id = #{roomId}
+    </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
@@ -297,6 +304,16 @@
         from zy_room
         where room_id = #{roomId}
     </delete>
+
+    <!--通过ID批量删除-->
+    <select id="getStatus" resultType="java.lang.String">
+        select room_status
+        from zy_room
+        where room_id in
+        <foreach collection="idList" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
 
     <!--通过ID批量删除-->
     <delete id="deleteZyRoom">

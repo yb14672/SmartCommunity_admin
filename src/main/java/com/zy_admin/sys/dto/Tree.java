@@ -1,7 +1,8 @@
-package com.zy_admin.util;
+package com.zy_admin.sys.dto;
 
 
-import com.zy_admin.sys.entity.MenuTree;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
 /**
  * @author xiaozhao
  */
+@ApiModel(description = "菜单树")
 public class Tree {
 
     /**
@@ -16,6 +18,7 @@ public class Tree {
      * 构建树（获取根节点，遍历根节点，对每一个根节点构建子树）---得到最终树形菜单
      * 承载菜单的列表
      */
+    @ApiModelProperty("子类菜单")
     private List<MenuTree> menuList = new ArrayList<>();
 
     public Tree(List<MenuTree> menuList) {

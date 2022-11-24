@@ -9,7 +9,6 @@ import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.service.SysDictTypeService;
 import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.Result;
-
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
@@ -29,12 +28,10 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
 
     @Resource
     private SysDictDataDao sysDictDataDao;
-
     /**
-     * 导出选中的部分
-     *
-     * @param dictIds
-     * @return
+     * 根据id列表查询字典类型
+     * @param dictIds 字典类型的主键集合
+     * @return 字典类型的集合
      */
     @Override
     public List<SysDictType> queryDictById(ArrayList<Integer> dictIds) {
@@ -44,9 +41,8 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         }
         return baseMapper.queryDictById(dictIds);
     }
-
     /**
-     * 默认导出全部
+     * 获取所有字典类型信息
      *
      * @return
      */
@@ -55,16 +51,8 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         return baseMapper.getDictLists();
     }
 
-    @Override
-    public Result selectDictAll() {
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        List<SysDictType> sysDictTypeList = this.baseMapper.selectDictAll();
-        if (!sysDictTypeList.isEmpty() || sysDictTypeList.size() > 0) {
-            result.setData(sysDictTypeList);
-            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-        }
-        return result;
-    }
+
+
 
     /**
      * 分页加查询
@@ -103,11 +91,24 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
-
     /**
-     * 新增
-     *
-     * @return
+     * 分页查询所有的字典类型数据
+     * @return 所有查询的字典类型结果集
+     */
+    @Override
+    public Result selectDictAll() {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<SysDictType> sysDictTypeList = this.baseMapper.selectDictAll();
+        if (!sysDictTypeList.isEmpty() || sysDictTypeList.size() > 0) {
+            result.setData(sysDictTypeList);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+    /**
+     * 新增字典
+     * @param sysDictType 字典类型对象
+     * @return 新增的字典类型结果集
      */
     @Override
     public Result insertOrUpdateBatch(SysDictType sysDictType) {
@@ -132,12 +133,10 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         }
         return result;
     }
-
     /**
-     * 修改字典
-     *
-     * @param sysDictType
-     * @return
+     * 修改字典类型
+     * @param sysDictType 字典类型对象
+     * @return 修改的字典类型结果集
      */
     @Override
     public Result updateDict(SysDictType sysDictType) {
@@ -178,7 +177,11 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         }
         return result;
     }
-
+    /**
+     * 通过主键查询单条数据
+     * @param id 字典类型的主键
+     * @return 单条数据结果集
+     */
     @Override
     public Result getDictTypeById(String id) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -189,16 +192,19 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         }
         return result;
     }
-
-    //    批量删除
+    /**
+     * 删除字典类型
+     * @param idList 字典类型的主键数组
+     * @return 删除的字典类型结果集
+     */
     @Override
     public Result deleteByIdList(List<Integer> idList) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-//        判断是单个
+        // 判断是单个
         if (idList.size() == 1) {
-//            查当前的有没有子集 hasChildDict返回的是子集的数量
+            // 查当前的有没有子集 hasChildDict返回的是子集的数量
             Integer hasChildDict = this.baseMapper.hasChildDict(idList);
-//            小于1说明没有子集，就可以删
+            // 小于1说明没有子集，就可以删
             if (hasChildDict < 1) {
                 int i = this.baseMapper.deleteByIdList(idList);
                 result.setData("删除成功，影响的行数：" + i);
@@ -206,7 +212,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
             } else {
                 result.setMeta(ResultTool.fail(ResultCode.DICT_HAVE_CHILDREN));
             }
-//            多个就是批量删除
+            // 多个就是批量删除
         } else {
             // 是多个就判断下面有没有子集
             Integer childs = this.baseMapper.hasChildDict(idList);
@@ -224,26 +230,25 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         }
         return result;
     }
-
     /**
      * 判断name是否重复
-     * @param type
-     * @param sysDictType
+     * @param type 判断是添加(0)还是修改(1)
+     * @param sysDictType 字典类型对象
      * @return
      */
     public boolean selectSysDictByName(int type, SysDictType sysDictType) {
         SysDictType sysDictType1 = this.baseMapper.selectSysDictByName(sysDictType.getDictName());
-//        类型为0是新增
+        // 类型为0是新增
         if (type == 0) {
-//            判断是否为空
+            // 判断是否为空
             if (sysDictType1 == null || sysDictType1.getDictId() == null) {
                 return true;
             }
         } else {
-//            修改
+            // 修改
             if (sysDictType1 == null || sysDictType1.getDictId() == null) {
                 return true;
-//                判断他的名字是否唯一
+                // 判断他的名字是否唯一
             } else if (!sysDictType1.getDictId().equals(sysDictType.getDictId())) {
                 return false;
             } else {
@@ -252,13 +257,11 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictT
         }
         return false;
     }
-
     /**
      * 判断type是否重复
-     *
-     * @param type
-     * @param sysDictType
-     * @return
+     * @param type  判断是添加(0)还是修改(1)
+     * @param sysDictType 字典类型对象
+     * @return 成功或失败的结果集
      */
     public boolean selectSysDictByType(int type, SysDictType sysDictType) {
         SysDictType sysDictType1 = this.baseMapper.selectSysDictByType(sysDictType.getDictType());

@@ -13,23 +13,23 @@ import com.zy_admin.sys.dto.SysRoleDto;
 import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.entity.SysUserRole;
 import com.zy_admin.sys.service.SysRoleService;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * 角色信息表(SysRoleExcelDto)表服务实现类
- *
  * @author makejava
  * @since 2022-11-01 19:49:40
  */
 @Service("sysRoleService")
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> implements SysRoleService {
-
+    /**
+     * 服务角色
+     */
     @Resource
     SysRoleMenuDao sysRoleMenuDao;
     @Resource
@@ -37,9 +37,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
 
     /**
      * 获取所有除去管理员以外的角色并分页
-     *
-     * @param page
-     * @return
+     * @param page 分页对象
+     * @return 查询角色结果集
      */
     @Override
     public Result getRoleList(Page page) {
@@ -56,7 +55,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         }
         return result;
     }
-
+    /**
+     * 获取所有角色数据
+     * @param sysRole 角色对象
+     * @return 查询的所有角色结果集
+     */
     @Override
     public Result getAllRole(SysRole sysRole) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -65,7 +68,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
-
+    /**
+     * 根据id列表查询
+     * @param roleIds 角色主键集合
+     * @return 角色集合
+     */
     @Override
     public List<SysRole> queryRoleById(ArrayList<Integer> roleIds) {
         if (roleIds != null) {
@@ -73,12 +80,19 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         }
         return baseMapper.queryRoleById(roleIds);
     }
-
+    /**
+     * 获取所有角色id
+     * @return 角色集合
+     */
     @Override
     public List<SysRole> getRoleLists() {
         return baseMapper.getRoleLists();
     }
-
+    /**
+     * 根据ID集合批量删除
+     * @param idList 角色ID集合
+     * @return 删除的角色结果集
+     */
     @Override
     public Result deleteByIdList(List<Integer> idList) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -96,20 +110,27 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         }
         return result;
     }
-
+    /**
+     * 选择角色限制
+     * @param sysRole   系统作用
+     * @param pageable  分页对象
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @return 查询角色结果集
+     */
     @Override
     public Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //满足条件的总数据
         long total = this.baseMapper.count(sysRole, startTime, endTime);
-        long pages = 0;
+        long pages;
         if (total > 0) {
             //计算出总页码
             pages = total % pageable.getPageSize() == 0 ? total / pageable.getPageSize() : total / pageable.getPageSize() + 1;
             pageable.setPages(pages);
             //页码修正
             pageable.setPageNum(pageable.getPageNum() < 1 ? 1 : pageable.getPageNum());
-            pageable.setPageNum(pageable.getPageNum() > pages ? pages : pageable.getPageNum());
+            pageable.setPageNum(Math.min(pageable.getPageNum(), pages));
             //设置起始下标
             pageable.setIndex((pageable.getPageNum() - 1) * pageable.getPageSize());
         } else {
@@ -122,14 +143,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
-
     /**
-     * 新增角色
-     *
-     * @param roleAndRoleMenu
-     * @return
+     * 添加角色及其权限
+     * @param roleAndRoleMenu 角色和角色菜单
+     * @return 查询角色结果集
      */
-
     @Override
     public Result insert(RoleAndRoleMenu roleAndRoleMenu) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -155,7 +173,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         }
         return result;
     }
-
+    /**
+     * 更新角色及其权限
+     * @param roleAndRoleMenu 角色和角色菜单
+     * @return 更新角色结果集
+     */
     @Override
     public Result update(RoleAndRoleMenu roleAndRoleMenu) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -184,28 +206,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         }
         return result;
     }
-
-    @Override
-    public Boolean checkRoleNameUnique(int type, RoleAndRoleMenu roleAndRoleMenu) {
-        SysRole sysRole = this.baseMapper.selectRoleName(roleAndRoleMenu.getRoleName());
-        //添加时--必须为空
-        if (type == 0) {
-            if (sysRole == null || sysRole.getRoleId() == null) {
-                return true;
-            }
-        } else {
-            //修改时--先判断是否为空，为空则不重名，即唯一
-            if (sysRole == null || sysRole.getRoleId() == null) {
-                return true;
-                //判断ID是否一致，若否，则重名，即不唯一
-            } else if (!sysRole.getRoleId().equals(roleAndRoleMenu.getRoleId())) {
-                return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
+    /**
+     * 检查角色名唯一
+     * @param type 类型用于新增为0或者修改1
+     * @param roleAndRoleMenu 角色和角色菜单
+     * @return 查询角色结果集
+     */
     @Override
     public Boolean checkRoleKeyUnique(int type, RoleAndRoleMenu roleAndRoleMenu) {
         SysRole sysRole = this.baseMapper.selectRoleKey(roleAndRoleMenu.getRoleKey());
@@ -226,7 +232,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
         }
         return false;
     }
-
+    /**
+     * 修改角色状态
+     * @param sysRole 角色对象
+     * @return 修改角色结果集
+     */
     @Override
     public Result changeStatus(SysRole sysRole) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -236,6 +246,31 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
+    }
+
+    /**
+     * 检查角色名唯一
+     *
+     * @param type            类型用于新增为0或者修改1
+     * @param roleAndRoleMenu 角色和角色菜单
+     * @return 角色结果集
+     */
+    @Override
+    public Boolean checkRoleNameUnique(int type, RoleAndRoleMenu roleAndRoleMenu) {
+        SysRole sysRole = this.baseMapper.selectRoleName(roleAndRoleMenu.getRoleName());
+        //添加时--必须为空
+        if (type == 0) {
+            return sysRole == null || sysRole.getRoleId() == null;
+        } else {
+            //修改时--先判断是否为空，为空则不重名，即唯一
+            if (sysRole == null || sysRole.getRoleId() == null) {
+                return true;
+                //判断ID是否一致，若否，则重名，即不唯一
+            } else if (!sysRole.getRoleId().equals(roleAndRoleMenu.getRoleId())) {
+                return false;
+            }
+            return true;
+        }
     }
 }
 

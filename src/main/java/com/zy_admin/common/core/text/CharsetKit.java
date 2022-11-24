@@ -2,6 +2,8 @@ package com.zy_admin.common.core.text;
 
 
 import com.zy_admin.util.StringUtil;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -9,22 +11,29 @@ import java.nio.charset.StandardCharsets;
 /**
  * 字符集工具类
  * 
- * @author yangdi
+ * @author yb14672
  */
+@ApiModel(description = "字符集工具类")
 public class CharsetKit
 {
     /** ISO-8859-1 */
+    @ApiModelProperty("")
     public static final String ISO_8859_1 = "ISO-8859-1";
     /** UTF-8 */
+    @ApiModelProperty("")
     public static final String UTF_8 = "UTF-8";
     /** GBK */
+    @ApiModelProperty("")
     public static final String GBK = "GBK";
 
     /** ISO-8859-1 */
+    @ApiModelProperty("")
     public static final Charset CHARSET_ISO_8859_1 = Charset.forName(ISO_8859_1);
     /** UTF-8 */
+    @ApiModelProperty("")
     public static final Charset CHARSET_UTF_8 = Charset.forName(UTF_8);
     /** GBK */
+    @ApiModelProperty("")
     public static final Charset CHARSET_GBK = Charset.forName(GBK);
 
     /**

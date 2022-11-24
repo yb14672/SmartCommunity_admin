@@ -95,6 +95,7 @@
             </if>
         </where>
     </select>
+
     <select id="hasChildDict" resultType="java.lang.Integer">
         SELECT count(*) FROM sys_dict_type dt right JOIN sys_dict_data dd on dt.dict_type = dd.dict_type
         where dict_id in
@@ -103,7 +104,7 @@
         </foreach>
     </select>
 
-<!--    勾选的导出-->
+<!--勾选的导出-->
     <select id="queryDictById" resultType="com.zy_admin.sys.entity.SysDictType">
         select * from sys_dict_type
         <if test="list!=null">
@@ -114,7 +115,7 @@
             )
         </if>
     </select>
-<!--    所有的导出-->
+<!--所有的导出-->
     <select id="getDictLists" resultType="com.zy_admin.sys.entity.SysDictType">
         select * from sys_dict_type
     </select>
@@ -125,40 +126,11 @@
         values (#{dictName}, #{dictType}, #{status}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
-    <insert id="insertBatch" keyProperty="dictId" useGeneratedKeys="true">
-        insert into sys_dict_type(dict_name, dict_type, status, create_by, create_time, update_by, update_time, remark)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.dictName}, #{entity.dictType}, #{entity.status}, #{entity.createBy}, #{entity.createTime},
-            #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
-        </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="dictId" useGeneratedKeys="true">
-        insert into sys_dict_type(dict_name, dict_type, status, create_by, create_time, update_by, update_time, remark)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.dictName}, #{entity.dictType}, #{entity.status}, #{entity.createBy}, #{entity.createTime},
-            #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
-        </foreach>
-        on duplicate key update
-        dict_name = values(dict_name),
-        dict_type = values(dict_type),
-        status = values(status),
-        create_by = values(create_by),
-        create_time = values(create_time),
-        update_by = values(update_by),
-        update_time = values(update_time),
-        remark = values(remark)
-    </insert>
-
     <!--通过主键修改数据-->
     <update id="updateDictDataByDictType">
         update sys_dict_data set dict_type=#{newDictType}
         where dict_type in (select dict_type from(select dict_type from sys_dict_data where dict_type=#{dictType}) a)
     </update>
-
-
 
     <update id="update">
         update sys_dict_type
@@ -203,6 +175,5 @@
             #{dict_id}
         </foreach>
     </delete>
-
 </mapper>
 

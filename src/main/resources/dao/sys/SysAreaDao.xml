@@ -19,6 +19,5 @@
             id, code, name, parentId, level, type, servicestate, delete_flag, region
         from sys_area
     </select>
-
 </mapper>
 

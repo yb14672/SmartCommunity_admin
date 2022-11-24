@@ -6,22 +6,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 树数据
+ *
+ * @author Administrator
  * @description: 描述
  * @author: xnylh
  * @createDate: 2022/11/21 0021 22:51
+ * @date 2022/11/23
  */
 @Data
 public class TreeData {
 
+    /**
+     * 菜单列表
+     */
     private List<RoomTree> menuList = new ArrayList<>();
 
+    /**
+     * 树数据
+     *
+     * @param menuList 菜单列表
+     */
     public TreeData(List<RoomTree> menuList){
         this.menuList = menuList;
     }
 
     /**
+     * 得到根节点
      * 获取根节点
-     * @return
+     *
+     * @return {@link List}<{@link RoomTree}>
      */
     private List<RoomTree> getRootNode(){
         List<RoomTree> rootNode = new ArrayList<>();
@@ -54,9 +68,11 @@ public class TreeData {
     }
 
     /**
+     * 建立儿童
      * 构建子树
+     *
      * @param rootNode 子节点
-     * @return
+     * @return {@link RoomTree}
      */
     private RoomTree buildChildren(RoomTree rootNode){
         List<RoomTree> childrenTree = new ArrayList<>();
@@ -71,7 +87,8 @@ public class TreeData {
 
     /**
      * 构建树
-     * @return
+     *
+     * @return {@link List}<{@link RoomTree}>
      */
     public List<RoomTree> buildTree(){
         List<RoomTree> menus = getRootNode();

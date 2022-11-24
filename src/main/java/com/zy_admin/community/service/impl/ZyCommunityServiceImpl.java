@@ -2,6 +2,7 @@ package com.zy_admin.community.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyBuildingDao;
 import com.zy_admin.community.dao.ZyCommunityDao;
@@ -12,12 +13,12 @@ import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.community.service.ZyCommunityService;
 import com.zy_admin.sys.dao.SysUserDao;
-import com.zy_admin.util.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zy_admin.util.ObjUtil;
+import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.SnowflakeManager;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +31,10 @@ import java.util.List;
  */
 @Service("zyCommunityService")
 public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommunity> implements ZyCommunityService {
-
-    @Autowired
+    /**
+     * 服务对象
+     */
+    @Resource
     private SnowflakeManager snowflakeManager;
     @Resource
     private SysUserDao sysUserDao;
@@ -39,44 +42,56 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
     private ZyBuildingDao zyBuildingDao;
 
     /**
-     * 根据id删除小区
+     * 删除数据
      *
-     * @param ids
-     * @return
+     * @param ids 存放小区id
+     * @return 删除结果
      */
     @Override
     public Result deleteByIds(List<String> ids) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMUNITY_UPDATE_FAIL));
         List<ZyBuilding> buildingListsByIds = zyBuildingDao.getBuildingListsByIds(ids);
-        if(buildingListsByIds.size() == 0){
+        if (buildingListsByIds.size() == 0) {
             int i = this.baseMapper.deleteBatchIds(ids);
-            if(i>=1){
+            if (i >= 1) {
                 result.setData("删除成功");
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-            }else{
+            } else {
                 result.setMeta(ResultTool.fail(ResultCode.COMMUNITY_HAVE_CHILD));
             }
         }
         return result;
     }
 
+    /**
+     * 根据Id查询导出数据
+     *
+     * @param ids 存放小区id数组
+     * @return 小区导出集合
+     */
     @Override
     public List<CommunityExcel> selectByIds(ArrayList<Long> ids) {
         return this.baseMapper.selectByIds(ids);
     }
 
+    /**
+     * 修改数据
+     *
+     * @param community 更新的小区对象
+     * @return 修改的小区结果集
+     */
     @Override
-    public Result updateCommunityById(ZyCommunity community, HttpServletRequest request) {
+    public Result updateCommunityById(ZyCommunity community) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMUNITY_UPDATE_FAIL));
         try {
             ZyCommunity zyCommunity1 = this.baseMapper.selectById(community.getCommunityId());
             String[] fields = new String[]{"communityName", "communityDetailedAddress", "communityProvenceCode", "communityCityCode", "communityTownCode", "remark"};
-            if (ObjUtil.checkEquals(community,zyCommunity1,fields)){
+            if (ObjUtil.checkEquals(community, zyCommunity1, fields)) {
                 result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
                 return result;
             }
             //判断地区Code是否为空，为空就是修改物业
-            if (community.getCommunityProvenceCode() != "") {
+            if (!"".equals(community.getCommunityProvenceCode())) {
                 /* 验证同一地区小区名是否重复 */
                 ZyCommunity zyCommunity = this.baseMapper.checkZyCommunity(community);
                 if (zyCommunity != null) {
@@ -86,8 +101,6 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
                     }
                 }
             }
-            String id = JwtUtil.getMemberIdByJwtToken(request);
-            community.setUpdateBy(sysUserDao.getUserById(id).getUserName());
             community.setUpdateTime(LocalDateTime.now().toString());
             int i = this.baseMapper.updateCommunityById(community);
             result.setData(i);
@@ -99,8 +112,14 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
         }
     }
 
+    /**
+     * 新增数据
+     *
+     * @param community 新增的小区对象
+     * @return 新增的小区结果集
+     */
     @Override
-    public Result insertCommunity(ZyCommunity community, HttpServletRequest request) throws Exception {
+    public Result insertCommunity(ZyCommunity community) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMUNITY_ADD_FAIL));
         try {
             /* 验证同一地区小区名是否重复 */
@@ -111,14 +130,12 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
                     return result;
                 }
             }
-            Long now = System.currentTimeMillis();
-            String id = JwtUtil.getMemberIdByJwtToken(request);
+            long now = System.currentTimeMillis();
             community.setCommunityId(snowflakeManager.nextId() + "");
-            community.setCommunityCode("COMMUNITY_" + now.toString().substring(0, 13));
-            community.setCreateBy(sysUserDao.getUserById(id).getUserName());
+            community.setCommunityCode("COMMUNITY_" + Long.toString(now).substring(0, 13));
             community.setCreateTime(LocalDateTime.now().toString());
             int i = this.baseMapper.insertCommunity(community);
-            result.setData("新增成功，影响的行数："+i);
+            result.setData("新增成功，影响的行数：" + i);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             return result;
         } catch (Exception e) {
@@ -127,13 +144,20 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
         }
     }
 
+    /**
+     * 分页查询所有数据
+     *
+     * @param community 查询的小区对象
+     * @param pageable  查询的分页对象
+     * @return 返回查询分页的结果集
+     */
     @Override
     public Result selectAllByLimit(ZyCommunity community, Pageable pageable) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMUNITY_GET_FAIL));
         try {
             long total = this.baseMapper.count(community);
             pageable.setTotal(total);
-            long pages = 0;
+            long pages;
             if (total > 0) {
                 if (pageable.getPageSize() != 0) {
                     //总页码数
@@ -141,10 +165,10 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
                     pageable.setPages(pages);
                     //页码修正
                     pageable.setPageNum(pageable.getPageNum() < 1 ? 1 : pageable.getPageNum());
-                    pageable.setPageNum(pageable.getPageNum() > pages ? pages : pageable.getPageNum());
+                    pageable.setPageNum(Math.min(pageable.getPageNum(), pages));
                     //设置起始下标
                     pageable.setIndex((pageable.getPageNum() - 1) * pageable.getPageSize());
-                }else {
+                } else {
                     pageable.setPageNum(1);
                     pageable.setPageSize(0);
                     pageable.setIndex(0);

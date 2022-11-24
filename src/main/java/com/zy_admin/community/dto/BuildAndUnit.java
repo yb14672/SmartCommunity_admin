@@ -1,32 +1,54 @@
 package com.zy_admin.community.dto;
 
+import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.entity.ZyUnit;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author admin
  */
+@ApiModel(value = "楼栋与单元",description = "楼栋与单元集合")
 public class BuildAndUnit {
-
-    private List<BuildUnitDto> buildingDtoList;
-
+    /**
+     * 楼层集合
+     */
+    @ApiModelProperty("楼层集合")
+    private List<ZyBuilding> buildingList;
+    /**
+     * 单元集合
+     */
+    @ApiModelProperty("单元集合")
     private List<ZyUnit> unitList;
-
-    public BuildAndUnit(List<BuildUnitDto> buildingDtoList, List<ZyUnit> unitList) {
-        this.buildingDtoList = buildingDtoList;
+    /**
+     * 楼层和单元
+     * @param buildingList
+     * @param unitList
+     */
+    public BuildAndUnit(List<ZyBuilding> buildingList, List<ZyUnit> unitList) {
+        this.buildingList = buildingList;
         this.unitList = unitList;
     }
 
-    public List<BuildUnitDto> build(List<BuildUnitDto> buildingDtoList, List<ZyUnit> unitList){
-        for (int i = 0; i < buildingDtoList.size() - 1; i++) {
-            for (int j = 0; j < unitList.size() - 1; j++) {
+    /**
+     * 建筑树
+     * @return
+     */
+    public List<BuildUnitDto> build() {
+        List<BuildUnitDto> buildUnitDtoList = new ArrayList<>();
+        for (int i = 0; i < buildingList.size(); i++) {
+            ZyBuilding zyBuilding = buildingList.get(i);
+            buildUnitDtoList.add(new BuildUnitDto(zyBuilding.getBuildingName(), zyBuilding.getBuildingId()));
+            for (int j = 0; j < unitList.size(); j++) {
                 ZyUnit zyUnit = unitList.get(j);
-                if (buildingDtoList.get(i).getBuildingId().equals(zyUnit.getBuildingId())){
-                    buildingDtoList.get(i).getChildren().add(zyUnit);
+                if (zyBuilding.getBuildingId().equals(zyUnit.getBuildingId())) {
+                    buildUnitDtoList.get(i).getChildren().add(new BuildUnitDto(zyUnit.getUnitName(), zyUnit.getUnitId()));
                 }
             }
         }
-        return buildingDtoList;
+        return buildUnitDtoList;
     }
 }

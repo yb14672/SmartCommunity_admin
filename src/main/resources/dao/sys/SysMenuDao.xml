@@ -35,156 +35,6 @@
                  ( select @pid:=#{menuId}) t2
             )t3 where ischild!=0
     </select>
-    <!--查询单个-->
-    <select id="queryById" resultMap="SysMenuMap">
-        select menu_id,
-               menu_name,
-               parent_id,
-               order_num,
-               path,
-               component,
-               is_frame,
-               is_cache,
-               menu_type,
-               visible,
-               status,
-               perms,
-               icon,
-               create_by,
-               create_time,
-               update_by,
-               update_time,
-               remark
-        from sys_menu
-        where menu_id = #{menuId}
-    </select>
-
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="SysMenuMap">
-        select
-        menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status,
-        perms, icon, create_by, create_time, update_by, update_time, remark
-        from sys_menu
-        <where>
-            <if test="menuId != null">
-                and menu_id = #{menuId}
-            </if>
-            <if test="menuName != null and menuName != ''">
-                and menu_name = #{menuName}
-            </if>
-            <if test="parentId != null">
-                and parent_id = #{parentId}
-            </if>
-            <if test="orderNum != null">
-                and order_num = #{orderNum}
-            </if>
-            <if test="path != null and path != ''">
-                and path = #{path}
-            </if>
-            <if test="component != null and component != ''">
-                and component = #{component}
-            </if>
-            <if test="isFrame != null">
-                and is_frame = #{isFrame}
-            </if>
-            <if test="isCache != null">
-                and is_cache = #{isCache}
-            </if>
-            <if test="menuType != null and menuType != ''">
-                and menu_type = #{menuType}
-            </if>
-            <if test="visible != null and visible != ''">
-                and visible = #{visible}
-            </if>
-            <if test="status != null and status != ''">
-                and status = #{status}
-            </if>
-            <if test="perms != null and perms != ''">
-                and perms = #{perms}
-            </if>
-            <if test="icon != null and icon != ''">
-                and icon = #{icon}
-            </if>
-            <if test="createBy != null and createBy != ''">
-                and create_by = #{createBy}
-            </if>
-            <if test="createTime != null">
-                and create_time = #{createTime}
-            </if>
-            <if test="updateBy != null and updateBy != ''">
-                and update_by = #{updateBy}
-            </if>
-            <if test="updateTime != null">
-                and update_time = #{updateTime}
-            </if>
-            <if test="remark != null and remark != ''">
-                and remark = #{remark}
-            </if>
-        </where>
-        limit #{pageable.offset}, #{pageable.pageSize}
-    </select>
-
-    <!--统计总行数-->
-    <select id="count" resultType="java.lang.Long">
-        select count(1)
-        from sys_menu
-        <where>
-            <if test="menuId != null">
-                and menu_id = #{menuId}
-            </if>
-            <if test="menuName != null and menuName != ''">
-                and menu_name = #{menuName}
-            </if>
-            <if test="parentId != null">
-                and parent_id = #{parentId}
-            </if>
-            <if test="orderNum != null">
-                and order_num = #{orderNum}
-            </if>
-            <if test="path != null and path != ''">
-                and path = #{path}
-            </if>
-            <if test="component != null and component != ''">
-                and component = #{component}
-            </if>
-            <if test="isFrame != null">
-                and is_frame = #{isFrame}
-            </if>
-            <if test="isCache != null">
-                and is_cache = #{isCache}
-            </if>
-            <if test="menuType != null and menuType != ''">
-                and menu_type = #{menuType}
-            </if>
-            <if test="visible != null and visible != ''">
-                and visible = #{visible}
-            </if>
-            <if test="status != null and status != ''">
-                and status = #{status}
-            </if>
-            <if test="perms != null and perms != ''">
-                and perms = #{perms}
-            </if>
-            <if test="icon != null and icon != ''">
-                and icon = #{icon}
-            </if>
-            <if test="createBy != null and createBy != ''">
-                and create_by = #{createBy}
-            </if>
-            <if test="createTime != null">
-                and create_time = #{createTime}
-            </if>
-            <if test="updateBy != null and updateBy != ''">
-                and update_by = #{updateBy}
-            </if>
-            <if test="updateTime != null">
-                and update_time = #{updateTime}
-            </if>
-            <if test="remark != null and remark != ''">
-                and remark = #{remark}
-            </if>
-        </where>
-    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="menuId" useGeneratedKeys="true">
@@ -193,48 +43,6 @@
         values (#{menuName}, #{parentId}, #{orderNum}, #{path}, #{component}, #{isFrame}, #{isCache}, #{menuType},
                 #{visible}, #{status}, #{perms}, #{icon}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime},
                 #{remark})
-    </insert>
-
-    <insert id="insertBatch" keyProperty="menuId" useGeneratedKeys="true">
-        insert into sys_menu(menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible,
-        status, perms, icon, create_by, create_time, update_by, update_time, remark)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.menuName}, #{entity.parentId}, #{entity.orderNum}, #{entity.path}, #{entity.component},
-            #{entity.isFrame}, #{entity.isCache}, #{entity.menuType}, #{entity.visible}, #{entity.status},
-            #{entity.perms}, #{entity.icon}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy},
-            #{entity.updateTime}, #{entity.remark})
-        </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="menuId" useGeneratedKeys="true">
-        insert into sys_menu(menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible,
-        status, perms, icon, create_by, create_time, update_by, update_time, remark)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.menuName}, #{entity.parentId}, #{entity.orderNum}, #{entity.path}, #{entity.component},
-            #{entity.isFrame}, #{entity.isCache}, #{entity.menuType}, #{entity.visible}, #{entity.status},
-            #{entity.perms}, #{entity.icon}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy},
-            #{entity.updateTime}, #{entity.remark})
-        </foreach>
-        on duplicate key update
-        menu_name = values(menu_name),
-        parent_id = values(parent_id),
-        order_num = values(order_num),
-        path = values(path),
-        component = values(component),
-        is_frame = values(is_frame),
-        is_cache = values(is_cache),
-        menu_type = values(menu_type),
-        visible = values(visible),
-        status = values(status),
-        perms = values(perms),
-        icon = values(icon),
-        create_by = values(create_by),
-        create_time = values(create_time),
-        update_by = values(update_by),
-        update_time = values(update_time),
-        remark = values(remark)
     </insert>
 
     <!--通过主键修改数据-->
@@ -303,7 +111,7 @@
         where menu_id = #{menuId}
     </delete>
 
-    <select id="getAllMenu" resultType="com.zy_admin.sys.entity.MenuTree">
+    <select id="getAllMenu" resultType="com.zy_admin.sys.dto.MenuTree">
         select *
         from sys_menu
         where menu_type != 'F' and visible = 0 and menu_id
@@ -316,7 +124,7 @@
         order by order_num asc
     </select>
 
-    <select id="queryAllMenu" resultType="com.zy_admin.sys.entity.MenuTree">
+    <select id="queryAllMenu" resultType="com.zy_admin.sys.dto.MenuTree">
         select * from sys_menu
         <where>
             <if test="menuName != '' and menuName != null">
@@ -415,7 +223,7 @@
         select count(1) from sys_menu where parent_id = #{menuId}
     </select>
 
-    <select id="getMenuTree" resultType="com.zy_admin.sys.entity.MenuTree">
+    <select id="getMenuTree" resultType="com.zy_admin.sys.dto.MenuTree">
         select * from sys_menu where visible = '0' order by parent_id,order_num
     </select>
 </mapper>

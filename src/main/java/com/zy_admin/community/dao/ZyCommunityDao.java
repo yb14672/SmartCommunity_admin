@@ -1,5 +1,4 @@
 package com.zy_admin.community.dao;
-
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.community.dto.CommunityDto;
@@ -9,63 +8,53 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * 小区 (ZyCommunityDto)表数据库访问层
- *
  * @author makejava
  * @since 2022-11-01 19:49:01
  */
 public interface ZyCommunityDao extends BaseMapper<ZyCommunity> {
-
-
     /**
-     * 根据部门ID查询
-     * @param idList
-     * @return
+     * 根据部门ID查询小区
+     * @param idList 用于查询的部门id 集合
+     * @return 查询的小区集合
      */
     List<ZyCommunity> selectCommunityByDeptId(@Param("idList") List<Integer> idList);
-
     /**
-     * 根据小区id查询导出数据
-     * @param ids
-     * @return
+     * 根据Id查询导出数据
+     * @param ids  存放小区id数组
+     * @return 小区导出集合
      */
     List<CommunityExcel> selectByIds(@Param("ids") ArrayList<Long> ids);
-
     /**
-     * 修改小区信息
-     * @param community
-     * @return
+     * 修改数据
+     *  @param community 更新的小区对象
+     * @return 修改的小区结果集
      */
     int updateCommunityById(ZyCommunity community);
-
     /**
-     * 效验同一地区小区是否同名
-     * @param community
-     * @return
+     * 检验同一地区小区是否同名
+     * @param community 检查的小区对象
+     * @return 返回小区对象
      */
     ZyCommunity checkZyCommunity(ZyCommunity community);
-
     /**
-     * 新增小区
-     * @param community
-     * @return
+     * 新增数据
+     * @param community 新增的小区对象
+     * @return 新增的小区结果集
      */
     int insertCommunity(ZyCommunity community);
-
     /**
-     * 分页搜索条件
-     * @param community
-     * @param pageable
-     * @return
+     *  分页查询所有数据
+     * @param community 查询的小区对象
+     * @param pageable 查询的分页对象
+     * @return 返回查询分页的结果集
      */
     List<CommunityDto> selectAllByLimit(@Param("community")ZyCommunity community, @Param("pageable")Pageable pageable);
-
     /**
      * 统计数据量
-     * @param community
-     * @return
+     * @param community 查询的小区对象
+     * @return 返回查询条数
      */
     Long count(@Param("community") ZyCommunity community);
 

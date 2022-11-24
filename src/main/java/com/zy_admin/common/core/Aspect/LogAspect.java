@@ -8,9 +8,9 @@ import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDeptService;
 import com.zy_admin.sys.service.SysOperLogService;
-import com.zy_admin.util.IpUtils;
+import com.zy_admin.util.IpUtil;
 import com.zy_admin.util.RequestUtil;
-import com.zy_admin.util.Result;
+import com.zy_admin.common.core.Result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -89,7 +89,6 @@ public class LogAspect {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         // 从获取RequestAttributes中获取HttpServletRequest的信息
         HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
-
         SysOperLog operLog = new SysOperLog();
         //给日志赋值
         // 操作状态（0正常 1异常）
@@ -110,7 +109,7 @@ public class LogAspect {
         // 获取URI
         operLog.setOperUrl(request.getRequestURI());
         //获取ip
-        String realIp = IpUtils.getIpAddress(request);
+        String realIp = IpUtil.getIpAddress(request);
         operLog.setOperIp(realIp);
         //操作地点
         String pattern = "^(127\\.0\\.0\\.1)|(localhost)|(10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(172\\.((1[6-9])|(2\\d)|(3[01]))\\.\\d{1,3}\\.\\d{1,3})|(192\\.168\\.\\d{1,3}\\.\\d{1,3})$";
@@ -119,7 +118,6 @@ public class LogAspect {
         }else{
             operLog.setOperLocation("外网Ip");
         }
-
         //获取返回参数
         JSONObject jsonObject = (JSONObject) JSONObject.toJSON(result);
         Object o = JSON.toJavaObject(jsonObject, Object.class);

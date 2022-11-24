@@ -1,9 +1,11 @@
 package com.zy_admin.community.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zy_admin.common.Pageable;
+import com.zy_admin.community.dto.ZyOwnerRoomDto;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.util.RoomTree;
-import com.zy_admin.util.TreeData;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -36,5 +38,37 @@ public interface ZyOwnerRoomDao extends BaseMapper<ZyOwnerRoom> {
      */
     @Select("SELECT community_id id, community_name NAME, 0 parent_id FROM zy_community UNION SELECT building_id id, building_name NAME,community_id parent_id FROM zy_building UNION SELECT unit_id,unit_name,building_id parent_id FROM zy_unit UNION SELECT room_id, room_name,unit_id parent_id FROM zy_room WHERE room_id NOT IN (SELECT room_id from zy_owner_room)")
     List<RoomTree> getTreeRoom();
+
+
+    /**
+     * 查询所有业主审核的和分页
+     * @param zyOwnerRoom
+     * @param pageable
+     * @return
+     */
+    List<ZyOwnerRoomDto> selectAllOwnerRoomLimit(@Param("zyOwnerRoom")ZyOwnerRoom zyOwnerRoom, @Param("pageable") Pageable pageable);
+
+    /**
+     * 业主审核的总数量
+     * @param zyOwnerRoom
+     * @return
+     */
+    Long count(@Param("zyOwnerRoom") ZyOwnerRoom zyOwnerRoom);
+
+    /**
+     * 修改业主审核的状态
+     * @param zyOwnerRoom
+     * @return
+     */
+    int updateOwnerRoomStatus(@Param("zyOwnerRoom") ZyOwnerRoom zyOwnerRoom);
+
+    /**
+     * 根据id查业主审核对象
+     * @param ownerRoomId
+     * @return
+     */
+    @Select("select * from zy_owner_room where owner_room_id = #{ownerRoomId}")
+    ZyOwnerRoom selectOwnerRoomById(String ownerRoomId);
+
 }
 

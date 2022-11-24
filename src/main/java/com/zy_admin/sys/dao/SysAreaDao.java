@@ -13,10 +13,9 @@ import java.util.List;
  * @since 2022-11-01 19:49:33
  */
 public interface SysAreaDao extends BaseMapper<SysArea> {
-
     /**
-     * 查询省市区
-     * @return
+     * 查询区域树
+     * @return 区域集合
      */
     List<AreaDto> queryAreaTree();
 }
