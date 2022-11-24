@@ -136,15 +136,6 @@
     <select id="getOperLogList" resultType="com.zy_admin.sys.entity.SysOperLog">
         select * from sys_oper_log
     </select>
-
-    <!--查询单个-->
-    <select id="queryById" resultMap="SysOperLogMap">
-        select
-            oper_id, title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time
-        from sys_oper_log
-        where oper_id = #{operId}
-    </select>
-
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="SysOperLogMap">
         select
@@ -272,45 +263,6 @@
         insert into sys_oper_log(title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time)
         values (#{title}, #{businessType}, #{method}, #{requestMethod}, #{operatorType}, #{operName}, #{deptName}, #{operUrl}, #{operIp}, #{operLocation}, #{operParam}, #{jsonResult}, #{status}, #{errorMsg}, #{operTime})
     </insert>
-
-    <insert id="insertBatch" keyProperty="operId" useGeneratedKeys="true">
-        insert into sys_oper_log(title, business_type, method, request_method, operator_type, oper_name, dept_name,
-        oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.title}, #{entity.businessType}, #{entity.method}, #{entity.requestMethod}, #{entity.operatorType},
-            #{entity.operName}, #{entity.deptName}, #{entity.operUrl}, #{entity.operIp}, #{entity.operLocation},
-            #{entity.operParam}, #{entity.jsonResult}, #{entity.status}, #{entity.errorMsg}, #{entity.operTime})
-        </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="operId" useGeneratedKeys="true">
-        insert into sys_oper_log(title, business_type, method, request_method, operator_type, oper_name, dept_name,
-        oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.title}, #{entity.businessType}, #{entity.method}, #{entity.requestMethod}, #{entity.operatorType},
-            #{entity.operName}, #{entity.deptName}, #{entity.operUrl}, #{entity.operIp}, #{entity.operLocation},
-            #{entity.operParam}, #{entity.jsonResult}, #{entity.status}, #{entity.errorMsg}, #{entity.operTime})
-        </foreach>
-        on duplicate key update
-        title = values(title),
-        business_type = values(business_type),
-        method = values(method),
-        request_method = values(request_method),
-        operator_type = values(operator_type),
-        oper_name = values(oper_name),
-        dept_name = values(dept_name),
-        oper_url = values(oper_url),
-        oper_ip = values(oper_ip),
-        oper_location = values(oper_location),
-        oper_param = values(oper_param),
-        json_result = values(json_result),
-        status = values(status),
-        error_msg = values(error_msg),
-        oper_time = values(oper_time)
-    </insert>
-
     <!--通过主键修改数据-->
     <update id="update">
         update sys_oper_log

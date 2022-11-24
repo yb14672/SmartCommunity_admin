@@ -19,11 +19,12 @@ import java.util.List;
 
 /**
  * 参数配置表(SysConfig)表控制层
- *
+ * @Description: 参数
  * @author makejava
  * @since 2022-11-01 19:49:34
  */
-@Api(value = "sysConfig", tags = {"参数配置表(SysConfig)表控制层"})
+
+@Api(value = "sysConfig", tags = {"参数配置表(SysConfig)表控制层: 参数"})
 @RestController
 @RequestMapping("sysConfig")
 public class SysConfigController extends ApiController {

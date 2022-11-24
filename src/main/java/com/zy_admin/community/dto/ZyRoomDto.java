@@ -14,7 +14,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 房间dto
  * 房屋连表dto类
  *
  * @author 吕蔚霖

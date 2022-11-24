@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.community.dao.ZyRepairDao">
+    <resultMap type="com.zy_admin.community.dto.RepairDto" id="getZyRepairMap">
+        <id property="repairId" column="repairId" jdbcType="INTEGER"/>
+    </resultMap>
+    <!--分页查询-->
+    <select id="getAllRepairs" resultMap="getZyRepairMap">
+        SELECT r.*,r.repair_id repairId,o.owner_id ownerId,o.owner_real_name,o.owner_phone_number from zy_repair r
+        join zy_owner o ON r.user_id = o.owner_id where del_flag = '0'
+        <if test="repairDto.repairState!=null and repairDto.repairState!=''">
+            and r.repair_state = #{repairDto.repairState}
+        </if>
+        <if test="repairDto.ownerRealName!=null and repairDto.ownerRealName!=''">
+            and o.owner_real_name like concat ('%',#{repairDto.ownerRealName},'%')
+        </if>
+        <if test="repairDto.ownerPhoneNumber != null and repairDto.ownerPhoneNumber != '' ">
+            and o.owner_phone_number = #{repairDto.ownerPhoneNumber}
+        </if>
+        <if test="repairDto.communityId != null ">
+            and r.community_id = #{repairDto.communityId}
+        </if>
+        order by r.create_time
+        <if test="pageable.pageSize!=null">
+            limit #{pageable.index},#{pageable.pageSize}
+        </if>
+    </select>
+    <!--查询总条数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from zy_repair r
+        join zy_owner o ON r.user_id = o.owner_id
+        where del_flag = '0'
+        <if test="repairDto.repairId !=null">
+            and repair_id =#{repairDto.repairId}
+        </if>
+        <if test="repairDto.repairState!=null and repairDto.repairState!=''">
+            and r.repair_state = #{repairDto.repairState}
+        </if>
+        <if test="repairDto.ownerRealName!=null and repairDto.ownerRealName!=''">
+            and o.owner_real_name like concat ('%',#{repairDto.ownerRealName},'%')
+        </if>
+        <if test="repairDto.ownerPhoneNumber != null and repairDto.ownerPhoneNumber != '' ">
+            and o.owner_phone_number = #{repairDto.ownerPhoneNumber}
+        </if>
+        <if test="repairDto.communityId != null ">
+            and r.community_id = #{repairDto.communityId}
+        </if>
+    </select>
+    <!--得到所有报修列表连表-->
+    <select id="getAllRepairList" resultMap="getZyRepairMap">
+        SELECT
+        r.repair_id,r.repair_num,r.repair_state,o.owner_real_name,o.owner_phone_number,r.repair_content,r.address,r.create_time,r.door_time,r.complete_name,r.complete_phone,r.complete_time,r.remark
+        FROM zy_repair r
+        join zy_owner o ON r.user_id = o.owner_id
+        where del_flag = '0'
+        <if test="communityId != null ">
+            and r.community_id = #{communityId}
+        </if>
+    </select>
+    <!--通过id获取报修连表-->
+    <select id="getRepairById" resultMap="getZyRepairMap">
+        SELECT
+        r.repair_id,r.repair_num,r.repair_state,o.owner_real_name,o.owner_phone_number,r.repair_content,r.address,r.create_time,r.door_time,r.complete_name,r.complete_phone,r.complete_time,r.remark
+        FROM zy_repair r
+        join zy_owner o ON r.user_id = o.owner_id
+        where del_flag = '0'
+        r.repair_id in (
+        <foreach collection="repairList" item="repairId" separator=",">
+            #{repairId}
+        </foreach>
+        )
+    </select>
+    <!--新添报修-->
+    <insert id="insertRepair" keyProperty="repairId" useGeneratedKeys="true">
+        insert into zy_repair(repair_num, repair_state, assignment_time, receiving_orders_time,
+        complete_time, cancel_time, door_time, assignment_id, complete_id, complete_phone, complete_name, remark,
+        create_by, create_time, update_by, update_time, user_id, del_flag, repair_content, community_id, address)
+        values(#{repairNum}, #{repairState}, #{assignmentTime}, #{receivingOrdersTime},
+            #{completeTime}, #{cancelTime}, #{doorTime}, #{assignmentId},
+            #{completeId}, #{completePhone}, #{completeName}, #{remark}, #{createBy},
+            #{createTime}, #{updateBy}, #{updateTime}, #{userId}, #{delFlag},
+            #{repairContent}, #{communityId}, #{address})
+    </insert>
+    <!--更新报修-->
+    <update id="updateRepair">
+        update zy_repair
+        <set>
+            <if test="repairState != null and repairState != ''">
+                repair_state = #{repairState},
+            </if>
+            <if test="assignmentTime != null">
+                assignment_time = #{assignmentTime},
+            </if>
+            <if test="completeTime != null">
+                complete_time = #{completeTime},
+            </if>
+            <if test="cancelTime != null">
+                cancel_time = #{cancelTime},
+            </if>
+            <if test="doorTime != null">
+                door_time = #{doorTime},
+            </if>
+            <if test="assignmentId != null">
+                assignment_id = #{assignmentId},
+            </if>
+            <if test="completeId != null and completeId != ''">
+                complete_id = #{completeId},
+            </if>
+            <if test="completePhone != null and completePhone != ''">
+                complete_phone = #{completePhone},
+            </if>
+            <if test="completeName != null and completeName != ''">
+                complete_name = #{completeName},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="repairContent != null and repairContent != ''">
+                repair_content = #{repairContent},
+            </if>
+            <if test="communityId != null">
+                community_id = #{communityId},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+        </set>
+        where repair_id =#{repairId}
+    </update>
+    <!--删除报修-->
+    <update id="deleteRepair">
+        update zy_repair set del_flag = '1' where repair_id in(
+        <foreach collection="idList" item="repairId" separator="," open="(" close=")">
+            #{repairId}
+        </foreach>)
+    </update>
+    <!--查询单个-->
+    <select id="getRepairByRepairId" resultType="com.zy_admin.community.entity.ZyRepair">
+        select * from zy_repair where del_flag = '0' and repair_id in (
+        <foreach collection="idList" item="repairId" separator="," open="(" close=")">
+            #{repairId}
+        </foreach>)
+    </select>
+</mapper>
+
