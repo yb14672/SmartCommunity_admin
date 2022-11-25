@@ -13,6 +13,7 @@ import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dto.ZyComplaintSuggestDto;
 import com.zy_admin.community.entity.ZyComplaintSuggest;
+import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.service.ZyComplaintSuggestService;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
@@ -124,8 +125,9 @@ public class ZyComplaintSuggestController extends ApiController {
     @PostMapping("/insertSuggest")
     @MyLog(title = "投诉建议", optParam = "#{zyComplaintSuggest}", businessType = BusinessType.INSERT)
     public Result insertSuggest(@RequestBody ZyComplaintSuggest zyComplaintSuggest, HttpServletRequest request) throws Exception {
-        SysUser user = requestUtil.getUser(request);
-        zyComplaintSuggest.setCreateBy(user.getUserName());
+        ZyOwner owner = requestUtil.getOwner(request);
+        zyComplaintSuggest.setCreateBy(owner.getOwnerRealName());
+        zyComplaintSuggest.setUserId(owner.getOwnerId());
         return this.zyComplaintSuggestService.insertSuggest(zyComplaintSuggest);
     }
 

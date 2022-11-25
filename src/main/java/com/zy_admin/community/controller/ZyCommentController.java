@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.community.entity.ZyComment;
 import com.zy_admin.community.service.ZyCommentService;
 import io.swagger.annotations.Api;
@@ -104,6 +106,7 @@ public class ZyCommentController extends ApiController {
             @ApiImplicitParam(paramType = "query", dataType = "String", name = "commentId", value = "主键", required = true)
     })
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
+    @MyLog(title = "评论信息", optParam = "#{commentId}", businessType = BusinessType.DELETE)
     @DeleteMapping("/{commentId}")
     public Result delete(@PathVariable String commentId) {
         return this.zyCommentService.delCommentById(commentId);

@@ -6,6 +6,8 @@ import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dto.ZyCommunityInteractionDto;
 import com.zy_admin.community.service.ZyCommunityInteractionService;
@@ -54,6 +56,7 @@ public class ZyWebInteractionController {
     })
     @ApiOperation(value = "根据ID导出Excel", notes = "根据ID导出Excel", httpMethod = "GET")
     @GetMapping("/export")
+    @MyLog(title = "互动信息", optParam = "#{ids}", businessType = BusinessType.EXPORT)
     public Result getExcel(@RequestParam("ids") ArrayList<String> ids, String communityId, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         Result result1 = zyCommunityInteractionService.getListByIdList(ids, communityId);
@@ -135,6 +138,7 @@ public class ZyWebInteractionController {
     })
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping
+    @MyLog(title = "互动信息", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result delete(@RequestParam("ids") List<String> idList) {
         return this.zyCommunityInteractionService.deleteInteractionByIdList(idList);
     }
