@@ -14,6 +14,12 @@ import java.util.List;
  */
 public interface ZyCommentDao extends BaseMapper<ZyComment> {
     /**
+     * 添加评论
+     * @param zyComment 评论信息
+     * @return 影响行数
+     */
+    int insertComment(ZyComment zyComment);
+    /**
      * 根据查询条件获取评论集合
      * @param zyCommentDto 查询条件
      * @return 评论集合

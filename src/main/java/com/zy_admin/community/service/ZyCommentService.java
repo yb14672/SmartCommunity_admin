@@ -22,8 +22,10 @@ public interface ZyCommentService extends IService<ZyComment> {
 
     /**
      * 添加评论
+     *
      * @param zyComment 评论信息
      * @return 执行结果
+     * @throws Exception 异常
      */
     Result insert(ZyComment zyComment) throws Exception;
 }

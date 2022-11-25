@@ -101,7 +101,7 @@ public class ZyCommentController extends ApiController {
      * @return 删除结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "List<Long>", name = "idList", value = "主键结合", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "commentId", value = "主键", required = true)
     })
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping("/{commentId}")

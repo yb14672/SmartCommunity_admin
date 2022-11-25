@@ -144,11 +144,11 @@
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" keyProperty="commentId" useGeneratedKeys="true">
-        insert into zy_comment(create_by, update_by, create_time, update_time, content, parent_id, del_flag,
-                               interaction_id, user_id, remark, root_id)
-        values (#{createBy}, #{updateBy}, #{createTime}, #{updateTime}, #{content}, #{parentId}, #{delFlag},
-                #{interactionId}, #{userId}, #{remark}, #{rootId})
+    <insert id="insertComment" keyProperty="commentId" useGeneratedKeys="true">
+        insert into zy_comment(comment_id,create_by, create_time, content, parent_id, del_flag,
+                               interaction_id, user_id, root_id)
+        values (#{commentId},#{createBy}, #{createTime}, #{content}, #{parentId}, '0',
+                #{interactionId}, #{userId}, #{rootId})
     </insert>
 
     <insert id="insertBatch" keyProperty="commentId" useGeneratedKeys="true">
