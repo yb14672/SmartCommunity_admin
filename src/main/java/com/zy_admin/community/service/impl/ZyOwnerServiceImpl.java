@@ -147,6 +147,7 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
         Result result = new Result("注册失败", ResultTool.fail(ResultCode.USER_REGISTER_FAIL));
         owner.setOwnerId(snowflakeManager.nextId() + "");
         owner.setCreateTime(LocalDateTime.now().toString());
+        owner.setOwnerStatus("Enable");
         if (!checkPhoneNumberUnique(0,owner)) {
             result.setMeta(ResultTool.fail(ResultCode.REPEAT_PHONE_NUMBER));
             return result;
