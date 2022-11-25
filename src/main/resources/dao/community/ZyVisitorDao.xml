@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.community.dao.ZyVisitorDao">
+
+    <resultMap type="com.zy_admin.community.entity.ZyVisitor" id="ZyVisitorMap">
+        <result property="visitorId" column="visitor_id" jdbcType="INTEGER"/>
+        <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+        <result property="visitorName" column="visitor_name" jdbcType="VARCHAR"/>
+        <result property="visitorPhoneNumber" column="visitor_phone_number" jdbcType="VARCHAR"/>
+        <result property="visitorDate" column="visitor_date" jdbcType="TIMESTAMP"/>
+        <result property="createById" column="create_by_id" jdbcType="INTEGER"/>
+        <result property="createByOpenId" column="create_by_open_id" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ZyVisitorMap">
+        select
+          visitor_id, community_id, visitor_name, visitor_phone_number, visitor_date, create_by_id, create_by_open_id, create_by, create_time, update_by, update_time, remark
+        from zy_visitor
+        where visitor_id = #{visitorId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultType="com.zy_admin.community.dto.VisitorListDto">
+        select
+        visitor_id, community_id, visitor_name, visitor_phone_number, visitor_date, create_by_id, create_by_open_id,status,
+        create_by, create_time, update_by, update_time, remark,(select community_name from zy_community where community_id = zo.community_id )communityName
+        from zy_visitor zo
+        <where>
+            <if test="zyVisitor.visitorId != null">
+                and visitor_id = #{zyVisitor.visitorId}
+            </if>
+            <if test="zyVisitor.visitorName != null and zyVisitor.visitorName != ''">
+                and visitor_name like concat ('%',#{zyVisitor.visitorName},'%')
+            </if>
+            <if test="zyVisitor.visitorPhoneNumber != null and zyVisitor.visitorPhoneNumber != ''">
+                and visitor_phone_number like concat('%',#{zyVisitor.visitorPhoneNumber},'%')
+            </if>
+            <if test="zyVisitor.visitorDate != null">
+                and visitor_date = #{zyVisitor.visitorDate}
+            </if>
+            and community_id =#{zyVisitor.communityId}
+        </where>
+        order by  create_time desc
+        limit #{pageable.index}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from zy_visitor
+        <where>
+            <if test="visitorId != null">
+                and visitor_id = #{visitorId}
+            </if>
+            <if test="visitorName != null and visitorName != ''">
+                and visitor_name like concat ('%',#{visitorName},'%')
+            </if>
+            <if test="visitorPhoneNumber != null and visitorPhoneNumber != ''">
+                and visitor_phone_number like concat('%',#{visitorPhoneNumber},'%')
+            </if>
+            <if test="visitorDate != null">
+                and visitor_date = #{visitorDate}
+            </if>
+              and community_id =#{communityId}
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insertVisitor">
+        insert into zy_visitor(visitor_id, community_id, visitor_name, visitor_phone_number, visitor_date, create_by_id, create_by_open_id, create_by, create_time, update_by, update_time, remark,status)
+        values (#{visitorId},#{communityId}, #{visitorName}, #{visitorPhoneNumber}, #{visitorDate}, #{createById}, #{createByOpenId}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark},#{status})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="visitorId" useGeneratedKeys="true">
+        insert into zy_visitor(community_id, visitor_name, visitor_phone_number, visitor_date, create_by_id,
+        create_by_open_id, create_by, create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.communityId}, #{entity.visitorName}, #{entity.visitorPhoneNumber}, #{entity.visitorDate},
+            #{entity.createById}, #{entity.createByOpenId}, #{entity.createBy}, #{entity.createTime},
+            #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="visitorId" useGeneratedKeys="true">
+        insert into zy_visitor(community_id, visitor_name, visitor_phone_number, visitor_date, create_by_id,
+        create_by_open_id, create_by, create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.communityId}, #{entity.visitorName}, #{entity.visitorPhoneNumber}, #{entity.visitorDate},
+            #{entity.createById}, #{entity.createByOpenId}, #{entity.createBy}, #{entity.createTime},
+            #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+        on duplicate key update
+        community_id = values(community_id),
+        visitor_name = values(visitor_name),
+        visitor_phone_number = values(visitor_phone_number),
+        visitor_date = values(visitor_date),
+        create_by_id = values(create_by_id),
+        create_by_open_id = values(create_by_open_id),
+        create_by = values(create_by),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        remark = values(remark)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update zy_visitor
+        <set>
+            <if test="communityId != null">
+                community_id = #{communityId},
+            </if>
+            <if test="visitorName != null and visitorName != ''">
+                visitor_name = #{visitorName},
+            </if>
+            <if test="visitorPhoneNumber != null and visitorPhoneNumber != ''">
+                visitor_phone_number = #{visitorPhoneNumber},
+            </if>
+            <if test="visitorDate != null">
+                visitor_date = #{visitorDate},
+            </if>
+            <if test="createById != null">
+                create_by_id = #{createById},
+            </if>
+            <if test="createByOpenId != null and createByOpenId != ''">
+                create_by_open_id = #{createByOpenId},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where visitor_id = #{visitorId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from zy_visitor where visitor_id = #{visitorId}
+    </delete>
+
+    <select id="queryVisitorById" resultType="com.zy_admin.community.dto.VisitorGetExcelDto">
+        select community_id, visitor_name, visitor_phone_number, visitor_date, create_by_id, create_by_open_id,status,
+        create_by, create_time, update_by, update_time, remark,(select community_name from zy_community where community_id = zo.community_id )communityName
+        from zy_visitor zo  where visitor_id in
+        <foreach collection="visitorIds" item="visitorId" separator="," open="(" close=")">
+        #{visitorId}
+        </foreach>
+    </select>
+
+    <select id="getLists" resultType="com.zy_admin.community.dto.VisitorGetExcelDto">
+         select community_id, visitor_name, visitor_phone_number, visitor_date, create_by_id, create_by_open_id,status,
+        create_by, create_time, update_by, update_time, remark,(select community_name from zy_community where community_id = zo.community_id )communityName
+        from zy_visitor zo where community_id = #{communityId}
+    </select>
+
+</mapper>
+

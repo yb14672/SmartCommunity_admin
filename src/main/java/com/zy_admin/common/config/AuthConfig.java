@@ -35,9 +35,10 @@ public class AuthConfig implements WebMvcConfigurer {
                         "/webjars/**",
                         "/v2/api-docs",
                         "/v3/api-docs",
-                        "/ZyOwner/**",
                         "/zyOwner/**",
-                        "/zyOwnerRoom/**"
+                        "/zyOwnerRoom/**",
+                        "/zyVisitor/**",
+                        "/zyRepair/**"
                 );
     }
 }

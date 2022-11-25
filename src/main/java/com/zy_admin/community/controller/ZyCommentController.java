@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.entity.ZyComment;
 import com.zy_admin.community.service.ZyCommentService;
 import io.swagger.annotations.Api;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 评论表(ZyComment)表控制层
@@ -23,9 +23,9 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:00
  */
-@Api(value = "zyComment", tags = {"评论表(ZyComment)表控制层"})
+@Api(value = "zyComment", tags = {"web端互动评论"})
 @RestController
-@RequestMapping("zyComment")
+@RequestMapping("/system/comment")
 public class ZyCommentController extends ApiController {
     /**
      * 服务对象
@@ -97,16 +97,16 @@ public class ZyCommentController extends ApiController {
     /**
      * 删除数据
      *
-     * @param idList 主键结合
+     * @param commentId 主键
      * @return 删除结果
      */
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "List<Long>", name = "idList", value = "主键结合", required = true)
     })
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.zyCommentService.removeByIds(idList));
+    @DeleteMapping("/{commentId}")
+    public Result delete(@PathVariable String commentId) {
+        return this.zyCommentService.delCommentById(commentId);
     }
 }
 

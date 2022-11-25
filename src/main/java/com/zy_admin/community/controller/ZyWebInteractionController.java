@@ -7,7 +7,6 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
-import com.zy_admin.community.dto.CommunityExcel;
 import com.zy_admin.community.dto.ZyCommunityInteractionDto;
 import com.zy_admin.community.service.ZyCommunityInteractionService;
 import com.zy_admin.util.ResultTool;
@@ -30,7 +29,7 @@ import java.util.List;
  * @author yb14672
  * @date 2022/11/23 - 20:58
  */
-@Api(value = "/system/interaction", tags = {""})
+@Api(value = "/system/interaction", tags = {"web端社区互动"})
 @RestController
 @RequestMapping("/system/interaction")
 public class ZyWebInteractionController {
@@ -55,17 +54,17 @@ public class ZyWebInteractionController {
     })
     @ApiOperation(value = "根据ID导出Excel", notes = "根据ID导出Excel", httpMethod = "GET")
     @GetMapping("/export")
-    public Result getExcel(@RequestParam("ids") ArrayList<String> ids, HttpServletResponse response) throws IOException {
+    public Result getExcel(@RequestParam("ids") ArrayList<String> ids, String communityId, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        Result result1 = zyCommunityInteractionService.getListByIdList(ids);
-        List<ZyCommunityInteractionDto> list= (List<ZyCommunityInteractionDto>) result1.getData();
+        Result result1 = zyCommunityInteractionService.getListByIdList(ids, communityId);
+        List<ZyCommunityInteractionDto> list = (List<ZyCommunityInteractionDto>) result1.getData();
         String fileName = URLEncoder.encode("互动信息", "UTF-8");
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader("content-type", "text/html;charset=UTF-8");
         // 内容样式
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
-        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), CommunityExcel.class)
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), ZyCommunityInteractionDto.class)
                 .excelType(ExcelTypeEnum.XLS)
                 //自适应表格格式
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
@@ -79,7 +78,8 @@ public class ZyWebInteractionController {
 
     /**
      * 分页查询所有数据
-     * @param page                   分页对象
+     *
+     * @param page           分页对象
      * @param interactionDto 查询实体
      * @return 所有数据
      */
@@ -93,20 +93,20 @@ public class ZyWebInteractionController {
         return this.zyCommunityInteractionService.selectAllLimit(page, interactionDto);
     }
 
-//    /**
-//     * 通过主键查询单条数据
-//     *
-//     * @param id 主键
-//     * @return 单条数据
-//     */
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "path", dataType = "Serializable", name = "id", value = "主键", required = true)
-//    })
-//    @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
-//    @GetMapping("{id}")
-//    public R selectOne(@PathVariable Serializable id) {
-//        return success(this.zyCommunityInteractionService.getById(id));
-//    }
+    /**
+     * 通过主键查询单条数据
+     *
+     * @param id 主键
+     * @return 单条数据
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", dataType = "Serializable", name = "id", value = "主键", required = true)
+    })
+    @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
+    @GetMapping("{id}")
+    public Result selectOne(@PathVariable String id) {
+        return this.zyCommunityInteractionService.getInteractionInfoById(id);
+    }
 //
 //    /**
 //     * 新增数据
@@ -138,6 +138,7 @@ public class ZyWebInteractionController {
 //        return success(this.zyCommunityInteractionService.updateById(zyCommunityInteraction));
 //    }
 //
+
     /**
      * 删除数据
      *

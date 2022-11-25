@@ -12,9 +12,11 @@ import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerService;
 import com.zy_admin.sys.entity.SysUser;
-import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.util.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zy_admin.util.ObjUtil;
+import com.zy_admin.util.RequestUtil;
+import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.SnowflakeManager;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,33 +25,25 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * impl zy主人服务
  * 业主 (ZyOwner)表服务实现类
  *
  * @author makejava
- * @date 2022/11/23
  * @since 2022-11-01 19:49:02
  */
 @Service("zyOwnerService")
 public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> implements ZyOwnerService {
 
     /**
-     * 雪花经理
+     * 雪花算法
      */
     @Resource
     SnowflakeManager snowflakeManager;
 
     /**
-     * 请求跑龙套
+     * 请求工具类
      */
     @Resource
     private RequestUtil requestUtil;
-
-    /**
-     * 存储token
-     */
-    @Resource
-    private RedisService redisService;
 
     /**
      * 通过id获取业主
@@ -127,7 +121,6 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
         ZyOwner zyOwner = this.baseMapper.ownerLogin(owner);
         if (zyOwner != null) {
             String jwtToken = JwtUtil.getJwtToken(zyOwner.getOwnerId(), zyOwner.getOwnerPhoneNumber());
-            redisService.set(jwtToken,zyOwner.getOwnerPhoneNumber());
             result.setData(jwtToken);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
@@ -245,6 +238,5 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
         }
         return this.baseMapper.queryOwnerById(ownerIds);
     }
-
 }
 

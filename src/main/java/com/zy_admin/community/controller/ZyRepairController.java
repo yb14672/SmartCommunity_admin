@@ -1,12 +1,24 @@
 package com.zy_admin.community.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.community.dto.RepairDto;
+import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyRepair;
 import com.zy_admin.community.service.ZyRepairService;
+import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.util.RequestUtil;
+import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -14,7 +26,15 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,27 +52,131 @@ public class ZyRepairController extends ApiController {
      */
     @Resource
     private ZyRepairService zyRepairService;
-
+    @Resource
+    private RequestUtil requestUtil;
     /**
-     * 分页查询所有数据
-     *
-     * @param page     分页对象
-     * @param zyRepair 查询实体
-     * @return 所有数据
+     * 报修导出
+     * @param repairIds 报修id
+     * @param response 前端响应
+     * @return 导出保修结果集
+     * @throws IOException 输出流异常
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "Page<ZyRepair>", name = "page", value = "分页对象", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "ZyRepair", name = "zyRepair", value = "查询实体", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "repairIds", value = "", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "", required = true)
+    })
+    @ApiOperation(value = "报修导出", notes = "报修导出", httpMethod = "GET")
+    @MyLog(title = "报修导出", optParam = "#{repairIds}", businessType = BusinessType.EXPORT)
+    @GetMapping("/getExcel")
+    public Result getExcel(@RequestParam("repairIds") ArrayList<String> repairIds, HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<RepairDto> repairList;
+        //如果前台传的集合为空或者长度为0.则全部导出。
+        if (repairIds == null || repairIds.size() == 0) {
+            repairList = zyRepairService.getAllRepairList(repairIds);
+        } else {
+            repairList = zyRepairService.getRepairById(repairIds);
+        }
+        String fileName = URLEncoder.encode("报修信息表数据", "UTF-8");
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("content-type", "text/html;charset=UTF-8");
+        // 内容样式
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(),RepairDto.class)
+                .excelType(ExcelTypeEnum.XLS)
+                //自适应表格格式
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                .autoCloseStream(true)
+                .sheet("楼层信息");
+        excel.doWrite(repairList);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
+    }
+    /**
+     * 删除报修
+     * @param repairIds 报修id集合
+     * @return 删除结果集
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "List<Long>", name = "idList", value = "主键结合", required = true)
+    })
+    @ApiOperation(value = "删除报修", notes = "删除报修", httpMethod = "DELETE")
+    @DeleteMapping("/deleteRepair")
+    public Result deleteRepair(@RequestBody List<String> repairIds) {
+        return zyRepairService.deleteRepair(repairIds);
+    }
+    /**
+     * 修改报修
+     * @param zyRepair 报修对象
+     * @return 修改结果集
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyRepair", name = "zyRepair", value = "实体对象", required = true)
+    })
+    @ApiOperation(value = "修改报修", notes = "修改报修", httpMethod = "PUT")
+    @PutMapping("/updateRepair")
+    public Result updateRepair(@RequestBody ZyRepair zyRepair, HttpServletRequest request) {
+        SysUser user = requestUtil.getUser(request);
+        zyRepair.setUpdateBy(user.getUserName());
+        zyRepair.setUpdateTime(LocalDateTime.now().toString());
+        //派单时间repair_state
+        if ("Allocated".equals(zyRepair.getRepairState())){
+            zyRepair.setAssignmentId(user.getUserId()+"");
+            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+            zyRepair.setAssignmentTime(format);
+        }
+        //已处理时间complete_time
+        if ("Processed".equals(zyRepair.getRepairState())){
+            zyRepair.setCommunityId(user.getUserId()+"");
+            zyRepair.setCompletePhone(user.getPhonenumber()+"");
+            zyRepair.setCompleteName(user.getUserName()+"");
+            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+            zyRepair.setCompleteTime(format);
+        }
+        //已取消cancel_time
+        if ("Cancelled".equals(zyRepair.getRepairState())){
+            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+            zyRepair.setCancelTime(format);
+        }
+        return this.zyRepairService.updateRepair(zyRepair);
+    }
+    /**
+     * 新增报修
+     * @param zyRepair 查询报修对象
+     * @return 新增结果级
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyRepair", name = "zyRepair", value = "查询报修对象", required = true)
+    })
+    @ApiOperation(value = "新增报修", notes = "新增报修", httpMethod = "POST")
+    @PostMapping("/insertRepair")
+    public Result insertRepair(@RequestBody ZyRepair zyRepair, HttpServletRequest request) {
+        ZyOwner owner = requestUtil.getOwner(request);
+        zyRepair.setCreateBy(owner.getOwnerRealName());
+        zyRepair.setCreateTime(LocalDateTime.now().toString());
+        zyRepair.setReceivingOrdersTime(LocalDateTime.now().toString());
+
+        return this.zyRepairService.insertRepair(zyRepair,request);
+    }
+    /**
+     * 分页查询所有报修数据
+     * @param pageable  分页对象
+     * @param repairDto 查询报修对象
+     * @return 所有报修信息数据结果集
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "分页对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "RepairDto", name = "repairDto", value = "查询报修对象", required = true)
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
-    @GetMapping
-    public R selectAll(Page<ZyRepair> page, ZyRepair zyRepair) {
-        return success(this.zyRepairService.page(page, new QueryWrapper<>(zyRepair)));
+    @GetMapping("/getAllRepairs")
+    public Result getAllRepairs(Pageable pageable, RepairDto repairDto) {
+        return zyRepairService.getAllRepairs(pageable, repairDto);
     }
-
     /**
      * 通过主键查询单条数据
-     *
      * @param id 主键
      * @return 单条数据
      */
@@ -65,49 +189,6 @@ public class ZyRepairController extends ApiController {
         return success(this.zyRepairService.getById(id));
     }
 
-    /**
-     * 新增数据
-     *
-     * @param zyRepair 实体对象
-     * @return 新增结果
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyRepair", name = "zyRepair", value = "实体对象", required = true)
-    })
-    @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
-    @PostMapping
-    public R insert(@RequestBody ZyRepair zyRepair) {
-        return success(this.zyRepairService.save(zyRepair));
-    }
 
-    /**
-     * 修改数据
-     *
-     * @param zyRepair 实体对象
-     * @return 修改结果
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyRepair", name = "zyRepair", value = "实体对象", required = true)
-    })
-    @ApiOperation(value = "修改数据", notes = "修改数据", httpMethod = "PUT")
-    @PutMapping
-    public R update(@RequestBody ZyRepair zyRepair) {
-        return success(this.zyRepairService.updateById(zyRepair));
-    }
-
-    /**
-     * 删除数据
-     *
-     * @param idList 主键结合
-     * @return 删除结果
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "List<Long>", name = "idList", value = "主键结合", required = true)
-    })
-    @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.zyRepairService.removeByIds(idList));
-    }
 }
 

@@ -3,6 +3,9 @@ package com.zy_admin.community.entity;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 访客邀请 (ZyVisitor)表实体类
@@ -12,6 +15,9 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(description = "访客邀请 (ZyVisitor)表实体类")
 @SuppressWarnings("serial")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ZyVisitor extends Model<ZyVisitor> {
     /**
      * id
@@ -37,7 +43,7 @@ public class ZyVisitor extends Model<ZyVisitor> {
      * 到访时间
      */
     @ApiModelProperty("到访时间")
-    private String visitorString;
+    private String visitorDate;
     /**
      * 创建人id
      */
@@ -73,4 +79,9 @@ public class ZyVisitor extends Model<ZyVisitor> {
      */
     @ApiModelProperty("备注")
     private String remark;
+
+    /**
+     * 访客操作
+     */
+    private String status;
 }

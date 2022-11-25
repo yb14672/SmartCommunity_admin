@@ -53,6 +53,12 @@ public class ZyOwnerController extends ApiController {
     @Resource
     private RequestUtil requestUtil;
 
+    /**
+     * 获取业主信息
+     *
+     * @param request 请求
+     * @return {@link Result}
+     */
     @GetMapping("/getOwner")
     public Result getOwner(HttpServletRequest request){
         String ownerId = requestUtil.getOwnerId(request);
@@ -74,7 +80,6 @@ public class ZyOwnerController extends ApiController {
     public Result update(@RequestBody ZyOwner zyOwner, HttpServletRequest request) {
         ZyOwner owner = requestUtil.getOwner(request);
         zyOwner.setOwnerId(owner.getOwnerId());
-        zyOwner.setOwnerType("yz");
         zyOwner.setUpdateBy(zyOwner.getOwnerNickname());
         return this.zyOwnerService.ownerUpdate(zyOwner);
     }
@@ -88,7 +93,7 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
     @PostMapping("/login")
-    public Result login(@RequestBody ZyOwner zyOwner){
+    public Result login(@RequestBody ZyOwner zyOwner) {
         return zyOwnerService.ownerLogin(zyOwner);
     }
 

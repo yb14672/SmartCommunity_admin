@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.entity.ZyCommunityInteraction;
 import com.zy_admin.community.service.ZyCommunityInteractionService;
+import com.zy_admin.util.RequestUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -14,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 
@@ -32,7 +35,8 @@ public class ZyCommunityInteractionController extends ApiController {
      */
     @Resource
     private ZyCommunityInteractionService zyCommunityInteractionService;
-
+    @Resource
+    private RequestUtil requestUtil;
     /**
      * 分页查询所有数据
      * @param page                   分页对象
@@ -75,8 +79,10 @@ public class ZyCommunityInteractionController extends ApiController {
     })
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping
-    public R insert(@RequestBody ZyCommunityInteraction zyCommunityInteraction) {
-        return success(this.zyCommunityInteractionService.save(zyCommunityInteraction));
+    public Result insert(@RequestBody ZyCommunityInteraction zyCommunityInteraction, HttpServletRequest request) throws Exception {
+        zyCommunityInteraction.setCreateBy(requestUtil.getOwnerId(request));
+        zyCommunityInteraction.setUserId(requestUtil.getOwnerId(request));
+        return this.zyCommunityInteractionService.insert(zyCommunityInteraction);
     }
 
     /**

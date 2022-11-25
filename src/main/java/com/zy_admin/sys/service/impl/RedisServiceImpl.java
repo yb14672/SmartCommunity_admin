@@ -1,6 +1,4 @@
 package com.zy_admin.sys.service.impl;
-
-
 import com.zy_admin.sys.service.RedisService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -11,7 +9,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
 /**
  * redis服务层impl
  *
@@ -37,7 +34,7 @@ public class RedisServiceImpl implements RedisService {
         redisTemplate.setKeySerializer(redisSerializer);
         ValueOperations<String, Object> vo = redisTemplate.opsForValue();
         //设置key并且设置有效时间
-        vo.set(key, value,1000, TimeUnit.MINUTES);
+        vo.set(key, value,20, TimeUnit.MINUTES);
     }
     /**
      * 删除缓存
@@ -54,8 +51,8 @@ public class RedisServiceImpl implements RedisService {
      * @return 成功或失败的结果集
      */
     @Override
-    public  Boolean update(String key){
-        return redisTemplate.expire(key, 1000, TimeUnit.MINUTES);
+    public Boolean update(String key) {
+        return redisTemplate.expire(key, 10, TimeUnit.MINUTES);
     }
     /**
      * 获取缓存

@@ -16,12 +16,21 @@ import java.util.List;
  */
 public interface ZyCommunityInteractionService extends IService<ZyCommunityInteraction> {
     /**
+     * 通过id获取互动文章信息
+     *
+     * @param interactionId 文章id
+     * @return {@link Result}
+     */
+    Result getInteractionInfoById(String interactionId);
+
+    /**
      * 通过id列表获取互动信息
      *
      * @param idList id列表
+     * @param communityId 小区id
      * @return {@link Result}
      */
-    Result getListByIdList(List<String> idList);
+    Result getListByIdList(List<String> idList,String communityId);
 
     /**
      * 分页查询所有数据
@@ -38,5 +47,12 @@ public interface ZyCommunityInteractionService extends IService<ZyCommunityInter
      * @return {@link Result}
      */
     Result deleteInteractionByIdList(List<String> idList);
+
+    /**
+     * 添加互动信息
+     * @param zyCommunityInteraction 互动信息
+     * @return {@link Result}
+     */
+    Result insert(ZyCommunityInteraction zyCommunityInteraction) throws Exception;
 }
 

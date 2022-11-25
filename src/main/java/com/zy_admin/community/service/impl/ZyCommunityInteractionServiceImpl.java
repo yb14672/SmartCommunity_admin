@@ -7,15 +7,23 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.community.dao.ZyCommentDao;
 import com.zy_admin.community.dao.ZyCommunityInteractionDao;
+import com.zy_admin.community.dao.ZyFilesDao;
+import com.zy_admin.community.dto.ZyCommentDto;
 import com.zy_admin.community.dto.ZyCommunityInteractionDto;
 import com.zy_admin.community.entity.ZyCommunityInteraction;
+import com.zy_admin.community.entity.ZyFiles;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.service.ZyCommunityInteractionService;
+import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.SnowflakeManager;
 import com.zy_admin.util.StringUtil;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -27,23 +35,55 @@ import java.util.List;
 @Service("zyCommunityInteractionService")
 public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityInteractionDao, ZyCommunityInteraction> implements ZyCommunityInteractionService {
 
+    @Resource
+    private ZyFilesDao zyFilesDao;
+    @Resource
+    private ZyCommentDao zyCommentDao;
+
+    @Resource
+    private SnowflakeManager snowflakeManager;
+
     /**
-     * 通过id列表获取互动信息
+     * 通过id获取互动文章信息
      *
-     * @param idList id列表
+     * @param interactionId 文章id
      * @return {@link Result}
      */
     @Override
-    public Result getListByIdList(List<String> idList) {
-        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.COMMON_FAIL));
-        List<ZyCommunityInteraction> zyCommunityInteractions = null;
-        if (idList.size() != 0) {
-//            zyCommunityInteractions = this.baseMapper.selectBatchIds(idList);
-        } else {
-            //zyCommunityInteractions=this.baseMapper.
+    public Result getInteractionInfoById(String interactionId) {
+        Result result = new Result("加载失败，请稍后重试", ResultTool.fail(ResultCode.COMMON_FAIL));
+        //获取当前文章的评论集合
+        ZyCommentDto zyCommentDto = new ZyCommentDto();
+        zyCommentDto.setInteractionId(interactionId);
+        List<ZyCommentDto> commentList = this.zyCommentDao.queryByInteractionId(zyCommentDto);
+        //获取当前文章的详细信息
+        ZyCommunityInteractionDto interactionDto = this.baseMapper.selectInteractionById(interactionId);
+        if(interactionDto!=null && ObjUtil.isNotEmpty(interactionDto)){
+            interactionDto.setZyCommentList(commentList);
+            result.setData(interactionDto);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
-        if (zyCommunityInteractions.size() > 0) {
-            result.setData(zyCommunityInteractions);
+        return result;
+    }
+
+    /**
+     * 通过id列表获取互动信息
+     *
+     * @param idList      id列表
+     * @param communityId 小区id
+     * @return {@link Result}
+     */
+    @Override
+    public Result getListByIdList(List<String> idList, String communityId) {
+        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<ZyCommunityInteractionDto> dtoList = null;
+        if (idList.size() != 0) {
+            dtoList = this.baseMapper.getDtoList(idList);
+        } else {
+            dtoList = this.baseMapper.getAllDtoList(communityId);
+        }
+        if (dtoList.size() > 0) {
+            result.setData(dtoList);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
@@ -80,7 +120,14 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
         }
         pageable.setTotal(total);
         List<ZyCommunityInteractionDto> interactionDtoList = this.baseMapper.selectAllLimit(interactionDto, pageable);
-        if(interactionDtoList.size()!=0){
+        if (interactionDtoList.size() != 0) {
+            for (ZyCommunityInteractionDto zyCommunityInteractionDto : interactionDtoList) {
+                String parentId=zyCommunityInteractionDto.getInteractionId();
+                List<ZyFiles> files = this.zyFilesDao.queryAllFile(parentId,"CommunityInteraction");
+                List<String> fileUrl = this.zyFilesDao.queryAllFileUrl(parentId,"CommunityInteraction");
+                zyCommunityInteractionDto.setZyFiles(files);
+                zyCommunityInteractionDto.setUrlList(fileUrl);
+            }
             com.zy_admin.common.Page<ZyCommunityInteractionDto> dtoPage = new com.zy_admin.common.Page<>(interactionDtoList, pageable);
             result.setData(dtoPage);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
@@ -129,6 +176,25 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
         int i = this.baseMapper.deleteInteractionByIdList(idList);
         if (i > 0) {
             result.setData("删除成功");
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+
+    /**
+     * 添加互动信息
+     *
+     * @param zyCommunityInteraction 互动信息
+     * @return {@link Result}
+     */
+    @Override
+    public Result insert(ZyCommunityInteraction zyCommunityInteraction) throws Exception {
+        Result result = new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
+        zyCommunityInteraction.setCreateTime(LocalDateTime.now().toString());
+        zyCommunityInteraction.setInteractionId(snowflakeManager.nextId() + "");
+        int insert = this.baseMapper.insert(zyCommunityInteraction);
+        if(insert==1){
+            result.setData("添加成功");
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;

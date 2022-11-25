@@ -117,6 +117,9 @@ public enum ResultCode {
     ROOMTREE_GET_FAIL(3057,"获取失败"),
     OWNER_ROOM_INSERT_FAIL(3058,"提交审核失败"),
     REPEAT_OWNER_ROOM(3059,"审核已提交，请勿重复提交"),
+    VISITOR_APPLICATION_SUCCESSFULLY(3047,"提交访客申请成功，等待管理员允许"),
+    VISITOR_APPLICATION_FAIL(3048,"访客提申请交失败"),
+
 
 
     /* http自带请求码 */
