@@ -15,14 +15,13 @@ import com.zy_admin.community.dto.ZyComplaintSuggestDto;
 import com.zy_admin.community.entity.ZyComplaintSuggest;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.service.ZyComplaintSuggestService;
-import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.SnowflakeManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -30,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,10 +51,16 @@ public class ZyComplaintSuggestController extends ApiController {
     private ZyComplaintSuggestService zyComplaintSuggestService;
 
     /**
-     * 请求包
+     * 请求工具类
      */
     @Resource
     private RequestUtil requestUtil;
+
+    /**
+     * 雪花算法
+     */
+    @Resource
+    private SnowflakeManager snowflakeManager;
 
     /**
      * 根据id查询
@@ -80,7 +86,6 @@ public class ZyComplaintSuggestController extends ApiController {
     })
     @ApiOperation(value = "删除投诉建议", notes = "删除投诉建议", httpMethod = "DELETE")
     @DeleteMapping
-    @MyLog(title = "投诉建议", optParam = "#{idList}", businessType = BusinessType.DELETE)
     public Result deleteSuggestByIds(@RequestParam("idList") ArrayList<String> idList){
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
@@ -102,11 +107,11 @@ public class ZyComplaintSuggestController extends ApiController {
     })
     @ApiOperation(value = "更新投诉建议", notes = "更新投诉建议", httpMethod = "PUT")
     @PutMapping("/updateSuggest")
-    @Transactional(rollbackFor = Exception.class)
-    @MyLog(title = "投诉建议", optParam = "#{zyComplaintSuggest}", businessType = BusinessType.UPDATE)
     public Result updateSuggest(@RequestBody ZyComplaintSuggest zyComplaintSuggest, HttpServletRequest request){
-        SysUser user = requestUtil.getUser(request);
-        zyComplaintSuggest.setUpdateBy(user.getUserName());
+        ZyOwner owner = this.requestUtil.getOwner(request);
+        zyComplaintSuggest.setUpdateBy(owner.getOwnerRealName());
+        zyComplaintSuggest.setUserId(owner.getOwnerId());
+        zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
         return zyComplaintSuggestService.updateSuggest(zyComplaintSuggest);
     }
 
@@ -123,10 +128,11 @@ public class ZyComplaintSuggestController extends ApiController {
     })
     @ApiOperation(value = "新增投诉建议", notes = "新增投诉建议", httpMethod = "POST")
     @PostMapping("/insertSuggest")
-    @MyLog(title = "投诉建议", optParam = "#{zyComplaintSuggest}", businessType = BusinessType.INSERT)
     public Result insertSuggest(@RequestBody ZyComplaintSuggest zyComplaintSuggest, HttpServletRequest request) throws Exception {
-        ZyOwner owner = requestUtil.getOwner(request);
+        ZyOwner owner = this.requestUtil.getOwner(request);
         zyComplaintSuggest.setCreateBy(owner.getOwnerRealName());
+        zyComplaintSuggest.setCreateTime(LocalDateTime.now().toString());
+        zyComplaintSuggest.setComplaintSuggestId(snowflakeManager.nextId()+"");
         zyComplaintSuggest.setUserId(owner.getOwnerId());
         return this.zyComplaintSuggestService.insertSuggest(zyComplaintSuggest);
     }
