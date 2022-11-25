@@ -15,6 +15,7 @@ import java.util.List;
  * @since 2022-11-01 19:49:01
  */
 public interface ZyCommunityInteractionService extends IService<ZyCommunityInteraction> {
+
     /**
      * 通过id获取互动文章信息
      *
@@ -50,8 +51,10 @@ public interface ZyCommunityInteractionService extends IService<ZyCommunityInter
 
     /**
      * 添加互动信息
+     *
      * @param zyCommunityInteraction 互动信息
      * @return {@link Result}
+     * @throws Exception 异常
      */
     Result insert(ZyCommunityInteraction zyCommunityInteraction) throws Exception;
 }

@@ -1,11 +1,11 @@
 package com.zy_admin.community.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.community.dto.ZyCommunityInteractionDto;
 import com.zy_admin.community.entity.ZyCommunityInteraction;
 import com.zy_admin.community.service.ZyCommunityInteractionService;
 import com.zy_admin.util.RequestUtil;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,7 +39,6 @@ public class ZyCommunityInteractionController extends ApiController {
     private RequestUtil requestUtil;
     /**
      * 分页查询所有数据
-     * @param page                   分页对象
      * @param zyCommunityInteraction 查询实体
      * @return 所有数据
      */
@@ -49,8 +48,9 @@ public class ZyCommunityInteractionController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
-    public R selectAll(Page<ZyCommunityInteraction> page, ZyCommunityInteraction zyCommunityInteraction) {
-        return success(this.zyCommunityInteractionService.page(page, new QueryWrapper<>(zyCommunityInteraction)));
+    public Result selectAll(ZyCommunityInteractionDto zyCommunityInteraction) {
+        Page page = new Page<>(1,5);
+        return this.zyCommunityInteractionService.selectAllLimit(page,zyCommunityInteraction);
     }
 
     /**
@@ -60,12 +60,12 @@ public class ZyCommunityInteractionController extends ApiController {
      * @return 单条数据
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "path", dataType = "Serializable", name = "id", value = "主键", required = true)
+            @ApiImplicitParam(paramType = "path", dataType = "String", name = "id", value = "主键", required = true)
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.zyCommunityInteractionService.getById(id));
+    public Result selectOne(@PathVariable String id) {
+        return this.zyCommunityInteractionService.getInteractionInfoById(id);
     }
 
     /**
@@ -103,16 +103,18 @@ public class ZyCommunityInteractionController extends ApiController {
     /**
      * 删除数据
      *
-     * @param idList 主键结合
+     * @param id 主键
      * @return 删除结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "List<Long>", name = "idList", value = "主键结合", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "id", value = "主键结合", required = true)
     })
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.zyCommunityInteractionService.removeByIds(idList));
+    public Result delete(@RequestParam("id") String id) {
+        List<String> idList = new ArrayList<>();
+        idList.add(id);
+        return this.zyCommunityInteractionService.deleteInteractionByIdList(idList);
     }
 }
 

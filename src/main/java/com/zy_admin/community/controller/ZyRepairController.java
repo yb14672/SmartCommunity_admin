@@ -129,7 +129,6 @@ public class ZyRepairController extends ApiController {
         }
         //已处理时间complete_time
         if ("Processed".equals(zyRepair.getRepairState())){
-            zyRepair.setCommunityId(user.getUserId()+"");
             zyRepair.setCompletePhone(user.getPhonenumber()+"");
             zyRepair.setCompleteName(user.getUserName()+"");
             String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
@@ -140,6 +139,7 @@ public class ZyRepairController extends ApiController {
             String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
             zyRepair.setCancelTime(format);
         }
+        zyRepair.setUpdateBy(user.getUserId()+"");
         return this.zyRepairService.updateRepair(zyRepair);
     }
     /**

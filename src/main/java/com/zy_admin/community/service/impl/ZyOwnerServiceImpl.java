@@ -12,6 +12,7 @@ import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerService;
 import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.util.*;
 import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.RequestUtil;
@@ -44,6 +45,8 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
      */
     @Resource
     private RequestUtil requestUtil;
+    @Resource
+    private RedisService redisService;
 
     /**
      * 通过id获取业主
@@ -121,7 +124,12 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
         ZyOwner zyOwner = this.baseMapper.ownerLogin(owner);
         if (zyOwner != null) {
             String jwtToken = JwtUtil.getJwtToken(zyOwner.getOwnerId(), zyOwner.getOwnerPhoneNumber());
+            redisService.set(jwtToken, zyOwner.getOwnerId());
             result.setData(jwtToken);
+            if (!"Enable".equals(zyOwner.getOwnerStatus())){
+                result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED));
+                return result;
+            }
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
