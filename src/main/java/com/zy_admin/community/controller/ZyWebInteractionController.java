@@ -122,22 +122,7 @@ public class ZyWebInteractionController {
 //    public R insert(@RequestBody ZyCommunityInteraction zyCommunityInteraction) {
 //        return success(this.zyCommunityInteractionService.save(zyCommunityInteraction));
 //    }
-//
-//    /**
-//     * 修改数据
-//     *
-//     * @param zyCommunityInteraction 实体对象
-//     * @return 修改结果
-//     */
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "body", dataType = "ZyCommunityInteraction", name = "zyCommunityInteraction", value = "实体对象", required = true)
-//    })
-//    @ApiOperation(value = "修改数据", notes = "修改数据", httpMethod = "PUT")
-//    @PutMapping
-//    public R update(@RequestBody ZyCommunityInteraction zyCommunityInteraction) {
-//        return success(this.zyCommunityInteractionService.updateById(zyCommunityInteraction));
-//    }
-//
+
 
     /**
      * 删除数据

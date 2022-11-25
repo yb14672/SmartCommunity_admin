@@ -18,50 +18,9 @@
     <!--查询单个-->
     <select id="queryById" resultMap="ZyComplaintSuggestMap">
         select
-          complaint_suggest_id, community_id, complaint_suggest_type, complaint_suggest_content, create_by, create_time, update_by, update_time, remark, user_id
+            complaint_suggest_id, community_id, complaint_suggest_type, complaint_suggest_content, create_by, create_time, update_by, update_time, remark, user_id
         from zy_complaint_suggest
         where complaint_suggest_id = #{complaintSuggestId}
-    </select>
-
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="ZyComplaintSuggestMap">
-        select
-        complaint_suggest_id, community_id, complaint_suggest_type, complaint_suggest_content, create_by, create_time,
-        update_by, update_time, remark, user_id
-        from zy_complaint_suggest
-        <where>
-            <if test="complaintSuggestId != null">
-                and complaint_suggest_id = #{complaintSuggestId}
-            </if>
-            <if test="communityId != null">
-                and community_id = #{communityId}
-            </if>
-            <if test="complaintSuggestType != null and complaintSuggestType != ''">
-                and complaint_suggest_type = #{complaintSuggestType}
-            </if>
-            <if test="complaintSuggestContent != null and complaintSuggestContent != ''">
-                and complaint_suggest_content = #{complaintSuggestContent}
-            </if>
-            <if test="createBy != null and createBy != ''">
-                and create_by = #{createBy}
-            </if>
-            <if test="createTime != null">
-                and create_time = #{createTime}
-            </if>
-            <if test="updateBy != null and updateBy != ''">
-                and update_by = #{updateBy}
-            </if>
-            <if test="updateTime != null">
-                and update_time = #{updateTime}
-            </if>
-            <if test="remark != null and remark != ''">
-                and remark = #{remark}
-            </if>
-            <if test="userId != null">
-                and user_id = #{userId}
-            </if>
-        </where>
-        limit #{pageable.offset}, #{pageable.pageSize}
     </select>
 
     <!--统计总行数-->
@@ -111,6 +70,7 @@
             <if test="zyComplaintSuggest.complaintSuggestType!=null and zyComplaintSuggest.complaintSuggestType!=''">
                 and zcs.complaint_suggest_type like concat ('%',#{zyComplaintSuggest.complaintSuggestType},'%')
             </if>
+            and zcs.community_id = #{zyComplaintSuggest.communityId}
         </where>
         <if test="pageable.pageSize!=null">
             limit #{pageable.index},#{pageable.pageSize}
@@ -119,9 +79,9 @@
 
     <!--所有的导出-->
     <select id="querySuggestAll" resultType="com.zy_admin.community.dto.ZyComplaintSuggestDto">
-         select zcs.*,zo.owner_real_name,zo.owner_phone_number,zf.files_url
+        select zcs.*,zo.owner_real_name,zo.owner_phone_number,zf.files_url
         from zy_complaint_suggest zcs left join zy_owner zo on zcs.user_id = zo.owner_id
-        left join zy_files zf on zcs.complaint_suggest_id = zf.parent_id
+                                      left join zy_files zf on zcs.complaint_suggest_id = zf.parent_id
     </select>
     <!--选中的导出-->
     <select id="querySuggestByIds" resultType="com.zy_admin.community.dto.ZyComplaintSuggestDto">
@@ -139,10 +99,10 @@
     <select id="selectSuggestById" resultType="com.zy_admin.community.dto.ZyComplaintSuggestDto">
         select DISTINCT zcs.*,zo.owner_real_name,zo.owner_phone_number
         from zy_complaint_suggest zcs
-        left join zy_owner zo
-        on zcs.user_id = zo.owner_id
-        left join zy_files zf
-        on zcs.complaint_suggest_id = zf.parent_id
+                 left join zy_owner zo
+                           on zcs.user_id = zo.owner_id
+                 left join zy_files zf
+                           on zcs.complaint_suggest_id = zf.parent_id
         where complaint_suggest_id = #{suggestId}
     </select>
 

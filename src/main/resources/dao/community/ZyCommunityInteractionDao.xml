@@ -41,7 +41,7 @@
                            on ci.user_id = o.owner_id
         where del_flag = 0
           and community_id = #{communityId}
-        order by (select count(1) from zy_comment where interaction_id = ci.interaction_id), ci.create_time desc
+        order by (select count(1) from zy_comment where interaction_id = ci.interaction_id) desc, ci.create_time desc
     </select>
 
     <!--查询单个-->
@@ -186,7 +186,7 @@
             and owner_phone_number like concat('%',#{dto.ownerPhoneNumber},'%')
         </if>
         order by
-        (select count(1) from zy_comment where interaction_id = ci.interaction_id),ci.create_time desc
+        (select count(1) from zy_comment where interaction_id = ci.interaction_id) desc,ci.create_time desc
         <if test="pageable.pageSize!=0">
             limit #{pageable.index},#{pageable.pageSize}
         </if>
