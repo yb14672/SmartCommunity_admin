@@ -81,7 +81,7 @@ public class TreeData {
                 childrenTree.add(buildChildren(menu));
             }
         }
-        rootNode.setChildNode(childrenTree);
+        rootNode.setChildren(childrenTree);
         return rootNode;
     }
 

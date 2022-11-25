@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author admin
+ */
 @ApiModel(description = "楼栋信息+小区名称")
 @Data
 @NoArgsConstructor

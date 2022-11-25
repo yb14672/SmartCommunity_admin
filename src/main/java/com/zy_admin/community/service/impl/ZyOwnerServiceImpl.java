@@ -12,7 +12,9 @@ import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerService;
 import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.util.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -42,6 +44,12 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
      */
     @Resource
     private RequestUtil requestUtil;
+
+    /**
+     * 存储token
+     */
+    @Resource
+    private RedisService redisService;
 
     /**
      * 通过id获取业主
@@ -119,6 +127,7 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
         ZyOwner zyOwner = this.baseMapper.ownerLogin(owner);
         if (zyOwner != null) {
             String jwtToken = JwtUtil.getJwtToken(zyOwner.getOwnerId(), zyOwner.getOwnerPhoneNumber());
+            redisService.set(jwtToken,zyOwner.getOwnerPhoneNumber());
             result.setData(jwtToken);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
