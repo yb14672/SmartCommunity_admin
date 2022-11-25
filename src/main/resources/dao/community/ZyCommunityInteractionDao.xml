@@ -140,7 +140,10 @@
         FROM zy_community_interaction ci
         LEFT JOIN zy_owner o
         ON ci.user_id=o.owner_id
-        WHERE del_flag = 0 and community_id = #{communityId}
+        WHERE del_flag = 0
+        <if test="communityId != null and communityId != ''">
+            and community_id = #{communityId}
+        </if>
         <if test="ownerNickname != null and ownerNickname != ''">
             and owner_nickname like concat('%',#{ownerNickname},'%')
         </if>

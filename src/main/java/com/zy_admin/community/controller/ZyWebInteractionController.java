@@ -100,7 +100,7 @@ public class ZyWebInteractionController {
      * @return 单条数据
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "path", dataType = "Serializable", name = "id", value = "主键", required = true)
+            @ApiImplicitParam(paramType = "path", dataType = "String", name = "id", value = "主键", required = true)
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
