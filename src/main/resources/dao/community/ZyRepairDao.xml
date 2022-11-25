@@ -20,7 +20,7 @@
         <if test="repairDto.communityId != null ">
             and r.community_id = #{repairDto.communityId}
         </if>
-        order by r.create_time
+        order by r.create_time desc
         <if test="pageable.pageSize!=null">
             limit #{pageable.index},#{pageable.pageSize}
         </if>
