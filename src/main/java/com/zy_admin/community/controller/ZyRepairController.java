@@ -157,7 +157,6 @@ public class ZyRepairController extends ApiController {
         zyRepair.setCreateBy(owner.getOwnerRealName());
         zyRepair.setCreateTime(LocalDateTime.now().toString());
         zyRepair.setReceivingOrdersTime(LocalDateTime.now().toString());
-
         return this.zyRepairService.insertRepair(zyRepair,request);
     }
     /**
