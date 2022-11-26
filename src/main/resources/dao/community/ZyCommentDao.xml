@@ -39,7 +39,7 @@
         select wc.comment_id, wc.user_id, wc.update_by, wc.create_time, wc.update_time, wc.content, wc.parent_id,
         wc.del_flag, wc.interaction_id,wo.owner_real_name ownerName,wo.owner_portrait ownerPortrait,
         (SELECT owner_nickname FROM zy_owner wo1 WHERE wo1.owner_id =
-        (SELECT wc1.user_id FROM zy_comment wc1 WHERE wc1.comment_id = wc.parent_id ) ) passiveOwnerName
+        (SELECT wc1.user_id FROM zy_comment wc1 WHERE wc1.comment_id = wc.comment_id ) ) passiveOwnerName
         from zy_comment wc left join zy_owner wo on wc.user_id = wo.owner_id
         <where>
             <if test="userId != null ">and wc.user_id = #{userId}</if>

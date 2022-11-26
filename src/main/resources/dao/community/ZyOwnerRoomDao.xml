@@ -18,6 +18,11 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <!-- 根据业主ID获取其房屋绑定列表-->
+    <select id="getOwnerRoomByOwnerId" resultType="com.zy_admin.community.entity.ZyOwnerRoom">
+        SELECT * FROM zy_owner_room WHERE room_status='Binding' and owner_id=#{ownerId}
+    </select>
+
     <!--新增所有列-->
     <insert id="insertOwnerRoom" keyProperty="ownerRoomId" useGeneratedKeys="true">
         insert into zy_owner_room(owner_room_id,community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status, create_by, create_time, update_by, update_time, remark)
@@ -112,7 +117,7 @@
                 and zor.room_status = #{zyOwnerRoom.roomStatus}
             </if>
         </where>
-        order by  create_time desc
+        order by create_time desc
         <if test="pageable.pageSize!=null">
             limit #{pageable.index},#{pageable.pageSize}
         </if>

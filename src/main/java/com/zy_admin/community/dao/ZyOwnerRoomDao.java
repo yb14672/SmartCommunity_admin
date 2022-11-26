@@ -19,6 +19,13 @@ import java.util.List;
 public interface ZyOwnerRoomDao extends BaseMapper<ZyOwnerRoom> {
 
     /**
+     * 根据业主ID获取其房屋绑定列表
+     * @param ownerId
+     * @return
+     */
+    ZyOwnerRoom getOwnerRoomByOwnerId(String ownerId);
+
+    /**
      * 验重提交记录
      * @param ownerRoom 房屋信息
      * @return 审核记录
