@@ -127,12 +127,12 @@
     </insert>
 
     <insert id="insertBatch" keyProperty="filesId" useGeneratedKeys="true">
-        insert into zy_files(files_url, create_time, update_by, update_time, create_by, del_flag, source, remark,
+        insert into zy_files(files_id,files_url, create_time, create_by, del_flag, source, remark,
         parent_id, user_id)
         values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.filesUrl}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.createBy},
-            #{entity.delFlag}, #{entity.source}, #{entity.remark}, #{entity.parentId}, #{entity.userId})
+        <foreach collection="filesList" item="entity" separator=",">
+            (#{entity.filesId},#{entity.filesUrl}, #{entity.createTime}, #{entity.createBy},
+           0, #{entity.source}, #{entity.remark}, #{entity.parentId}, #{entity.userId})
         </foreach>
     </insert>
 

@@ -56,6 +56,6 @@ public interface ZyCommunityInteractionService extends IService<ZyCommunityInter
      * @return {@link Result}
      * @throws Exception 异常
      */
-    Result insert(ZyCommunityInteraction zyCommunityInteraction) throws Exception;
+    Result insert(ZyCommunityInteractionDto zyCommunityInteraction) throws Exception;
 }
 

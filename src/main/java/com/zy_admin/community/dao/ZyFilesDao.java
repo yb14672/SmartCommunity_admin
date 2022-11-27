@@ -27,5 +27,7 @@ public interface ZyFilesDao extends BaseMapper<ZyFiles> {
      * @return          图片路径集合
      */
     List<ZyFiles> queryAllFile(@Param("id") String id,@Param("remark") String remark);
+
+    int insertBatch(List<ZyFiles> filesList);
 }
 
