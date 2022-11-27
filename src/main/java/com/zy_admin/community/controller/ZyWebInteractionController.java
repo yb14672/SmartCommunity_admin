@@ -139,7 +139,7 @@ public class ZyWebInteractionController {
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping
     @MyLog(title = "互动信息", optParam = "#{idList}", businessType = BusinessType.DELETE)
-    public Result delete(@RequestParam("ids") List<String> idList) {
+    public Result delete(@RequestParam("ids") List<String> idList) throws Exception {
         return this.zyCommunityInteractionService.deleteInteractionByIdList(idList);
     }
 }

@@ -116,7 +116,7 @@ public class ZyCommunityInteractionController extends ApiController {
     })
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping
-    public Result delete(@RequestParam("id") String id) {
+    public Result delete(@RequestParam("id") String id) throws Exception {
         List<String> idList = new ArrayList<>();
         idList.add(id);
         return this.zyCommunityInteractionService.deleteInteractionByIdList(idList);

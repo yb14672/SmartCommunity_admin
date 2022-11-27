@@ -29,6 +29,15 @@
         <result property="passiveOwnerName" column="passiveOwnerName" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <!--根据文章ID列表批量逻辑删除评论-->
+    <delete id="deleteByInteractionIdList">
+        update zy_comment set del_flag = 1
+        where interaction_id in
+        <foreach collection="interactionIds" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
     <!--逻辑删除评论-->
     <update id="deleteCommentById">
         update zy_comment set del_flag = 1
