@@ -1,6 +1,5 @@
 package com.zy_admin.common.core.Result;
 
-
 import com.zy_admin.common.enums.ResultCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

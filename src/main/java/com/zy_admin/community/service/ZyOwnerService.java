@@ -20,6 +20,22 @@ import java.util.List;
 public interface ZyOwnerService extends IService<ZyOwner> {
 
     /**
+     * 用户修改头像
+     * @param owner 头像地址
+     * @param request 请求
+     * @return 修改结果
+     */
+    Result updateOwnerPortrait(ZyOwner owner,HttpServletRequest request);
+
+    /**
+     * 修改密码
+     * @param owner 新密码
+     * @param request 请求
+     * @return {@link Result}
+     */
+    Result updatePassword(ZyOwner owner,HttpServletRequest request);
+
+    /**
      * 通过id获取业主
      *
      * @param ownerId 业主id
@@ -35,6 +51,13 @@ public interface ZyOwnerService extends IService<ZyOwner> {
      * @return boolean
      */
     boolean checkPhoneNumberUnique(int type,ZyOwner owner);
+
+    /**
+     * 检查身份证号是否唯一
+     * @param zyOwner 业主
+     * @return boolean
+     */
+    boolean checkIdCardUnique(ZyOwner zyOwner);
 
     /**
      * 业主个人信息设置

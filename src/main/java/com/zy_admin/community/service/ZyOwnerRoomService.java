@@ -20,9 +20,27 @@ public interface ZyOwnerRoomService extends IService<ZyOwnerRoom> {
     Result getOwnerRoomByOwnerId(String ownerId);
 
     /**
+     * 检查业主是否实名认证
+     *
+     * @param ownerId 所有者id
+     * @return boolean
+     */
+    boolean checkOwnerIdCardExist(String ownerId);
+
+    /**
+     * 根据业主Id获取房屋审核记录
+     * @param ownerId 业主Id
+     * @return 房屋绑定信息
+     */
+    Result selectOwnerRoomByOwnerId(String ownerId);
+
+    /**
+     * 主人插入
      * 提交审核记录
+     *
      * @param ownerRoom 审核信息
      * @return 提交结果
+     * @throws Exception 异常
      */
     Result ownerInsert(ZyOwnerRoom ownerRoom) throws Exception;
 
@@ -41,9 +59,13 @@ public interface ZyOwnerRoomService extends IService<ZyOwnerRoom> {
     Result selectAllOwnerRoomLimit(ZyOwnerRoom zyOwnerRoom, Pageable pageable);
 
     /**
+     * 更新主人房间状态
      * 修改业主审核的状态
-     * @param zyOwnerRoom
-     * @return
+     *
+     * @param zyOwnerRoom        zy主人房间
+     * @param recordAuditOpinion 记录审计意见
+     * @return {@link Result}
+     * @throws Exception 异常
      */
     Result updateOwnerRoomStatus(ZyOwnerRoom zyOwnerRoom, String recordAuditOpinion) throws Exception;
 

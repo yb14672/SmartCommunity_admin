@@ -41,6 +41,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             return false;
         }
         if (StringUtils.isEmpty(token)) {
+            System.err.println(2);
             response.getWriter().print(JSON.toJSONString(new Result(null, ResultTool.fail(ResultCode.USER_LOGIN_EXPIRED))));
             return false;
         }

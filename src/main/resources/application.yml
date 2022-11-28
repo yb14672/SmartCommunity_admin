@@ -48,6 +48,7 @@ minio:
   ## 存储桶名称
   bucketName: zy-community
 
+#雪花算法配置
 com:
   admin:
     util:

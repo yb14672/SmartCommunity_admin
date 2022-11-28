@@ -1,4 +1,3 @@
-
 package com.zy_admin.util;
 
 import io.swagger.annotations.ApiModel;
@@ -40,5 +39,5 @@ public class RoomTree {
      * 子节点
      */
     @ApiModelProperty("子节点")
-    private List<RoomTree> childNode = new ArrayList<>();
+    private List<RoomTree> children = new ArrayList<>();
 }

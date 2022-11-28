@@ -52,7 +52,7 @@ public class RedisServiceImpl implements RedisService {
      */
     @Override
     public Boolean update(String key) {
-        return redisTemplate.expire(key, 20, TimeUnit.MINUTES);
+        return redisTemplate.expire(key, 10, TimeUnit.MINUTES);
     }
     /**
      * 获取缓存
