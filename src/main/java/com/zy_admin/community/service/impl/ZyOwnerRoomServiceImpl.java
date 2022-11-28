@@ -95,6 +95,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
             result.setData(ownerRoomByOwnerId);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
+
         return result;
     }
 
