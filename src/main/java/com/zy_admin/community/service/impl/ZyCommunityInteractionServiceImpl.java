@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -209,10 +210,13 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
         interaction.setDelFlag(0);
         int insert = this.baseMapper.insert(interaction);
         if (insert == 1) {
-            List<ZyFiles> zyFiles = interactionDto.getZyFiles();
+            List<String> urlList = interactionDto.getUrlList();
             //如果有添加文件或者图片则添加
-            if (zyFiles.size() > 0) {
-                for (ZyFiles zyFile : zyFiles) {
+            if (urlList.size() > 0 || !urlList.isEmpty()) {
+                List<ZyFiles> files=new ArrayList<>();
+                for (String url : urlList) {
+                    ZyFiles zyFile = new ZyFiles();
+                    zyFile.setFilesUrl(url);
                     zyFile.setFilesId(snowflakeManager.nextId() + "");
                     zyFile.setCreateTime(LocalDateTime.now().toString());
                     zyFile.setCreateBy(interactionDto.getCreateBy());
@@ -221,9 +225,10 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
                     zyFile.setRemark("CommunityInteraction");
                     zyFile.setParentId(interactionId);
                     zyFile.setUserId(interactionDto.getUserId());
+                    files.add(zyFile);
                 }
-                int i = this.zyFilesDao.insertBatch(zyFiles);
-                if(i<1){
+                int i = this.zyFilesDao.insertBatch(files);
+                if (i < 1) {
                     return result;
                 }
             }
