@@ -25,6 +25,7 @@ public class AuthConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/**/login",
+                        "/**/register",
                         "/upload",
                         "/tool/swagger",
                         "/**/swagger-ui.html",

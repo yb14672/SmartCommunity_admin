@@ -65,7 +65,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
 
     @Override
     public boolean checkOwnerIdCardExist(String ownerId) {
-        return zyOwnerDao.selectById(ownerId).getOwnerIdCard() == "";
+        return zyOwnerDao.selectById(ownerId).getOwnerIdCard() == null;
     }
 
     @Override
@@ -99,11 +99,12 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     }
 
     @Override
+
     public Result ownerInsert(ZyOwnerRoom ownerRoom) throws Exception {
         Result result = new Result("提交失败",ResultTool.fail(ResultCode.OWNER_ROOM_INSERT_FAIL));
         //检查是否实名认证
         if (checkOwnerIdCardExist(ownerRoom.getOwnerId())){
-            result.setMeta(ResultTool.fail(ResultCode.OWNER_ROOM_INSERT_FAIL));
+            result.setMeta(ResultTool.fail(ResultCode.OWNER_ID_CARD_NOT_CERTIFICATION));
             return result;
         }
         //检查该房屋是否已经提交审核
