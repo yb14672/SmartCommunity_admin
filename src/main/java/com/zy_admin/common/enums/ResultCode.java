@@ -49,6 +49,8 @@ public enum ResultCode {
     OWNER_UPDATE_FAIL(2021,"业主信息修改失败"),
     NO_ROLE(2022,"该用户没有角色"),
     USER_INFO_GET_FAIL(2023,"业主信息获取失败"),
+    REPEAT_ID_CARD(2024,"身份证号已被绑定"),
+    PASSWORD_UPDATE_FAIL(2025,"密码修改失败"),
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
@@ -119,6 +121,7 @@ public enum ResultCode {
     REPEAT_OWNER_ROOM(3059,"审核已提交，请勿重复提交"),
     VISITOR_APPLICATION_SUCCESSFULLY(3047,"提交访客申请成功，等待管理员允许"),
     VISITOR_APPLICATION_FAIL(3048,"访客提申请交失败"),
+    OWNER_ROOM_GET_FAIL(3049,"房屋信息获取失败"),
 
 
 

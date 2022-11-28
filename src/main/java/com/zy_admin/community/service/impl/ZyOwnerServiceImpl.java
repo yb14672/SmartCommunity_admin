@@ -48,6 +48,39 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
     @Resource
     private RedisService redisService;
 
+    @Override
+    public Result updateOwnerPortrait(ZyOwner owner, HttpServletRequest request) {
+        Result result = new Result(null,ResultTool.fail(ResultCode.USER_AVATAR_UPLOAD_FAILED));
+        try {
+            String ownerId = requestUtil.getOwnerId(request);
+            owner.setOwnerId(ownerId);
+            this.baseMapper.updateById(owner);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            return result;
+        } catch (Exception e) {
+            return result;
+        }
+    }
+
+    /**
+     * 业主修改密码
+     * @param owner 新密码
+     * @return {@link Result}
+     */
+    @Override
+    public Result updatePassword(ZyOwner owner,HttpServletRequest request) {
+        Result result = new Result(null,ResultTool.fail(ResultCode.PASSWORD_UPDATE_FAIL));
+        try {
+            String ownerId = requestUtil.getOwnerId(request);
+            owner.setOwnerId(ownerId);
+            this.baseMapper.updateById(owner);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            return result;
+        } catch (Exception e) {
+            return result;
+        }
+    }
+
     /**
      * 通过id获取业主
      *
@@ -63,6 +96,16 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
+    }
+
+    /**
+     * 检查身份证唯一性
+     * @param zyOwner 业主
+     * @return boolean
+     */
+    @Override
+    public boolean checkIdCardUnique(ZyOwner zyOwner) {
+        return this.baseMapper.selectOwnerByIdCard(zyOwner) == null;
     }
 
     /**
@@ -99,6 +142,11 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
     public Result ownerUpdate(ZyOwner owner) {
         Result result = new Result(null, ResultTool.fail(ResultCode.OWNER_UPDATE_FAIL));
         owner.setUpdateTime(LocalDateTime.now().toString());
+        if (!checkIdCardUnique(owner)){
+            result.setData("修改失败");
+            result.setMeta(ResultTool.fail(ResultCode.REPEAT_ID_CARD));
+            return result;
+        }
         if(checkPhoneNumberUnique(1,owner)){
             int i = this.baseMapper.updateById(owner);
             if (i > 0) {
@@ -151,6 +199,7 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
             result.setMeta(ResultTool.fail(ResultCode.REPEAT_PHONE_NUMBER));
             return result;
         }
+        owner.setOwnerStatus("Enable");
         int b = this.baseMapper.insert(owner);
         if (b == 1) {
             result.setData("注册成功");

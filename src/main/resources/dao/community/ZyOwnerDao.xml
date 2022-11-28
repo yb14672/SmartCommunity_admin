@@ -137,21 +137,21 @@
         LEFT JOIN zy_room zr on zr.room_id = zor.room_id
         LEFT JOIN zy_unit zu on zu.unit_id = zor.unit_id
         where zor.room_status ='Binding'
-            <if test="zyOwner.ownerId != null">
-                and owner_id = #{zyOwner.ownerId}
-            </if>
-            <if test="zyOwner.ownerNickname != null and zyOwner.ownerNickname != ''">
-                and owner_nickname like concat ('%', #{zyOwner.ownerNickname},'%')
-            </if>
-            <if test="zyOwner.ownerRealName != null and zyOwner.ownerRealName != ''">
-                and owner_real_name like concat('%',#{zyOwner.ownerRealName},'%')
-            </if>
-            <if test="zyOwner.ownerIdCard != null and zyOwner.ownerIdCard != ''">
-                and owner_id_card like concat ('%',#{zyOwner.ownerIdCard},'%')
-            </if>
-            <if test="zyOwner.ownerPhoneNumber != null and zyOwner.ownerPhoneNumber != ''">
-                and owner_phone_number like concat('%', #{zyOwner.ownerPhoneNumber},'%')
-            </if>
+        <if test="zyOwner.ownerId != null">
+            and owner_id = #{zyOwner.ownerId}
+        </if>
+        <if test="zyOwner.ownerNickname != null and zyOwner.ownerNickname != ''">
+            and owner_nickname like concat ('%', #{zyOwner.ownerNickname},'%')
+        </if>
+        <if test="zyOwner.ownerRealName != null and zyOwner.ownerRealName != ''">
+            and owner_real_name like concat('%',#{zyOwner.ownerRealName},'%')
+        </if>
+        <if test="zyOwner.ownerIdCard != null and zyOwner.ownerIdCard != ''">
+            and owner_id_card like concat ('%',#{zyOwner.ownerIdCard},'%')
+        </if>
+        <if test="zyOwner.ownerPhoneNumber != null and zyOwner.ownerPhoneNumber != ''">
+            and owner_phone_number like concat('%', #{zyOwner.ownerPhoneNumber},'%')
+        </if>
         limit #{pageable.index}, #{pageable.pageSize}
     </select>
 
@@ -160,21 +160,21 @@
         select count(1)
         from zy_owner_room zor left join zy_owner zo on zor.owner_id=zo.owner_id
         where zor.room_status ='Binding'
-            <if test="ownerId != null">
-                and owner_id = #{ownerId}
-            </if>
-            <if test="ownerNickname != null and ownerNickname != ''">
-                and owner_nickname like concat ('%',#{ownerNickname},'%')
-            </if>
-            <if test="ownerRealName != null and ownerRealName != ''">
-                and owner_real_name like concat('%',#{ownerRealName},'%')
-            </if>
-            <if test="ownerIdCard != null and ownerIdCard != ''">
-                and owner_id_card like concat ('%',#{ownerIdCard},'%')
-            </if>
-            <if test="ownerPhoneNumber != null and ownerPhoneNumber != ''">
-                and owner_phone_number like concat('%',#{ownerPhoneNumber},'%')
-            </if>
+        <if test="ownerId != null">
+            and owner_id = #{ownerId}
+        </if>
+        <if test="ownerNickname != null and ownerNickname != ''">
+            and owner_nickname like concat ('%',#{ownerNickname},'%')
+        </if>
+        <if test="ownerRealName != null and ownerRealName != ''">
+            and owner_real_name like concat('%',#{ownerRealName},'%')
+        </if>
+        <if test="ownerIdCard != null and ownerIdCard != ''">
+            and owner_id_card like concat ('%',#{ownerIdCard},'%')
+        </if>
+        <if test="ownerPhoneNumber != null and ownerPhoneNumber != ''">
+            and owner_phone_number like concat('%',#{ownerPhoneNumber},'%')
+        </if>
     </select>
 
     <!--新增所有列-->

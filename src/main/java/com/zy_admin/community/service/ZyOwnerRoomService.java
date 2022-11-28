@@ -16,6 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 public interface ZyOwnerRoomService extends IService<ZyOwnerRoom> {
 
     /**
+     * 根据业主Id获取房屋审核记录
+     * @param ownerId 业主Id
+     * @return 房屋绑定信息
+     */
+    Result selectOwnerRoomByOwnerId(String ownerId);
+
+    /**
      * 提交审核记录
      * @param ownerRoom 审核信息
      * @return 提交结果

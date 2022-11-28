@@ -53,6 +53,22 @@ public class ZyOwnerController extends ApiController {
     @Resource
     private RequestUtil requestUtil;
 
+    @PutMapping("/updateOwnerPortrait")
+    public Result updateOwnerPortrait(@RequestBody ZyOwner zyOwner, HttpServletRequest request){
+        return zyOwnerService.updateOwnerPortrait(zyOwner, request);
+    }
+
+    /**
+     * 用户修改密码
+     * @param zyOwner 新密码
+     * @param request 请求
+     * @return 修改结果
+     */
+    @PutMapping("/updatePassword")
+    public Result updatePassword(@RequestBody ZyOwner zyOwner, HttpServletRequest request){
+        return zyOwnerService.updatePassword(zyOwner, request);
+    }
+
     /**
      * 获取业主信息
      *
@@ -109,6 +125,7 @@ public class ZyOwnerController extends ApiController {
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping("/register")
     public Result insert(@RequestBody ZyOwner zyOwner) throws Exception {
+        zyOwner.setOwnerType("qt");
         return zyOwnerService.ownerRegister(zyOwner);
     }
 

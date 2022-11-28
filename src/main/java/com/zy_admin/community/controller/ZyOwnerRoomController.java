@@ -44,6 +44,12 @@ public class ZyOwnerRoomController extends ApiController {
     @Resource
     private RequestUtil requestUtil;
 
+    @GetMapping("/selectOwnerRoomByOwnerId")
+    public Result selectOwnerRoomByOwnerId(HttpServletRequest request){
+        String ownerId = requestUtil.getOwnerId(request);
+        return this.zyOwnerRoomService.selectOwnerRoomByOwnerId(ownerId);
+    }
+
     /**
      * 插入
      * 新增数据

@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 /**
+ * @author admin
  * @description： minio工具类
  * @version：3.0
  */
