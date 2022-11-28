@@ -8,6 +8,7 @@ import com.zy_admin.sys.dao.SysDeptDao;
 import com.zy_admin.sys.dto.DeptTree;
 import com.zy_admin.sys.dto.DeptTreeDto;
 import com.zy_admin.sys.entity.SysDept;
+import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDeptService;
 import com.zy_admin.util.ObjUtil;
 import com.zy_admin.common.core.Result.Result;
@@ -126,6 +127,24 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDept> impleme
             return result;
         }return result;
     }
+
+    /**
+     * 根据小区ID查询对应物业的维修人员列表
+     *
+     * @param communityId 小区ID
+     * @return 维修人员列表
+     */
+    @Override
+    public Result getRepairByCommunityId(String communityId) {
+        Result result = new Result("获取失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<SysUser> repairByCommunityId = this.baseMapper.getRepairByCommunityId(communityId);
+        if(repairByCommunityId.size() > 0){
+            result.setData(repairByCommunityId);
+            result.setMeta(ResultTool.success());
+        }
+        return result;
+    }
+
     /**
      * 检查修改后的菜单是否和子集一致
      * @param dept 修改后的部门数据
