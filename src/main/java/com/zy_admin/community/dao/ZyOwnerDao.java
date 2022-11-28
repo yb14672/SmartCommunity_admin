@@ -6,6 +6,7 @@ import com.zy_admin.community.dto.OwnerListDto;
 import com.zy_admin.community.dto.OwnerRoomExcel;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
+import com.zy_admin.util.RoomTree;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -21,6 +22,14 @@ import java.util.List;
  * @since 2022-11-01 19:49:02
  */
 public interface ZyOwnerDao extends BaseMapper<ZyOwner> {
+
+    /**
+     * 检查身份证是否唯一
+     * @param zyOwner 身份证号码
+     * @return 业主对象
+     */
+    @Select("select * from zy_owner where owner_id_card = #{ownerIdCard}")
+    ZyOwner selectOwnerByIdCard(ZyOwner zyOwner);
 
     /**
      * 业主个人信息设置

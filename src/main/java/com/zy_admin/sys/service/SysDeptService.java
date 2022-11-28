@@ -14,6 +14,12 @@ import java.util.List;
  */
 public interface SysDeptService extends IService<SysDept> {
     /**
+     * 根据小区ID查询对应物业的维修人员列表
+     * @param communityId 小区ID
+     * @return 维修人员列表
+     */
+    Result getRepairByCommunityId(String communityId);
+    /**
      * 检查修改后的菜单是否和子集一致
      * @param dept 修改后的部门数据
      * @return true--父类是子集

@@ -195,6 +195,7 @@ public class SysRoleController extends ApiController {
         roleAndRoleMenu.setDelFlag("0");
         return this.sysRoleService.insert(roleAndRoleMenu);
     }
+
     /**
      * 修改角色及其权限
      * @param roleAndRoleMenu 角色和角色菜单对象

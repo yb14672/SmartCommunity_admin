@@ -8,8 +8,10 @@ import com.zy_admin.community.dao.ZyOwnerDao;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dao.ZyOwnerRoomRecordDao;
 import com.zy_admin.community.dao.ZyRoomDao;
+import com.zy_admin.community.dto.OwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerRoomDtoAll;
+import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomService;
@@ -21,6 +23,7 @@ import com.zy_admin.util.TreeData;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,12 +37,6 @@ import java.util.List;
  */
 @Service("zyOwnerRoomService")
 public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerRoom> implements ZyOwnerRoomService {
-
-    /**
-     * 系统用户刀
-     */
-    @Resource
-    private SysUserDao sysUserDao;
 
     /**
      * 业主房间记录道
@@ -59,12 +56,40 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     @Resource
     private SnowflakeManager snowflakeManager;
 
+    /**
+     * 业主数据持久层
+     */
     @Resource
-    private ZyOwnerDao ownerDao;
+    private ZyOwnerDao zyOwnerDao;
+
+
+    @Override
+    public boolean checkOwnerIdCardExist(String ownerId) {
+        return zyOwnerDao.selectById(ownerId).getOwnerIdCard() == "";
+    }
+
+    @Override
+    public Result selectOwnerRoomByOwnerId(String ownerId) {
+        Result result = new Result("获取失败",ResultTool.fail(ResultCode.OWNER_ROOM_GET_FAIL));
+        try {
+            List<OwnerRoomDto> ownerRoomDtos = this.baseMapper.selectOwnerRoomByOwnerId(ownerId);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            result.setData(ownerRoomDtos);
+            return result;
+        } catch (Exception e) {
+            return result;
+        }
+    }
 
     @Override
     public Result ownerInsert(ZyOwnerRoom ownerRoom) throws Exception {
         Result result = new Result("提交失败",ResultTool.fail(ResultCode.OWNER_ROOM_INSERT_FAIL));
+        //检查是否实名认证
+        if (checkOwnerIdCardExist(ownerRoom.getOwnerId())){
+            result.setMeta(ResultTool.fail(ResultCode.OWNER_ROOM_INSERT_FAIL));
+            return result;
+        }
+        //检查该房屋是否已经提交审核
         ZyOwnerRoom zyOwnerRoom = this.baseMapper.checkOwnerRoom(ownerRoom);
         if (zyOwnerRoom != null ){
             result.setData("提交失败");
@@ -72,6 +97,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
             return result;
         }
         ownerRoom.setOwnerRoomId(snowflakeManager.nextId()+"");
+        ownerRoom.setRoomStatus("Auditing");
         ownerRoom.setCreateTime(LocalDateTime.now().toString());
         Integer i = this.baseMapper.insertOwnerRoom(ownerRoom);
         if (i == 1){
