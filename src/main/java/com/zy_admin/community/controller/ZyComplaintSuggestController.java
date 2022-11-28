@@ -15,6 +15,7 @@ import com.zy_admin.community.dto.ZyComplaintSuggestDto;
 import com.zy_admin.community.entity.ZyComplaintSuggest;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.service.ZyComplaintSuggestService;
+import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
@@ -108,9 +109,9 @@ public class ZyComplaintSuggestController extends ApiController {
     @ApiOperation(value = "更新投诉建议", notes = "更新投诉建议", httpMethod = "PUT")
     @PutMapping("/updateSuggest")
     public Result updateSuggest(@RequestBody ZyComplaintSuggest zyComplaintSuggest, HttpServletRequest request){
-        ZyOwner owner = this.requestUtil.getOwner(request);
-        zyComplaintSuggest.setUpdateBy(owner.getOwnerRealName());
-        zyComplaintSuggest.setUserId(owner.getOwnerId());
+        SysUser user = this.requestUtil.getUser(request);
+        zyComplaintSuggest.setUpdateBy(user.getUserName());
+        zyComplaintSuggest.setUserId(user.getUserId()+"");
         zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
         return zyComplaintSuggestService.updateSuggest(zyComplaintSuggest);
     }

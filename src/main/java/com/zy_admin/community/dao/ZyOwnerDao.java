@@ -23,6 +23,14 @@ import java.util.List;
 public interface ZyOwnerDao extends BaseMapper<ZyOwner> {
 
     /**
+     * 根据id查询身份证
+     * @param ownerId 用户id
+     * @return
+     */
+    @Select("select * from zy_owner where owner_id = #{ownerId}")
+    Integer selectOwnerIdCardByOwnerId(String ownerId);
+
+    /**
      * 业主个人信息设置
      * @param owner 修改的信息
      * @return 修改影响的行数

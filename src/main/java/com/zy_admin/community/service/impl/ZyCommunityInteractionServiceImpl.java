@@ -124,7 +124,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
             for (ZyCommunityInteractionDto zyCommunityInteractionDto : interactionDtoList) {
                 String parentId = zyCommunityInteractionDto.getInteractionId();
                 List<ZyFiles> files = this.zyFilesDao.queryAllFile(parentId, "CommunityInteraction");
-                List<String> fileUrl = this.zyFilesDao.queryAllFileUrl(parentId, "CommunityInteraction");
+                List<ZyFiles> fileUrl = this.zyFilesDao.queryAllFileUrl(parentId, "CommunityInteraction");
                 zyCommunityInteractionDto.setZyFiles(files);
                 zyCommunityInteractionDto.setUrlList(fileUrl);
             }
@@ -178,11 +178,11 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
         int i = this.baseMapper.deleteInteractionByIdList(idList);
         if (i > 0) {
             int i1 = this.zyCommentDao.deleteByInteractionIdList(idList);
-            if (i1 > 0) {
-                result.setData("删除成功");
-                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-                return result;
-            }
+                if (i1 > 0) {
+                    result.setData("删除成功");
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                    return result;
+                }
         }
         throw new Exception("删除失败");
     }

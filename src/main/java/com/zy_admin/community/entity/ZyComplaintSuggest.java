@@ -80,5 +80,11 @@ public class ZyComplaintSuggest extends Model<ZyComplaintSuggest> {
     @ApiModelProperty("投诉人ID")
     @ExcelProperty("投诉人ID")
     private String userId;
+    /**
+     * 回复投诉建议
+     */
+    @ApiModelProperty("回复投诉建议")
+    @ExcelProperty("回复投诉建议")
+    private String reply;
 }
 
