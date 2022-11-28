@@ -13,11 +13,8 @@ import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dto.RepairDto;
-import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyRepair;
 import com.zy_admin.community.service.ZyRepairService;
-import com.zy_admin.sys.entity.SysUser;
-import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -31,10 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,8 +46,6 @@ public class ZyRepairController extends ApiController {
      */
     @Resource
     private ZyRepairService zyRepairService;
-    @Resource
-    private RequestUtil requestUtil;
     /**
      * 报修导出
      * @param repairIds 报修id
@@ -118,29 +110,7 @@ public class ZyRepairController extends ApiController {
     @ApiOperation(value = "修改报修", notes = "修改报修", httpMethod = "PUT")
     @PutMapping("/updateRepair")
     public Result updateRepair(@RequestBody ZyRepair zyRepair, HttpServletRequest request) {
-        SysUser user = requestUtil.getUser(request);
-        zyRepair.setUpdateBy(user.getUserName());
-        zyRepair.setUpdateTime(LocalDateTime.now().toString());
-        //派单时间repair_state
-        if ("Allocated".equals(zyRepair.getRepairState())){
-            zyRepair.setAssignmentId(user.getUserId()+"");
-            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
-            zyRepair.setAssignmentTime(format);
-        }
-        //已处理时间complete_time
-        if ("Processed".equals(zyRepair.getRepairState())){
-            zyRepair.setCompletePhone(user.getPhonenumber()+"");
-            zyRepair.setCompleteName(user.getUserName()+"");
-            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
-            zyRepair.setCompleteTime(format);
-        }
-        //已取消cancel_time
-        if ("Cancelled".equals(zyRepair.getRepairState())){
-            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
-            zyRepair.setCancelTime(format);
-        }
-        zyRepair.setUpdateBy(user.getUserId()+"");
-        return this.zyRepairService.updateRepair(zyRepair);
+        return this.zyRepairService.updateRepair(zyRepair,request);
     }
     /**
      * 新增报修
@@ -153,10 +123,8 @@ public class ZyRepairController extends ApiController {
     @ApiOperation(value = "新增报修", notes = "新增报修", httpMethod = "POST")
     @PostMapping("/insertRepair")
     public Result insertRepair(@RequestBody ZyRepair zyRepair, HttpServletRequest request) {
-        ZyOwner owner = requestUtil.getOwner(request);
-        zyRepair.setCreateBy(owner.getOwnerRealName());
-        zyRepair.setCreateTime(LocalDateTime.now().toString());
-        zyRepair.setReceivingOrdersTime(LocalDateTime.now().toString());
+
+
         return this.zyRepairService.insertRepair(zyRepair,request);
     }
     /**

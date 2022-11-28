@@ -86,6 +86,9 @@
     <update id="updateRepair">
         update zy_repair
         <set>
+            <if test="repairNum != null and repairNum != ''">
+                repair_num = #{repairNum},
+            </if>
             <if test="repairState != null and repairState != ''">
                 repair_state = #{repairState},
             </if>

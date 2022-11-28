@@ -7,12 +7,17 @@ import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyRepairDao;
 import com.zy_admin.community.dto.RepairAllDto;
 import com.zy_admin.community.dto.RepairDto;
+import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyRepair;
 import com.zy_admin.community.service.ZyRepairService;
+import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +31,8 @@ import java.util.List;
 @Service("zyRepairService")
 public class ZyRepairServiceImpl extends ServiceImpl<ZyRepairDao, ZyRepair> implements ZyRepairService {
 
+    @Resource
+    private RequestUtil requestUtil;
     /**
      * 分页查询所有报修数据
      *
@@ -96,6 +103,11 @@ public class ZyRepairServiceImpl extends ServiceImpl<ZyRepairDao, ZyRepair> impl
     @Override
     public Result insertRepair(ZyRepair zyRepair, HttpServletRequest request) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        ZyOwner owner = requestUtil.getOwner(request);
+        zyRepair.setUserId(owner.getOwnerId());
+        zyRepair.setCreateBy(owner.getOwnerRealName());
+        zyRepair.setCreateTime(LocalDateTime.now().toString());
+        zyRepair.setAssignmentTime(LocalDateTime.now().toString());
         long now = System.currentTimeMillis();
         zyRepair.setRepairNum("BX_" + Long.toString(now).substring(0, 13));
         //新增报修
@@ -114,8 +126,29 @@ public class ZyRepairServiceImpl extends ServiceImpl<ZyRepairDao, ZyRepair> impl
      * @return 更新的结果集
      */
     @Override
-    public Result updateRepair(ZyRepair zyRepair) {
+    public Result updateRepair(ZyRepair zyRepair, HttpServletRequest request) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        SysUser user = requestUtil.getUser(request);
+        zyRepair.setUpdateBy(user.getUserName());
+        zyRepair.setUpdateTime(LocalDateTime.now().toString());
+//        //派单时间repair_state
+//        if ("Allocated".equals(zyRepair.getRepairState())){
+//            zyRepair.setAssignmentId(user.getUserId()+"");
+//            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+//            zyRepair.setAssignmentTime(format);
+//        }
+//        //已处理时间complete_time
+//        if ("Processed".equals(zyRepair.getRepairState())){
+//            zyRepair.setCompletePhone(user.getPhonenumber()+"");
+//            zyRepair.setCompleteName(user.getUserName()+"");
+//            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+//            zyRepair.setCompleteTime(format);
+//        }
+//        //已取消cancel_time
+//        if ("Cancelled".equals(zyRepair.getRepairState())){
+//            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+//            zyRepair.setCancelTime(format);
+//        }
         //更新报修
         int num = this.baseMapper.updateRepair(zyRepair);
         if (num == 1) {

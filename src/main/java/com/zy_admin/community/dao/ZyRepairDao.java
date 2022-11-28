@@ -23,13 +23,13 @@ public interface ZyRepairDao extends BaseMapper<ZyRepair> {
      * @param repairDto 查询报修对象
      * @return 所有报修信息数据结果集
      */
-    List<RepairDto> getAllRepairs(@Param("pageable") Pageable pageable,@Param("repairDto") RepairDto repairDto);
+    List<RepairDto> getAllRepairs(@Param("pageable") Pageable pageable, @Param("repairDto") RepairDto repairDto);
     /**
      * 计算总数据量
      * @param repairDto 查询的报修对象
      * @return 查询求和后的总数
      */
-    Long count(@Param("repairDto")RepairDto repairDto);
+    Long count(@Param("repairDto") RepairDto repairDto);
     /**
      * 得到所有报修列表
      *
@@ -43,7 +43,7 @@ public interface ZyRepairDao extends BaseMapper<ZyRepair> {
      * @param repairIds 报修id
      * @return
      */
-    List<RepairDto> getRepairById(@Param("repairList")ArrayList<String> repairIds);
+    List<RepairDto> getRepairById(@Param("repairList") ArrayList<String> repairIds);
 
     /**
      * 插入修复
