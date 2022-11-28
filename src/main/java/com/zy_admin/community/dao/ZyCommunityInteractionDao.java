@@ -47,18 +47,18 @@ public interface ZyCommunityInteractionDao extends MPJBaseMapper<ZyCommunityInte
     /**
      * 计算总数量
      *
-     * @param interactionDto 查询条件
+     * @param zyCommunityInteractionDto 查询条件
      * @return {@link Long}
      */
-    Long countNum(ZyCommunityInteractionDto interactionDto);
+    Long countNum(@Param("zyCommunityInteractionDto") ZyCommunityInteractionDto zyCommunityInteractionDto);
 
     /**
      * 查询并分页符合条件的数据
      *
-     * @param interactionDto 查询条件
-     * @param pageable       分页对象
+     * @param zyCommunityInteractionDto 查询条件
+     * @param pageable                  分页对象
      * @return {@link List}<{@link ZyCommunityInteractionDto}>
      */
-    List<ZyCommunityInteractionDto> selectAllLimit(@Param("dto") ZyCommunityInteractionDto interactionDto,@Param("pageable") Pageable pageable);
+    List<ZyCommunityInteractionDto> selectAllLimit(@Param("zyCommunityInteractionDto") ZyCommunityInteractionDto zyCommunityInteractionDto,@Param("pageable") Pageable pageable);
 }
 

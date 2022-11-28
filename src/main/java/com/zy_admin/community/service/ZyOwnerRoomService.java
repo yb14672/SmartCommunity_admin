@@ -2,10 +2,8 @@ package com.zy_admin.community.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.common.core.Result.Result;
-
-import javax.servlet.http.HttpServletRequest;
+import com.zy_admin.community.entity.ZyOwnerRoom;
 
 /**
  * 房屋绑定表 (ZyOwnerRoom)表服务接口
@@ -14,6 +12,12 @@ import javax.servlet.http.HttpServletRequest;
  * @since 2022-11-01 19:49:02
  */
 public interface ZyOwnerRoomService extends IService<ZyOwnerRoom> {
+    /**
+     * 根据业主ID获取其房屋绑定列表
+     * @param ownerId 业主ID
+     * @return 关联关系列表
+     */
+    Result getOwnerRoomByOwnerId(String ownerId);
 
     /**
      * 检查业主是否实名认证
@@ -64,6 +68,7 @@ public interface ZyOwnerRoomService extends IService<ZyOwnerRoom> {
      * @throws Exception 异常
      */
     Result updateOwnerRoomStatus(ZyOwnerRoom zyOwnerRoom, String recordAuditOpinion) throws Exception;
+
 
 }
 

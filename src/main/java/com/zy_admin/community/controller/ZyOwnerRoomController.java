@@ -51,7 +51,20 @@ public class ZyOwnerRoomController extends ApiController {
     }
 
     /**
-     * 插入
+     * 根据业主ID获取其房屋绑定列表
+     * @param request 前端发送的请求
+     * @return 关联关系列表
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端发送的请求", required = true)
+    })
+    @ApiOperation(value = "根据业主ID获取其房屋绑定列表", notes = "根据业主ID获取其房屋绑定列表", httpMethod = "GET")
+    @GetMapping("/getOwnerRoomByOwnerId")
+    public Result getOwnerRoomByOwnerId(HttpServletRequest request){
+        return this.zyOwnerRoomService.getOwnerRoomByOwnerId(requestUtil.getOwnerId(request));
+    };
+    
+    /**
      * 新增数据
      *
      * @param ownerRoom 实体对象

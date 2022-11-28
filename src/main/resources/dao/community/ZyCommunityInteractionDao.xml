@@ -13,6 +13,19 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
         <result property="userId" column="user_id" jdbcType="INTEGER"/>
     </resultMap>
+    <sql id="checkIdentity">
+        <choose>
+            <!-- 如果业主ID不为空则代表是小程序用户，只能看自己已绑定的房屋所在小区 -->
+            <when test="zyCommunityInteractionDto.userId != null and zyCommunityInteractionDto.userId != ''">
+                and community_id IN
+                (SELECT community_id FROM zy_owner_room WHERE room_status='Binding' and owner_id=#{zyCommunityInteractionDto.userId})
+            </when>
+            <!-- 如果业主ID为空则代表是后台管理用户，能看所有 -->
+            <otherwise>
+                and community_id = #{zyCommunityInteractionDto.communityId}
+            </otherwise>
+        </choose>
+    </sql>
     <!--根据id集合查询所有数据-->
     <select id="getDtoList" resultMap="InteractionDtoMap">
         select ci.*,
@@ -134,48 +147,49 @@
         </where>
     </select>
 
-    <select id="countNum" resultType="java.lang.Long">
+    <select id="countNum" parameterType="com.zy_admin.community.dto.ZyCommunityInteractionDto" resultType="java.lang.Long">
         SELECT
         count(1)
         FROM zy_community_interaction ci
         LEFT JOIN zy_owner o
         ON ci.user_id=o.owner_id
         WHERE del_flag = 0
-        <if test="userId != null and userId != ''">
-            and ci.user_id = #{userId}
+        <include refid="checkIdentity"/>
+        <if test="zyCommunityInteractionDto.userId != null and zyCommunityInteractionDto.userId != ''">
+            and ci.user_id = #{zyCommunityInteractionDto.userId}
         </if>
-        <if test="communityId != null and communityId != ''">
-            and community_id = #{communityId}
+        <if test="zyCommunityInteractionDto.ownerNickname != null and zyCommunityInteractionDto.ownerNickname != ''">
+            and owner_nickname like concat('%',#{zyCommunityInteractionDto.ownerNickname},'%')
         </if>
-        <if test="ownerNickname != null and ownerNickname != ''">
-            and owner_nickname like concat('%',#{ownerNickname},'%')
+        <if test="zyCommunityInteractionDto.ownerRealName != null and zyCommunityInteractionDto.ownerRealName != ''">
+            and owner_real_name like concat('%',#{zyCommunityInteractionDto.ownerRealName},'%')
         </if>
-        <if test="ownerRealName != null and ownerRealName != ''">
-            and owner_real_name like concat('%',#{ownerRealName},'%')
+        <if test="zyCommunityInteractionDto.ownerPhoneNumber != null and zyCommunityInteractionDto.ownerPhoneNumber != ''">
+            and owner_phone_number like concat('%',#{zyCommunityInteractionDto.ownerPhoneNumber},'%')
         </if>
-        <if test="content != null and content != ''">
-            and owner_phone_number like concat('%',#{ownerPhoneNumber},'%')
+        <if test="zyCommunityInteractionDto.interactionId != null">
+            and interaction_id = #{zyCommunityInteractionDto.interactionId}
         </if>
-        <if test="interactionId != null">
-            and interaction_id = #{interactionId}
+        <if test="zyCommunityInteractionDto.createBy != null and zyCommunityInteractionDto.createBy != ''">
+            and create_by = #{zyCommunityInteractionDto.createBy}
         </if>
-        <if test="createBy != null and createBy != ''">
-            and create_by = #{createBy}
+        <if test="zyCommunityInteractionDto.updateBy != null and zyCommunityInteractionDto.updateBy != ''">
+            and update_by = #{zyCommunityInteractionDto.updateBy}
         </if>
-        <if test="updateBy != null and updateBy != ''">
-            and update_by = #{updateBy}
+        <if test="zyCommunityInteractionDto.createTime != null">
+            and create_time = #{zyCommunityInteractionDto.createTime}
         </if>
-        <if test="createTime != null">
-            and create_time = #{createTime}
+        <if test="zyCommunityInteractionDto.updateTime != null">
+            and update_time = #{zyCommunityInteractionDto.updateTime}
         </if>
-        <if test="updateTime != null">
-            and update_time = #{updateTime}
+        <if test="zyCommunityInteractionDto.delFlag != null">
+            and del_flag = #{zyCommunityInteractionDto.delFlag}
         </if>
-        <if test="delFlag != null">
-            and del_flag = #{delFlag}
+        <if test="zyCommunityInteractionDto.remark != null and zyCommunityInteractionDto.remark != ''">
+            and remark = #{zyCommunityInteractionDto.remark}
         </if>
-        <if test="remark != null and remark != ''">
-            and remark = #{remark}
+        <if test="zyCommunityInteractionDto.content != null and zyCommunityInteractionDto.content != ''">
+            and content = #{zyCommunityInteractionDto.content}
         </if>
     </select>
 
@@ -196,45 +210,49 @@
         <result property="ownerPortrait" column="owner_portrait" jdbcType="VARCHAR"/>
     </resultMap>
     <!--条件查询-->
-    <select id="selectAllLimit" resultMap="InteractionDtoMap">
+    <select id="selectAllLimit" parameterType="com.zy_admin.community.dto.ZyCommunityInteractionDto" resultMap="InteractionDtoMap">
         select
         ci.*,o.owner_nickname,o.owner_real_name,o.owner_phone_number,o.owner_portrait
         from zy_community_interaction ci
         left join zy_owner o
         on ci.user_id=o.owner_id
-        where del_flag = 0 and community_id = #{dto.communityId}
-        <if test="dto.userId != null and dto.userId != ''">
-            and ci.user_id = #{dto.userId}
+        where del_flag = 0
+        <include refid="checkIdentity"/>
+        <if test="zyCommunityInteractionDto.userId != null and zyCommunityInteractionDto.userId != ''">
+            and ci.user_id = #{zyCommunityInteractionDto.userId}
         </if>
-        <if test="dto.ownerNickname != null and dto.ownerNickname != ''">
-            and owner_nickname like concat('%',#{dto.ownerNickname},'%')
+        <if test="zyCommunityInteractionDto.ownerNickname != null and zyCommunityInteractionDto.ownerNickname != ''">
+            and owner_nickname like concat('%',#{zyCommunityInteractionDto.ownerNickname},'%')
         </if>
-        <if test="dto.ownerRealName != null and dto.ownerRealName != ''">
-            and owner_real_name like concat('%',#{dto.ownerRealName},'%')
+        <if test="zyCommunityInteractionDto.ownerRealName != null and zyCommunityInteractionDto.ownerRealName != ''">
+            and owner_real_name like concat('%',#{zyCommunityInteractionDto.ownerRealName},'%')
         </if>
-        <if test="dto.ownerPhoneNumber != null and dto.ownerPhoneNumber != ''">
-            and owner_phone_number like concat('%',#{dto.ownerPhoneNumber},'%')
+        <if test="zyCommunityInteractionDto.ownerPhoneNumber != null and zyCommunityInteractionDto.ownerPhoneNumber != ''">
+            and owner_phone_number like concat('%',#{zyCommunityInteractionDto.ownerPhoneNumber},'%')
         </if>
-        <if test="dto.interactionId != null">
-            and interaction_id = #{dto.interactionId}
+        <if test="zyCommunityInteractionDto.interactionId != null">
+            and interaction_id = #{zyCommunityInteractionDto.interactionId}
         </if>
-        <if test="dto.createBy != null and createBy != ''">
-            and create_by = #{dto.createBy}
+        <if test="zyCommunityInteractionDto.createBy != null and createBy != ''">
+            and create_by = #{zyCommunityInteractionDto.createBy}
         </if>
-        <if test="dto.updateBy != null and updateBy != ''">
-            and update_by = #{dto.updateBy}
+        <if test="zyCommunityInteractionDto.updateBy != null and updateBy != ''">
+            and update_by = #{zyCommunityInteractionDto.updateBy}
         </if>
-        <if test="dto.createTime != null">
-            and create_time = #{dto.createTime}
+        <if test="zyCommunityInteractionDto.createTime != null">
+            and create_time = #{zyCommunityInteractionDto.createTime}
         </if>
-        <if test="dto.updateTime != null">
-            and update_time = #{dto.updateTime}
+        <if test="zyCommunityInteractionDto.updateTime != null">
+            and update_time = #{zyCommunityInteractionDto.updateTime}
         </if>
-        <if test="dto.delFlag != null">
-            and del_flag = #{dto.delFlag}
+        <if test="zyCommunityInteractionDto.delFlag != null">
+            and del_flag = #{zyCommunityInteractionDto.delFlag}
         </if>
-        <if test="dto.remark != null and dto.remark != ''">
-            and remark = #{dto.remark}
+        <if test="zyCommunityInteractionDto.remark != null and zyCommunityInteractionDto.remark != ''">
+            and remark = #{zyCommunityInteractionDto.remark}
+        </if>
+        <if test="zyCommunityInteractionDto.content != null and zyCommunityInteractionDto.content != ''">
+            and content = #{zyCommunityInteractionDto.content}
         </if>
         order by
         (select count(1) from zy_comment where interaction_id = ci.interaction_id) desc,ci.create_time desc
