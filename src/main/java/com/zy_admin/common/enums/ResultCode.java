@@ -48,6 +48,7 @@ public enum ResultCode {
     REPEAT_PHONE_NUMBER(2020,"手机号已被使用"),
     OWNER_UPDATE_FAIL(2021,"业主信息修改失败"),
     NO_ROLE(2022,"该用户没有角色"),
+    OWNER_NOT_BOUND(2023,"业主未绑定"),
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),

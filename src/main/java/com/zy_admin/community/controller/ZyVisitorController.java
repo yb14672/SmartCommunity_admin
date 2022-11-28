@@ -110,7 +110,7 @@ public class ZyVisitorController extends ApiController {
 
 
     /**
-     * 插入游客
+     * 游客邀请
      *
      * @param request   请求
      * @param zyVisitor zy访客

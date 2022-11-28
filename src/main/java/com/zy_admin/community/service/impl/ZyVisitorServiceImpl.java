@@ -6,6 +6,7 @@ import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyVisitorDao;
 import com.zy_admin.community.dto.*;
+import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyVisitor;
 import com.zy_admin.community.service.ZyVisitorService;
 import com.zy_admin.util.ResultTool;
@@ -22,11 +23,23 @@ import java.util.List;
 @Service("zyVisitorService")
 public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> implements ZyVisitorService {
 
+    /**
+     * 得到访客列表通过社区ID
+     *
+     * @param communityId 社区id
+     * @return {@link List}<{@link VisitorGetExcelDto}>
+     */
     @Override
     public List<VisitorGetExcelDto> getLists(String communityId) {
         return this.baseMapper.getLists(communityId);
     }
 
+    /**
+     * 查询访客通过id
+     *
+     * @param visitorIds 游客id
+     * @return {@link List}<{@link VisitorGetExcelDto}>
+     */
     @Override
     public List<VisitorGetExcelDto> queryVisitorrById(List<String> visitorIds) {
         if (visitorIds != null) {
@@ -73,6 +86,12 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
         return result;
     }
 
+    /**
+     * 是否允许访客进入
+     *
+     * @param zyVisitor zy访客
+     * @return {@link Result}
+     */
     @Override
     public Result updateStatus(ZyVisitor zyVisitor) {
         Result result = new Result();
@@ -86,16 +105,32 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
         return result;
     }
 
+    /**
+     * 邀请访客
+     *
+     * @param zyVisitor zy访客
+     * @return {@link Result}
+     */
     @Override
     public Result insertVisitor(ZyVisitor zyVisitor) {
         Result result = new Result();
-        try {
-            this.baseMapper.insertVisitor(zyVisitor);
-            result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_SUCCESSFULLY));
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_FAIL));
+        System.err.println(zyVisitor.toString());
+
+        ZyOwnerRoom ownerRoom = this.baseMapper.getOwnerRoom(zyVisitor.getCreateById());
+        if (ownerRoom!=null&&"Binding".equals(ownerRoom.getRoomStatus()))
+        {
+            try {
+                this.baseMapper.insertVisitor(zyVisitor);
+                result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_SUCCESSFULLY));
+            } catch (Exception e) {
+                e.printStackTrace();
+                result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_FAIL));
+            }
+        }else {
+            result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
         }
+
+
         return result;
     }
 }
