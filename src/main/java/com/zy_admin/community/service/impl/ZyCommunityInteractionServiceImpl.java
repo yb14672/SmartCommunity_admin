@@ -179,9 +179,11 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
         int i = this.baseMapper.deleteInteractionByIdList(idList);
         if (i > 0) {
             int i1 = this.zyCommentDao.deleteByInteractionIdList(idList);
-            result.setData("删除成功");
-            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-            return result;
+                if (i1 > 0) {
+                    result.setData("删除成功");
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                    return result;
+                }
         }
         throw new Exception("删除失败");
     }

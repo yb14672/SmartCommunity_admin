@@ -123,7 +123,8 @@ public enum ResultCode {
     VISITOR_APPLICATION_SUCCESSFULLY(3047,"提交访客申请成功，等待管理员允许"),
     VISITOR_APPLICATION_FAIL(3048,"访客提申请交失败"),
     OWNER_ROOM_GET_FAIL(3049,"房屋信息获取失败"),
-    OWNER_ID_CARD_NOT_CERTIFICATION(3050,"未实名认证"),
+    OWNER_ID_CARD_NOT_CERTIFICATION(3049,"未实名认证"),
+    NO_REALNAME_AUTHENTICATION(3050,"改住户未实名认证"),
 
 
 

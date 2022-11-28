@@ -7,9 +7,12 @@ import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyComplaintSuggestDao;
 import com.zy_admin.community.dao.ZyFilesDao;
+import com.zy_admin.community.dao.ZyOwnerDao;
 import com.zy_admin.community.dto.ZyComplaintSuggestDto;
 import com.zy_admin.community.entity.ZyComplaintSuggest;
+import com.zy_admin.community.entity.ZyFiles;
 import com.zy_admin.community.service.ZyComplaintSuggestService;
+import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,8 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
 
     @Resource
     private ZyFilesDao zyFilesDao;
+    @Resource
+    private ZyOwnerDao zyOwnerDao;
     @Resource
     private SnowflakeManager snowflakeManager;
 
@@ -79,11 +84,17 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         List<ZyComplaintSuggestDto> zyComplaintSuggestList = this.baseMapper.selectSuggestLimit(zyComplaintSuggest,pageable);
         if (zyComplaintSuggestList.size()!=0){
             //把图片的值给dto里,循环存进去
-            for (ZyComplaintSuggestDto zyComplaintSuggestDto : zyComplaintSuggestList) {
-                //循环查图片，把所有图片渲染上去
-                List<String> list = zyFilesDao.queryAllFileUrl(zyComplaintSuggestDto.getComplaintSuggestId(), "ComplaintSuggest");
-                //把获取到的图片地址的list放入dto中
-                zyComplaintSuggestDto.setFilesUrl(list);
+//            for (ZyComplaintSuggestDto zyComplaintSuggestDto : zyComplaintSuggestList) {
+//                //循环查图片，把所有图片渲染上去
+//                List<String> list = zyFilesDao.queryAllFileUrl(zyComplaintSuggestDto.getComplaintSuggestId(), "ComplaintSuggest");
+//                //把获取到的图片地址的list放入dto中
+//                zyComplaintSuggestDto.setFilesUrl(list);
+//            }
+
+            for (int i = 0; i < zyComplaintSuggestList.size(); i++) {
+                String id = zyComplaintSuggestList.get(i).getComplaintSuggestId();
+                List<ZyFiles> filesList = zyFilesDao.queryAllFileUrl(id,"ComplaintSuggest");
+                zyComplaintSuggestList.get(i).setFilesUrl(filesList);
             }
         }
         Page<ZyComplaintSuggestDto> page = new Page<>(zyComplaintSuggestList,pageable);
@@ -132,13 +143,13 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         zyComplaintSuggest.setComplaintSuggestId(snowflakeManager.nextId() + "");
         //判断是否重复x
         try {
-            //新增
-            Integer i = this.baseMapper.insertSuggest(zyComplaintSuggest);
-            if (i == 1) {
-                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-                result.setData("新增成功");
-            }
-            return result;
+                //新增
+                Integer i = this.baseMapper.insertSuggest(zyComplaintSuggest);
+                if (i == 1) {
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                    result.setData("新增成功");
+                }
+                return result;
         } catch (Exception e) {
             e.printStackTrace();
             return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -153,23 +164,29 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
      */
     @Override
     public Result updateSuggest(ZyComplaintSuggest zyComplaintSuggest) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断数据的值有没有改变 zyComplaintSuggest1是原来的对象
         ZyComplaintSuggest zyComplaintSuggest1 = this.baseMapper.queryById(zyComplaintSuggest.getComplaintSuggestId());
-        //默认给失败
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        try {
-            //判断重复x
-            zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
-            int i = this.baseMapper.updateSuggest(zyComplaintSuggest);
-            if (i == 1) {
-                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        String[] fields = new String[]{"ComplaintSuggestContent", "complaintSuggestType", "complaintSuggestId"};
+        if (!ObjUtil.checkEquals(zyComplaintSuggest,zyComplaintSuggest1,fields)){
+            //默认给失败
+            try {
+                    //判断重复x
+                    zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
+                    int i = this.baseMapper.updateSuggest(zyComplaintSuggest);
+                    if (i == 1) {
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                    }
+            } catch (Exception e) {
+                e.printStackTrace();
+                result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+            return result;
+        }else {
+            result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
+            return result;
         }
-        return result;
+
     }
 
     /**

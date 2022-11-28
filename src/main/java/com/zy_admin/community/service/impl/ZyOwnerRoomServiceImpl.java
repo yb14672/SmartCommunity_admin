@@ -39,6 +39,17 @@ import java.util.List;
 public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerRoom> implements ZyOwnerRoomService {
 
     /**
+     * 系统用户刀
+     */
+    @Resource
+    private SysUserDao sysUserDao;
+    /**
+     * 业主
+     */
+    @Resource
+    private ZyOwnerDao zyOwnerDao;
+
+    /**
      * 业主房间记录道
      */
     @Resource
