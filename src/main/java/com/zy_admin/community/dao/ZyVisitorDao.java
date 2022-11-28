@@ -41,7 +41,7 @@ public interface ZyVisitorDao extends BaseMapper<ZyVisitor> {
     /**
      * 插入访客申请
      *
-     * @param zyVisitor zy访客
+     * @param zyVisitor 访客信息
      */
     void insertVisitor(ZyVisitor zyVisitor);
     /**
