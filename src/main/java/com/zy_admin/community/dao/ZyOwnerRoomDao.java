@@ -20,10 +20,10 @@ public interface ZyOwnerRoomDao extends BaseMapper<ZyOwnerRoom> {
 
     /**
      * 根据业主ID获取其房屋绑定列表
-     * @param ownerId
-     * @return
+     * @param ownerId 业主ID
+     * @return 关联关系列表
      */
-    ZyOwnerRoom getOwnerRoomByOwnerId(String ownerId);
+    List<ZyOwnerRoom> getOwnerRoomByOwnerId(String ownerId);
 
     /**
      * 验重提交记录
