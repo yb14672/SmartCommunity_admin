@@ -4,6 +4,7 @@ package com.zy_admin.sys.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.sys.dto.DeptTreeDto;
 import com.zy_admin.sys.entity.SysDept;
+import com.zy_admin.sys.entity.SysUser;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +18,13 @@ import java.util.List;
  */
 @Repository
 public interface SysDeptDao extends BaseMapper<SysDept> {
+    /**
+     * 根据小区ID查询对应物业的维修人员列表
+     * @param communityId 小区ID
+     * @return 维修人员列表
+     */
+    List<SysUser> getRepairByCommunityId(String communityId);
+
     /**
      * 根据id查数据
      * @param deptId 部门id

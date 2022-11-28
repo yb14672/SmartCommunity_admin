@@ -51,7 +51,7 @@
     <!--楼栋和分页-->
     <select id="selectBuildLimit" resultType="com.zy_admin.community.dto.ZyBuildingDto">
         select * from zy_building b
-        right join zy_community c on b.community_id = c.community_id
+        left join zy_community c on b.community_id = c.community_id
         <where>
             <if test="zyBuilding.buildingName!=null and zyBuilding.buildingName!=''">
                 and b.building_name like concat ('%',#{zyBuilding.buildingName},'%')

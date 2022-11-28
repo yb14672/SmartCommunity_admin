@@ -72,6 +72,13 @@ public class ZyCommentDto {
     private String ownerName;
 
     /**
+     * 业主昵称
+     */
+    @ApiModelProperty("业主昵称")
+    @ExcelProperty("业主昵称")
+    private String ownerNickName;
+
+    /**
      * 业主头像
      */
     @ApiModelProperty("业主头像")

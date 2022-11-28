@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy_admin.sys.dao.SysDeptDao">
-    <select id="hasCommunityDept" resultType="java.lang.Integer">
-
+    <select id="getRepairByCommunityId" resultType="com.zy_admin.sys.entity.SysUser">
+        SELECT user_id, user_name, phonenumber
+        FROM sys_user
+        where dept_id IN (SELECT dept_id
+                          FROM sys_dept
+                          WHERE dept_name = '维修部门'
+                            AND parent_id = (SELECT dept_id FROM zy_community WHERE community_id = #{communityId}))
+          AND user_id NOT IN (SELECT user_id
+                              FROM sys_user_role
+                              WHERE role_id IN (SELECT role_id FROM sys_role WHERE role_name = '维修部经理'))
     </select>
 
     <!--根据菜单id获取其所有子集-->
     <select id="getChildrenById" resultType="long">
         select dept_id
-        from
-            (select
-                 t1.dept_id,
-                 if(FIND_IN_SET(parent_id,@pid)>0,@pid:= CONCAT( @pid ,",",dept_id),0) as ischild
-             from
-                 (select dept_id,parent_id from sys_dept t  ORDER BY  parent_id,order_num)t1,
-                 (	select @pid:=#{deptId}) t2
-            )t3 where ischild!=0
+        from (select t1.dept_id,
+                     if(FIND_IN_SET(parent_id, @pid) > 0, @pid := CONCAT(@pid, ",", dept_id), 0) as ischild
+              from (select dept_id, parent_id from sys_dept t ORDER BY parent_id, order_num) t1,
+                   (select @pid := #{deptId}) t2
+             ) t3
+        where ischild != 0
     </select>
     <!--更新状态-->
     <update id="updateDeptSon">
-        update sys_dept set status=#{status} where ancestors like concat(#{ancestors},'%')
+        update sys_dept
+        set status=#{status}
+        where ancestors like concat(#{ancestors}, '%')
     </update>
     <!--根据id查数据-->
     <select id="getDeptByDeptId" resultType="com.zy_admin.sys.entity.SysDept">
-        select * from sys_dept where dept_id = #{deptId}
+        select *
+        from sys_dept
+        where dept_id = #{deptId}
     </select>
     <!--根据条件查询部门-->
     <select id="getDeptList" resultType="com.zy_admin.sys.dto.DeptTreeDto">
@@ -42,7 +52,9 @@
         select *
         from sys_dept
         where dept_name = #{deptName}
-          and del_flag != 2 and parent_id=#{parentId} limit 1
+          and del_flag != 2
+          and parent_id = #{parentId}
+        limit 1
     </select>
     <!--新增部门 useGeneratedKeys(主键回显)-->
     <insert id="insertDept" keyProperty="deptId" useGeneratedKeys="true"
@@ -144,5 +156,4 @@
         from sys_dept
         where dept_id = #{deptId}
     </select>
-
 </mapper>

@@ -47,7 +47,7 @@ public interface ZyCommunityInteractionService extends IService<ZyCommunityInter
      * @param idList id列表
      * @return {@link Result}
      */
-    Result deleteInteractionByIdList(List<String> idList);
+    Result deleteInteractionByIdList(List<String> idList) throws Exception;
 
     /**
      * 添加互动信息
@@ -56,6 +56,6 @@ public interface ZyCommunityInteractionService extends IService<ZyCommunityInter
      * @return {@link Result}
      * @throws Exception 异常
      */
-    Result insert(ZyCommunityInteraction zyCommunityInteraction) throws Exception;
+    Result insert(ZyCommunityInteractionDto zyCommunityInteraction) throws Exception;
 }
 

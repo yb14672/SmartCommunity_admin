@@ -9,10 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -50,5 +47,20 @@ public class ZyCommunityCommentController {
         zyComment.setCreateBy(owner.getOwnerRealName());
         zyComment.setUserId(owner.getOwnerId());
         return this.zyCommentService.insert(zyComment);
+    }
+
+    /**
+     * 删除数据
+     *
+     * @param commentId 主键
+     * @return 删除结果
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "String", name = "commentId", value = "主键", required = true)
+    })
+    @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
+    @DeleteMapping("/{commentId}")
+    public Result delete(@PathVariable String commentId) {
+        return this.zyCommentService.delCommentById(commentId);
     }
 }

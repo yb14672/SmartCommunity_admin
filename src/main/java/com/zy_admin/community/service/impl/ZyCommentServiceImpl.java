@@ -53,7 +53,7 @@ public class ZyCommentServiceImpl extends ServiceImpl<ZyCommentDao, ZyComment> i
         Result result = new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
         zyComment.setCreateTime(LocalDateTime.now().toString());
         zyComment.setCommentId(snowflakeManager.nextId() + "");
-        int insert = this.baseMapper.insert(zyComment);
+        int insert = this.baseMapper.insertComment(zyComment);
         if(insert==1){
             result.setData("添加成功");
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));

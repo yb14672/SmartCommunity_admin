@@ -40,6 +40,21 @@ public class SysDeptController extends ApiController {
     private RequestUtil requestUtil;
 
     /**
+     * 根据小区ID查询对应物业的维修人员列表
+     *
+     * @param communityId 小区ID
+     * @return 维修人员列表
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "communityId", value = "小区ID", required = true)
+    })
+    @ApiOperation(value = "根据小区ID查询对应物业的维修人员列表", notes = "根据小区ID查询对应物业的维修人员列表", httpMethod = "GET")
+    @GetMapping("/getRepairByCommunityId")
+    public Result getRepairByCommunityId(String communityId){
+        return this.sysDeptService.getRepairByCommunityId(communityId);
+    }
+
+    /**
      * 通过条件搜索部门
      * @param sysDept 部门对象
      * @return 查询到的部门结果集

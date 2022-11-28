@@ -38,6 +38,11 @@
                  join zy_owner ow on ow.owner_id = o.owner_id
     </select>
 
+    <!-- 根据业主ID获取其房屋绑定列表-->
+    <select id="getOwnerRoomByOwnerId" resultType="com.zy_admin.community.entity.ZyOwnerRoom">
+        SELECT * FROM zy_owner_room WHERE room_status='Binding' and owner_id=#{ownerId}
+    </select>
+
     <!--新增所有列-->
     <insert id="insertOwnerRoom" keyProperty="ownerRoomId" useGeneratedKeys="true">
         insert into zy_owner_room(owner_room_id,community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status, create_by, create_time, update_by, update_time, remark)
@@ -120,7 +125,7 @@
     <!--查询所有业主审核的和分页-->
     <select id="selectAllOwnerRoomLimit" resultType="com.zy_admin.community.dto.ZyOwnerRoomDto">
         select zor.owner_room_id,zc.community_name,zb.building_name,zu.unit_name,zr.room_name,zo.owner_real_name,zor.owner_id,zor.update_by,
-        zor.owner_type,zor.room_status,zor.remark,zor.room_id
+        zor.owner_type,zor.room_status,zor.create_time,zor.remark,zor.room_id
         from zy_owner_room zor
         left join zy_community zc on zor.community_id = zc.community_id
         left join zy_building zb on zor.building_id = zb.building_id
@@ -132,6 +137,7 @@
                 and zor.room_status = #{zyOwnerRoom.roomStatus}
             </if>
         </where>
+        order by create_time desc
         <if test="pageable.pageSize!=null">
             limit #{pageable.index},#{pageable.pageSize}
         </if>

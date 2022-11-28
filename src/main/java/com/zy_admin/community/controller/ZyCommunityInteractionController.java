@@ -35,6 +35,9 @@ public class ZyCommunityInteractionController extends ApiController {
      */
     @Resource
     private ZyCommunityInteractionService zyCommunityInteractionService;
+    /**
+     * 请求工具类
+     */
     @Resource
     private RequestUtil requestUtil;
     /**
@@ -48,21 +51,23 @@ public class ZyCommunityInteractionController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
-    public Result selectAll(ZyCommunityInteractionDto zyCommunityInteraction) {
+    public Result selectAll(ZyCommunityInteractionDto zyCommunityInteraction,HttpServletRequest request) {
+        //由于是业主使用的小程序，所以只能看到已绑定的房屋对应的小区
+        zyCommunityInteraction.setUserId(requestUtil.getOwnerId(request));
         Page page = new Page<>(1,5);
         return this.zyCommunityInteractionService.selectAllLimit(page,zyCommunityInteraction);
     }
 
     /**
-     * 通过主键查询单条数据
+     * 通过文章ID查询详情和评论列表
      *
-     * @param id 主键
-     * @return 单条数据
+     * @param id  文章ID
+     * @return    单条数据
      */
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "path", dataType = "String", name = "id", value = "主键", required = true)
     })
-    @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
+    @ApiOperation(value = "通过文章ID查询详情和评论列表", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
     public Result selectOne(@PathVariable String id) {
         return this.zyCommunityInteractionService.getInteractionInfoById(id);
@@ -79,7 +84,7 @@ public class ZyCommunityInteractionController extends ApiController {
     })
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping
-    public Result insert(@RequestBody ZyCommunityInteraction zyCommunityInteraction, HttpServletRequest request) throws Exception {
+    public Result insert(@RequestBody ZyCommunityInteractionDto zyCommunityInteraction, HttpServletRequest request) throws Exception {
         zyCommunityInteraction.setCreateBy(requestUtil.getOwnerId(request));
         zyCommunityInteraction.setUserId(requestUtil.getOwnerId(request));
         return this.zyCommunityInteractionService.insert(zyCommunityInteraction);
@@ -111,7 +116,7 @@ public class ZyCommunityInteractionController extends ApiController {
     })
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping
-    public Result delete(@RequestParam("id") String id) {
+    public Result delete(@RequestParam("id") String id) throws Exception {
         List<String> idList = new ArrayList<>();
         idList.add(id);
         return this.zyCommunityInteractionService.deleteInteractionByIdList(idList);

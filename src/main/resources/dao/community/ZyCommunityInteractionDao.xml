@@ -141,6 +141,9 @@
         LEFT JOIN zy_owner o
         ON ci.user_id=o.owner_id
         WHERE del_flag = 0
+        <if test="userId != null and userId != ''">
+            and ci.user_id = #{userId}
+        </if>
         <if test="communityId != null and communityId != ''">
             and community_id = #{communityId}
         </if>
@@ -152,6 +155,27 @@
         </if>
         <if test="content != null and content != ''">
             and owner_phone_number like concat('%',#{ownerPhoneNumber},'%')
+        </if>
+        <if test="interactionId != null">
+            and interaction_id = #{interactionId}
+        </if>
+        <if test="createBy != null and createBy != ''">
+            and create_by = #{createBy}
+        </if>
+        <if test="updateBy != null and updateBy != ''">
+            and update_by = #{updateBy}
+        </if>
+        <if test="createTime != null">
+            and create_time = #{createTime}
+        </if>
+        <if test="updateTime != null">
+            and update_time = #{updateTime}
+        </if>
+        <if test="delFlag != null">
+            and del_flag = #{delFlag}
+        </if>
+        <if test="remark != null and remark != ''">
+            and remark = #{remark}
         </if>
     </select>
 
@@ -179,6 +203,9 @@
         left join zy_owner o
         on ci.user_id=o.owner_id
         where del_flag = 0 and community_id = #{dto.communityId}
+        <if test="dto.userId != null and dto.userId != ''">
+            and ci.user_id = #{dto.userId}
+        </if>
         <if test="dto.ownerNickname != null and dto.ownerNickname != ''">
             and owner_nickname like concat('%',#{dto.ownerNickname},'%')
         </if>
@@ -187,6 +214,27 @@
         </if>
         <if test="dto.ownerPhoneNumber != null and dto.ownerPhoneNumber != ''">
             and owner_phone_number like concat('%',#{dto.ownerPhoneNumber},'%')
+        </if>
+        <if test="dto.interactionId != null">
+            and interaction_id = #{dto.interactionId}
+        </if>
+        <if test="dto.createBy != null and createBy != ''">
+            and create_by = #{dto.createBy}
+        </if>
+        <if test="dto.updateBy != null and updateBy != ''">
+            and update_by = #{dto.updateBy}
+        </if>
+        <if test="dto.createTime != null">
+            and create_time = #{dto.createTime}
+        </if>
+        <if test="dto.updateTime != null">
+            and update_time = #{dto.updateTime}
+        </if>
+        <if test="dto.delFlag != null">
+            and del_flag = #{dto.delFlag}
+        </if>
+        <if test="dto.remark != null and dto.remark != ''">
+            and remark = #{dto.remark}
         </if>
         order by
         (select count(1) from zy_comment where interaction_id = ci.interaction_id) desc,ci.create_time desc

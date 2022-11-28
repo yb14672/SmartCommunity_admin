@@ -130,7 +130,6 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
     public Result insertSuggest(ZyComplaintSuggest zyComplaintSuggest) throws Exception {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         zyComplaintSuggest.setComplaintSuggestId(snowflakeManager.nextId() + "");
-        zyComplaintSuggest.setCreateTime(LocalDateTime.now().toString());
         //判断是否重复x
         try {
             //新增

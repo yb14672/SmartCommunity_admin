@@ -72,6 +72,7 @@
             </if>
             and zcs.community_id = #{zyComplaintSuggest.communityId}
         </where>
+        order by  create_time desc
         <if test="pageable.pageSize!=null">
             limit #{pageable.index},#{pageable.pageSize}
         </if>
@@ -108,8 +109,8 @@
 
     <!--新增所有列-->
     <insert id="insertSuggest" keyProperty="complaintSuggestId" useGeneratedKeys="true">
-        insert into zy_complaint_suggest(community_id, complaint_suggest_type, complaint_suggest_content, create_by, create_time, update_by, update_time, remark, user_id)
-        values (#{zyComplaintSuggest.communityId}, #{zyComplaintSuggest.complaintSuggestType}, #{zyComplaintSuggest.complaintSuggestContent}, #{zyComplaintSuggest.createBy}, #{zyComplaintSuggest.createTime}, #{zyComplaintSuggest.updateBy}, #{zyComplaintSuggest.updateTime}, #{zyComplaintSuggest.remark}, #{zyComplaintSuggest.userId})
+        insert into zy_complaint_suggest(complaint_suggest_id,community_id, complaint_suggest_type, complaint_suggest_content, create_by, create_time, update_by, update_time, remark, user_id)
+        values (#{zyComplaintSuggest.complaintSuggestId},#{zyComplaintSuggest.communityId}, #{zyComplaintSuggest.complaintSuggestType}, #{zyComplaintSuggest.complaintSuggestContent}, #{zyComplaintSuggest.createBy}, #{zyComplaintSuggest.createTime}, #{zyComplaintSuggest.updateBy}, #{zyComplaintSuggest.updateTime}, #{zyComplaintSuggest.remark}, #{zyComplaintSuggest.userId})
     </insert>
 
     <insert id="insertBatch" keyProperty="complaintSuggestId" useGeneratedKeys="true">

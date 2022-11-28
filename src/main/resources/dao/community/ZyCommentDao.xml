@@ -24,9 +24,19 @@
         <result property="interactionId" column="interaction_id" jdbcType="INTEGER"/>
         <result property="userId" column="user_id" jdbcType="INTEGER"/>
         <result property="ownerName" column="ownerName" jdbcType="VARCHAR"/>
+        <result property="ownerNickName" column="ownerNickName" jdbcType="VARCHAR"/>
         <result property="ownerPortrait" column="ownerPortrait" jdbcType="VARCHAR"/>
         <result property="passiveOwnerName" column="passiveOwnerName" jdbcType="VARCHAR"/>
     </resultMap>
+
+    <!--根据文章ID列表批量逻辑删除评论-->
+    <delete id="deleteByInteractionIdList">
+        update zy_comment set del_flag = 1
+        where interaction_id in
+        <foreach collection="interactionIds" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
 
     <!--逻辑删除评论-->
     <update id="deleteCommentById">
@@ -37,7 +47,7 @@
     <!--查询单个-->
     <select id="queryByInteractionId" resultMap="ZyCommentDto">
         select wc.comment_id, wc.user_id, wc.update_by, wc.create_time, wc.update_time, wc.content, wc.parent_id,
-        wc.del_flag, wc.interaction_id,wo.owner_real_name ownerName,wo.owner_portrait ownerPortrait,
+        wc.del_flag, wc.interaction_id,wo.owner_real_name ownerName,wo.owner_nickname ownerNickName,wo.owner_portrait ownerPortrait,
         (SELECT owner_nickname FROM zy_owner wo1 WHERE wo1.owner_id =
         (SELECT wc1.user_id FROM zy_comment wc1 WHERE wc1.comment_id = wc.parent_id ) ) passiveOwnerName
         from zy_comment wc left join zy_owner wo on wc.user_id = wo.owner_id
@@ -144,11 +154,11 @@
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" keyProperty="commentId" useGeneratedKeys="true">
-        insert into zy_comment(create_by, update_by, create_time, update_time, content, parent_id, del_flag,
-                               interaction_id, user_id, remark, root_id)
-        values (#{createBy}, #{updateBy}, #{createTime}, #{updateTime}, #{content}, #{parentId}, #{delFlag},
-                #{interactionId}, #{userId}, #{remark}, #{rootId})
+    <insert id="insertComment" keyProperty="commentId" useGeneratedKeys="true">
+        insert into zy_comment(comment_id,create_by, create_time, content, parent_id, del_flag,
+                               interaction_id, user_id, root_id)
+        values (#{commentId},#{createBy}, #{createTime}, #{content}, #{parentId}, '0',
+                #{interactionId}, #{userId}, #{rootId})
     </insert>
 
     <insert id="insertBatch" keyProperty="commentId" useGeneratedKeys="true">

@@ -21,9 +21,11 @@ import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
 import com.zy_admin.util.StringUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,7 +41,6 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
     private ZyFilesDao zyFilesDao;
     @Resource
     private ZyCommentDao zyCommentDao;
-
     @Resource
     private SnowflakeManager snowflakeManager;
 
@@ -58,7 +59,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
         List<ZyCommentDto> commentList = this.zyCommentDao.queryByInteractionId(zyCommentDto);
         //获取当前文章的详细信息
         ZyCommunityInteractionDto interactionDto = this.baseMapper.selectInteractionById(interactionId);
-        if(interactionDto!=null && ObjUtil.isNotEmpty(interactionDto)){
+        if (interactionDto != null && ObjUtil.isNotEmpty(interactionDto)) {
             interactionDto.setZyCommentList(commentList);
             result.setData(interactionDto);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
@@ -122,9 +123,9 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
         List<ZyCommunityInteractionDto> interactionDtoList = this.baseMapper.selectAllLimit(interactionDto, pageable);
         if (interactionDtoList.size() != 0) {
             for (ZyCommunityInteractionDto zyCommunityInteractionDto : interactionDtoList) {
-                String parentId=zyCommunityInteractionDto.getInteractionId();
-                List<ZyFiles> files = this.zyFilesDao.queryAllFile(parentId,"CommunityInteraction");
-                List<String> fileUrl = this.zyFilesDao.queryAllFileUrl(parentId,"CommunityInteraction");
+                String parentId = zyCommunityInteractionDto.getInteractionId();
+                List<ZyFiles> files = this.zyFilesDao.queryAllFile(parentId, "CommunityInteraction");
+                List<String> fileUrl = this.zyFilesDao.queryAllFileUrl(parentId, "CommunityInteraction");
                 zyCommunityInteractionDto.setZyFiles(files);
                 zyCommunityInteractionDto.setUrlList(fileUrl);
             }
@@ -171,29 +172,66 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
      * @return {@link Result}
      */
     @Override
-    public Result deleteInteractionByIdList(List<String> idList) {
+    @Transactional(rollbackFor = Exception.class)
+    public Result deleteInteractionByIdList(List<String> idList) throws Exception {
         Result result = new Result("删除失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
+        //先删除文章，删除成功后再删评论
         int i = this.baseMapper.deleteInteractionByIdList(idList);
         if (i > 0) {
-            result.setData("删除成功");
-            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            int i1 = this.zyCommentDao.deleteByInteractionIdList(idList);
+            if (i1 > 0) {
+                result.setData("删除成功");
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                return result;
+            }
         }
-        return result;
+        throw new Exception("删除失败");
     }
 
     /**
      * 添加互动信息
      *
-     * @param zyCommunityInteraction 互动信息
+     * @param interactionDto 互动信息
      * @return {@link Result}
      */
     @Override
-    public Result insert(ZyCommunityInteraction zyCommunityInteraction) throws Exception {
+    public Result insert(ZyCommunityInteractionDto interactionDto) throws Exception {
         Result result = new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
-        zyCommunityInteraction.setCreateTime(LocalDateTime.now().toString());
-        zyCommunityInteraction.setInteractionId(snowflakeManager.nextId() + "");
-        int insert = this.baseMapper.insert(zyCommunityInteraction);
-        if(insert==1){
+        ZyCommunityInteraction interaction = new ZyCommunityInteraction();
+        interaction.setCreateTime(LocalDateTime.now().toString());
+        String interactionId = snowflakeManager.nextId() + "";
+        interaction.setInteractionId(interactionId);
+        interaction.setCommunityId(interactionDto.getCommunityId());
+        interaction.setCreateBy(interactionDto.getCreateBy());
+        interaction.setContent(interactionDto.getContent());
+        interaction.setUserId(interactionDto.getUserId());
+        String remark = interactionDto.getRemark();
+        interaction.setRemark(remark == null || StringUtil.isEmpty(remark) ? null : "");
+        interaction.setDelFlag(0);
+        int insert = this.baseMapper.insert(interaction);
+        if (insert == 1) {
+            List<String> urlList = interactionDto.getUrlList();
+            //如果有添加文件或者图片则添加
+            if (urlList.size() > 0 || !urlList.isEmpty()) {
+                List<ZyFiles> files=new ArrayList<>();
+                for (String url : urlList) {
+                    ZyFiles zyFile = new ZyFiles();
+                    zyFile.setFilesUrl(url);
+                    zyFile.setFilesId(snowflakeManager.nextId() + "");
+                    zyFile.setCreateTime(LocalDateTime.now().toString());
+                    zyFile.setCreateBy(interactionDto.getCreateBy());
+                    zyFile.setDelFlag(0);
+                    zyFile.setSource(0);
+                    zyFile.setRemark("CommunityInteraction");
+                    zyFile.setParentId(interactionId);
+                    zyFile.setUserId(interactionDto.getUserId());
+                    files.add(zyFile);
+                }
+                int i = this.zyFilesDao.insertBatch(files);
+                if (i < 1) {
+                    return result;
+                }
+            }
             result.setData("添加成功");
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
