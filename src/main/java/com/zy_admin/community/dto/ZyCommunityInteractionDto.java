@@ -57,7 +57,7 @@ public class ZyCommunityInteractionDto extends ZyCommunityInteraction {
      */
     @ApiModelProperty("图片地址list")
     @ExcelIgnore
-    private List<ZyFiles> urlList;
+    private List<String> urlList;
 
     /**
      * 文件表

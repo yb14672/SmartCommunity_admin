@@ -10,7 +10,6 @@ import com.zy_admin.community.dao.ZyFilesDao;
 import com.zy_admin.community.dao.ZyOwnerDao;
 import com.zy_admin.community.dto.ZyComplaintSuggestDto;
 import com.zy_admin.community.entity.ZyComplaintSuggest;
-import com.zy_admin.community.entity.ZyFiles;
 import com.zy_admin.community.service.ZyComplaintSuggestService;
 import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.ResultTool;
@@ -93,14 +92,14 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
 
             for (int i = 0; i < zyComplaintSuggestList.size(); i++) {
                 String id = zyComplaintSuggestList.get(i).getComplaintSuggestId();
-                List<ZyFiles> filesList = zyFilesDao.queryAllFileUrl(id,"ComplaintSuggest");
+                List<String> filesList = zyFilesDao.queryAllFileUrl(id,"ComplaintSuggest");
                 zyComplaintSuggestList.get(i).setFilesUrl(filesList);
             }
         }
         Page<ZyComplaintSuggestDto> page = new Page<>(zyComplaintSuggestList,pageable);
         //存入数据
         result.setData(page);
-        System.out.println(page);
+//        System.out.println(page);
         //返回信号
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
@@ -167,8 +166,9 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断数据的值有没有改变 zyComplaintSuggest1是原来的对象
         ZyComplaintSuggest zyComplaintSuggest1 = this.baseMapper.queryById(zyComplaintSuggest.getComplaintSuggestId());
-        String[] fields = new String[]{"ComplaintSuggestContent", "complaintSuggestType", "complaintSuggestId"};
-        if (!ObjUtil.checkEquals(zyComplaintSuggest,zyComplaintSuggest1,fields)){
+        String[] fields = new String[]{"ComplaintSuggestContent"};
+        System.out.println(ObjUtil.checkEquals(zyComplaintSuggest,zyComplaintSuggest1,fields));
+//        if (!ObjUtil.checkEquals(zyComplaintSuggest,zyComplaintSuggest1,fields)){
             //默认给失败
             try {
                     //判断重复x
@@ -182,10 +182,10 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
                 result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
             }
             return result;
-        }else {
-            result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
-            return result;
-        }
+//        }else {
+//            result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
+//            return result;
+//        }
 
     }
 

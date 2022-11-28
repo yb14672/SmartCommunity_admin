@@ -116,11 +116,11 @@
         select * from zy_files
         where parent_id = #{id} and remark = #{remark}
     </select>
-    <!--根据id查询图片-->
-    <select id="queryAllFileUrl" resultType="com.zy_admin.community.entity.ZyFiles">
+    <select id="queryAllFileUrl" resultType="java.lang.String">
         select files_url from zy_files
         where parent_id = #{id} and remark = #{remark}
     </select>
+
 
     <!--新增所有列-->
     <insert id="insertFile" keyProperty="filesId" useGeneratedKeys="true">

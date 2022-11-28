@@ -91,7 +91,7 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
     public Result getOwnerById(String ownerId) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         ZyOwner owner = this.baseMapper.selectById(ownerId);
-        if (ObjUtil.isNotEmpty(owner)||"".equals(owner.getOwnerId())) {
+        if (ObjUtil.isNotEmpty(owner)&&!"".equals(owner.getOwnerId())) {
             result.setData(owner);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
@@ -174,7 +174,7 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
             String jwtToken = JwtUtil.getJwtToken(zyOwner.getOwnerId(), zyOwner.getOwnerPhoneNumber());
             redisService.set(jwtToken, zyOwner.getOwnerId());
             result.setData(jwtToken);
-            if (!"Enable".equals(zyOwner.getOwnerStatus())){
+            if (!"Enable".equalsIgnoreCase(zyOwner.getOwnerStatus())){
                 result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED));
                 return result;
             }

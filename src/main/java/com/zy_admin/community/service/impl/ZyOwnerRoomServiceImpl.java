@@ -11,7 +11,6 @@ import com.zy_admin.community.dao.ZyRoomDao;
 import com.zy_admin.community.dto.OwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerRoomDtoAll;
-import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomService;
@@ -23,7 +22,6 @@ import com.zy_admin.util.TreeData;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -43,11 +41,6 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
      */
     @Resource
     private SysUserDao sysUserDao;
-    /**
-     * 业主
-     */
-    @Resource
-    private ZyOwnerDao zyOwnerDao;
 
     /**
      * 业主房间记录道

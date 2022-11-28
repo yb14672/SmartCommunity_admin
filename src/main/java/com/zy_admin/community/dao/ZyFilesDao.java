@@ -19,7 +19,7 @@ public interface ZyFilesDao extends BaseMapper<ZyFiles> {
      * @param remark    备注信息
      * @return          图片路径集合
      */
-    List<ZyFiles> queryAllFileUrl(@Param("id") String id,@Param("remark") String remark);
+    List<String> queryAllFileUrl(@Param("id") String id,@Param("remark") String remark);
 
     /**
      * 根据id查询文件信息

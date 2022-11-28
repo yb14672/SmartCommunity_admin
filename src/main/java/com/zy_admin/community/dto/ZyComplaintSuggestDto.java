@@ -1,7 +1,6 @@
 package com.zy_admin.community.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.zy_admin.community.entity.ZyFiles;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -69,7 +68,7 @@ public class ZyComplaintSuggestDto {
      */
     @ApiModelProperty("投诉建议图片")
     @ExcelProperty("投诉建议图片")
-    private List<ZyFiles> filesUrl;
+    private List<String> filesUrl;
 
     /**
      * 更新者

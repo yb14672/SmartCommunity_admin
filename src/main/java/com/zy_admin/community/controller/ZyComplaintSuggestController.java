@@ -214,6 +214,9 @@ public class ZyComplaintSuggestController extends ApiController {
     @ApiOperation(value = "分页查询", notes = "分页查询", httpMethod = "GET")
     @GetMapping("/selectSuggestLimit")
     public Result selectSuggestLimit(ZyComplaintSuggest zyComplaintSuggest, Pageable pageable){
+        Result result = zyComplaintSuggestService.selectSuggestLimit(zyComplaintSuggest, pageable);
+        System.out.println(result);
+
         return zyComplaintSuggestService.selectSuggestLimit(zyComplaintSuggest, pageable);
     }
 }

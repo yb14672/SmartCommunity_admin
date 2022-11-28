@@ -57,6 +57,7 @@ public class RequestUtil {
     public ZyOwner getOwner(HttpServletRequest request) {
         String id = JwtUtil.getMemberIdByJwtToken(request,"Authorization");
         Result result = zyOwnerService.getOwnerById(id);
+        System.out.println(result);
         return (ZyOwner) result.getData();
     }
 
