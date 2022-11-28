@@ -53,6 +53,13 @@ public class ZyOwnerController extends ApiController {
     @Resource
     private RequestUtil requestUtil;
 
+    /**
+     * 更新主人头像
+     *
+     * @param zyOwner zy所有者
+     * @param request 请求
+     * @return {@link Result}
+     */
     @PutMapping("/updateOwnerPortrait")
     public Result updateOwnerPortrait(@RequestBody ZyOwner zyOwner, HttpServletRequest request){
         return zyOwnerService.updateOwnerPortrait(zyOwner, request);
