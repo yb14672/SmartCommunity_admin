@@ -12,6 +12,7 @@ import com.zy_admin.community.dto.ZyComplaintSuggestDto;
 import com.zy_admin.community.entity.ZyComplaintSuggest;
 import com.zy_admin.community.entity.ZyFiles;
 import com.zy_admin.community.service.ZyComplaintSuggestService;
+import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
 import org.springframework.stereotype.Service;
@@ -142,8 +143,6 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         zyComplaintSuggest.setComplaintSuggestId(snowflakeManager.nextId() + "");
         //判断是否重复x
         try {
-            Integer ownerIdCardByOwnerId = zyOwnerDao.selectOwnerIdCardByOwnerId(zyComplaintSuggest.getUserId());
-            if (ownerIdCardByOwnerId>0){
                 //新增
                 Integer i = this.baseMapper.insertSuggest(zyComplaintSuggest);
                 if (i == 1) {
@@ -151,11 +150,6 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
                     result.setData("新增成功");
                 }
                 return result;
-            }else {
-                return new Result(null, ResultTool.fail(ResultCode.NO_REALNAME_AUTHENTICATION));
-            }
-
-
         } catch (Exception e) {
             e.printStackTrace();
             return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -170,28 +164,29 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
      */
     @Override
     public Result updateSuggest(ZyComplaintSuggest zyComplaintSuggest) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断数据的值有没有改变 zyComplaintSuggest1是原来的对象
         ZyComplaintSuggest zyComplaintSuggest1 = this.baseMapper.queryById(zyComplaintSuggest.getComplaintSuggestId());
-        //默认给失败
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        try {
-            Integer ownerIdCardByOwnerId = zyOwnerDao.selectOwnerIdCardByOwnerId(zyComplaintSuggest.getUserId());
-            if (ownerIdCardByOwnerId>0){
-                //判断重复x
-                zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
-                int i = this.baseMapper.updateSuggest(zyComplaintSuggest);
-                if (i == 1) {
-                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-                }
-            }else {
-                return new Result(null, ResultTool.fail(ResultCode.NO_REALNAME_AUTHENTICATION));
+        String[] fields = new String[]{"ComplaintSuggestContent", "complaintSuggestType", "complaintSuggestId"};
+        if (!ObjUtil.checkEquals(zyComplaintSuggest,zyComplaintSuggest1,fields)){
+            //默认给失败
+            try {
+                    //判断重复x
+                    zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
+                    int i = this.baseMapper.updateSuggest(zyComplaintSuggest);
+                    if (i == 1) {
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                    }
+            } catch (Exception e) {
+                e.printStackTrace();
+                result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+            return result;
+        }else {
+            result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
+            return result;
         }
-        return result;
+
     }
 
     /**

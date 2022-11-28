@@ -28,7 +28,7 @@ public interface ZyOwnerDao extends BaseMapper<ZyOwner> {
      * @return
      */
     @Select("select * from zy_owner where owner_id = #{ownerId}")
-    Integer selectOwnerIdCardByOwnerId(String ownerId);
+    Long selectOwnerIdCardByOwnerId(String ownerId);
 
     /**
      * 业主个人信息设置

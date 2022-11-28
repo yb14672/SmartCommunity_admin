@@ -97,6 +97,28 @@ public class ZyComplaintSuggestController extends ApiController {
         return result;
     }
     /**
+     * 回复投诉建议
+     * @param zyComplaintSuggest 要更新的投诉建议对象
+     * @param request 前端请求
+     * @return 更新投诉建议结果集
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyComplaintSuggest", name = "zyComplaintSuggest", value = "要更新的投诉建议对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端请求", required = true)
+    })
+    @ApiOperation(value = "回复投诉建议", notes = "回复投诉建议", httpMethod = "PUT")
+    @PutMapping("/updateSuggest")
+    public Result updateSuggest(@RequestBody ZyComplaintSuggest zyComplaintSuggest, HttpServletRequest request){
+        System.out.println(request+"reequest");
+        SysUser user = this.requestUtil.getUser(request);
+        System.out.println(user);
+        zyComplaintSuggest.setUpdateBy(user.getUserName());
+        zyComplaintSuggest.setUserId(user.getUserId()+"");
+        zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
+        return zyComplaintSuggestService.updateSuggest(zyComplaintSuggest);
+    }
+
+    /**
      * 更新投诉和建议
      * @param zyComplaintSuggest 要更新的投诉建议对象
      * @param request 前端请求
@@ -107,11 +129,11 @@ public class ZyComplaintSuggestController extends ApiController {
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端请求", required = true)
     })
     @ApiOperation(value = "更新投诉建议", notes = "更新投诉建议", httpMethod = "PUT")
-    @PutMapping("/updateSuggest")
-    public Result updateSuggest(@RequestBody ZyComplaintSuggest zyComplaintSuggest, HttpServletRequest request){
-        SysUser user = this.requestUtil.getUser(request);
-        zyComplaintSuggest.setUpdateBy(user.getUserName());
-        zyComplaintSuggest.setUserId(user.getUserId()+"");
+    @PutMapping("/updateSuggestOwner")
+    public Result updateSuggestOwner(@RequestBody ZyComplaintSuggest zyComplaintSuggest, HttpServletRequest request){
+        ZyOwner owner = this.requestUtil.getOwner(request);
+        zyComplaintSuggest.setUpdateBy(owner.getOwnerRealName());
+        zyComplaintSuggest.setUserId(owner.getOwnerId());
         zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
         return zyComplaintSuggestService.updateSuggest(zyComplaintSuggest);
     }

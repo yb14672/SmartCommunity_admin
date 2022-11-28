@@ -40,6 +40,11 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
      */
     @Resource
     private SysUserDao sysUserDao;
+    /**
+     * 业主
+     */
+    @Resource
+    private ZyOwnerDao zyOwnerDao;
 
     /**
      * 业主房间记录道
@@ -65,20 +70,26 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     @Override
     public Result ownerInsert(ZyOwnerRoom ownerRoom) throws Exception {
         Result result = new Result("提交失败",ResultTool.fail(ResultCode.OWNER_ROOM_INSERT_FAIL));
-        ZyOwnerRoom zyOwnerRoom = this.baseMapper.checkOwnerRoom(ownerRoom);
-        if (zyOwnerRoom != null ){
-            result.setData("提交失败");
-            result.setMeta(ResultTool.fail(ResultCode.REPEAT_OWNER_ROOM));
+//        Long ownerIdCardByOwnerId = zyOwnerDao.selectOwnerIdCardByOwnerId(ownerRoom.getOwnerId());
+//        if (ownerIdCardByOwnerId>0){
+            ZyOwnerRoom zyOwnerRoom = this.baseMapper.checkOwnerRoom(ownerRoom);
+            if (zyOwnerRoom != null ){
+                result.setData("提交失败");
+                result.setMeta(ResultTool.fail(ResultCode.REPEAT_OWNER_ROOM));
+                return result;
+            }
+            ownerRoom.setOwnerRoomId(snowflakeManager.nextId()+"");
+            ownerRoom.setCreateTime(LocalDateTime.now().toString());
+            Integer i = this.baseMapper.insertOwnerRoom(ownerRoom);
+            if (i == 1){
+                result.setData("提交成功");
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            }
             return result;
-        }
-        ownerRoom.setOwnerRoomId(snowflakeManager.nextId()+"");
-        ownerRoom.setCreateTime(LocalDateTime.now().toString());
-        Integer i = this.baseMapper.insertOwnerRoom(ownerRoom);
-        if (i == 1){
-            result.setData("提交成功");
-            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-        }
-        return result;
+//        }else {
+//            return new Result(null, ResultTool.fail(ResultCode.NO_REALNAME_AUTHENTICATION));
+//        }
+
     }
 
     @Override
@@ -147,25 +158,30 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     public Result updateOwnerRoomStatus(ZyOwnerRoom zyOwnerRoom, String recordAuditOpinion) throws Exception {
         //默认给失败
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        ZyOwnerRoomRecord zyOwnerRoomRecord=new ZyOwnerRoomRecord();
-        zyOwnerRoomRecord.setRecordAuditOpinion(recordAuditOpinion);
-        zyOwnerRoomRecord.setOwnerId(zyOwnerRoom.getOwnerId()+"");
-        //id
-        zyOwnerRoomRecord.setRecordId(snowflakeManager.nextId()+"");
-        zyOwnerRoomRecord.setOwnerType("yz");
-        zyOwnerRoomRecord.setOwnerRoomId(zyOwnerRoom.getOwnerRoomId());
-        zyOwnerRoomRecord.setRoomStatus(zyOwnerRoom.getRoomStatus());
-        zyOwnerRoomRecord.setUpdateTime(LocalDateTime.now().toString());
-        zyOwnerRoomRecordDao.insert(zyOwnerRoomRecord);
-        //修改时间
-        zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());
-        this.baseMapper.updateOwnerRoomStatus(zyOwnerRoom);
-        //判断审核是不是通过
-        if ("Binding".equals(zyOwnerRoom.getRoomStatus())){
-            zyRoomDao.updateRoomStatus(zyOwnerRoom.getRoomId()+"");
-        }
-        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-        return result;
+//        Long ownerIdCardByOwnerId = zyOwnerDao.selectOwnerIdCardByOwnerId(zyOwnerRoom.getOwnerId());
+//        if (ownerIdCardByOwnerId>0){
+            ZyOwnerRoomRecord zyOwnerRoomRecord=new ZyOwnerRoomRecord();
+            zyOwnerRoomRecord.setRecordAuditOpinion(recordAuditOpinion);
+            zyOwnerRoomRecord.setOwnerId(zyOwnerRoom.getOwnerId()+"");
+            //id
+            zyOwnerRoomRecord.setRecordId(snowflakeManager.nextId()+"");
+            zyOwnerRoomRecord.setOwnerType("yz");
+            zyOwnerRoomRecord.setOwnerRoomId(zyOwnerRoom.getOwnerRoomId());
+            zyOwnerRoomRecord.setRoomStatus(zyOwnerRoom.getRoomStatus());
+            zyOwnerRoomRecord.setUpdateTime(LocalDateTime.now().toString());
+            zyOwnerRoomRecordDao.insert(zyOwnerRoomRecord);
+            //修改时间
+            zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());
+            this.baseMapper.updateOwnerRoomStatus(zyOwnerRoom);
+            //判断审核是不是通过
+            if ("Binding".equals(zyOwnerRoom.getRoomStatus())){
+                zyRoomDao.updateRoomStatus(zyOwnerRoom.getRoomId()+"");
+            }
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            return result;
+//        }else {
+//            return new Result(null, ResultTool.fail(ResultCode.NO_REALNAME_AUTHENTICATION));
+//        }
     }
 
 }

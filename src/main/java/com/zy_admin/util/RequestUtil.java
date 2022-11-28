@@ -43,6 +43,7 @@ public class RequestUtil {
      */
     public SysUser getUser(HttpServletRequest request) {
         String id = JwtUtil.getMemberIdByJwtToken(request,"token");
+        System.out.println(id+"id");
         Result result = sysUserService.queryById(id);
         return (SysUser) result.getData();
     }
