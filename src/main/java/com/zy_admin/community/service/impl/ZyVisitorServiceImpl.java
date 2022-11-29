@@ -12,6 +12,7 @@ import com.zy_admin.community.service.ZyVisitorService;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -23,6 +24,9 @@ import java.util.List;
 @Service("zyVisitorService")
 public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> implements ZyVisitorService {
 
+
+//    @Resource
+//    private OwnerRoomDao ownerRoomDao;
     /**
      * 得到访客列表通过社区ID
      *
