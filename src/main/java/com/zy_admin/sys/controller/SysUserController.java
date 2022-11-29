@@ -50,6 +50,33 @@ public class SysUserController extends ApiController {
     @Resource
     private RequestUtil requestUtil;
     /**
+     * 查询制定部门
+     * @param communityId
+     * @return 查询结果
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "long", name = "communityId", value = "", required = true)
+    })
+    @ApiOperation(value = "查询制定部门", notes = "查询制定部门")
+    @GetMapping("/getUserByDeptAndCommunityId")
+    public Result getUserByDeptAndCommunityId(@RequestParam("communityId") Long communityId){
+        return sysUserService.getUserByDeptAndCommunityId(communityId);
+    }
+    /**
+     * 查询用户用户id
+     *
+     * @param userId 用户id
+     * @return {@code Result}
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", dataType = "long", name = "userId", value = "用户id", required = true)
+    })
+    @ApiOperation(value = "查询用户用户id", notes = "查询用户用户id")
+    @GetMapping("/queryUserByUserId")
+    public Result queryUserByUserId(@RequestParam("userId") Long userId) {
+        return sysUserService.queryUserByUserId(userId);
+    }
+    /**
      * 退出
      * @param request 前端请求
      * @return 成功或失败的结果集
