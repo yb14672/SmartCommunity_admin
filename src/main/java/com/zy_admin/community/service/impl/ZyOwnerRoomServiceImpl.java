@@ -66,11 +66,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     public boolean checkOwnerRoom(ZyOwnerRoom ownerRoom) {
         //检查该房屋是否已经提交审核
         ZyOwnerRoom zyOwnerRoom = this.baseMapper.checkOwnerRoom(ownerRoom);
-        System.err.println("ownerRoom = " + zyOwnerRoom);
         if (zyOwnerRoom == null ){
-            return true;
-        }
-        if ("Reject".equals(zyOwnerRoom.getRoomStatus())){
             return true;
         }
         return false;
