@@ -7,7 +7,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- *配置拦截器
+ * 配置拦截器
+ *
  * @author admin
  */
 @Configuration

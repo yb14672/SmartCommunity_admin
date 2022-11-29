@@ -38,7 +38,6 @@ public class JwtUtil {
                 // HS256算法实际上就是MD5加盐值，此时APP_SECRET就代表盐值
                 .signWith(SignatureAlgorithm.HS256, APP_SECRET)
                 .compact();
-
         return JwtToken;
     }
     /**

@@ -179,7 +179,7 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
             String jwtToken = JwtUtil.getJwtToken(zyOwner.getOwnerId(), zyOwner.getOwnerPhoneNumber());
             redisService.set(jwtToken, zyOwner.getOwnerId());
             result.setData(jwtToken);
-            if (!"Enable".equalsIgnoreCase(zyOwner.getOwnerStatus())){
+            if (!"Enable".equals(zyOwner.getOwnerStatus())){
                 result.setData(null);
                 result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED));
                 return result;
