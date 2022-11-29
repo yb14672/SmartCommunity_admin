@@ -95,6 +95,23 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     }
 
     /**
+     * 根据业主ID获取其房屋绑定列表
+     *
+     * @param ownerId 业主ID
+     * @return 关联关系列表
+     */
+    @Override
+    public Result getOwnerRoomByOwnerId(String ownerId) {
+        Result result = new Result("加载失败，请稍后重试", ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<ZyOwnerRoom> ownerRoomByOwnerId = this.baseMapper.getOwnerRoomByOwnerId(ownerId);
+        if(!ownerRoomByOwnerId.isEmpty()||ownerRoomByOwnerId.size()!=0){
+            result.setData(ownerRoomByOwnerId);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+
+    /**
      * 提交房屋绑定
      *
      * @param ownerRoom 老板房间

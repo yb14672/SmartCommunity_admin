@@ -28,6 +28,11 @@ public interface ZyFilesDao extends BaseMapper<ZyFiles> {
      */
     List<ZyFiles> queryAllFile(@Param("id") String id,@Param("remark") String remark);
 
-    int insertBatch(List<ZyFiles> filesList);
+    /**
+     * 批量上传文件
+     * @param filesList 文件列表
+     * @return 影响行数
+     */
+    int insertBatch(@Param("filesList") List<ZyFiles> filesList);
 }
 

@@ -179,11 +179,9 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
         int i = this.baseMapper.deleteInteractionByIdList(idList);
         if (i > 0) {
             int i1 = this.zyCommentDao.deleteByInteractionIdList(idList);
-            if (i1 > 0) {
-                result.setData("删除成功");
-                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-                return result;
-            }
+            result.setData("删除成功");
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            return result;
         }
         throw new Exception("删除失败");
     }
@@ -195,6 +193,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
      * @return {@link Result}
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result insert(ZyCommunityInteractionDto interactionDto) throws Exception {
         Result result = new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
         ZyCommunityInteraction interaction = new ZyCommunityInteraction();
@@ -213,7 +212,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
             List<String> urlList = interactionDto.getUrlList();
             //如果有添加文件或者图片则添加
             if (urlList.size() > 0 || !urlList.isEmpty()) {
-                List<ZyFiles> files=new ArrayList<>();
+                List<ZyFiles> files = new ArrayList<>();
                 for (String url : urlList) {
                     ZyFiles zyFile = new ZyFiles();
                     zyFile.setFilesUrl(url);

@@ -39,13 +39,14 @@ logging:
 ## minio的配置
 minio:
   # minio的地址
-  endpoint: http://127.0.0.1:9000
+#  endpoint: http://192.168.31.218:9001
+  endpoint: http://192.168.42.199:9001
   ## 登录账号
   accessKey: minioadmin
   ## 登录密码
   secretKey: minioadmin
   ## 存储桶名称
-  bucketName: test
+  bucketName: zy-community
 
 #雪花算法配置
 com:
