@@ -52,7 +52,7 @@ public interface ZyOwnerRoomDao extends BaseMapper<ZyOwnerRoom> {
      获取小区，楼栋，单元，房屋四级联动的树形结构
      * @return 树形结构
      */
-    @Select("SELECT community_id id, community_name NAME, 0 parent_id FROM zy_community UNION SELECT building_id id, building_name NAME,community_id parent_id FROM zy_building UNION SELECT unit_id,unit_name,building_id parent_id FROM zy_unit UNION SELECT room_id, room_name,unit_id parent_id FROM zy_room WHERE room_id NOT IN (SELECT room_id from zy_owner_room where != 'Reject')")
+    @Select("SELECT community_id id, community_name NAME, 0 parent_id FROM zy_community UNION SELECT building_id id, building_name NAME,community_id parent_id FROM zy_building UNION SELECT unit_id,unit_name,building_id parent_id FROM zy_unit UNION SELECT room_id, room_name,unit_id parent_id FROM zy_room WHERE room_id NOT IN (SELECT room_id from zy_owner_room where room_status != 'Reject')")
     List<RoomTree> getTreeRoom();
 
 
