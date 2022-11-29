@@ -48,6 +48,7 @@ public enum ResultCode {
     REPEAT_PHONE_NUMBER(2020,"手机号已被使用"),
     OWNER_UPDATE_FAIL(2021,"业主信息修改失败"),
     NO_ROLE(2022,"该用户没有角色"),
+    OWNER_NOT_BOUND(2023,"业主未绑定"),
     USER_INFO_GET_FAIL(2023,"业主信息获取失败"),
     REPEAT_ID_CARD(2024,"身份证号已被绑定"),
     PASSWORD_UPDATE_FAIL(2025,"密码修改失败"),
@@ -123,7 +124,9 @@ public enum ResultCode {
     VISITOR_APPLICATION_FAIL(3048,"访客提申请交失败"),
     OWNER_ROOM_GET_FAIL(3049,"房屋信息获取失败"),
     OWNER_ID_CARD_NOT_CERTIFICATION(3050,"未实名认证"),
-    OWNER_REAL_NAME_NOT_EMPTY(3051,"真实姓名不能为空"),
+    NO_REALNAME_AUTHENTICATION(3051,"该住户未实名认证"),
+    OWNER_REAL_NAME_NOT_EMPTY(3052,"真实姓名不能为空"),
+    UNBOUND_HOUSE(3053,"未绑定房屋不允许操作"),
 
 
 

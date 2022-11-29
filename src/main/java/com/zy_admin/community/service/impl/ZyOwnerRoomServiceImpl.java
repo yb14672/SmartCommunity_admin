@@ -11,7 +11,6 @@ import com.zy_admin.community.dao.ZyRoomDao;
 import com.zy_admin.community.dto.OwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerRoomDtoAll;
-import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomService;
@@ -23,7 +22,6 @@ import com.zy_admin.util.TreeData;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,6 +35,12 @@ import java.util.List;
  */
 @Service("zyOwnerRoomService")
 public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerRoom> implements ZyOwnerRoomService {
+
+    /**
+     * 系统用户刀
+     */
+    @Resource
+    private SysUserDao sysUserDao;
 
     /**
      * 业主房间记录道
@@ -66,7 +70,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     public boolean checkOwnerRoom(ZyOwnerRoom ownerRoom) {
         //检查该房屋是否已经提交审核
         ZyOwnerRoom zyOwnerRoom = this.baseMapper.checkOwnerRoom(ownerRoom);
-        if (zyOwnerRoom == null ){
+        if (zyOwnerRoom == null){
             return true;
         }
         return false;
@@ -104,6 +108,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
             result.setData(ownerRoomByOwnerId);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
+
         return result;
     }
 

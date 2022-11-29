@@ -17,7 +17,7 @@ import java.util.List;
 public interface ZyVisitorService extends IService<ZyVisitor> {
 
     List<VisitorGetExcelDto>getLists(String communityId);
-    List<VisitorGetExcelDto> queryVisitorrById(List<String> ids);
+    List<VisitorGetExcelDto> queryVisitorById(List<String> ids);
     /**
      * 得到访客名单
      *

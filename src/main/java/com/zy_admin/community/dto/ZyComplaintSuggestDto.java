@@ -94,4 +94,10 @@ public class ZyComplaintSuggestDto {
     @ApiModelProperty("投诉人ID")
     @ExcelProperty("投诉人ID")
     private String userId;
+    /**
+     * 回复
+     */
+    @ApiModelProperty("回复")
+    @ExcelProperty("回复")
+    private String reply;
 }

@@ -91,7 +91,7 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
     public Result getOwnerById(String ownerId) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         ZyOwner owner = this.baseMapper.selectById(ownerId);
-        if (ObjUtil.isNotEmpty(owner)||"".equals(owner.getOwnerId())) {
+        if (ObjUtil.isNotEmpty(owner)&&!"".equals(owner.getOwnerId())) {
             result.setData(owner);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }

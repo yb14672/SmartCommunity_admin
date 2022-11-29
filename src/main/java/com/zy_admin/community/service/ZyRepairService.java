@@ -28,10 +28,9 @@ public interface ZyRepairService extends IService<ZyRepair> {
 
     /**
      * 得到所有报修列表
-     * @param repairIds 报修id
      * @return 获取的结果集
      */
-    List<RepairDto> getAllRepairList(ArrayList<String> repairIds);
+    List<RepairDto> getAllRepairList();
     /**
      * 通过id获取报修
      * @param repairIds 报修id
@@ -54,7 +53,7 @@ public interface ZyRepairService extends IService<ZyRepair> {
      * @param zyRepair 报修对象
      * @return 更新的结果集
      */
-    Result updateRepair(ZyRepair zyRepair);
+    Result updateRepair(ZyRepair zyRepair, HttpServletRequest request);
 
     /**
      * 删除报修信息

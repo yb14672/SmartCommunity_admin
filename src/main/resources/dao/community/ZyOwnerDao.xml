@@ -152,6 +152,7 @@
         <if test="zyOwner.ownerPhoneNumber != null and zyOwner.ownerPhoneNumber != ''">
             and owner_phone_number like concat('%', #{zyOwner.ownerPhoneNumber},'%')
         </if>
+        order by zo.create_time desc
         limit #{pageable.index}, #{pageable.pageSize}
     </select>
 

@@ -63,7 +63,7 @@
     </select>
     <!--投诉建议和分页-->
     <select id="selectSuggestLimit" resultType="com.zy_admin.community.dto.ZyComplaintSuggestDto">
-        select zcs.*,zo.owner_real_name,zo.owner_phone_number,zf.files_url
+        select zcs.*,zo.owner_real_name,zo.owner_phone_number,zf.files_url,zcs.reply
         from zy_complaint_suggest zcs left join zy_owner zo on zcs.user_id = zo.owner_id
         left join zy_files zf on zcs.complaint_suggest_id = zf.parent_id
         <where>
@@ -175,6 +175,9 @@
             </if>
             <if test="zyComplaintSuggest.userId != null">
                 user_id = #{zyComplaintSuggest.userId},
+            </if>
+            <if test="zyComplaintSuggest.reply != null">
+                reply = #{zyComplaintSuggest.reply},
             </if>
         </set>
         where complaint_suggest_id = #{zyComplaintSuggest.complaintSuggestId}

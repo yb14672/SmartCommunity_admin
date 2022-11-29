@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.community.dto.VisitorGetExcelDto;
 import com.zy_admin.community.dto.VisitorListDto;
+import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyVisitor;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
@@ -39,7 +41,7 @@ public interface ZyVisitorDao extends BaseMapper<ZyVisitor> {
     /**
      * 插入访客申请
      *
-     * @param zyVisitor zy访客
+     * @param zyVisitor 访客信息
      */
     void insertVisitor(ZyVisitor zyVisitor);
     /**
@@ -68,5 +70,13 @@ public interface ZyVisitorDao extends BaseMapper<ZyVisitor> {
     @Update("update zy_visitor set status =#{status} where visitor_id =#{visitorId}")
     void updateStatus( ZyVisitor zyVisitor);
 
+    /**
+     * 得到业主房间用来判定是否可以邀请访客
+     *
+     * @param ownerId 所有者id
+     * @return {@link ZyOwnerRoom}
+     */
+    @Select("select * from zy_owner_room where owner_id=#{ownerId} and room_status = 'Binding'")
+    List<ZyOwnerRoom> getOwnerRoom(String ownerId);
 }
 

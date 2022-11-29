@@ -79,6 +79,5 @@ public interface ZyComplaintSuggestDao extends BaseMapper<ZyComplaintSuggest> {
      */
     ZyComplaintSuggest queryById(String complaintSuggestId);
 
-
 }
 

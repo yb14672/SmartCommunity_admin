@@ -4,13 +4,18 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dao.ZyVisitorDao;
-import com.zy_admin.community.dto.*;
+import com.zy_admin.community.dto.VisitorDto;
+import com.zy_admin.community.dto.VisitorGetExcelDto;
+import com.zy_admin.community.dto.VisitorListDto;
+import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyVisitor;
 import com.zy_admin.community.service.ZyVisitorService;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -22,15 +27,30 @@ import java.util.List;
 @Service("zyVisitorService")
 public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> implements ZyVisitorService {
 
+
+    @Resource
+    private ZyOwnerRoomDao ownerRoomDao;
+    /**
+     * 得到访客列表通过社区ID
+     *
+     * @param communityId 社区id
+     * @return {@link List}<{@link VisitorGetExcelDto}>
+     */
     @Override
     public List<VisitorGetExcelDto> getLists(String communityId) {
         return this.baseMapper.getLists(communityId);
     }
 
+    /**
+     * 查询访客通过id
+     *
+     * @param visitorIds 游客id
+     * @return {@link List}<{@link VisitorGetExcelDto}>
+     */
     @Override
-    public List<VisitorGetExcelDto> queryVisitorrById(List<String> visitorIds) {
+    public List<VisitorGetExcelDto> queryVisitorById(List<String> visitorIds) {
         if (visitorIds != null) {
-            visitorIds = visitorIds.size() == 0 ? null : visitorIds;
+            visitorIds = visitorIds.isEmpty() ? null : visitorIds;
         }
         return this.baseMapper.queryVisitorById(visitorIds);
     }
@@ -59,7 +79,6 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
             pageable.setPageNum(0);
         }
         pageable.setTotal(total);
-        List<VisitorListDto> visitorListDtos = null;
         try {
             List<VisitorListDto> visitorListDtoList = this.baseMapper.queryAllByLimit(zyVisitor, pageable);
             VisitorDto visitorList = new VisitorDto(visitorListDtoList, pageable);
@@ -73,6 +92,12 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
         return result;
     }
 
+    /**
+     * 是否允许访客进入
+     *
+     * @param zyVisitor zy访客
+     * @return {@link Result}
+     */
     @Override
     public Result updateStatus(ZyVisitor zyVisitor) {
         Result result = new Result();
@@ -86,16 +111,28 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
         return result;
     }
 
+    /**
+     * 邀请访客
+     *
+     * @param zyVisitor zy访客
+     * @return {@link Result}
+     */
     @Override
     public Result insertVisitor(ZyVisitor zyVisitor) {
         Result result = new Result();
-        try {
-            this.baseMapper.insertVisitor(zyVisitor);
-            result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_SUCCESSFULLY));
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_FAIL));
-        }
+        List<ZyOwnerRoom> ownerRoomByOwnerId = ownerRoomDao.getOwnerRoomByOwnerId(zyVisitor.getCreateById());
+         if (ownerRoomByOwnerId.size()>0)
+         {
+             try {
+                 this.baseMapper.insertVisitor(zyVisitor);
+                 result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_SUCCESSFULLY));
+             } catch (Exception e) {
+                 e.printStackTrace();
+                 result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_FAIL));
+             }
+         }else {
+             result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
+         }
         return result;
     }
 }
