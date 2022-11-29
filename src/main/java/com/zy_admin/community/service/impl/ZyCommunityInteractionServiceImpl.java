@@ -10,11 +10,13 @@ import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyCommentDao;
 import com.zy_admin.community.dao.ZyCommunityInteractionDao;
 import com.zy_admin.community.dao.ZyFilesDao;
+import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dto.ZyCommentDto;
 import com.zy_admin.community.dto.ZyCommunityInteractionDto;
 import com.zy_admin.community.entity.ZyCommunityInteraction;
 import com.zy_admin.community.entity.ZyFiles;
 import com.zy_admin.community.entity.ZyOwner;
+import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.service.ZyCommunityInteractionService;
 import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.ResultTool;
@@ -39,6 +41,8 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
 
     @Resource
     private ZyFilesDao zyFilesDao;
+    @Resource
+    private ZyOwnerRoomDao zyOwnerRoomDao;
     @Resource
     private ZyCommentDao zyCommentDao;
     @Resource
@@ -198,43 +202,50 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
     @Transactional(rollbackFor = Exception.class)
     public Result insert(ZyCommunityInteractionDto interactionDto) throws Exception {
         Result result = new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
-        ZyCommunityInteraction interaction = new ZyCommunityInteraction();
-        interaction.setCreateTime(LocalDateTime.now().toString());
-        String interactionId = snowflakeManager.nextId() + "";
-        interaction.setInteractionId(interactionId);
-        interaction.setCommunityId(interactionDto.getCommunityId());
-        interaction.setCreateBy(interactionDto.getCreateBy());
-        interaction.setContent(interactionDto.getContent());
-        interaction.setUserId(interactionDto.getUserId());
-        String remark = interactionDto.getRemark();
-        interaction.setRemark(remark == null || StringUtil.isEmpty(remark) ? null : "");
-        interaction.setDelFlag(0);
-        int insert = this.baseMapper.insert(interaction);
-        if (insert == 1) {
-            List<String> urlList = interactionDto.getUrlList();
-            //如果有添加文件或者图片则添加
-            if (urlList.size() > 0 || !urlList.isEmpty()) {
-                List<ZyFiles> files = new ArrayList<>();
-                for (String url : urlList) {
-                    ZyFiles zyFile = new ZyFiles();
-                    zyFile.setFilesUrl(url);
-                    zyFile.setFilesId(snowflakeManager.nextId() + "");
-                    zyFile.setCreateTime(LocalDateTime.now().toString());
-                    zyFile.setCreateBy(interactionDto.getCreateBy());
-                    zyFile.setDelFlag(0);
-                    zyFile.setSource(0);
-                    zyFile.setRemark("CommunityInteraction");
-                    zyFile.setParentId(interactionId);
-                    zyFile.setUserId(interactionDto.getUserId());
-                    files.add(zyFile);
+        List<ZyOwnerRoom> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(interactionDto.getUserId());
+        if (ownerRoomByOwnerId.size()>0){
+
+            ZyCommunityInteraction interaction = new ZyCommunityInteraction();
+            interaction.setCreateTime(LocalDateTime.now().toString());
+            String interactionId = snowflakeManager.nextId() + "";
+            interaction.setInteractionId(interactionId);
+            interaction.setCommunityId(interactionDto.getCommunityId());
+            interaction.setCreateBy(interactionDto.getCreateBy());
+            interaction.setContent(interactionDto.getContent());
+            interaction.setUserId(interactionDto.getUserId());
+            String remark = interactionDto.getRemark();
+            interaction.setRemark(remark == null || StringUtil.isEmpty(remark) ? null : "");
+            interaction.setDelFlag(0);
+            int insert = this.baseMapper.insert(interaction);
+            if (insert == 1) {
+                List<String> urlList = interactionDto.getUrlList();
+                //如果有添加文件或者图片则添加
+                if (urlList.size() > 0 || !urlList.isEmpty()) {
+                    List<ZyFiles> files = new ArrayList<>();
+                    for (String url : urlList) {
+                        ZyFiles zyFile = new ZyFiles();
+                        zyFile.setFilesUrl(url);
+                        zyFile.setFilesId(snowflakeManager.nextId() + "");
+                        zyFile.setCreateTime(LocalDateTime.now().toString());
+                        zyFile.setCreateBy(interactionDto.getCreateBy());
+                        zyFile.setDelFlag(0);
+                        zyFile.setSource(0);
+                        zyFile.setRemark("CommunityInteraction");
+                        zyFile.setParentId(interactionId);
+                        zyFile.setUserId(interactionDto.getUserId());
+                        files.add(zyFile);
+                    }
+                    int i = this.zyFilesDao.insertBatch(files);
+                    if (i < 1) {
+                        return result;
+                    }
                 }
-                int i = this.zyFilesDao.insertBatch(files);
-                if (i < 1) {
-                    return result;
-                }
+                result.setData("添加成功");
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             }
-            result.setData("添加成功");
-            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }else{
+            result.setData("请绑定房屋后再试");
+            result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
         }
         return result;
     }
