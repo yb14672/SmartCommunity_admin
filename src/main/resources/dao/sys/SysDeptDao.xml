@@ -11,6 +11,10 @@
           AND user_id NOT IN (SELECT user_id
                               FROM sys_user_role
                               WHERE role_id IN (SELECT role_id FROM sys_role WHERE role_name = '维修部经理'))
+          AND user_name NOT IN (
+            SELECT complete_name
+            FROM zy_repair
+            WHERE repair_state IN ('Allocated', 'Processing'))
     </select>
 
     <!--根据菜单id获取其所有子集-->
