@@ -8,10 +8,11 @@ import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyComplaintSuggestDao;
 import com.zy_admin.community.dao.ZyFilesDao;
 import com.zy_admin.community.dao.ZyOwnerDao;
+import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dto.ZyComplaintSuggestDto;
 import com.zy_admin.community.entity.ZyComplaintSuggest;
+import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.service.ZyComplaintSuggestService;
-import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,9 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
     private ZyOwnerDao zyOwnerDao;
     @Resource
     private SnowflakeManager snowflakeManager;
+    @Resource
+    private ZyOwnerRoomDao zyOwnerRoomDao;
+
 
     /**
      * 根据id查投诉建议
@@ -140,6 +144,12 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
     public Result insertSuggest(ZyComplaintSuggest zyComplaintSuggest) throws Exception {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         zyComplaintSuggest.setComplaintSuggestId(snowflakeManager.nextId() + "");
+        //判断下面有没有房屋绑定
+        List<ZyOwnerRoom> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComplaintSuggest.getComplaintSuggestId());
+        if (ownerRoomByOwnerId!=null){
+            result.setMeta(ResultTool.success(ResultCode.UNBOUND_HOUSE));
+            result.setData("新增失败");
+        }
         //判断是否重复x
         try {
                 //新增
@@ -167,11 +177,15 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         //判断数据的值有没有改变 zyComplaintSuggest1是原来的对象
         ZyComplaintSuggest zyComplaintSuggest1 = this.baseMapper.queryById(zyComplaintSuggest.getComplaintSuggestId());
         String[] fields = new String[]{"ComplaintSuggestContent"};
-        System.out.println(ObjUtil.checkEquals(zyComplaintSuggest,zyComplaintSuggest1,fields));
+        //判断下面有没有房屋绑定
+        List<ZyOwnerRoom> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComplaintSuggest.getComplaintSuggestId());
+        if (ownerRoomByOwnerId!=null){
+            result.setMeta(ResultTool.success(ResultCode.UNBOUND_HOUSE));
+            result.setData("修改失败");
+        }
 //        if (!ObjUtil.checkEquals(zyComplaintSuggest,zyComplaintSuggest1,fields)){
             //默认给失败
             try {
-                    //判断重复x
                     zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
                     int i = this.baseMapper.updateSuggest(zyComplaintSuggest);
                     if (i == 1) {
@@ -186,7 +200,6 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
 //            result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
 //            return result;
 //        }
-
     }
 
     /**

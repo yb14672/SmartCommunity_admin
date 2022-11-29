@@ -125,6 +125,7 @@ public enum ResultCode {
     OWNER_ROOM_GET_FAIL(3049,"房屋信息获取失败"),
     OWNER_ID_CARD_NOT_CERTIFICATION(3049,"未实名认证"),
     NO_REALNAME_AUTHENTICATION(3050,"改住户未实名认证"),
+    UNBOUND_HOUSE(3051,"未绑定房屋不允许操作"),
 
 
 

@@ -4,14 +4,18 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dao.ZyVisitorDao;
-import com.zy_admin.community.dto.*;
+import com.zy_admin.community.dto.VisitorDto;
+import com.zy_admin.community.dto.VisitorGetExcelDto;
+import com.zy_admin.community.dto.VisitorListDto;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyVisitor;
 import com.zy_admin.community.service.ZyVisitorService;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -22,6 +26,9 @@ import java.util.List;
  */
 @Service("zyVisitorService")
 public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> implements ZyVisitorService {
+
+    @Resource
+    private ZyOwnerRoomDao ownerRoomDao;
 
     /**
      * 得到访客列表通过社区ID
@@ -115,9 +122,8 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
     public Result insertVisitor(ZyVisitor zyVisitor) {
         Result result = new Result();
         System.err.println(zyVisitor.toString());
-
-        ZyOwnerRoom ownerRoom = this.baseMapper.getOwnerRoom(zyVisitor.getCreateById());
-        if (ownerRoom!=null&&"Binding".equals(ownerRoom.getRoomStatus()))
+        List<ZyOwnerRoom> ownerRoomByOwnerId = ownerRoomDao.getOwnerRoomByOwnerId(zyVisitor.getCreateById());
+        if (ownerRoomByOwnerId.size()>0)
         {
             try {
                 this.baseMapper.insertVisitor(zyVisitor);
@@ -129,8 +135,6 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
         }else {
             result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
         }
-
-
         return result;
     }
 }
