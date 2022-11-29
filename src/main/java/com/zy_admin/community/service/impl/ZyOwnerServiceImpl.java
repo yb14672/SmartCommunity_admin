@@ -142,6 +142,11 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
     public Result ownerUpdate(ZyOwner owner) {
         Result result = new Result(null, ResultTool.fail(ResultCode.OWNER_UPDATE_FAIL));
         owner.setUpdateTime(LocalDateTime.now().toString());
+        if(owner.getOwnerRealName() == null){
+            result.setData("实名认证失败");
+            result.setMeta(ResultTool.fail(ResultCode.OWNER_REAL_NAME_NOT_EMPTY));
+            return result;
+        }
         if (!checkIdCardUnique(owner)){
             result.setData("修改失败");
             result.setMeta(ResultTool.fail(ResultCode.REPEAT_ID_CARD));
@@ -175,6 +180,7 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
             redisService.set(jwtToken, zyOwner.getOwnerId());
             result.setData(jwtToken);
             if (!"Enable".equalsIgnoreCase(zyOwner.getOwnerStatus())){
+                result.setData(null);
                 result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED));
                 return result;
             }

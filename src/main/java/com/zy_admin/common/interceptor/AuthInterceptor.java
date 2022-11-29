@@ -31,7 +31,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         String token = request.getHeader("token");
         if (token == null || StringUtil.isEmpty(token)) {
             token = request.getHeader("Authorization");
-            System.out.println(token);
         }
         if (request.getMethod().toUpperCase().equals("OPTIONS")) {
             return true;

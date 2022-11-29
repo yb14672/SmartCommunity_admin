@@ -20,6 +20,14 @@ public interface ZyOwnerRoomService extends IService<ZyOwnerRoom> {
     Result getOwnerRoomByOwnerId(String ownerId);
 
     /**
+     * 检查房间绑定是否重复提交
+     *
+     * @param ownerRoom 房间绑定信息
+     * @return boolean
+     */
+    boolean checkOwnerRoom(ZyOwnerRoom ownerRoom);
+
+    /**
      * 检查业主是否实名认证
      *
      * @param ownerId 所有者id

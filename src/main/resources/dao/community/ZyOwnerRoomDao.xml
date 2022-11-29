@@ -40,7 +40,7 @@
 
     <!-- 根据业主ID获取其房屋绑定列表-->
     <select id="getOwnerRoomByOwnerId" resultType="com.zy_admin.community.entity.ZyOwnerRoom">
-        SELECT * FROM zy_owner_room WHERE room_status='Binding' and owner_id=#{ownerId}
+        SELECT * FROM zy_owner_room WHERE room_status = 'Binding' and owner_id = #{ownerId}
     </select>
 
     <!--新增所有列-->

@@ -66,6 +66,19 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     @Resource
     private ZyOwnerDao zyOwnerDao;
 
+    @Override
+    public boolean checkOwnerRoom(ZyOwnerRoom ownerRoom) {
+        //检查该房屋是否已经提交审核
+        ZyOwnerRoom zyOwnerRoom = this.baseMapper.checkOwnerRoom(ownerRoom);
+        System.err.println("ownerRoom = " + zyOwnerRoom);
+        if (zyOwnerRoom == null ){
+            return true;
+        }
+        if ("Reject".equals(zyOwnerRoom.getRoomStatus())){
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public boolean checkOwnerIdCardExist(String ownerId) {
@@ -103,8 +116,14 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         return result;
     }
 
+    /**
+     * 提交房屋绑定
+     *
+     * @param ownerRoom 老板房间
+     * @return {@link Result}
+     * @throws Exception 异常
+     */
     @Override
-
     public Result ownerInsert(ZyOwnerRoom ownerRoom) throws Exception {
         Result result = new Result("提交失败",ResultTool.fail(ResultCode.OWNER_ROOM_INSERT_FAIL));
         //检查是否实名认证
@@ -112,10 +131,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
             result.setMeta(ResultTool.fail(ResultCode.OWNER_ID_CARD_NOT_CERTIFICATION));
             return result;
         }
-        //检查该房屋是否已经提交审核
-        ZyOwnerRoom zyOwnerRoom = this.baseMapper.checkOwnerRoom(ownerRoom);
-        if (zyOwnerRoom != null ){
-            result.setData("提交失败");
+        if (!checkOwnerRoom(ownerRoom)){
             result.setMeta(ResultTool.fail(ResultCode.REPEAT_OWNER_ROOM));
             return result;
         }
@@ -130,6 +146,12 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         return result;
     }
 
+
+    /**
+     * 得到未绑定房屋数据
+     *
+     * @return {@link Result}
+     */
     @Override
     public Result getTreeData() {
         Result result = new Result("获取失败！", ResultTool.fail(ResultCode.ROOMTREE_GET_FAIL));
