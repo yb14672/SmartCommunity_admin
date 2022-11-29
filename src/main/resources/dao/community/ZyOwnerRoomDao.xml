@@ -194,7 +194,7 @@
 
     <!-- 验重记录已提交-->
     <select id="checkOwnerRoom" resultType="com.zy_admin.community.entity.ZyOwnerRoom">
-        select * from zy_owner_room where community_id = #{communityId} and building_id = #{buildingId} and unit_id = #{unitId} and room_id = #{roomId}
+        select * from zy_owner_room where community_id = #{communityId} and building_id = #{buildingId} and unit_id = #{unitId} and room_id = #{roomId} and room_status != "Reject"
     </select>
 
     <!--通过主键修改数据-->
