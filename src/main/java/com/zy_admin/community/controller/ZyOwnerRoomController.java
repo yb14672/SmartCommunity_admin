@@ -67,7 +67,6 @@ public class ZyOwnerRoomController extends ApiController {
     @PostMapping("/insert")
     public Result insert(@RequestBody ZyOwnerRoom ownerRoom, HttpServletRequest request) throws Exception {
         ZyOwner owner = requestUtil.getOwner(request);
-        System.err.println(owner);
         ownerRoom.setOwnerId(owner.getOwnerId());
         ownerRoom.setOwnerType(owner.getOwnerType());
         ownerRoom.setCreateBy(owner.getOwnerRealName());
