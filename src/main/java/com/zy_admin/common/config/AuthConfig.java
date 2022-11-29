@@ -35,8 +35,7 @@ public class AuthConfig implements WebMvcConfigurer {
                         "/swagger-resources/**",
                         "/webjars/**",
                         "/v2/api-docs",
-                        "/v3/api-docs",
-                        "/**/zyOwner/**"
+                        "/v3/api-docs"
                 );
     }
 }
