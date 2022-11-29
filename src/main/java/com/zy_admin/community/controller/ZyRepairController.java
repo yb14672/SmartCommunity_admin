@@ -6,7 +6,6 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.baomidou.mybatisplus.extension.api.R;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
@@ -26,7 +25,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +63,7 @@ public class ZyRepairController extends ApiController {
         List<RepairDto> repairList;
         //如果前台传的集合为空或者长度为0.则全部导出。
         if (repairIds == null || repairIds.size() == 0) {
-            repairList = zyRepairService.getAllRepairList(repairIds);
+            repairList = zyRepairService.getAllRepairList();
         } else {
             repairList = zyRepairService.getRepairById(repairIds);
         }
@@ -123,8 +121,6 @@ public class ZyRepairController extends ApiController {
     @ApiOperation(value = "新增报修", notes = "新增报修", httpMethod = "POST")
     @PostMapping("/insertRepair")
     public Result insertRepair(@RequestBody ZyRepair zyRepair, HttpServletRequest request) {
-
-
         return this.zyRepairService.insertRepair(zyRepair,request);
     }
     /**
@@ -141,21 +137,6 @@ public class ZyRepairController extends ApiController {
     @GetMapping("/getAllRepairs")
     public Result getAllRepairs(Pageable pageable, RepairDto repairDto) {
         return zyRepairService.getAllRepairs(pageable, repairDto);
-    }
-    /**
-     * 通过主键查询单条数据
-     * @param id 主键
-     * @return 单条数据
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "path", dataType = "Serializable", name = "id", value = "主键", required = true)
-    })
-    @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.zyRepairService.getById(id));
-    }
-
-
+    };
 }
 

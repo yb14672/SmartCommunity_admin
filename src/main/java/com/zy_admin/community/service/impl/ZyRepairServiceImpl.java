@@ -17,8 +17,10 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -74,12 +76,11 @@ public class ZyRepairServiceImpl extends ServiceImpl<ZyRepairDao, ZyRepair> impl
     /**
      * 得到所有报修列表
      *
-     * @param repairIds 报修id
      * @return 查询的结果集
      */
     @Override
-    public List<RepairDto> getAllRepairList(ArrayList<String> repairIds) {
-        return this.baseMapper.getAllRepairList(repairIds);
+    public List<RepairDto> getAllRepairList() {
+        return this.baseMapper.getAllRepairList();
     }
 
     /**
@@ -131,12 +132,12 @@ public class ZyRepairServiceImpl extends ServiceImpl<ZyRepairDao, ZyRepair> impl
         SysUser user = requestUtil.getUser(request);
         zyRepair.setUpdateBy(user.getUserName());
         zyRepair.setUpdateTime(LocalDateTime.now().toString());
-//        //派单时间repair_state
-//        if ("Allocated".equals(zyRepair.getRepairState())){
-//            zyRepair.setAssignmentId(user.getUserId()+"");
-//            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
-//            zyRepair.setAssignmentTime(format);
-//        }
+        //派单时间repair_state
+        if ("Allocated".equals(zyRepair.getRepairState())){
+            zyRepair.setAssignmentId(user.getUserId()+"");
+            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+            zyRepair.setAssignmentTime(format);
+        }
 //        //已处理时间complete_time
 //        if ("Processed".equals(zyRepair.getRepairState())){
 //            zyRepair.setCompletePhone(user.getPhonenumber()+"");

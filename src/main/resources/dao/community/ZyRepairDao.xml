@@ -54,9 +54,6 @@
         FROM zy_repair r
         join zy_owner o ON r.user_id = o.owner_id
         where del_flag = '0'
-        <if test="communityId != null ">
-            and r.community_id = #{communityId}
-        </if>
     </select>
     <!--通过id获取报修连表-->
     <select id="getRepairById" resultMap="getZyRepairMap">
@@ -65,7 +62,7 @@
         FROM zy_repair r
         join zy_owner o ON r.user_id = o.owner_id
         where del_flag = '0'
-        r.repair_id in (
+        and r.repair_id in (
         <foreach collection="repairList" item="repairId" separator=",">
             #{repairId}
         </foreach>

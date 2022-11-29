@@ -28,10 +28,9 @@ public interface ZyRepairService extends IService<ZyRepair> {
 
     /**
      * 得到所有报修列表
-     * @param repairIds 报修id
      * @return 获取的结果集
      */
-    List<RepairDto> getAllRepairList(ArrayList<String> repairIds);
+    List<RepairDto> getAllRepairList();
     /**
      * 通过id获取报修
      * @param repairIds 报修id

@@ -33,10 +33,9 @@ public interface ZyRepairDao extends BaseMapper<ZyRepair> {
     /**
      * 得到所有报修列表
      *
-     * @param repairIds 报修id
      * @return
      */
-    List<RepairDto> getAllRepairList(ArrayList<String> repairIds);
+    List<RepairDto> getAllRepairList();
     /**
      * 通过id获取报修
      *
