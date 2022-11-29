@@ -180,21 +180,24 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         List<ZyOwnerRoom> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComplaintSuggest.getComplaintSuggestId());
         if (ownerRoomByOwnerId!=null){
             result.setMeta(ResultTool.success(ResultCode.UNBOUND_HOUSE));
-            result.setData("修改失败");
-        }
+            result.setData("未绑定房屋,不允许修改");
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        }else {
 //        if (!ObjUtil.checkEquals(zyComplaintSuggest,zyComplaintSuggest1,fields)){
             //默认给失败
             try {
-                    zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
-                    int i = this.baseMapper.updateSuggest(zyComplaintSuggest);
-                    if (i == 1) {
-                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-                    }
+                zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
+                int i = this.baseMapper.updateSuggest(zyComplaintSuggest);
+                if (i == 1) {
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
             }
+        }
             return result;
+
 //        }else {
 //            result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
 //            return result;
