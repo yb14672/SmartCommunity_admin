@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dao.ZyVisitorDao;
 import com.zy_admin.community.dto.*;
 import com.zy_admin.community.entity.ZyOwnerRoom;
@@ -25,8 +26,8 @@ import java.util.List;
 public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> implements ZyVisitorService {
 
 
-//    @Resource
-//    private OwnerRoomDao ownerRoomDao;
+    @Resource
+    private ZyOwnerRoomDao ownerRoomDao;
     /**
      * 得到访客列表通过社区ID
      *
@@ -119,22 +120,19 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
     public Result insertVisitor(ZyVisitor zyVisitor) {
         Result result = new Result();
         System.err.println(zyVisitor.toString());
-
-        ZyOwnerRoom ownerRoom = this.baseMapper.getOwnerRoom(zyVisitor.getCreateById());
-        if (ownerRoom!=null&&"Binding".equals(ownerRoom.getRoomStatus()))
-        {
-            try {
-                this.baseMapper.insertVisitor(zyVisitor);
-                result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_SUCCESSFULLY));
-            } catch (Exception e) {
-                e.printStackTrace();
-                result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_FAIL));
-            }
-        }else {
-            result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
-        }
-
-
+        List<ZyOwnerRoom> ownerRoomByOwnerId = ownerRoomDao.getOwnerRoomByOwnerId(zyVisitor.getCreateById());
+         if (ownerRoomByOwnerId.size()>0)
+         {
+             try {
+                 this.baseMapper.insertVisitor(zyVisitor);
+                 result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_SUCCESSFULLY));
+             } catch (Exception e) {
+                 e.printStackTrace();
+                 result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_FAIL));
+             }
+         }else {
+             result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
+         }
         return result;
     }
 }
