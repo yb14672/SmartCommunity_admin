@@ -72,11 +72,14 @@ public interface ZyVisitorDao extends BaseMapper<ZyVisitor> {
 
     /**
      * 得到业主房间用来判定是否可以邀请访客
-     *
+     * @param communityId
      * @param ownerId 所有者id
      * @return {@link ZyOwnerRoom}
      */
-    @Select("select * from zy_owner_room where owner_id=#{ownerId} and room_status = 'Binding'")
-    List<ZyOwnerRoom> getOwnerRoom(String ownerId);
+    @Select("select * from zy_owner_room where owner_id=#{ownerId} and room_status = 'Binding' and community_id=#{communityId}")
+    List<ZyOwnerRoom> getOwnerRoom(@Param("ownerId") String ownerId,@Param("communityId") String communityId);
+
+
+
 }
 
