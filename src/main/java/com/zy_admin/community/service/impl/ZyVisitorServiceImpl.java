@@ -41,9 +41,9 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
      * @return {@link List}<{@link VisitorGetExcelDto}>
      */
     @Override
-    public List<VisitorGetExcelDto> queryVisitorrById(List<String> visitorIds) {
+    public List<VisitorGetExcelDto> queryVisitorById(List<String> visitorIds) {
         if (visitorIds != null) {
-            visitorIds = visitorIds.size() == 0 ? null : visitorIds;
+            visitorIds = visitorIds.isEmpty() ? null : visitorIds;
         }
         return this.baseMapper.queryVisitorById(visitorIds);
     }
@@ -72,7 +72,6 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
             pageable.setPageNum(0);
         }
         pageable.setTotal(total);
-        List<VisitorListDto> visitorListDtos = null;
         try {
             List<VisitorListDto> visitorListDtoList = this.baseMapper.queryAllByLimit(zyVisitor, pageable);
             VisitorDto visitorList = new VisitorDto(visitorListDtoList, pageable);
@@ -114,11 +113,8 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
     @Override
     public Result insertVisitor(ZyVisitor zyVisitor) {
         Result result = new Result();
-        System.err.println(zyVisitor.toString());
-
-        ZyOwnerRoom ownerRoom = this.baseMapper.getOwnerRoom(zyVisitor.getCreateById());
-        if (ownerRoom!=null&&"Binding".equals(ownerRoom.getRoomStatus()))
-        {
+        List<ZyOwnerRoom> ownerRoom = this.baseMapper.getOwnerRoom(zyVisitor.getCreateById());
+        if (ownerRoom != null && !ownerRoom.isEmpty()) {
             try {
                 this.baseMapper.insertVisitor(zyVisitor);
                 result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_SUCCESSFULLY));
@@ -126,11 +122,9 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
                 e.printStackTrace();
                 result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_FAIL));
             }
-        }else {
+        } else {
             result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
         }
-
-
         return result;
     }
 }

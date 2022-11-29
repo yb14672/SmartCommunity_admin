@@ -43,7 +43,6 @@ public class RequestUtil {
      */
     public SysUser getUser(HttpServletRequest request) {
         String id = JwtUtil.getMemberIdByJwtToken(request,"token");
-        System.out.println(id+"id");
         Result result = sysUserService.queryById(id);
         return (SysUser) result.getData();
     }
@@ -57,7 +56,6 @@ public class RequestUtil {
     public ZyOwner getOwner(HttpServletRequest request) {
         String id = JwtUtil.getMemberIdByJwtToken(request,"Authorization");
         Result result = zyOwnerService.getOwnerById(id);
-        System.out.println(result);
         return (ZyOwner) result.getData();
     }
 

@@ -109,9 +109,7 @@ public class ZyComplaintSuggestController extends ApiController {
     @ApiOperation(value = "回复投诉建议", notes = "回复投诉建议", httpMethod = "PUT")
     @PutMapping("/updateSuggest")
     public Result updateSuggest(@RequestBody ZyComplaintSuggest zyComplaintSuggest, HttpServletRequest request){
-        System.out.println(request+"reequest");
         SysUser user = this.requestUtil.getUser(request);
-        System.out.println(user);
         zyComplaintSuggest.setUpdateBy(user.getUserName());
         zyComplaintSuggest.setUserId(user.getUserId()+"");
         zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
@@ -215,8 +213,6 @@ public class ZyComplaintSuggestController extends ApiController {
     @GetMapping("/selectSuggestLimit")
     public Result selectSuggestLimit(ZyComplaintSuggest zyComplaintSuggest, Pageable pageable){
         Result result = zyComplaintSuggestService.selectSuggestLimit(zyComplaintSuggest, pageable);
-        System.out.println(result);
-
         return zyComplaintSuggestService.selectSuggestLimit(zyComplaintSuggest, pageable);
     }
 }

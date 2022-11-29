@@ -99,7 +99,6 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         Page<ZyComplaintSuggestDto> page = new Page<>(zyComplaintSuggestList,pageable);
         //存入数据
         result.setData(page);
-//        System.out.println(page);
         //返回信号
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
@@ -167,7 +166,6 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         //判断数据的值有没有改变 zyComplaintSuggest1是原来的对象
         ZyComplaintSuggest zyComplaintSuggest1 = this.baseMapper.queryById(zyComplaintSuggest.getComplaintSuggestId());
         String[] fields = new String[]{"ComplaintSuggestContent"};
-        System.out.println(ObjUtil.checkEquals(zyComplaintSuggest,zyComplaintSuggest1,fields));
 //        if (!ObjUtil.checkEquals(zyComplaintSuggest,zyComplaintSuggest1,fields)){
             //默认给失败
             try {

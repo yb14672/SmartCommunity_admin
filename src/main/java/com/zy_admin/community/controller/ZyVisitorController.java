@@ -86,9 +86,8 @@ public class ZyVisitorController extends ApiController {
             visitorGetExcelDtos = zyVisitorService.getLists(communityId);
         } else {
             //执行查询用户列表的sql语句
-            visitorGetExcelDtos = zyVisitorService.queryVisitorrById(visitorIds);
+            visitorGetExcelDtos = zyVisitorService.queryVisitorById(visitorIds);
         }
-        System.out.println(visitorGetExcelDtos.toString());
         String fileName = URLEncoder.encode("访客信息表", "UTF-8");
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
@@ -168,7 +167,6 @@ public class ZyVisitorController extends ApiController {
     @PutMapping("/updateStatus")
     @MyLog(title = "访客管理", optParam = "#{zyVisitor}", businessType = BusinessType.UPDATE)
     public Result updateStatus(@RequestBody ZyVisitor zyVisitor){
-        System.out.println(zyVisitor);
        return   this.zyVisitorService.updateStatus(zyVisitor);
     }
     /**
