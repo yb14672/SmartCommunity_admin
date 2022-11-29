@@ -120,7 +120,7 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
     @Override
     public Result insertVisitor(ZyVisitor zyVisitor) {
         Result result = new Result();
-        List<ZyOwnerRoom> ownerRoomByOwnerId = ownerRoomDao.getOwnerRoomByOwnerId(zyVisitor.getCreateById());
+        List<ZyOwnerRoom> ownerRoomByOwnerId = baseMapper.getOwnerRoom(zyVisitor.getCreateById(),zyVisitor.getCommunityId());
          if (ownerRoomByOwnerId.size()>0)
          {
              try {
