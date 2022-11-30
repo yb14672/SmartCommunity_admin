@@ -1,9 +1,7 @@
 package com.zy_admin;
 
-import com.zy_admin.community.dao.ZyCommunityDao;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dto.OwnerRoomDto;
-import com.zy_admin.community.entity.ZyCommunity;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -20,7 +18,6 @@ class ZyAdminApplicationTests {
     @Test
     void contextLoads() {
         List<OwnerRoomDto> ownerRoomDtos = ownerRoomDao.selectOwnerRoomByOwnerId("1708134700616388618");
-        System.out.println(ownerRoomDtos);
     }
 
 }

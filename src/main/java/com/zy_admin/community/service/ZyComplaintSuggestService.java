@@ -61,6 +61,13 @@ public interface ZyComplaintSuggestService extends IService<ZyComplaintSuggest> 
     Result updateSuggest(ZyComplaintSuggest zyComplaintSuggest);
 
     /**
+     * 回复投诉建议
+     * @param zyComplaintSuggest 投诉建议对象
+     * @return
+     */
+    Result updateSuggestByOwner(ZyComplaintSuggest zyComplaintSuggest);
+
+    /**
      * 批量删除
      * @param idList id的集合
      * @return

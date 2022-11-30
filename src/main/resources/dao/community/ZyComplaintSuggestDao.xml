@@ -15,10 +15,12 @@
         <result property="userId" column="user_id" jdbcType="INTEGER"/>
     </resultMap>
 
+
+
     <!--查询单个-->
     <select id="queryById" resultMap="ZyComplaintSuggestMap">
         select
-            complaint_suggest_id, community_id, complaint_suggest_type, complaint_suggest_content, create_by, create_time, update_by, update_time, remark, user_id
+            *
         from zy_complaint_suggest
         where complaint_suggest_id = #{complaintSuggestId}
     </select>

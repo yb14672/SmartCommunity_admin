@@ -19,9 +19,8 @@ import java.util.List;
  */
 public interface ZyOwnerRoomDao extends BaseMapper<ZyOwnerRoom> {
 
-
     /**
-     * 根据业主ID查询关联列表
+     * 选择主人房间通过所有者id
      *
      * @param ownerId 所有者id
      * @return {@link List}<{@link OwnerRoomDto}>
