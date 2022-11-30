@@ -165,6 +165,32 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
     }
 
     /**
+     * 回复投诉建议
+     *
+     * @param zyComplaintSuggest 投诉建议对象
+     * @return
+     */
+    @Override
+    public Result updateSuggestByOwner(ZyComplaintSuggest zyComplaintSuggest) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        //判断数据的值有没有改变 zyComplaintSuggest1是原来的对象
+        ZyComplaintSuggest zyComplaintSuggest1 = this.baseMapper.queryById(zyComplaintSuggest.getComplaintSuggestId());
+        String[] fields = new String[]{"ComplaintSuggestContent"};
+        //判断下面有没有房屋绑定
+        List<ZyOwnerRoom> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComplaintSuggest.getComplaintSuggestId());
+        try {
+            zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
+            int i = this.baseMapper.updateSuggest(zyComplaintSuggest);
+            if (i == 1) {
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        }
+        return result;
+    }
+    /**
      * 修改投诉建议
      *
      * @param zyComplaintSuggest 投诉建议对象
@@ -178,13 +204,12 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         String[] fields = new String[]{"ComplaintSuggestContent"};
         //判断下面有没有房屋绑定
         List<ZyOwnerRoom> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComplaintSuggest.getComplaintSuggestId());
-        if (ownerRoomByOwnerId!=null){
+        System.out.println(ownerRoomByOwnerId);
+        if (ownerRoomByOwnerId==null){
             result.setMeta(ResultTool.success(ResultCode.UNBOUND_HOUSE));
             result.setData("未绑定房屋,不允许修改");
             result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
         }else {
-//        if (!ObjUtil.checkEquals(zyComplaintSuggest,zyComplaintSuggest1,fields)){
-            //默认给失败
             try {
                 zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
                 int i = this.baseMapper.updateSuggest(zyComplaintSuggest);
@@ -196,12 +221,7 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
                 result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
             }
         }
-            return result;
-
-//        }else {
-//            result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
-//            return result;
-//        }
+        return result;
     }
 
     /**

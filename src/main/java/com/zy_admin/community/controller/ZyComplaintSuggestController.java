@@ -113,7 +113,7 @@ public class ZyComplaintSuggestController extends ApiController {
         zyComplaintSuggest.setUpdateBy(user.getUserName());
         zyComplaintSuggest.setUserId(user.getUserId()+"");
         zyComplaintSuggest.setUpdateTime(LocalDateTime.now().toString());
-        return zyComplaintSuggestService.updateSuggest(zyComplaintSuggest);
+        return zyComplaintSuggestService.updateSuggestByOwner(zyComplaintSuggest);
     }
 
     /**
