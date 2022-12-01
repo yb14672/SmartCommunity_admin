@@ -19,6 +19,8 @@ import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -256,6 +258,7 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
      * @return 修改结果集
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result deleteOwenRome(HttpServletRequest request, String owenRoomId) {
         Result result = new Result();
         try {
@@ -268,9 +271,11 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
             zyOwnerRoom.setRecordId(snowflakeManager.nextId() + "");
             this.baseMapper.updateIntoRoomRecord(zyOwnerRoom);
             //解绑
+            this.baseMapper.updateRoomStatus(zyOwnerRoom.getRoomId());
             this.baseMapper.deletOwnerRoomId(owenRoomId);
             result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
         } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.FAIL_UNBIND_ROOM));
         }

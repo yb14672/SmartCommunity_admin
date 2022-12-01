@@ -10,6 +10,7 @@ import com.zy_admin.util.RoomTree;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -22,6 +23,14 @@ import java.util.List;
  * @since 2022-11-01 19:49:02
  */
 public interface ZyOwnerDao extends BaseMapper<ZyOwner> {
+
+    /**
+     * 联动更新房间状态
+     *
+     * @param roomId 房间id
+     */
+    @Update("update zy_room set room_status ='none' where room_id = #{roomId}")
+    void updateRoomStatus(String roomId);
 
     /**
      * 检查身份证是否唯一
