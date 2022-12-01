@@ -65,7 +65,7 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
                 .orderBy(true, true, ZyRoom::getCreateTime);
         if (page.getSize() != 0) {
             IPage<ZyRoomDto> page1 = this.baseMapper.selectJoinPage(page, ZyRoomDto.class, queryWrapper);
-            if (page1.getSize() > 0) {
+            if (page1.getTotal() > 0) {
                 result.setData(page1);
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             }

@@ -6,10 +6,7 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.baomidou.mybatisplus.extension.api.R;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
@@ -33,7 +30,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -168,7 +164,7 @@ public class ZyVisitorController extends ApiController {
     @PutMapping("/updateStatus")
     @MyLog(title = "访客管理", optParam = "#{zyVisitor}", businessType = BusinessType.UPDATE)
     public Result updateStatus(@RequestBody ZyVisitor zyVisitor){
-       return   this.zyVisitorService.updateStatus(zyVisitor);
+       return this.zyVisitorService.updateStatus(zyVisitor);
     }
 }
 

@@ -74,7 +74,7 @@ public class ZyBuilding extends Model<ZyBuilding> {
      * 更新时间
      */
     @ApiModelProperty("更新时间")
-    @ExcelProperty(" ")
+    @ExcelProperty("更新时间")
     private String updateTime;
     /**
      * 备注
@@ -82,6 +82,5 @@ public class ZyBuilding extends Model<ZyBuilding> {
     @ApiModelProperty("备注")
     @ExcelProperty("备注")
     private String remark;
-
 }
 

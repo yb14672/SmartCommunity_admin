@@ -30,6 +30,7 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
 
     @Resource
     private ZyOwnerRoomDao ownerRoomDao;
+
     /**
      * 得到访客列表通过社区ID
      *
@@ -120,19 +121,18 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
     @Override
     public Result insertVisitor(ZyVisitor zyVisitor) {
         Result result = new Result();
-        List<ZyOwnerRoom> ownerRoomByOwnerId = baseMapper.getOwnerRoom(zyVisitor.getCreateById(),zyVisitor.getCommunityId());
-         if (ownerRoomByOwnerId.size()>0)
-         {
-             try {
-                 this.baseMapper.insertVisitor(zyVisitor);
-                 result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_SUCCESSFULLY));
-             } catch (Exception e) {
-                 e.printStackTrace();
-                 result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_FAIL));
-             }
-         }else {
-             result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
-         }
+        List<ZyOwnerRoom> ownerRoomByOwnerId = baseMapper.getOwnerRoom(zyVisitor.getCreateById(), zyVisitor.getCommunityId());
+        if (ownerRoomByOwnerId.size() > 0) {
+            try {
+                this.baseMapper.insertVisitor(zyVisitor);
+                result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_SUCCESSFULLY));
+            } catch (Exception e) {
+                e.printStackTrace();
+                result.setMeta(ResultTool.fail(ResultCode.VISITOR_APPLICATION_FAIL));
+            }
+        } else {
+            result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
+        }
         return result;
     }
 }
