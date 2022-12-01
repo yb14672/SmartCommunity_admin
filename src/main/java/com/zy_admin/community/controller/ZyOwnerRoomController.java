@@ -22,13 +22,12 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * zy主人房间控制器
  * 房屋绑定表 (ZyOwnerRoom)表控制层
  *
  * @author makejava
  * @since 2022-11-01 19:49:02
  */
-@Api(value = "zyOwnerRoom", tags = {"zy主人房间控制器 房屋绑定表 (ZyOwnerRoom)表控制层"})
+@Api(value = "zyOwnerRoom", tags = {"房屋绑定表 (ZyOwnerRoom)表控制层"})
 @RestController
 @RequestMapping("zyOwnerRoom")
 public class ZyOwnerRoomController extends ApiController {
@@ -44,6 +43,10 @@ public class ZyOwnerRoomController extends ApiController {
     @Resource
     private RequestUtil requestUtil;
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
+    })
+    @ApiOperation(value = "", notes = "", httpMethod = "GET")
     @GetMapping("/selectOwnerRoomByOwnerId")
     public Result selectOwnerRoomByOwnerId(HttpServletRequest request){
         String ownerId = requestUtil.getOwnerId(request);
@@ -62,7 +65,7 @@ public class ZyOwnerRoomController extends ApiController {
     @GetMapping("/getOwnerRoomByOwnerId")
     public Result getOwnerRoomByOwnerId(HttpServletRequest request){
         return this.zyOwnerRoomService.getOwnerRoomByOwnerId(requestUtil.getOwnerId(request));
-    };
+    }
     
     /**
      * 新增数据

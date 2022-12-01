@@ -52,8 +52,8 @@ public class ZyRepairController extends ApiController {
      * @throws IOException 输出流异常
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "repairIds", value = "", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "repairIds", value = "报修id", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "前端响应", required = true)
     })
     @ApiOperation(value = "报修导出", notes = "报修导出", httpMethod = "GET")
     @MyLog(title = "报修导出", optParam = "#{repairIds}", businessType = BusinessType.EXPORT)
@@ -90,7 +90,7 @@ public class ZyRepairController extends ApiController {
      * @return 删除结果集
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "List<Long>", name = "idList", value = "主键结合", required = true)
+            @ApiImplicitParam(paramType = "body", dataType = "List<String>", name = "repairIds", value = "报修id集合", required = true)
     })
     @ApiOperation(value = "删除报修", notes = "删除报修", httpMethod = "DELETE")
     @DeleteMapping("/deleteRepair")
@@ -103,7 +103,8 @@ public class ZyRepairController extends ApiController {
      * @return 修改结果集
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyRepair", name = "zyRepair", value = "实体对象", required = true)
+            @ApiImplicitParam(paramType = "body", dataType = "ZyRepair", name = "zyRepair", value = "报修对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
     })
     @ApiOperation(value = "修改报修", notes = "修改报修", httpMethod = "PUT")
     @PutMapping("/updateRepair")
@@ -116,7 +117,8 @@ public class ZyRepairController extends ApiController {
      * @return 新增结果级
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyRepair", name = "zyRepair", value = "查询报修对象", required = true)
+            @ApiImplicitParam(paramType = "body", dataType = "ZyRepair", name = "zyRepair", value = "查询报修对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
     })
     @ApiOperation(value = "新增报修", notes = "新增报修", httpMethod = "POST")
     @PostMapping("/insertRepair")

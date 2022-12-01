@@ -69,7 +69,7 @@ public class ZyComplaintSuggestController extends ApiController {
      * @return 返回成功或错误信息
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "suggestId", name = "suggestId", value = "投诉建议id", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "suggestId", value = "id", required = true)
     })
     @ApiOperation(value = "查询", notes = "查询", httpMethod = "GET")
     @GetMapping("/selectSuggestById")
@@ -83,7 +83,7 @@ public class ZyComplaintSuggestController extends ApiController {
      * @return 返回
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "idList", value = "要删除的投诉建议的id", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "idList", value = "要删除的投诉建议id", required = true)
     })
     @ApiOperation(value = "删除投诉建议", notes = "删除投诉建议", httpMethod = "DELETE")
     @DeleteMapping
@@ -144,7 +144,7 @@ public class ZyComplaintSuggestController extends ApiController {
      * @throws Exception 将存在的异常抛出
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyComplaintSuggest", name = "zyComplaintSuggest", value = "要新增的投诉建议信息", required = true),
+            @ApiImplicitParam(paramType = "body", dataType = "ZyComplaintSuggest", name = "zyComplaintSuggest", value = "要新增的投诉建议", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端请求", required = true)
     })
     @ApiOperation(value = "新增投诉建议", notes = "新增投诉建议", httpMethod = "POST")
@@ -166,7 +166,7 @@ public class ZyComplaintSuggestController extends ApiController {
      * @throws IOException 抛出数据流异常
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "suggestIds", value = "获取投诉建议id", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "suggestIds", value = "获取投诉建议的所有id", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "前端响应", required = true)
     })
     @ApiOperation(value = "用于批量导出投诉建议数据", notes = "用于批量导出投诉建议数据", httpMethod = "GET")
@@ -206,7 +206,7 @@ public class ZyComplaintSuggestController extends ApiController {
      * @return 返回成功或错误信息
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "zyComplaintSuggest", name = "zyComplaintSuggest", value = "投诉建议对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "ZyComplaintSuggest", name = "zyComplaintSuggest", value = "投诉建议对象", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "分页对象", required = true)
     })
     @ApiOperation(value = "分页查询", notes = "分页查询", httpMethod = "GET")

@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author makejava
  * @since 2022-11-01 19:49:01
  */
-@Api(value = "zyComment", tags = {"手机端互动评论"})
+@Api(value = "/mini/comment", tags = {"移动端互动评论"})
 @RestController
 @RequestMapping("/mini/comment")
 public class ZyCommunityCommentController {
@@ -38,7 +38,8 @@ public class ZyCommunityCommentController {
      * @return 新增结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyComment", name = "zyComment", value = "实体对象", required = true)
+            @ApiImplicitParam(paramType = "body", dataType = "ZyComment", name = "zyComment", value = "实体对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
     })
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping
@@ -56,7 +57,7 @@ public class ZyCommunityCommentController {
      * @return 删除结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "String", name = "commentId", value = "主键", required = true)
+            @ApiImplicitParam(paramType = "path", dataType = "string", name = "commentId", value = "主键", required = true)
     })
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping("/{commentId}")

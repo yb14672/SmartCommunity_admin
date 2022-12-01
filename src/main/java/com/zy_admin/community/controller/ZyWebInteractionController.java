@@ -31,7 +31,7 @@ import java.util.List;
  * @author yb14672
  * @date 2022/11/23 - 20:58
  */
-@Api(value = "/system/interaction", tags = {"web端社区互动"})
+@Api(value = "/system/interaction", tags = {"社区互动Controller"})
 @RestController
 @RequestMapping("/system/interaction")
 public class ZyWebInteractionController {
@@ -52,6 +52,7 @@ public class ZyWebInteractionController {
      */
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "ids", value = "id", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "communityId", value = "", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "响应", required = true)
     })
     @ApiOperation(value = "根据ID导出Excel", notes = "根据ID导出Excel", httpMethod = "GET")
@@ -103,28 +104,13 @@ public class ZyWebInteractionController {
      * @return 单条数据
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "path", dataType = "String", name = "id", value = "主键", required = true)
+            @ApiImplicitParam(paramType = "path", dataType = "string", name = "id", value = "主键", required = true)
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
     public Result selectOne(@PathVariable String id) {
         return this.zyCommunityInteractionService.getInteractionInfoById(id);
     }
-//
-//    /**
-//     * 新增数据
-//     *
-//     * @param zyCommunityInteraction 实体对象
-//     * @return 新增结果
-//     */
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "body", dataType = "ZyCommunityInteraction", name = "zyCommunityInteraction", value = "实体对象", required = true)
-//    })
-//    @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
-//    @PostMapping
-//    public R insert(@RequestBody ZyCommunityInteraction zyCommunityInteraction) {
-//        return success(this.zyCommunityInteractionService.save(zyCommunityInteraction));
-//    }
 
 
     /**
