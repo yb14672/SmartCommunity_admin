@@ -35,6 +35,26 @@ public class ZyRepairServiceImpl extends ServiceImpl<ZyRepairDao, ZyRepair> impl
 
     @Resource
     private RequestUtil requestUtil;
+
+    /**
+     * 通过业主Id查询报修信息
+     *
+     * @param repair 修复
+     * @return {@link Result}
+     */
+    @Override
+    public Result getRepairByOwnerId(ZyRepair repair) {
+        Result result = new Result(null,ResultTool.fail(ResultCode.REPAIR_GET_FAIL));
+        try {
+            List<ZyRepair> repairs = this.baseMapper.getRepairByOwnerId(repair);
+            result.setData(repairs);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            return result;
+        } catch (Exception e) {
+            return result;
+        }
+    }
+
     /**
      * 分页查询所有报修数据
      *

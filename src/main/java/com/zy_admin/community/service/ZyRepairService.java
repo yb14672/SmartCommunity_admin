@@ -18,6 +18,14 @@ import java.util.List;
  * @since 2022-11-01 19:49:03
  */
 public interface ZyRepairService extends IService<ZyRepair> {
+
+    /**
+     * 通过业主Id查询报修信息
+     *
+     * @param repair 修复
+     * @return {@link Result}
+     */
+    Result getRepairByOwnerId(ZyRepair repair);
     /**
      * 分页查询所有报修数据
      * @param pageable     分页对象
