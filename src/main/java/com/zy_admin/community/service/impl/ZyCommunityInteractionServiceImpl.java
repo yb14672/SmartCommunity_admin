@@ -11,6 +11,7 @@ import com.zy_admin.community.dao.ZyCommentDao;
 import com.zy_admin.community.dao.ZyCommunityInteractionDao;
 import com.zy_admin.community.dao.ZyFilesDao;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
+import com.zy_admin.community.dto.OwnerRoomDto;
 import com.zy_admin.community.dto.ZyCommentDto;
 import com.zy_admin.community.dto.ZyCommunityInteractionDto;
 import com.zy_admin.community.entity.ZyCommunityInteraction;
@@ -202,9 +203,8 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
     @Transactional(rollbackFor = Exception.class)
     public Result insert(ZyCommunityInteractionDto interactionDto) throws Exception {
         Result result = new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
-        List<ZyOwnerRoom> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(interactionDto.getUserId());
+        List<OwnerRoomDto> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(interactionDto.getUserId());
         if (ownerRoomByOwnerId.size()>0){
-
             ZyCommunityInteraction interaction = new ZyCommunityInteraction();
             interaction.setCreateTime(LocalDateTime.now().toString());
             String interactionId = snowflakeManager.nextId() + "";

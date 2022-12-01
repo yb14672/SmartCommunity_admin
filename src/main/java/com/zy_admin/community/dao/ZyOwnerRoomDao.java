@@ -32,7 +32,7 @@ public interface ZyOwnerRoomDao extends BaseMapper<ZyOwnerRoom> {
      * @param ownerId 业主ID
      * @return 关联关系列表
      */
-    List<ZyOwnerRoom> getOwnerRoomByOwnerId(String ownerId);
+    List<OwnerRoomDto> getOwnerRoomByOwnerId(String ownerId);
 
     /**
      * 验重提交记录

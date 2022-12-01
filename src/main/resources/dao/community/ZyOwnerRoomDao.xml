@@ -39,8 +39,24 @@
     </select>
 
     <!-- 根据业主ID获取其房屋绑定列表-->
-    <select id="getOwnerRoomByOwnerId" resultType="com.zy_admin.community.entity.ZyOwnerRoom">
-        SELECT * FROM zy_owner_room WHERE room_status = 'Binding' and owner_id = #{ownerId}
+    <select id="getOwnerRoomByOwnerId" resultType="com.zy_admin.community.dto.OwnerRoomDto">
+        select c.community_id,
+               c.community_name,
+               b.building_id,
+               b.building_name,
+               u.unit_id,
+               u.unit_name,
+               r.room_id,
+               r.room_name,
+               ow.owner_real_name,
+               o.create_time,
+               o.room_status
+        from (SELECT * FROM zy_owner_room WHERE room_status = 'Binding' and owner_id = #{ownerId}) o
+                 join zy_community c on o.community_id = c.community_id
+                 join zy_building b on o.building_id = b.building_id
+                 join zy_unit u on o.unit_id = u.unit_id
+                 join zy_room r on o.room_id = r.room_id
+                 join zy_owner ow on ow.owner_id = o.owner_id
     </select>
 
     <!--新增所有列-->
@@ -194,7 +210,7 @@
 
     <!-- 验重记录已提交-->
     <select id="checkOwnerRoom" resultType="com.zy_admin.community.entity.ZyOwnerRoom">
-        select * from zy_owner_room where community_id = #{communityId} and building_id = #{buildingId} and unit_id = #{unitId} and room_id = #{roomId} and room_status != "Reject"
+        select * from zy_owner_room where community_id = #{communityId} and building_id = #{buildingId} and unit_id = #{unitId} and room_id = #{roomId} and room_status = "Binding"
     </select>
 
     <!--通过主键修改数据-->

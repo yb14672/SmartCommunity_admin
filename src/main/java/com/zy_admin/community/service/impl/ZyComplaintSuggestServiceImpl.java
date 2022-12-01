@@ -9,6 +9,7 @@ import com.zy_admin.community.dao.ZyComplaintSuggestDao;
 import com.zy_admin.community.dao.ZyFilesDao;
 import com.zy_admin.community.dao.ZyOwnerDao;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
+import com.zy_admin.community.dto.OwnerRoomDto;
 import com.zy_admin.community.dto.ZyComplaintSuggestDto;
 import com.zy_admin.community.entity.ZyComplaintSuggest;
 import com.zy_admin.community.entity.ZyOwnerRoom;
@@ -146,7 +147,7 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         zyComplaintSuggest.setComplaintSuggestId(snowflakeManager.nextId() + "");
         //判断下面有没有房屋绑定
-        List<ZyOwnerRoom> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComplaintSuggest.getComplaintSuggestId());
+        List<OwnerRoomDto> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComplaintSuggest.getComplaintSuggestId());
         if (ownerRoomByOwnerId != null) {
             result.setMeta(ResultTool.success(ResultCode.OWNER_NOT_BOUND));
             result.setData("新增失败");
@@ -210,7 +211,7 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         String[] fields = new String[]{"complaintSuggestType","complaintSuggestContent","remark"};
         if(!ObjUtil.checkEquals(zyComplaintSuggest1,zyComplaintSuggest,fields)){
             //判断下面有没有房屋绑定
-            List<ZyOwnerRoom> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComplaintSuggest.getComplaintSuggestId());
+            List<OwnerRoomDto> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComplaintSuggest.getComplaintSuggestId());
             if (ownerRoomByOwnerId == null) {
                 result.setData("未绑定房屋,不允许修改");
                 result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
