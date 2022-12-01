@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 业主impl客房服务
  * 房屋绑定表 (ZyOwnerRoom)表服务实现类
  *
  * @author makejava
