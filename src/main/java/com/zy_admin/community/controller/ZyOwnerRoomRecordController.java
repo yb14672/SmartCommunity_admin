@@ -31,12 +31,12 @@ public class ZyOwnerRoomRecordController extends ApiController {
     private ZyOwnerRoomRecordService zyOwnerRoomRecordService;
 
     /**
-     * 审核记录
-     * @param zyOwnerRoomRecordId
-     * @return
+     * 根据ID查询审核记录列表
+     * @param zyOwnerRoomRecordId 主键ID
+     * @return 审核记录列表
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "string", name = "zyOwnerRoomRecordId", value = "", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "zyOwnerRoomRecordId", value = "主键ID", required = true)
     })
     @ApiOperation(value = "审核记录", notes = "审核记录", httpMethod = "GET")
     @GetMapping("/selectZyOwnerRoomRecord")

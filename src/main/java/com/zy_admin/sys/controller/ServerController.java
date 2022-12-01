@@ -1,36 +1,46 @@
 package com.zy_admin.sys.controller;
 
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryUsage;
 import com.sun.management.OperatingSystemMXBean;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 /**
  * 系统监控
+ *
+ * @author yb1462
+ * @date 2022/12/01
  */
+@Api(value = "/sysService", tags = {"系统监控"})
 @RestController
 @RequestMapping("/sysService")
 public class ServerController {
 
+    /**
+     * 初始化
+     */
+    @ApiOperation(value = "初始化", notes = "初始化", httpMethod = "GET")
     @GetMapping("getAll")
     public void init() {
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
             try {
-
                 SystemInfo systemInfo = new SystemInfo();
-
                 OperatingSystemMXBean osmxb = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
                 MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
                 // 椎内存使用情况
@@ -118,10 +128,16 @@ public class ServerController {
     }
 
     /**
+     * println cpu信息
      * 打印 CPU 信息
      *
-     * @param systemInfo
+     * @param systemInfo 系统信息
+     * @throws InterruptedException 中断异常
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "SystemInfo", name = "systemInfo", value = "系统信息", required = true)
+    })
+    @ApiOperation(value = "println cpu信息 打印 CPU 信息", notes = "println cpu信息 打印 CPU 信息", httpMethod = "GET")
     @GetMapping("/getService")
     private void printlnCpuInfo(SystemInfo systemInfo) throws InterruptedException {
         CentralProcessor processor = systemInfo.getHardware().getProcessor();
