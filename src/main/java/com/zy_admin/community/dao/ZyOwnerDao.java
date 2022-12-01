@@ -15,7 +15,7 @@ import org.apache.ibatis.annotations.Update;
 import java.util.List;
 
 /**
- * zy所有者刀
+ * 业主刀
  * 业主 (ZyOwner)表数据库访问层
  *
  * @author makejava
@@ -74,7 +74,7 @@ public interface ZyOwnerDao extends BaseMapper<ZyOwner> {
      * 数
      * 获取总数据量
      *
-     * @param zyOwner zy所有者
+     * @param zyOwner 业主
      * @return long
      */
     long countOwner(ZyOwner zyOwner);

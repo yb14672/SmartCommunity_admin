@@ -12,7 +12,6 @@ import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dto.OwnerRoomDto;
 import com.zy_admin.community.dto.ZyComplaintSuggestDto;
 import com.zy_admin.community.entity.ZyComplaintSuggest;
-import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.service.ZyComplaintSuggestService;
 import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.ResultTool;
@@ -89,14 +88,6 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         //根据id获取到的图片的地址
         List<ZyComplaintSuggestDto> zyComplaintSuggestList = this.baseMapper.selectSuggestLimit(zyComplaintSuggest, pageable);
         if (zyComplaintSuggestList.size() != 0) {
-            //把图片的值给dto里,循环存进去
-//            for (ZyComplaintSuggestDto zyComplaintSuggestDto : zyComplaintSuggestList) {
-//                //循环查图片，把所有图片渲染上去
-//                List<String> list = zyFilesDao.queryAllFileUrl(zyComplaintSuggestDto.getComplaintSuggestId(), "ComplaintSuggest");
-//                //把获取到的图片地址的list放入dto中
-//                zyComplaintSuggestDto.setFilesUrl(list);
-//            }
-
             for (int i = 0; i < zyComplaintSuggestList.size(); i++) {
                 String id = zyComplaintSuggestList.get(i).getComplaintSuggestId();
                 List<String> filesList = zyFilesDao.queryAllFileUrl(id, "ComplaintSuggest");

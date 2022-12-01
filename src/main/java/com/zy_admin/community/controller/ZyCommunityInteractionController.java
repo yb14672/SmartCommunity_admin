@@ -2,11 +2,9 @@ package com.zy_admin.community.controller;
 
 
 import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.dto.ZyCommunityInteractionDto;
-import com.zy_admin.community.entity.ZyCommunityInteraction;
 import com.zy_admin.community.service.ZyCommunityInteractionService;
 import com.zy_admin.util.RequestUtil;
 import io.swagger.annotations.Api;
@@ -26,7 +24,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-11-01 19:49:01
  */
-@Api(value = "zyCommunityInteraction", tags = {"移动端社区互动"})
+@Api(value = "/mini/interaction", tags = {"社区互动表(ZyCommunityInteraction)表控制层"})
 @RestController
 @RequestMapping("/mini/interaction")
 public class ZyCommunityInteractionController extends ApiController {
@@ -46,15 +44,13 @@ public class ZyCommunityInteractionController extends ApiController {
      * @return 所有数据
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "Page<ZyCommunityInteraction>", name = "page", value = "分页对象", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "ZyCommunityInteraction", name = "zyCommunityInteraction", value = "查询实体", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "ZyCommunityInteractionDto", name = "zyCommunityInteraction", value = "查询实体", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
-    public Result selectAll(ZyCommunityInteractionDto zyCommunityInteraction,HttpServletRequest request) {
-        //由于是业主使用的小程序，所以只能看到已绑定的房屋对应的小区
-        zyCommunityInteraction.setUserId(requestUtil.getOwnerId(request));
-        Page page = new Page<>(1,5);
+    public Result selectAll(ZyCommunityInteractionDto zyCommunityInteraction) {
+        Page page = new Page<>(0,0);
         return this.zyCommunityInteractionService.selectAllLimit(page,zyCommunityInteraction);
     }
 
@@ -65,7 +61,7 @@ public class ZyCommunityInteractionController extends ApiController {
      * @return    单条数据
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "path", dataType = "String", name = "id", value = "主键", required = true)
+            @ApiImplicitParam(paramType = "path", dataType = "string", name = "id", value = "文章ID", required = true)
     })
     @ApiOperation(value = "通过文章ID查询详情和评论列表", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
@@ -80,7 +76,8 @@ public class ZyCommunityInteractionController extends ApiController {
      * @return 新增结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyCommunityInteraction", name = "zyCommunityInteraction", value = "实体对象", required = true)
+            @ApiImplicitParam(paramType = "body", dataType = "ZyCommunityInteractionDto", name = "zyCommunityInteraction", value = "实体对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
     })
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping
@@ -91,28 +88,13 @@ public class ZyCommunityInteractionController extends ApiController {
     }
 
     /**
-     * 修改数据
-     *
-     * @param zyCommunityInteraction 实体对象
-     * @return 修改结果
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyCommunityInteraction", name = "zyCommunityInteraction", value = "实体对象", required = true)
-    })
-    @ApiOperation(value = "修改数据", notes = "修改数据", httpMethod = "PUT")
-    @PutMapping
-    public R update(@RequestBody ZyCommunityInteraction zyCommunityInteraction) {
-        return success(this.zyCommunityInteractionService.updateById(zyCommunityInteraction));
-    }
-
-    /**
      * 删除数据
      *
      * @param id 主键
      * @return 删除结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "String", name = "id", value = "主键结合", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "id", value = "主键", required = true)
     })
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping

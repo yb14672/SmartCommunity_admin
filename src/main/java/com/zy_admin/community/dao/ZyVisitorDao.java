@@ -78,8 +78,5 @@ public interface ZyVisitorDao extends BaseMapper<ZyVisitor> {
      */
     @Select("select * from zy_owner_room where owner_id=#{ownerId} and room_status = 'Binding' and community_id=#{communityId}")
     List<ZyOwnerRoom> getOwnerRoom(@Param("ownerId") String ownerId,@Param("communityId") String communityId);
-
-
-
 }
 

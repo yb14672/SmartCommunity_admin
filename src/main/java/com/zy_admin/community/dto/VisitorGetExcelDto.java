@@ -1,11 +1,17 @@
 package com.zy_admin.community.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 访客Excel模板
+ * @author yb14672
+ */
+@ApiModel(description = "访客Excel模板")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,7 +19,7 @@ public class VisitorGetExcelDto {
     /**
      * 小区名称
      */
-    @ApiModelProperty("小区名")
+    @ApiModelProperty("小区名称")
     @ExcelProperty("小区名")
     private String communityName;
     /**
@@ -51,7 +57,7 @@ public class VisitorGetExcelDto {
     /**
      * 访客操作
      */
+    @ApiModelProperty("访客操作")
     @ExcelProperty("是否允许进入小区")
-    @ApiModelProperty("是否允许进入小区")
     private String status;
 }

@@ -17,6 +17,13 @@ import java.util.List;
  */
 public interface ZyRepairDao extends BaseMapper<ZyRepair> {
     /**
+     * 通过业主Id查询报修信息
+     *
+     * @param repair 修复
+     * @return {@link List}<{@link ZyRepair}>
+     */
+    List<ZyRepair> getRepairByOwnerId(ZyRepair repair);
+    /**
      * 分页查询所有报修数据
      *
      * @param pageable     分页对象

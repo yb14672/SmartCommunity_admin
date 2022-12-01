@@ -1,4 +1,5 @@
 package com.zy_admin.community.dto;
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -60,13 +61,13 @@ public class CommunityExcel {
      * 经度
      */
     @ApiModelProperty("经度")
-    @ExcelProperty("经度")
+    @ExcelIgnore
     private String communityLongitude;
     /**
      * 纬度
      */
     @ApiModelProperty("纬度")
-    @ExcelProperty("纬度")
+    @ExcelIgnore
     private String communityLatitude;
     /**
      * 物业id
@@ -78,7 +79,7 @@ public class CommunityExcel {
      * 排序
      */
     @ApiModelProperty("排序")
-    @ExcelProperty("排序")
+    @ExcelIgnore
     private Integer communitySort;
     /**
      * 创建者

@@ -6,10 +6,7 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.baomidou.mybatisplus.extension.api.R;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
@@ -33,7 +30,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -73,7 +69,8 @@ public class ZyVisitorController extends ApiController {
      */
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "List<String>", name = "visitorIds", value = "游客id", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "响应", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "响应", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "communityId", value = "", required = true)
     })
     @ApiOperation(value = "获取excel", notes = "获取excel", httpMethod = "GET")
     @GetMapping("/getExcel")
@@ -119,7 +116,7 @@ public class ZyVisitorController extends ApiController {
 
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "ZyVisitor", name = "zyVisitor", value = "zy访客", required = true)
+            @ApiImplicitParam(paramType = "body", dataType = "ZyVisitor", name = "zyVisitor", value = "zy访客", required = true)
     })
     @ApiOperation(value = "插入访客", notes = "插入访客", httpMethod = "POST")
     @PostMapping("/insertVisitor")
@@ -167,83 +164,7 @@ public class ZyVisitorController extends ApiController {
     @PutMapping("/updateStatus")
     @MyLog(title = "访客管理", optParam = "#{zyVisitor}", businessType = BusinessType.UPDATE)
     public Result updateStatus(@RequestBody ZyVisitor zyVisitor){
-       return   this.zyVisitorService.updateStatus(zyVisitor);
-    }
-    /**
-     * 分页查询所有数据
-     *
-     * @param page      分页对象
-     * @param zyVisitor 查询实体
-     * @return 所有数据
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "Page<ZyVisitor>", name = "page", value = "分页对象", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "ZyVisitor", name = "zyVisitor", value = "查询实体", required = true)
-    })
-    @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
-    @GetMapping
-    public R selectAll(Page<ZyVisitor> page, ZyVisitor zyVisitor) {
-        return success(this.zyVisitorService.page(page, new QueryWrapper<>(zyVisitor)));
-    }
-
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "path", dataType = "Serializable", name = "id", value = "主键", required = true)
-    })
-    @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.zyVisitorService.getById(id));
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param zyVisitor 实体对象
-     * @return 新增结果
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyVisitor", name = "zyVisitor", value = "实体对象", required = true)
-    })
-    @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
-    @PostMapping
-    public R insert(@RequestBody ZyVisitor zyVisitor) {
-        return success(this.zyVisitorService.save(zyVisitor));
-    }
-
-    /**
-     * 修改数据
-     *
-     * @param zyVisitor 实体对象
-     * @return 修改结果
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyVisitor", name = "zyVisitor", value = "实体对象", required = true)
-    })
-    @ApiOperation(value = "修改数据", notes = "修改数据", httpMethod = "PUT")
-    @PutMapping
-    public R update(@RequestBody ZyVisitor zyVisitor) {
-        return success(this.zyVisitorService.updateById(zyVisitor));
-    }
-
-    /**
-     * 删除数据
-     *
-     * @param idList 主键结合
-     * @return 删除结果
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "List<Long>", name = "idList", value = "主键结合", required = true)
-    })
-    @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.zyVisitorService.removeByIds(idList));
+       return this.zyVisitorService.updateStatus(zyVisitor);
     }
 }
 
