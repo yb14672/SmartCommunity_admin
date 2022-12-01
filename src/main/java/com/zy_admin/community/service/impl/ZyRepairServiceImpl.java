@@ -105,6 +105,7 @@ public class ZyRepairServiceImpl extends ServiceImpl<ZyRepairDao, ZyRepair> impl
     public Result insertRepair(ZyRepair zyRepair, HttpServletRequest request) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         ZyOwner owner = requestUtil.getOwner(request);
+        zyRepair.setDelFlag(0);
         zyRepair.setUserId(owner.getOwnerId());
         zyRepair.setCreateBy(owner.getOwnerRealName());
         zyRepair.setCreateTime(LocalDateTime.now().toString());

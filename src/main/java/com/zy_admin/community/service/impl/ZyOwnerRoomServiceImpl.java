@@ -103,7 +103,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     @Override
     public Result getOwnerRoomByOwnerId(String ownerId) {
         Result result = new Result("加载失败，请稍后重试", ResultTool.fail(ResultCode.COMMON_FAIL));
-        List<ZyOwnerRoom> ownerRoomByOwnerId = this.baseMapper.getOwnerRoomByOwnerId(ownerId);
+        List<OwnerRoomDto> ownerRoomByOwnerId = this.baseMapper.getOwnerRoomByOwnerId(ownerId);
         if(!ownerRoomByOwnerId.isEmpty()||ownerRoomByOwnerId.size()!=0){
             result.setData(ownerRoomByOwnerId);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));

@@ -5,6 +5,7 @@ import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyCommentDao;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
+import com.zy_admin.community.dto.OwnerRoomDto;
 import com.zy_admin.community.entity.ZyComment;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.service.ZyCommentService;
@@ -59,7 +60,7 @@ public class ZyCommentServiceImpl extends ServiceImpl<ZyCommentDao, ZyComment> i
         Result result = new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
         zyComment.setCreateTime(LocalDateTime.now().toString());
         zyComment.setCommentId(snowflakeManager.nextId() + "");
-        List<ZyOwnerRoom> ownerRoomByOwnerId = this.zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComment.getUserId());
+        List<OwnerRoomDto> ownerRoomByOwnerId = this.zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComment.getUserId());
         if(ObjUtil.isNotEmpty(ownerRoomByOwnerId)){
             int insert = this.baseMapper.insertComment(zyComment);
             if(insert==1){
