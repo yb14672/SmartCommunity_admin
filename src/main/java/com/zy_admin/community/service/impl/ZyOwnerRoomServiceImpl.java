@@ -14,7 +14,6 @@ import com.zy_admin.community.dto.ZyOwnerRoomDtoAll;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomService;
-import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.RoomTree;
 import com.zy_admin.util.SnowflakeManager;
@@ -36,25 +35,19 @@ import java.util.List;
 public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerRoom> implements ZyOwnerRoomService {
 
     /**
-     * 系统用户刀
-     */
-    @Resource
-    private SysUserDao sysUserDao;
-
-    /**
-     * 业主房间记录道
+     * 业主房间记录持久层
      */
     @Resource
     private ZyOwnerRoomRecordDao zyOwnerRoomRecordDao;
 
     /**
-     * 房屋
+     * 房屋持久层
      */
     @Resource
     private ZyRoomDao zyRoomDao;
 
     /**
-     * 雪花经理
+     * 雪花算法
      */
     @Resource
     private SnowflakeManager snowflakeManager;
@@ -219,8 +212,13 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         //id
         zyOwnerRoomRecord.setRecordId(snowflakeManager.nextId()+"");
         zyOwnerRoomRecord.setOwnerType("yz");
+        zyOwnerRoomRecord.setCommunityId(zyOwnerRoom.getCommunityId());
+        zyOwnerRoomRecord.setBuildingId(zyOwnerRoom.getBuildingId());
+        zyOwnerRoomRecord.setUnitId(zyOwnerRoom.getUnitId());
+        zyOwnerRoomRecord.setRoomId(zyOwnerRoom.getRoomId());
         zyOwnerRoomRecord.setOwnerRoomId(zyOwnerRoom.getOwnerRoomId());
         zyOwnerRoomRecord.setRoomStatus(zyOwnerRoom.getRoomStatus());
+        zyOwnerRoomRecord.setUpdateBy(zyOwnerRoom.getUpdateBy());
         zyOwnerRoomRecord.setUpdateTime(LocalDateTime.now().toString());
         zyOwnerRoomRecordDao.insert(zyOwnerRoomRecord);
         //修改时间
