@@ -30,7 +30,7 @@
                ow.owner_real_name,
                o.create_time,
                o.room_status
-        from (select * from zy_owner_room where owner_id = #{ownerId}) o
+        from (select * from zy_owner_room where owner_id = #{ownerId} and room_status = "Binding") o
                  join zy_community c on o.community_id = c.community_id
                  join zy_building b on o.building_id = b.building_id
                  join zy_unit u on o.unit_id = u.unit_id

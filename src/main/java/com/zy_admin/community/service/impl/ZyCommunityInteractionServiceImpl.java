@@ -141,6 +141,15 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
             }
         }else{
             List<ZyCommunityInteractionDto> allDtoList = this.baseMapper.getAllDtoList(interactionDto.getCommunityId());
+            if (allDtoList.size() != 0) {
+                for (ZyCommunityInteractionDto zyCommunityInteractionDto : allDtoList) {
+                    String parentId = zyCommunityInteractionDto.getInteractionId();
+                    List<ZyFiles> files = this.zyFilesDao.queryAllFile(parentId, "CommunityInteraction");
+                    List<String> fileUrl = this.zyFilesDao.queryAllFileUrl(parentId, "CommunityInteraction");
+                    zyCommunityInteractionDto.setZyFiles(files);
+                    zyCommunityInteractionDto.setUrlList(fileUrl);
+                }
+            }
             if(!allDtoList.isEmpty()){
                 result.setData(allDtoList);
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
