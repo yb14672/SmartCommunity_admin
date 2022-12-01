@@ -1,9 +1,9 @@
 package com.zy_admin.community.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.github.yulichang.base.MPJBaseMapper;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerPark;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-12-01 15:18:33
  */
-public interface ZyOwnerParkDao extends BaseMapper<ZyOwnerPark> {
+public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
 
     /**
      * 通过ID查询单条数据
@@ -23,14 +23,6 @@ public interface ZyOwnerParkDao extends BaseMapper<ZyOwnerPark> {
      */
     ZyOwnerPark queryById(Long ownerParkId);
 
-    /**
-     * 查询指定行数据
-     *
-     * @param zyOwnerPark 查询条件
-     * @param pageable    分页对象
-     * @return 对象列表
-     */
-    List<ZyOwnerPark> queryAllByLimit(ZyOwnerPark zyOwnerPark, @Param("pageable") Pageable pageable);
 
     /**
      * 统计总行数
@@ -46,6 +38,7 @@ public interface ZyOwnerParkDao extends BaseMapper<ZyOwnerPark> {
      * @param zyOwnerPark 实例对象
      * @return 影响行数
      */
+    @Override
     int insert(ZyOwnerPark zyOwnerPark);
 
     /**

@@ -1,11 +1,11 @@
 package com.zy_admin.community.controller;
 
-import com.zy_admin.common.Pageable;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.community.dto.OwnerParkListDto;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerPark;
 import com.zy_admin.community.service.ZyOwnerParkService;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,23 +29,15 @@ public class ZyOwnerParkController {
 
 
     @GetMapping("/getOwnerParkList")
-    public Result getOwnerParkList(ZyOwner zyOwner, Pageable pageable)
+    public Result getOwnerParkList(OwnerParkListDto ownerParkListDto, Page page )
     {
 
-        return null;
+        Result ownerParkList = zyOwnerParkService.getOwnerParkList(ownerParkListDto, page);
+        System.out.println(ownerParkList.toString());
+        return ownerParkList;
     }
 
-    /**
-     * 分页查询
-     *
-     * @param zyOwnerPark 筛选条件
-     * @param pageRequest 分页对象
-     * @return 查询结果
-     */
-    @GetMapping
-    public ResponseEntity<Page<ZyOwnerPark>> queryByPage(ZyOwnerPark zyOwnerPark, PageRequest pageRequest) {
-        return ResponseEntity.ok(this.zyOwnerParkService.queryByPage(zyOwnerPark, pageRequest));
-    }
+
 
     /**
      * 通过主键查询单条数据

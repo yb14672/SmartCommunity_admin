@@ -1,11 +1,12 @@
 package com.zy_admin.community.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.community.dto.OwnerParkListDto;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerPark;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 /**
@@ -16,7 +17,7 @@ import org.springframework.data.domain.PageRequest;
  */
 public interface ZyOwnerParkService extends IService<ZyOwnerPark> {
 
-    Result getOwnerParkList(ZyOwner zyOwner, Pageable pageable);
+    Result getOwnerParkList(OwnerParkListDto ownerParkListDto, Page page);
     /**
      * 通过ID查询单条数据
      *
@@ -25,14 +26,6 @@ public interface ZyOwnerParkService extends IService<ZyOwnerPark> {
      */
     ZyOwnerPark queryById(Long ownerParkId);
 
-    /**
-     * 分页查询
-     *
-     * @param zyOwnerPark 筛选条件
-     * @param pageRequest 分页对象
-     * @return 查询结果
-     */
-    Page<ZyOwnerPark> queryByPage(ZyOwnerPark zyOwnerPark, PageRequest pageRequest);
 
     /**
      * 新增数据

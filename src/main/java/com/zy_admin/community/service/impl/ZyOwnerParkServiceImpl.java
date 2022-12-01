@@ -1,20 +1,26 @@
 package com.zy_admin.community.service.impl;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerDao;
 import com.zy_admin.community.dao.ZyOwnerParkDao;
+import com.zy_admin.community.dto.OwnerParkListDto;
 import com.zy_admin.community.dto.ZyOwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerRoomDtoAll;
+import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerPark;
+import com.zy_admin.community.entity.ZyPark;
 import com.zy_admin.community.service.ZyOwnerParkService;
 import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.StringUtil;
+
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -31,35 +37,31 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     private ZyOwnerParkDao zyOwnerParkDao;
 
     @Override
-    public Result getOwnerParkList(ZyOwner zyOwner, Pageable pageable) {
-//        //默认给失败的情况的状态
-//        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-//        //查询出来的总数量
-//        Long total = this.baseMapper.count(zyOwnerPark);
-//        //默认的页面总数设为0
-//        long pages;
-//        if (total>0){
-//            pages = total % pageable.getPageSize() == 0 ? total/pageable.getPageSize() : total/pageable.getPageSize() + 1;
-//            pageable.setPages(pages);
-//            //页码修正
-//            pageable.setPageNum(pageable.getPageNum()<1 ? 1 : pageable.getPageNum());
-//            pageable.setPageNum(pageable.getPageNum()>pages ? pages : pageable.getPageNum());
-//            //设置起始下标
-//            pageable.setIndex((pageable.getPageNum()-1)*pageable.getPageSize());
-//        }else {
-//            pageable.setPageNum(0);
-//        }
-//        pageable.setTotal(total);
-//        List<ZyOwnerRoomDto> zyOwnerRoomList = this.baseMapper.selectAllOwnerRoomLimit(zyOwnerRoom, pageable);
-//        ZyOwnerRoomDtoAll zyOwnerRoomDtoAll = new ZyOwnerRoomDtoAll(zyOwnerRoomList, pageable);
-//        //集合存进去
-//        result.setData(zyOwnerRoomDtoAll);
-//        //给一个信号
-//        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-//        return result;
-        return null;
+    public Result getOwnerParkList(OwnerParkListDto ownerParkListDto, Page page) {
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        MPJLambdaWrapper<ZyOwnerPark> zyOwnerParkMPJLambdaWrapper = new MPJLambdaWrapper<>();
+        zyOwnerParkMPJLambdaWrapper.selectAll(ZyOwner.class)
+                .select(ZyCommunity::getCommunityName)
+                .select(ZyPark::getParkCode)
+                .select(ZyOwnerPark::getCreateTime)
+                .select(ZyPark::getParkType)
+                .leftJoin(ZyPark.class,ZyPark::getParkId,ZyOwnerPark::getParkId)
+                .leftJoin(ZyCommunity.class,ZyCommunity::getCommunityId,ZyPark::getCommunityId)
+                .leftJoin(ZyOwner.class,ZyOwner::getOwnerId,ZyOwnerPark::getOwnerId)
+                .like(StringUtil.isNotEmpty(ownerParkListDto.getOwnerNickname()),ZyOwner::getOwnerNickname,ownerParkListDto.getOwnerNickname())
+                .like(StringUtil.isNotEmpty(ownerParkListDto.getOwnerRealName()),ZyOwner::getOwnerRealName,ownerParkListDto.getOwnerRealName())
+                .like(StringUtil.isNotEmpty(ownerParkListDto.getOwnerIdCard()),ZyOwner::getOwnerIdCard,ownerParkListDto.getOwnerIdCard())
+                .like(StringUtil.isNotEmpty(ownerParkListDto.getOwnerPhoneNumber()),ZyOwner::getOwnerPhoneNumber,ownerParkListDto.getOwnerPhoneNumber());
+        IPage<OwnerParkListDto> ownerParkListDtoIPage = this.baseMapper.selectJoinPage(page, OwnerParkListDto.class, zyOwnerParkMPJLambdaWrapper);
+        if (ownerParkListDtoIPage.getTotal()!=0)
+        {
+            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setData(ownerParkListDtoIPage);
+        }
+        return result;
     }
 //
+
 
     /**
      * 通过ID查询单条数据
@@ -72,19 +74,6 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
         return this.zyOwnerParkDao.queryById(ownerParkId);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param zyOwnerPark 筛选条件
-     * @param pageRequest 分页对象
-     * @return 查询结果
-     */
-    @Override
-    public Page<ZyOwnerPark> queryByPage(ZyOwnerPark zyOwnerPark, PageRequest pageRequest) {
-//        long total = this.zyOwnerParkDao.count(zyOwnerPark);
-//        return new PageImpl<>(this.zyOwnerParkDao.queryAllByLimit(zyOwnerPark, pageRequest), pageRequest, total);
-        return null;
-    }
 
     /**
      * 新增数据

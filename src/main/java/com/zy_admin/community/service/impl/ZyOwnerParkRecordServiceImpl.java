@@ -1,13 +1,17 @@
 package com.zy_admin.community.service.impl;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerParkDao;
 import com.zy_admin.community.dao.ZyOwnerParkRecordDao;
-import com.zy_admin.community.entity.ZyOwner;
-import com.zy_admin.community.entity.ZyOwnerPark;
-import com.zy_admin.community.entity.ZyOwnerParkRecord;
+import com.zy_admin.community.dto.OwnerParkListDto;
+import com.zy_admin.community.entity.*;
 import com.zy_admin.community.service.ZyOwnerParkRecordService;
+import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.StringUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,9 +31,6 @@ public class ZyOwnerParkRecordServiceImpl extends ServiceImpl<ZyOwnerParkRecordD
     private ZyOwnerParkRecordDao zyOwnerParkRecordDao;
 
 
-    public Result getOwnerParkList(ZyOwner zyOwner, Pageable pageable) {
-        return null;
-    }
 
     /**
      * 通过ID查询单条数据
