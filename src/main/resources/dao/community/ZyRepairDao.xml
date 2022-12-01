@@ -11,6 +11,9 @@
                 <if test="repairState!=null and repairState!=''">
                     and repair_state = #{repairState}
                 </if>
+                <if test="repairId != null and repairId != ''">
+                    and repair_id = #{repairId}
+                </if>
                 and user_id = #{userId}
             </where>
 

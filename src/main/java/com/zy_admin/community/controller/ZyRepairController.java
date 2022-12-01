@@ -62,7 +62,7 @@ public class ZyRepairController extends ApiController {
     })
     @ApiOperation(value = "查看报修", notes = "查看报修", httpMethod = "GET")
     @GetMapping("/getRepairByOwnerId")
-    public Result getRepairByOwnerId(@RequestBody ZyRepair repair, HttpServletRequest request){
+    public Result getRepairByOwnerId(ZyRepair repair, HttpServletRequest request){
         repair.setUserId(requestUtil.getOwnerId(request));
         return this.zyRepairService.getRepairByOwnerId(repair);
     }
