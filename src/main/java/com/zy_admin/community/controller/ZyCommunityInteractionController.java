@@ -49,10 +49,8 @@ public class ZyCommunityInteractionController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
-    public Result selectAll(ZyCommunityInteractionDto zyCommunityInteraction,HttpServletRequest request) {
-        //由于是业主使用的小程序，所以只能看到已绑定的房屋对应的小区
-        zyCommunityInteraction.setUserId(requestUtil.getOwnerId(request));
-        Page page = new Page<>(1,5);
+    public Result selectAll(ZyCommunityInteractionDto zyCommunityInteraction) {
+        Page page = new Page<>(0,0);
         return this.zyCommunityInteractionService.selectAllLimit(page,zyCommunityInteraction);
     }
 

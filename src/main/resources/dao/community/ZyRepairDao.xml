@@ -4,6 +4,20 @@
     <resultMap type="com.zy_admin.community.dto.RepairDto" id="getZyRepairMap">
         <id property="repairId" column="repairId" jdbcType="INTEGER"/>
     </resultMap>
+
+    <select id="getRepairByOwnerId" resultType="com.zy_admin.community.entity.ZyRepair">
+        select * from zy_repair
+            <where>
+                <if test="repairState!=null and repairState!=''">
+                    and repair_state = #{repairState}
+                </if>
+                <if test="repairId != null and repairId != ''">
+                    and repair_id = #{repairId}
+                </if>
+                and user_id = #{userId}
+            </where>
+
+    </select>
     <!--分页查询-->
     <select id="getAllRepairs" resultMap="getZyRepairMap">
         SELECT r.*,r.repair_id repairId,o.owner_id ownerId,o.owner_real_name,o.owner_phone_number from zy_repair r
@@ -148,5 +162,6 @@
             #{repairId}
         </foreach>)
     </select>
+
 </mapper>
 

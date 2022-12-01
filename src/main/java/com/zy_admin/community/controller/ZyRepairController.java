@@ -14,6 +14,7 @@ import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dto.RepairDto;
 import com.zy_admin.community.entity.ZyRepair;
 import com.zy_admin.community.service.ZyRepairService;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -44,6 +45,27 @@ public class ZyRepairController extends ApiController {
      */
     @Resource
     private ZyRepairService zyRepairService;
+
+    @Resource
+    private RequestUtil requestUtil;
+
+
+    /**
+     * 通过业主Id查询报修信息
+     *
+     * @param repair  修复
+     * @param request 请求
+     * @return {@link Result}
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
+    })
+    @ApiOperation(value = "查看报修", notes = "查看报修", httpMethod = "GET")
+    @GetMapping("/getRepairByOwnerId")
+    public Result getRepairByOwnerId(ZyRepair repair, HttpServletRequest request){
+        repair.setUserId(requestUtil.getOwnerId(request));
+        return this.zyRepairService.getRepairByOwnerId(repair);
+    }
     /**
      * 报修导出
      * @param repairIds 报修id
