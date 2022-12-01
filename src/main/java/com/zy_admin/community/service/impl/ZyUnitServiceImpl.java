@@ -16,6 +16,8 @@ import com.zy_admin.util.ObjUtil;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -96,6 +98,7 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
      * @return 成功或错误信息
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result updateUnit(ZyUnit zyUnit) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         ZyUnit originUnit = this.baseMapper.queryById(zyUnit.getUnitId() + "");
@@ -116,8 +119,10 @@ public class ZyUnitServiceImpl extends ServiceImpl<ZyUnitDao, ZyUnit> implements
             zyUnit.setCommunityId(originUnit.getCommunityId());
             try {
                 this.baseMapper.updateUnit(zyUnit);
+                this.baseMapper.updateRoom(zyUnit.getBuildingId(),zyUnit.getUnitId());
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             } catch (Exception e) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 e.printStackTrace();
                 result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
             }

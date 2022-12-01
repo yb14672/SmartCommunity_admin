@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.community.dao.ZyOwnerParkRecordDao">
+
+    <resultMap type="com.zy_admin.community.entity.ZyOwnerParkRecord" id="ZyOwnerParkRecordMap">
+        <result property="recordId" column="record_id" jdbcType="INTEGER"/>
+        <result property="ownerParkId" column="owner_park_id" jdbcType="VARCHAR"/>
+        <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+        <result property="ownerId" column="owner_id" jdbcType="INTEGER"/>
+        <result property="parkBundingStatus" column="park_bunding_status" jdbcType="VARCHAR"/>
+        <result property="recordAuditOpinion" column="record_audit_opinion" jdbcType="VARCHAR"/>
+        <result property="recordAuditType" column="record_audit_type" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ZyOwnerParkRecordMap">
+        select
+          record_id, owner_park_id, community_id, owner_id, park_bunding_status, record_audit_opinion, record_audit_type, create_by, create_time, update_by, update_time, remark
+        from zy_owner_park_record
+        where record_id = #{recordId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ZyOwnerParkRecordMap">
+        select
+        record_id, owner_park_id, community_id, owner_id, park_bunding_status, record_audit_opinion, record_audit_type,
+        create_by, create_time, update_by, update_time, remark
+        from zy_owner_park_record
+        <where>
+            <if test="recordId != null">
+                and record_id = #{recordId}
+            </if>
+            <if test="ownerParkId != null and ownerParkId != ''">
+                and owner_park_id = #{ownerParkId}
+            </if>
+            <if test="communityId != null">
+                and community_id = #{communityId}
+            </if>
+            <if test="ownerId != null">
+                and owner_id = #{ownerId}
+            </if>
+            <if test="parkBundingStatus != null and parkBundingStatus != ''">
+                and park_bunding_status = #{parkBundingStatus}
+            </if>
+            <if test="recordAuditOpinion != null and recordAuditOpinion != ''">
+                and record_audit_opinion = #{recordAuditOpinion}
+            </if>
+            <if test="recordAuditType != null and recordAuditType != ''">
+                and record_audit_type = #{recordAuditType}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from zy_owner_park_record
+        <where>
+            <if test="recordId != null">
+                and record_id = #{recordId}
+            </if>
+            <if test="ownerParkId != null and ownerParkId != ''">
+                and owner_park_id = #{ownerParkId}
+            </if>
+            <if test="communityId != null">
+                and community_id = #{communityId}
+            </if>
+            <if test="ownerId != null">
+                and owner_id = #{ownerId}
+            </if>
+            <if test="parkBundingStatus != null and parkBundingStatus != ''">
+                and park_bunding_status = #{parkBundingStatus}
+            </if>
+            <if test="recordAuditOpinion != null and recordAuditOpinion != ''">
+                and record_audit_opinion = #{recordAuditOpinion}
+            </if>
+            <if test="recordAuditType != null and recordAuditType != ''">
+                and record_audit_type = #{recordAuditType}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="recordId" useGeneratedKeys="true">
+        insert into zy_owner_park_record(owner_park_id, community_id, owner_id, park_bunding_status, record_audit_opinion, record_audit_type, create_by, create_time, update_by, update_time, remark)
+        values (#{ownerParkId}, #{communityId}, #{ownerId}, #{parkBundingStatus}, #{recordAuditOpinion}, #{recordAuditType}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="recordId" useGeneratedKeys="true">
+        insert into zy_owner_park_record(owner_park_id, community_id, owner_id, park_bunding_status,
+        record_audit_opinion, record_audit_type, create_by, create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.ownerParkId}, #{entity.communityId}, #{entity.ownerId}, #{entity.parkBundingStatus},
+            #{entity.recordAuditOpinion}, #{entity.recordAuditType}, #{entity.createBy}, #{entity.createTime},
+            #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="recordId" useGeneratedKeys="true">
+        insert into zy_owner_park_record(owner_park_id, community_id, owner_id, park_bunding_status,
+        record_audit_opinion, record_audit_type, create_by, create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.ownerParkId}, #{entity.communityId}, #{entity.ownerId}, #{entity.parkBundingStatus},
+            #{entity.recordAuditOpinion}, #{entity.recordAuditType}, #{entity.createBy}, #{entity.createTime},
+            #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+        </foreach>
+        on duplicate key update
+        owner_park_id = values(owner_park_id),
+        community_id = values(community_id),
+        owner_id = values(owner_id),
+        park_bunding_status = values(park_bunding_status),
+        record_audit_opinion = values(record_audit_opinion),
+        record_audit_type = values(record_audit_type),
+        create_by = values(create_by),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        remark = values(remark)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update zy_owner_park_record
+        <set>
+            <if test="ownerParkId != null and ownerParkId != ''">
+                owner_park_id = #{ownerParkId},
+            </if>
+            <if test="communityId != null">
+                community_id = #{communityId},
+            </if>
+            <if test="ownerId != null">
+                owner_id = #{ownerId},
+            </if>
+            <if test="parkBundingStatus != null and parkBundingStatus != ''">
+                park_bunding_status = #{parkBundingStatus},
+            </if>
+            <if test="recordAuditOpinion != null and recordAuditOpinion != ''">
+                record_audit_opinion = #{recordAuditOpinion},
+            </if>
+            <if test="recordAuditType != null and recordAuditType != ''">
+                record_audit_type = #{recordAuditType},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where record_id = #{recordId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from zy_owner_park_record where record_id = #{recordId}
+    </delete>
+
+</mapper>
+
