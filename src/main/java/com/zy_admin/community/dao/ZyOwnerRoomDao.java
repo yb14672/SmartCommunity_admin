@@ -20,7 +20,7 @@ import java.util.List;
 public interface ZyOwnerRoomDao extends BaseMapper<ZyOwnerRoom> {
 
     /**
-     * 选择主人房间通过所有者id
+     * 通过id查对象
      *
      * @param ownerId 所有者id
      * @return {@link List}<{@link OwnerRoomDto}>

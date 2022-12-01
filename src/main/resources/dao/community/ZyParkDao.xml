@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy_admin.community.dao.ZyParkDao">
+
+    <resultMap type="com.zy_admin.community.entity.ZyPark" id="ZyParkMap">
+        <result property="parkId" column="park_id" jdbcType="INTEGER"/>
+        <result property="parkCode" column="park_code" jdbcType="VARCHAR"/>
+        <result property="communityId" column="community_id" jdbcType="INTEGER"/>
+        <result property="parkType" column="park_type" jdbcType="VARCHAR"/>
+        <result property="parkCost" column="park_cost" jdbcType="NUMERIC"/>
+        <result property="parkStatus" column="park_status" jdbcType="VARCHAR"/>
+        <result property="parkIsPublic" column="park_is_public" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ZyParkMap">
+        select
+          park_id, park_code, community_id, park_type, park_cost, park_status, park_is_public, create_by, create_time, update_by, update_time, remark
+        from zy_park
+        where park_id = #{parkId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ZyParkMap">
+        select
+        park_id, park_code, community_id, park_type, park_cost, park_status, park_is_public, create_by, create_time,
+        update_by, update_time, remark
+        from zy_park
+        <where>
+            <if test="parkId != null">
+                and park_id = #{parkId}
+            </if>
+            <if test="parkCode != null and parkCode != ''">
+                and park_code = #{parkCode}
+            </if>
+            <if test="communityId != null">
+                and community_id = #{communityId}
+            </if>
+            <if test="parkType != null and parkType != ''">
+                and park_type = #{parkType}
+            </if>
+            <if test="parkCost != null">
+                and park_cost = #{parkCost}
+            </if>
+            <if test="parkStatus != null and parkStatus != ''">
+                and park_status = #{parkStatus}
+            </if>
+            <if test="parkIsPublic != null and parkIsPublic != ''">
+                and park_is_public = #{parkIsPublic}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from zy_park
+        <where>
+            <if test="parkId != null">
+                and park_id = #{parkId}
+            </if>
+            <if test="parkCode != null and parkCode != ''">
+                and park_code = #{parkCode}
+            </if>
+            <if test="communityId != null">
+                and community_id = #{communityId}
+            </if>
+            <if test="parkType != null and parkType != ''">
+                and park_type = #{parkType}
+            </if>
+            <if test="parkCost != null">
+                and park_cost = #{parkCost}
+            </if>
+            <if test="parkStatus != null and parkStatus != ''">
+                and park_status = #{parkStatus}
+            </if>
+            <if test="parkIsPublic != null and parkIsPublic != ''">
+                and park_is_public = #{parkIsPublic}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="parkId" useGeneratedKeys="true">
+        insert into zy_park(park_code, community_id, park_type, park_cost, park_status, park_is_public, create_by, create_time, update_by, update_time, remark)
+        values (#{parkCode}, #{communityId}, #{parkType}, #{parkCost}, #{parkStatus}, #{parkIsPublic}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="parkId" useGeneratedKeys="true">
+        insert into zy_park(park_code, community_id, park_type, park_cost, park_status, park_is_public, create_by,
+        create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.parkCode}, #{entity.communityId}, #{entity.parkType}, #{entity.parkCost}, #{entity.parkStatus},
+            #{entity.parkIsPublic}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime},
+            #{entity.remark})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="parkId" useGeneratedKeys="true">
+        insert into zy_park(park_code, community_id, park_type, park_cost, park_status, park_is_public, create_by,
+        create_time, update_by, update_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.parkCode}, #{entity.communityId}, #{entity.parkType}, #{entity.parkCost}, #{entity.parkStatus},
+            #{entity.parkIsPublic}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime},
+            #{entity.remark})
+        </foreach>
+        on duplicate key update
+        park_code = values(park_code),
+        community_id = values(community_id),
+        park_type = values(park_type),
+        park_cost = values(park_cost),
+        park_status = values(park_status),
+        park_is_public = values(park_is_public),
+        create_by = values(create_by),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        remark = values(remark)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update zy_park
+        <set>
+            <if test="parkCode != null and parkCode != ''">
+                park_code = #{parkCode},
+            </if>
+            <if test="communityId != null">
+                community_id = #{communityId},
+            </if>
+            <if test="parkType != null and parkType != ''">
+                park_type = #{parkType},
+            </if>
+            <if test="parkCost != null">
+                park_cost = #{parkCost},
+            </if>
+            <if test="parkStatus != null and parkStatus != ''">
+                park_status = #{parkStatus},
+            </if>
+            <if test="parkIsPublic != null and parkIsPublic != ''">
+                park_is_public = #{parkIsPublic},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where park_id = #{parkId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from zy_park where park_id = #{parkId}
+    </delete>
+
+</mapper>
+

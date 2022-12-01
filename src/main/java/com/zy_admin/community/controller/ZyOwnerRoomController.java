@@ -33,13 +33,13 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("zyOwnerRoom")
 public class ZyOwnerRoomController extends ApiController {
     /**
-     * zy主人房间服务
+     * 房屋service
      */
     @Resource
     private ZyOwnerRoomService zyOwnerRoomService;
 
     /**
-     * 请求跑龙套
+     * 请求
      */
     @Resource
     private RequestUtil requestUtil;
@@ -126,11 +126,11 @@ public class ZyOwnerRoomController extends ApiController {
     }
 
     /**
-     * 选择所有主人房间限制
+     * 选择所有房屋限制
      * 分页和查询业主审核
      *
-     * @param zyOwnerRoom zy主人房间
-     * @param pageable    可分页
+     * @param zyOwnerRoom 房屋
+     * @param pageable    分页
      * @return {@link Result}
      */
     @ApiImplicitParams({

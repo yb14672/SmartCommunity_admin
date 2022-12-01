@@ -37,13 +37,13 @@ import java.util.List;
 public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerRoom> implements ZyOwnerRoomService {
 
     /**
-     * 系统用户刀
+     * 系统用户
      */
     @Resource
     private SysUserDao sysUserDao;
 
     /**
-     * 业主房间记录道
+     * 业主房间记录
      */
     @Resource
     private ZyOwnerRoomRecordDao zyOwnerRoomRecordDao;
@@ -55,7 +55,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     private ZyRoomDao zyRoomDao;
 
     /**
-     * 雪花经理
+     * 雪花算法
      */
     @Resource
     private SnowflakeManager snowflakeManager;
