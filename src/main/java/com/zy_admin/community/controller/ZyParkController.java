@@ -57,10 +57,11 @@ public class ZyParkController extends ApiController {
     })
     @ApiOperation(value = "批量插入", notes = "批量插入", httpMethod = "POST")
     @PostMapping("/batchInsert")
-    public Result batchInsert(@RequestBody ZyPark zyPark,@RequestParam("number") Integer number, HttpServletRequest request) throws Exception {
+    public Result batchInsert(@RequestBody ZyPark zyPark, Integer number, HttpServletRequest request) throws Exception {
         SysUser user = requestUtil.getUser(request);
         zyPark.setCreateBy(user.getUserName());
         zyPark.setCreateTime(LocalDateTime.now().toString());
+        System.out.println(zyPark.toString());
         return zyParkService.batchInsert(zyPark, number);
     }
 

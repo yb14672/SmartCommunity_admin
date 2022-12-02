@@ -19,6 +19,7 @@ import com.zy_admin.util.StringUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,6 +103,12 @@ public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements
             if (StringUtil.isNotEmpty(zyPark.getRemark())) {
                 zyPark1.setRemark(zyPark.getRemark());
             }
+            zyPark1.setParkType(zyPark.getParkType());
+            zyPark1.setParkStatus(zyPark.getParkStatus());
+            zyPark1.setCommunityId(zyPark.getCommunityId());
+            zyPark1.setParkIsPublic(zyPark.getParkIsPublic());
+            zyPark1.setCreateTime(LocalDateTime.now().toString());
+            zyPark1.setCreateBy(zyPark1.getCreateBy());
             zyPark1.setParkId(snowflakeManager.nextId() + "");
             long now = System.currentTimeMillis();
             zyPark1.setParkCode("PK_" + Long.toString(now).substring(0, 13));

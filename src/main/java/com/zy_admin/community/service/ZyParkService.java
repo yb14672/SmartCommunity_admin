@@ -16,6 +16,8 @@ import java.util.List;
 public interface ZyParkService {
 
 
+
+
     /**
      * 批量插入
      * 批量插入车位
