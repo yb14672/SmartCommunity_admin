@@ -17,10 +17,10 @@ import java.util.List;
 public interface ZyOwnerParkService {
 
     /**
-     * 获取所有未绑定的车位审核信息
+     * 查询未被绑定和启用的车位
      * @return 车位审核集合
      */
-    Result selectNoBindingPark(String communityId);
+    Result selectNoBindingAndStatusPark(String communityId);
 
     /**
      * 批量删除

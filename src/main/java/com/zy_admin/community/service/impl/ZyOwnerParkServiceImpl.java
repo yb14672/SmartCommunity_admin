@@ -59,14 +59,14 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     private SnowflakeManager snowflakeManager;
 
     /**
-     * 获取所有未绑定的车位审核信息
+     * 查询未被绑定和启用的车位
      * @return 车位审核集合
      */
     @Override
-    public Result selectNoBindingPark(String communityId) {
+    public Result selectNoBindingAndStatusPark(String communityId) {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
-            List<ZyOwnerPark> zyOwnerParks = this.baseMapper.selectNoBindingPark(communityId);
+            List<ZyOwnerPark> zyOwnerParks = this.baseMapper.selectNoBindingAndStatusPark(communityId);
             System.out.println(zyOwnerParks);
             if (zyOwnerParks.size()==0){
                 result.setData("改小区内没有未绑定的车位信息");

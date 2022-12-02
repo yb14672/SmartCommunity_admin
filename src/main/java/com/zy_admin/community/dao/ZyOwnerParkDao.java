@@ -23,10 +23,10 @@ public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
     ZyOwnerPark selectCarNumber(String carNumber);
 
     /**
-     * 查询未被绑定的车位
+     * 查询未被绑定和启用0的车位
      * @return
      */
-    List<ZyOwnerPark> selectNoBindingPark(String communityId);
+    List<ZyOwnerPark> selectNoBindingAndStatusPark(String communityId);
 
     /**
      * 批量删除

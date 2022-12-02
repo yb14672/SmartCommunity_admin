@@ -50,14 +50,14 @@ public class ZyOwnerParkController extends ApiController {
     private RequestUtil requestUtil;
 
     /**
-     * 获取未绑定的车位审核信息
+     * 查询未被绑定和启用的车位
      *
      * @return {@link Result}
      */
-    @ApiOperation(value = "未绑定的车位审核信息", notes = "未绑定的车位审核信息", httpMethod = "GET")
-    @GetMapping("/selectNoBindingPark")
-    public Result selectNoBindingPark(String communityId){
-        return this.zyOwnerParkService.selectNoBindingPark(communityId);
+    @ApiOperation(value = "查询未被绑定和启用的车位", notes = "查询未被绑定和启用的车位", httpMethod = "GET")
+    @GetMapping("/selectNoBindingAndStatusPark")
+    public Result selectNoBindingAndStatusPark(String communityId){
+        return this.zyOwnerParkService.selectNoBindingAndStatusPark(communityId);
     }
 
     /**

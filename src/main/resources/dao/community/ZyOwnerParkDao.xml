@@ -130,13 +130,13 @@
         from zy_owner_park
         where owner_park_id = #{ownerParkId}
     </select>
-    <!--查询未被绑定的车位-->
-    <select id="selectNoBindingPark" resultType="com.zy_admin.community.entity.ZyOwnerPark">
+    <!--查询未被绑定和启用的车位-->
+    <select id="selectNoBindingAndStatusPark" resultType="com.zy_admin.community.entity.ZyOwnerPark">
         select *,zc.community_name
         from zy_owner_park zop
         left join zy_park zp on zop.park_id = zp.park_id
         left join zy_community zc on zp.community_id = zc.community_id
-        where zop.park_owner_status != 'Binding' and zc.community_id = #{communityId}
+        where zop.park_owner_status != 'Binding' and zp.park_status = '0' and zc.community_id = #{communityId}
     </select>
     <!--查询车牌号有没有重复-->
     <select id="selectCarNumber" resultType="com.zy_admin.community.entity.ZyOwnerPark">
