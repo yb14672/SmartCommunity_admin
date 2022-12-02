@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * 结果
  * 返回到前端的结果集
  *
  * @author admin

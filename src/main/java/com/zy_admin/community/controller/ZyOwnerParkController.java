@@ -1,11 +1,11 @@
 package com.zy_admin.community.controller;
 
-import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.community.dto.OwnerParkListDto;
 import com.zy_admin.community.dto.ZyOwnerParkDto;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerPark;
@@ -35,8 +35,7 @@ import java.util.ArrayList;
 @Api(value = "zyOwnerPark", tags = {"车位审核 (zyOwnerPark)表控制层"})
 @RestController
 @RequestMapping("zyOwnerPark")
-@CrossOrigin
-public class ZyOwnerParkController extends ApiController {
+public class ZyOwnerParkController {
     /**
      * 服务对象
      */
@@ -80,6 +79,10 @@ public class ZyOwnerParkController extends ApiController {
         return result;
     }
 
+    @DeleteMapping("/deleteOwnerPark")
+    public Result deleteOwnerPark(HttpServletRequest request,String ownerParkId) throws Exception {
+        return zyOwnerParkService.deleteOwnerPark(ownerParkId,request);
+    }
     /**
      * 修改车位审核
      * @param zyOwnerPark 要更新的车位审核对象
@@ -99,7 +102,10 @@ public class ZyOwnerParkController extends ApiController {
         zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
         return zyOwnerParkService.updateOwnerPark(zyOwnerPark);
     }
-
+    @GetMapping("/getOwnerParkList")
+    public Result getOwnerParkList(OwnerParkListDto ownerParkListDto, Page page ) {
+        return zyOwnerParkService.getOwnerParkList(ownerParkListDto, page);
+    }
     /**
      * 新增车位审核
      * @param zyOwnerPark 要新增的车位审核

@@ -51,6 +51,23 @@ public class ZyCommunityController extends ApiController {
      */
     @Resource
     private RequestUtil requestUtil;
+
+    /**
+     * 根据登录的管理员获取所在公司负责的小区
+     *
+     * @param request 前端请求
+     * @return {@link Result}
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端请求", required = true)
+    })
+    @ApiOperation(value = "根据登录的管理员获取所在公司负责的小区", notes = "根据登录的管理员获取所在公司负责的小区", httpMethod = "GET")
+    @GetMapping("/getCommunityIdByUserId")
+    public Result getCommunityIdByUserId(HttpServletRequest request){
+        String userId = requestUtil.getUserId(request);
+        return this.zyCommunityService.getCommunityIdByUserId(userId);
+    }
+
     /**
      * 根据所得id导出小区信息
      * @param ids 查询的小区主键id

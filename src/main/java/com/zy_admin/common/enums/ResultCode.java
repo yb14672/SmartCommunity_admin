@@ -128,8 +128,11 @@ public enum ResultCode {
     NO_REALNAME_AUTHENTICATION(3051,"该住户未实名认证"),
     OWNER_REAL_NAME_NOT_EMPTY(3052,"真实姓名不能为空"),
     REPAIR_GET_FAIL(3053,"报修信息获取失败"),
-    CARNUMBER_ERROR(3054,"车牌号不符合规则"),
-    CARNUMBER_REPEAT(3054,"车牌号重复"),
+    INSERT_PARK_FAIL(3054,"新增车位失败"),
+    UPDATE_PARK_FAIL(3055,"修改车位失败"),
+    DELETED_PARK_FAIL(3056,"删除车位失败，选择中有车位被绑定"),
+    CARNUMBER_ERROR(3057,"车牌号不符合规则"),
+    CARNUMBER_REPEAT(3058,"车牌号重复"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

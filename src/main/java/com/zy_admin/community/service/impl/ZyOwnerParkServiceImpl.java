@@ -1,7 +1,6 @@
 package com.zy_admin.community.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.zy_admin.common.core.Result.Result;
@@ -9,20 +8,17 @@ import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerParkDao;
 import com.zy_admin.community.dao.ZyOwnerParkRecordDao;
 import com.zy_admin.community.dao.ZyParkDao;
+import com.zy_admin.community.dto.OwnerParkListDto;
 import com.zy_admin.community.dto.ZyOwnerParkDto;
-import com.zy_admin.community.entity.ZyCommunity;
-import com.zy_admin.community.entity.ZyOwnerPark;
-import com.zy_admin.community.entity.ZyOwnerParkRecord;
-import com.zy_admin.community.entity.ZyPark;
+import com.zy_admin.community.entity.*;
 import com.zy_admin.community.service.ZyOwnerParkService;
-import com.zy_admin.util.ObjUtil;
-import com.zy_admin.util.ResultTool;
-import com.zy_admin.util.SnowflakeManager;
-import com.zy_admin.util.StringUtil;
-import org.springframework.data.domain.PageRequest;
+import com.zy_admin.sys.entity.SysUser;
+import com.zy_admin.util.*;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -51,6 +47,11 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
      */
     @Resource
     private ZyOwnerParkRecordDao zyOwnerParkRecordDao;
+    /**
+     * 请求跑龙套
+     */
+    @Resource
+    private RequestUtil requestUtil;
 
     /**
      * 雪花算法
@@ -84,17 +85,86 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     }
 
     /**
+     * 解绑
+     *
+     * @param ownerParkId 公园所有者id
+     * @param request     请求
+     * @return {@link Result}
+     * @throws Exception 异常
+     */
+    @Override
+    public Result deleteOwnerPark(String ownerParkId, HttpServletRequest request) throws Exception {
+        Result result = new Result();
+        //获取车位车主信息
+        OwnerParkListDto ownerPark = this.baseMapper.getOwnerPark(ownerParkId);
+        SysUser user = this.requestUtil.getUser(request);
+        String communityId = this.baseMapper.getCommunityId(ownerPark.getParkId());
+        ownerPark.setCommunityId(communityId);
+        ownerPark.setRecordId(snowflakeManager.nextId()+"");
+        ownerPark.setUpdateBy(user.getUserName());
+        ownerPark.setParkBundingStatus("3");
+        ownerPark.setUpdateTime(LocalDateTime.now().toString());
+        //插入数据到记录表
+        try {
+            this.baseMapper.insertRecord(ownerPark);
+            this.baseMapper.deleteOwnerPark(ownerParkId);
+            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        }
+
+        return result;
+    }
+
+    /**
+     * 得到老板公园列表
+     *
+     * @param ownerParkListDto 主人dto公园列表
+     * @param page             页面
+     * @return {@link Result}
+     */
+    @Override
+    public Result getOwnerParkList(OwnerParkListDto ownerParkListDto, Page page) {
+        Result result = new Result();
+        MPJLambdaWrapper<ZyOwnerPark> zyOwnerParkMPJLambdaWrapper = new MPJLambdaWrapper<>();
+        zyOwnerParkMPJLambdaWrapper.selectAll(ZyOwner.class)
+                .select(ZyCommunity::getCommunityName)
+                .select(ZyPark::getParkCode)
+                .select(ZyOwnerPark::getCreateTime)
+                .select(ZyOwnerPark::getOwnerParkId)
+                .select(ZyPark::getParkType)
+                .select(ZyPark::getParkId)
+                .leftJoin(ZyPark.class,ZyPark::getParkId,ZyOwnerPark::getParkId)
+                .leftJoin(ZyCommunity.class,ZyCommunity::getCommunityId,ZyPark::getCommunityId)
+                .leftJoin(ZyOwner.class,ZyOwner::getOwnerId,ZyOwnerPark::getOwnerId)
+                .like(StringUtil.isNotEmpty(ownerParkListDto.getOwnerNickname()),ZyOwner::getOwnerNickname,ownerParkListDto.getOwnerNickname())
+                .like(StringUtil.isNotEmpty(ownerParkListDto.getOwnerRealName()),ZyOwner::getOwnerRealName,ownerParkListDto.getOwnerRealName())
+                .like(StringUtil.isNotEmpty(ownerParkListDto.getOwnerIdCard()),ZyOwner::getOwnerIdCard,ownerParkListDto.getOwnerIdCard())
+                .like(StringUtil.isNotEmpty(ownerParkListDto.getOwnerPhoneNumber()),ZyOwner::getOwnerPhoneNumber,ownerParkListDto.getOwnerPhoneNumber())
+                .eq(ZyOwnerPark::getParkOwnerStatus,"Binding");
+        IPage<OwnerParkListDto> ownerParkListDtoIPage = this.baseMapper.selectJoinPage(page, OwnerParkListDto.class, zyOwnerParkMPJLambdaWrapper);
+        if (ownerParkListDtoIPage.getTotal()>=0)
+        {
+            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            result.setData(ownerParkListDtoIPage);
+        }
+        return result;
+    }
+
+    /**
+     * 删除所有者公园由ids
      * 批量删除
      *
      * @param idList id的集合
-     * @return
+     * @return {@link Result}
      */
     @Override
     public Result deleteOwnerParkByIds(List<String> idList) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断是单个
         int i = this.baseMapper.deleteOwnerParkByIds(idList);
-        if (idList.size() == 1) {
+        if (i >= 1) {
             result.setData("删除成功，影响的行数：" + i);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
@@ -233,7 +303,8 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
      * 查询所有的车位审核并分页
      *
      * @param zyOwnerParkDto 车位审核对象
-     * @return
+     * @param page           页面
+     * @return {@link Result}
      */
     @Override
     public Result selectAllParkLimit(ZyOwnerParkDto zyOwnerParkDto, Page page) {
@@ -251,8 +322,10 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
                     .leftJoin(ZyPark.class, ZyPark::getParkId, ZyOwnerPark::getParkId)
                     .leftJoin(ZyCommunity.class, ZyCommunity::getCommunityId, ZyPark::getCommunityId)
                     .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getParkOwnerStatus()), ZyOwnerPark::getParkOwnerStatus, zyOwnerParkDto.getParkOwnerStatus())
-                    .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getCommunityId()),ZyCommunity::getCommunityId,zyOwnerParkDto.getCommunityId());
+                    .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getCommunityId()),ZyCommunity::getCommunityId,zyOwnerParkDto.getCommunityId())
             //where zor.community_id = #{zyOwnerRoom.communityId}
+                    .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getParkOwnerStatus()), ZyOwnerPark::getParkOwnerStatus, zyOwnerParkDto.getParkOwnerStatus())
+                    .orderByDesc(ZyOwnerPark::getCreateTime);
             IPage<ZyOwnerParkDto> zyOwnerParkDtoIPage = this.baseMapper.selectJoinPage(page, ZyOwnerParkDto.class, zyOwnerParkDtoMPJLambdaWrapper);
             if (zyOwnerParkDtoIPage.getTotal() != 0) {
                 result.setData(zyOwnerParkDtoIPage);
@@ -275,18 +348,6 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     @Override
     public ZyOwnerPark queryById(String ownerParkId) {
         return this.zyOwnerParkDao.queryById(ownerParkId);
-    }
-
-    /**
-     * 分页查询
-     *
-     * @param zyOwnerPark 筛选条件
-     * @param pageRequest 分页对象
-     * @return 查询结果
-     */
-    @Override
-    public Page<ZyOwnerPark> queryByPage(ZyOwnerPark zyOwnerPark, PageRequest pageRequest) {
-        return null;
     }
 
     /**

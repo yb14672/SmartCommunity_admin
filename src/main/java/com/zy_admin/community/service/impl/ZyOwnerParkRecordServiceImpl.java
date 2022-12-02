@@ -1,5 +1,4 @@
 package com.zy_admin.community.service.impl;
-
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
@@ -20,7 +19,7 @@ import java.util.List;
  * 房屋绑定记录表 (ZyOwnerParkRecord)表服务实现类
  *
  * @author makejava
- * @since 2022-12-01 15:13:40
+ * @since 2022-12-01 16:43:00
  */
 @Service("zyOwnerParkRecordService")
 public class ZyOwnerParkRecordServiceImpl extends ServiceImpl<ZyOwnerParkRecordDao, ZyOwnerParkRecord> implements ZyOwnerParkRecordService {

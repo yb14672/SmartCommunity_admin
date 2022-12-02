@@ -1,9 +1,10 @@
 package com.zy_admin.community.dao;
-
 import com.github.yulichang.base.MPJBaseMapper;
-import com.zy_admin.common.Pageable;
+import com.zy_admin.community.dto.OwnerParkListDto;
 import com.zy_admin.community.entity.ZyOwnerPark;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -14,6 +15,16 @@ import java.util.List;
  * @since 2022-12-01 15:50:35
  */
 public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
+
+
+
+    /**
+     * 解绑停车位
+     *
+     * @param ownerParkId 业主停车位Id;
+     */
+    @Update("Update  zy_owner_park set park_owner_status = 'Unbinding' where owner_park_id = #{ownerParkId}")
+    void deleteOwnerPark(String ownerParkId);
 
     /**
      * 查询车牌号有没有重复
@@ -42,6 +53,21 @@ public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
      */
     int updateOwnerParkStatus(@Param("zyOwnerPark") ZyOwnerPark zyOwnerPark);
 
+
+    /**
+     * 获取车位业主信息
+     *
+     * @param ownerParkId 公园所有者id
+     * @return {@link OwnerParkListDto}
+     */
+    @Select("select*from zy_owner_park where owner_park_id =#{ownerParkId}")
+    OwnerParkListDto getOwnerPark(String ownerParkId);
+
+    @Select("select community_id from zy_park where park_id = #{parkId}")
+    String getCommunityId(String parkId);
+
+
+    void insertRecord (OwnerParkListDto ownerParkListDto);
     /**
      * 通过ID查询单条数据
      *
@@ -50,14 +76,6 @@ public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
      */
     ZyOwnerPark queryById(String ownerParkId);
 
-    /**
-     * 查询指定行数据
-     *
-     * @param zyOwnerPark 查询条件
-     * @param pageable    分页对象
-     * @return 对象列表
-     */
-    List<ZyOwnerPark> queryAllByLimit(ZyOwnerPark zyOwnerPark, @Param("pageable") Pageable pageable);
 
     /**
      * 新增数据
