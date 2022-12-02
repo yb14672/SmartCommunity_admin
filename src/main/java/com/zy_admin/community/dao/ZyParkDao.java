@@ -16,6 +16,12 @@ import java.util.List;
 public interface ZyParkDao extends BaseMapper<ZyPark> {
 
     /**
+     * 查询车位状态是启用0的
+     * @return
+     */
+    List<ZyPark> selectParkStatusOpen();
+
+    /**
      * 通过ID查询单条数据
      *
      * @param parkId 主键

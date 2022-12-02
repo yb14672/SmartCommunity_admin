@@ -1,15 +1,19 @@
 package com.zy_admin.community.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyParkDao;
 import com.zy_admin.community.entity.ZyPark;
 import com.zy_admin.community.service.ZyParkService;
+import com.zy_admin.util.ResultTool;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * (ZyPark)表服务实现类
@@ -21,6 +25,27 @@ import javax.annotation.Resource;
 public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements ZyParkService {
     @Resource
     private ZyParkDao zyParkDao;
+
+    /**
+     * 查询车位状态是启用0的
+     *
+     * @return 集合对象
+     */
+    @Override
+    public Result selectParkStatusOpen() {
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<ZyPark> zyParkList = this.baseMapper.selectParkStatusOpen();
+        if (zyParkList.size()!=0){
+            result.setData(zyParkList);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            return result;
+        }else {
+            result.setData("没有被启用的");
+            result.setMeta(ResultTool.fail(ResultCode.NO_MATCHING_DATA));
+            return result;
+        }
+
+    }
 
     /**
      * 通过ID查询单条数据

@@ -60,19 +60,20 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
 
     /**
      * 获取所有未绑定的车位审核信息
+     *
      * @return 车位审核集合
      */
     @Override
     public Result selectNoBindingPark(String communityId) {
-        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             List<ZyOwnerPark> zyOwnerParks = this.baseMapper.selectNoBindingPark(communityId);
             System.out.println(zyOwnerParks);
-            if (zyOwnerParks.size()==0){
+            if (zyOwnerParks.size() == 0) {
                 result.setData("改小区内没有未绑定的车位信息");
                 result.setMeta(ResultTool.fail(ResultCode.NO_MATCHING_DATA));
                 return result;
-            }else {
+            } else {
                 result.setData(zyOwnerParks);
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 return result;
@@ -222,7 +223,8 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
                     .select(ZyPark::getParkStatus)
                     .leftJoin(ZyPark.class, ZyPark::getParkId, ZyOwnerPark::getParkId)
                     .leftJoin(ZyCommunity.class, ZyCommunity::getCommunityId, ZyPark::getCommunityId)
-                    .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getParkOwnerStatus()), ZyOwnerPark::getParkOwnerStatus, zyOwnerParkDto.getParkOwnerStatus());
+                    .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getParkOwnerStatus()), ZyOwnerPark::getParkOwnerStatus, zyOwnerParkDto.getParkOwnerStatus())
+                    .orderByDesc(ZyOwnerPark::getCreateTime);
             IPage<ZyOwnerParkDto> zyOwnerParkDtoIPage = this.baseMapper.selectJoinPage(page, ZyOwnerParkDto.class, zyOwnerParkDtoMPJLambdaWrapper);
             if (zyOwnerParkDtoIPage.getTotal() != 0) {
                 result.setData(zyOwnerParkDtoIPage);

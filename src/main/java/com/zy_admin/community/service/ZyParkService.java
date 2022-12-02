@@ -1,5 +1,6 @@
 package com.zy_admin.community.service;
 
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.entity.ZyPark;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +12,12 @@ import org.springframework.data.domain.PageRequest;
  * @since 2022-12-01 15:13:40
  */
 public interface ZyParkService {
+
+    /**
+     * 查询车位状态是启用0的
+     * @return 集合对象
+     */
+    Result selectParkStatusOpen();
 
     /**
      * 通过ID查询单条数据
