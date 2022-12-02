@@ -16,6 +16,13 @@ import java.util.List;
 public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
 
     /**
+     * 查询未被绑定的车位
+     * @param zyOwnerPark
+     * @return
+     */
+    List<ZyOwnerPark> selectNoBindingPark(@Param("zyOwnerPark") ZyOwnerPark zyOwnerPark);
+
+    /**
      * 批量删除
      * @param idList id集合
      * @return

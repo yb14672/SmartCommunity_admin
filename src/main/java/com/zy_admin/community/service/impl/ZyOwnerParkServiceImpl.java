@@ -72,13 +72,6 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
         if (idList.size() == 1) {
             result.setData("删除成功，影响的行数：" + i);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-            //多个就是批量删除
-        } else {
-            if (i >= 1) {
-                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-            } else {
-                result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
-            }
         }
         return result;
     }

@@ -121,6 +121,10 @@
         from zy_owner_park
         where owner_park_id = #{ownerParkId}
     </select>
+    <!--查询未被绑定的车位-->
+    <select id="selectNoBindingPark" resultType="com.zy_admin.community.entity.ZyOwnerPark">
+        select * from zy_owner_park where park_owner_status != 'Binding'
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="ownerParkId" useGeneratedKeys="true">
