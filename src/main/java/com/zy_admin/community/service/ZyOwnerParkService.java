@@ -31,10 +31,14 @@ public interface ZyOwnerParkService {
      * @return 实例对象
      */
     Result updateOwnerPark(ZyOwnerPark zyOwnerPark);
+
     /**
+     * 插入所有者公园
      * 新增车位审核
+     *
      * @param zyOwnerPark 车位审核对象
      * @return 车位审核的条数
+     * @throws Exception 异常
      */
     Result insertOwnerPark(ZyOwnerPark zyOwnerPark) throws Exception;
 

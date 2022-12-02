@@ -89,19 +89,19 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
         ZyOwnerPark zyOwnerPark1 = this.baseMapper.queryById(zyOwnerPark.getOwnerParkId());
         System.out.println(zyOwnerPark1);
         System.out.println(zyOwnerPark);
-        String[] fields = new String[]{"parkOwnerStatus","remark","ownerId","parkId","ownerParkId"};
-        if(!ObjUtil.checkEquals(zyOwnerPark1,zyOwnerPark,fields)){
-                try {
-                    zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
-                    int i = this.baseMapper.updateOwnerPark(zyOwnerPark);
-                    if (i == 1) {
-                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+        String[] fields = new String[]{"parkOwnerStatus", "remark", "ownerId", "parkId", "ownerParkId"};
+        if (!ObjUtil.checkEquals(zyOwnerPark1, zyOwnerPark, fields)) {
+            try {
+                zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
+                int i = this.baseMapper.updateOwnerPark(zyOwnerPark);
+                if (i == 1) {
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 }
-        }else {
+            } catch (Exception e) {
+                e.printStackTrace();
+                result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+            }
+        } else {
             result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
             result.setData("参数没有变化");
         }
@@ -116,7 +116,7 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
      */
     @Override
     public Result insertOwnerPark(ZyOwnerPark zyOwnerPark) throws Exception {
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
         //雪花算法拿到OwnerParkId
         zyOwnerPark.setOwnerParkId(snowflakeManager.nextId() + "");
         try {
@@ -129,46 +129,49 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
             return result;
         } catch (Exception e) {
             e.printStackTrace();
-            return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+            return new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
         }
     }
 
     /**
      * 提交车位审核以后审核状态改变
      *
-     * @param zyOwnerPark 车位审核对象
+     * @param zyOwnerPark        车位审核对象
      * @param recordAuditOpinion 车位审核意见
-     * @return
+     * @return {@link Result}
+     * @throws Exception 异常
      */
     @Override
-    public Result updateOwnerParkStatus(ZyOwnerPark zyOwnerPark,String recordAuditOpinion) throws Exception {
+    public Result updateOwnerParkStatus(ZyOwnerPark zyOwnerPark, String recordAuditOpinion) throws Exception {
         //默认给失败
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //新增车位审核记录
-        ZyOwnerParkRecord zyOwnerParkRecord=new ZyOwnerParkRecord();
+        ZyOwnerParkRecord zyOwnerParkRecord = new ZyOwnerParkRecord();
         //审核记录的id
-        zyOwnerParkRecord.setRecordId(snowflakeManager.nextId()+"");
-        //车位id x
-        zyOwnerParkRecord.setOwnerParkId(zyOwnerPark.getOwnerParkId()+"");
+        zyOwnerParkRecord.setRecordId(snowflakeManager.nextId() + "");
+        //车位id
+        zyOwnerParkRecord.setOwnerParkId(zyOwnerPark.getOwnerParkId() + "");
         //小区id 先根据parkId找到zyPark，再拿小区id
         ZyPark zyPark = zyParkDao.queryById(zyOwnerPark.getParkId());
-        zyOwnerParkRecord.setCommunityId(zyPark.getCommunityId()+"");
+        zyOwnerParkRecord.setCommunityId(zyPark.getCommunityId() + "");
         //业主id
         zyOwnerParkRecord.setOwnerId(zyOwnerPark.getOwnerId());
         //业主id
-        zyOwnerParkRecord.setOwnerParkId(zyOwnerPark.getOwnerParkId()+"");
+        zyOwnerParkRecord.setOwnerParkId(zyOwnerPark.getOwnerParkId() + "");
         //绑定状态
         zyOwnerParkRecord.setParkBundingStatus(zyOwnerPark.getParkOwnerStatus());
         //审核意见
         zyOwnerParkRecord.setRecordAuditOpinion(recordAuditOpinion);
         //审核人类型
         zyOwnerParkRecord.setRecordAuditType("Web");
-       //创建时间
+        //创建时间
         zyOwnerParkRecord.setUpdateTime(LocalDateTime.now().toString());
+        zyOwnerParkRecord.setCreateTime(zyOwnerPark.getCreateTime());
+        zyOwnerParkRecord.setCreateBy(zyOwnerPark.getCreateBy());
+        zyOwnerParkRecord.setUpdateBy(zyOwnerPark.getUpdateBy());
         zyOwnerParkRecordDao.insert(zyOwnerParkRecord);
         //修改时间
         zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
-        System.out.println(zyOwnerPark);
         this.baseMapper.updateOwnerParkStatus(zyOwnerPark);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
@@ -183,7 +186,7 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     @Override
     public Result selectAllParkLimit(ZyOwnerParkDto zyOwnerParkDto, Page page) {
         //默认给失败
-        Result result = new Result("没有符合条件的数据",ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             MPJLambdaWrapper<ZyOwnerPark> zyOwnerParkDtoMPJLambdaWrapper = new MPJLambdaWrapper<>();
             zyOwnerParkDtoMPJLambdaWrapper.selectAll(ZyOwnerPark.class)
@@ -192,11 +195,11 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
                     .select(ZyPark::getParkType)
                     .select(ZyPark::getParkIsPublic)
                     .select(ZyPark::getParkStatus)
-                    .leftJoin(ZyPark.class,ZyPark::getParkId,ZyOwnerPark::getParkId)
-                    .leftJoin(ZyCommunity.class,ZyCommunity::getCommunityId,ZyPark::getCommunityId)
-                    .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getParkOwnerStatus()),ZyOwnerPark::getParkOwnerStatus,zyOwnerParkDto.getParkOwnerStatus());
+                    .leftJoin(ZyPark.class, ZyPark::getParkId, ZyOwnerPark::getParkId)
+                    .leftJoin(ZyCommunity.class, ZyCommunity::getCommunityId, ZyPark::getCommunityId)
+                    .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getParkOwnerStatus()), ZyOwnerPark::getParkOwnerStatus, zyOwnerParkDto.getParkOwnerStatus());
             IPage<ZyOwnerParkDto> zyOwnerParkDtoIPage = this.baseMapper.selectJoinPage(page, ZyOwnerParkDto.class, zyOwnerParkDtoMPJLambdaWrapper);
-            if(zyOwnerParkDtoIPage.getTotal()!=0){
+            if (zyOwnerParkDtoIPage.getTotal() != 0) {
                 result.setData(zyOwnerParkDtoIPage);
                 //给一个信号
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
