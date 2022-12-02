@@ -5,9 +5,11 @@ import com.zy_admin.community.dto.ZyParkDto;
 import com.zy_admin.community.entity.ZyOwnerPark;
 import com.zy_admin.community.entity.ZyPark;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * (ZyPark)表数据库访问层
@@ -16,6 +18,10 @@ import java.util.List;
  * @since 2022-12-01 15:13:40
  */
 public interface ZyParkDao extends MPJBaseMapper<ZyPark> {
+
+
+    @Select("select * from ")
+    long getCont(String communityId);
 
     /**
      * 通过车位Id查询是否被业主绑定

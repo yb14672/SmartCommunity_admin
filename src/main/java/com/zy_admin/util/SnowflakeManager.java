@@ -1,7 +1,4 @@
 package com.zy_admin.util;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.security.SecureRandom;
 
 /**
