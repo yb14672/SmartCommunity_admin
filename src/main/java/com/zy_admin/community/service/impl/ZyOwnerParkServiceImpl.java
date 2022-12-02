@@ -118,7 +118,7 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     }
 
     /**
-     * 得到老板公园列表
+     * 得到车位信息
      *
      * @param ownerParkListDto 主人dto公园列表
      * @param page             页面

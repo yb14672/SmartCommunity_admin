@@ -22,7 +22,7 @@
     <!--查询单个-->
     <select id="queryById" resultMap="ZyOwnerParkMap">
         select
-          owner_park_id, park_id, owner_id, park_status, create_by, create_time, update_by, update_time, remark
+          owner_park_id, park_id, owner_id, park_owner_status, create_by, create_time, update_by, update_time, remark
         from zy_owner_park
         where owner_park_id = #{ownerParkId}
     </select>
