@@ -14,5 +14,12 @@ public class OwnerParkListDto extends ZyOwner {
     private String parkCode;
     private String createTime;
     private String parkType;
+    private String ownerParkId;
+    private String parkId;
+    private String communityId;
+    private String recordId;
+    private String parkBundingStatus;
+    private String recordAuditOpinion;
+    private String recordAuditType;
 
 }

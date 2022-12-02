@@ -14,6 +14,11 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <insert id="insertRecord" keyProperty="recordId" useGeneratedKeys="true">
+        insert into zy_owner_park_record(record_id,owner_park_id, community_id, owner_id, park_bunding_status, record_audit_opinion, record_audit_type, create_by, create_time, update_by, update_time, remark)
+        values (#{recordId},#{ownerParkId}, #{communityId}, #{ownerId}, #{parkBundingStatus}, #{recordAuditOpinion}, #{recordAuditType}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    </insert>
+
     <!--查询单个-->
     <select id="queryById" resultMap="ZyOwnerParkMap">
         select

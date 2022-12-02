@@ -6,11 +6,13 @@ import com.zy_admin.community.dto.OwnerParkListDto;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerPark;
 import com.zy_admin.community.service.ZyOwnerParkService;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 房屋绑定表 (ZyOwnerPark)表控制层
@@ -27,6 +29,13 @@ public class ZyOwnerParkController {
     @Resource
     private ZyOwnerParkService zyOwnerParkService;
 
+
+    @DeleteMapping("/deleteOwnerPark")
+    public Result deleteOwnerPark(HttpServletRequest request,String ownerParkId) throws Exception {
+        System.err.println(ownerParkId);
+
+        return zyOwnerParkService.deleteOwnerPark(ownerParkId,request);
+    }
 
     @GetMapping("/getOwnerParkList")
     public Result getOwnerParkList(OwnerParkListDto ownerParkListDto, Page page )

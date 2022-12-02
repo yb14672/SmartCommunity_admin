@@ -9,6 +9,8 @@ import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerPark;
 import org.springframework.data.domain.PageRequest;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 房屋绑定表 (ZyOwnerPark)表服务接口
  *
@@ -16,6 +18,9 @@ import org.springframework.data.domain.PageRequest;
  * @since 2022-12-01 15:18:39
  */
 public interface ZyOwnerParkService extends IService<ZyOwnerPark> {
+
+    Result deleteOwnerPark(String ownerParkId,HttpServletRequest request) throws Exception;
+
 
     Result getOwnerParkList(OwnerParkListDto ownerParkListDto, Page page);
     /**

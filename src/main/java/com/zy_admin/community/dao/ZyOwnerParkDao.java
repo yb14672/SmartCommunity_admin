@@ -1,9 +1,15 @@
 package com.zy_admin.community.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.github.yulichang.base.MPJBaseMapper;
+import com.zy_admin.community.dto.OwnerParkListDto;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerPark;
+import com.zy_admin.community.entity.ZyOwnerParkRecord;
+import com.zy_admin.community.entity.ZyPark;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -15,6 +21,31 @@ import java.util.List;
  */
 public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
 
+
+
+    /**
+     * 解绑停车位
+     *
+     * @param ownerParkId 业主停车位Id;
+     */
+    @Update("Update  zy_owner_park set park_owner_status = 'UnBuilding' where owner_park_id = #{ownerParkId}")
+    void deleteOwnerPark(String ownerParkId);
+
+
+    /**
+     * 获取车位业主信息
+     *
+     * @param ownerParkId 公园所有者id
+     * @return {@link OwnerParkListDto}
+     */
+    @Select("select*from zy_owner_park where owner_park_id =#{ownerParkId}")
+    OwnerParkListDto getOwnerPark(String ownerParkId);
+
+    @Select("select community_id from zy_park where park_id = #{parkId}")
+    String getCommunityId(String parkId);
+
+
+    void insertRecord (OwnerParkListDto ownerParkListDto);
     /**
      * 通过ID查询单条数据
      *
