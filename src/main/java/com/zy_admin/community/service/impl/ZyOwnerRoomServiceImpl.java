@@ -228,6 +228,8 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         zyOwnerRoomRecord.setRoomStatus(zyOwnerRoom.getRoomStatus());
         zyOwnerRoomRecord.setUpdateBy(zyOwnerRoom.getUpdateBy());
         zyOwnerRoomRecord.setUpdateTime(LocalDateTime.now().toString());
+        zyOwnerRoomRecord.setCreateBy(zyOwnerRoom.getCreateBy());
+        zyOwnerRoomRecord.setCreateTime(zyOwnerRoom.getCreateTime());
         zyOwnerRoomRecordDao.insert(zyOwnerRoomRecord);
         //修改时间
         zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());
