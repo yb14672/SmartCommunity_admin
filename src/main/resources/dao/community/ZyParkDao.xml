@@ -16,50 +16,6 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="ZyParkMap">
-        select
-        park_id, park_code, community_id, park_type, park_status, park_is_public, create_by, create_time,
-        update_by, update_time, remark
-        from zy_park
-        <where>
-            <if test="parkId != null">
-                and park_id = #{parkId}
-            </if>
-            <if test="parkCode != null and parkCode != ''">
-                and park_code = #{parkCode}
-            </if>
-            <if test="communityId != null">
-                and community_id = #{communityId}
-            </if>
-            <if test="parkType != null and parkType != ''">
-                and park_type = #{parkType}
-            </if>
-            <if test="parkStatus != null and parkStatus != ''">
-                and park_status = #{parkStatus}
-            </if>
-            <if test="parkIsPublic != null and parkIsPublic != ''">
-                and park_is_public = #{parkIsPublic}
-            </if>
-            <if test="createBy != null and createBy != ''">
-                and create_by = #{createBy}
-            </if>
-            <if test="createTime != null">
-                and create_time = #{createTime}
-            </if>
-            <if test="updateBy != null and updateBy != ''">
-                and update_by = #{updateBy}
-            </if>
-            <if test="updateTime != null">
-                and update_time = #{updateTime}
-            </if>
-            <if test="remark != null and remark != ''">
-                and remark = #{remark}
-            </if>
-        </where>
-        limit #{pageable.offset}, #{pageable.pageSize}
-    </select>
-
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
         select count(1)
@@ -76,9 +32,6 @@
             </if>
             <if test="parkType != null and parkType != ''">
                 and park_type = #{parkType}
-            </if>
-            <if test="parkCost != null">
-                and park_cost = #{parkCost}
             </if>
             <if test="parkStatus != null and parkStatus != ''">
                 and park_status = #{parkStatus}
@@ -115,7 +68,7 @@
     <!--新增所有列-->
     <insert id="insertPark">
         insert into zy_park(park_id,park_code, community_id, park_type, park_status, park_is_public, create_by, create_time, update_by, update_time, remark)
-        values (#{parkId},#{parkCode}, #{communityId}, #{parkType}, #{parkCost}, #{parkStatus}, #{parkIsPublic}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+        values (#{parkId},#{parkCode}, #{communityId}, #{parkType}, #{parkStatus}, #{parkIsPublic}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <insert id="insertBatch" parameterType="com.zy_admin.community.entity.ZyPark">
@@ -163,9 +116,6 @@
             </if>
             <if test="parkType != null and parkType != ''">
                 park_type = #{parkType},
-            </if>
-            <if test="parkCost != null">
-                park_cost = #{parkCost},
             </if>
             <if test="parkStatus != null and parkStatus != ''">
                 park_status = #{parkStatus},

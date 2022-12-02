@@ -50,17 +50,19 @@ public class ZyParkController extends ApiController {
      * @return {@link Result}
      * @throws Exception 异常
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "ZyPark", name = "zyPark", value = "停车位", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "int", name = "number", value = "数量", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
+    })
+    @ApiOperation(value = "批量插入", notes = "批量插入", httpMethod = "POST")
     @PostMapping("/batchInsert")
-    public Result batchInsert(ZyPark zyPark,int number,HttpServletRequest request) throws Exception {
+    public Result batchInsert(@RequestBody ZyPark zyPark,@RequestParam("number") Integer number, HttpServletRequest request) throws Exception {
         SysUser user = requestUtil.getUser(request);
         zyPark.setCreateBy(user.getUserName());
         zyPark.setCreateTime(LocalDateTime.now().toString());
-        return zyParkService.batchInsert(zyPark,number);
+        return zyParkService.batchInsert(zyPark, number);
     }
-
-
-
-
 
     /**
      * 新增停车位
@@ -76,13 +78,13 @@ public class ZyParkController extends ApiController {
     })
     @ApiOperation(value = "新增停车位", notes = "新增停车位", httpMethod = "POST")
     @PostMapping("/insertPark")
-    public Result insertPark(ZyPark zyPark, HttpServletRequest request) throws Exception {
+    public Result insertPark(@RequestBody ZyPark zyPark, HttpServletRequest request) throws Exception {
         SysUser user = requestUtil.getUser(request);
         zyPark.setCreateBy(user.getUserName());
         zyPark.setCreateTime(LocalDateTime.now().toString());
-        zyPark.setParkId(snowflakeManager.nextId()+"");
+        zyPark.setParkId(snowflakeManager.nextId() + "");
         long now = System.currentTimeMillis();
-        zyPark.setParkCode("PK_"+Long.toString(now).substring(0,13));
+        zyPark.setParkCode("PK_" + Long.toString(now).substring(0, 13));
         return zyParkService.insertPark(zyPark);
     }
 
@@ -95,15 +97,15 @@ public class ZyParkController extends ApiController {
      */
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "ZyPark", name = "zyPark", value = "修改停车位", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "ZyPark", name = "zyPark", value = "停车位", required = true)
     })
     @ApiOperation(value = "修改车位", notes = "修改车位", httpMethod = "PUT")
     @PutMapping("/updatePark")
-    public Result updatePark(HttpServletRequest request,ZyPark zyPark){
+    public Result updatePark(@RequestBody ZyPark zyPark,HttpServletRequest request) {
         SysUser user = requestUtil.getUser(request);
         zyPark.setUpdateBy(user.getUserName());
         zyPark.setUpdateTime(LocalDateTime.now().toString());
-       return this.zyParkService.updatePark(zyPark);
+        return this.zyParkService.updatePark(zyPark);
     }
 
     /**
@@ -112,20 +114,24 @@ public class ZyParkController extends ApiController {
      * @param parkIds 停车位
      * @return {@link Result}
      */
-    @DeleteMapping("/deletePark")
-    public Result deletePark(List<String> parkIds){
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "List<String>", name = "parkIds", value = "停车位", required = true)
+    })
+    @ApiOperation(value = "删除停车位", notes = "删除停车位", httpMethod = "DELETE")
+    @DeleteMapping
+    public Result deletePark(@RequestParam("parkIds") List<String> parkIds) {
         return this.zyParkService.deletePark(parkIds);
     }
 
     /**
      * 分页查询
      *
-     * @param zyPark      筛选条件
-     * @param page 分页对象
+     * @param zyPark 筛选条件
+     * @param page   分页对象
      * @return 查询结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ZyPark", name = "zyPark", value = "筛选条件", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "ZyParkDto", name = "zyPark", value = "筛选条件", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "Page", name = "page", value = "分页对象", required = true)
     })
     @ApiOperation(value = "分页查询", notes = "分页查询", httpMethod = "GET")
