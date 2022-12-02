@@ -1,6 +1,8 @@
 package com.zy_admin.community.dao;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.github.yulichang.base.MPJBaseMapper;
+import com.zy_admin.community.dto.ZyParkDto;
+import com.zy_admin.community.entity.ZyOwnerPark;
 import com.zy_admin.community.entity.ZyPark;
 import org.apache.ibatis.annotations.Param;
 
