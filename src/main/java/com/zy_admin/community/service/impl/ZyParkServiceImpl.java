@@ -92,8 +92,9 @@ public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements
                 .eq(StringUtil.isNotEmpty(zyPark.getParkType()), ZyPark::getParkType, zyPark.getParkType())
                 .eq(StringUtil.isNotEmpty(zyPark.getParkStatus()), ZyPark::getParkStatus, zyPark.getParkStatus())
                 .eq(StringUtil.isNotEmpty(zyPark.getParkIsPublic()), ZyPark::getParkIsPublic, zyPark.getParkIsPublic())
-                .eq(StringUtil.isNotEmpty(zyPark.getCommunityId()), ZyPark::getCommunityId, zyPark.getCommunityId());
-//                .orderByDesc(ZyPark::getCreateTime);
+                .eq(StringUtil.isNotEmpty(zyPark.getCommunityId()), ZyPark::getCommunityId, zyPark.getCommunityId())
+                .orderByDesc(ZyPark::getCreateTime)
+                .orderByDesc(ZyPark::getParkCode);
         IPage<ZyParkDto> IPage = this.baseMapper.selectJoinPage(page, ZyParkDto.class, wrapper);
         if (IPage.getTotal() != 0) {
             result.setData(IPage);
