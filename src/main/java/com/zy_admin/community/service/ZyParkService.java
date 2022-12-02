@@ -1,8 +1,8 @@
 package com.zy_admin.community.service;
 
-import com.zy_admin.community.entity.ZyPark;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.community.dto.ZyParkDto;
 
 /**
  * (ZyPark)表服务接口
@@ -18,39 +18,14 @@ public interface ZyParkService {
      * @param parkId 主键
      * @return 实例对象
      */
-    ZyPark queryById(String parkId);
+    Result queryById(String parkId);
 
     /**
      * 分页查询
      *
-     * @param zyPark      筛选条件
-     * @param pageRequest 分页对象
+     * @param zyPark    筛选条件
+     * @param page      分页对象
      * @return 查询结果
      */
-    Page<ZyPark> queryByPage(ZyPark zyPark, PageRequest pageRequest);
-
-    /**
-     * 新增数据
-     *
-     * @param zyPark 实例对象
-     * @return 实例对象
-     */
-    ZyPark insert(ZyPark zyPark);
-
-    /**
-     * 修改数据
-     *
-     * @param zyPark 实例对象
-     * @return 实例对象
-     */
-    ZyPark update(ZyPark zyPark);
-
-    /**
-     * 通过主键删除数据
-     *
-     * @param parkId 主键
-     * @return 是否成功
-     */
-    boolean deleteById(Long parkId);
-
+    Result queryByPage(ZyParkDto zyPark, Page page);
 }

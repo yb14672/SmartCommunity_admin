@@ -1,6 +1,7 @@
 package com.zy_admin.community.dao;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.github.yulichang.base.MPJBaseMapper;
+import com.zy_admin.community.dto.ZyParkDto;
 import com.zy_admin.community.entity.ZyPark;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-12-01 15:13:40
  */
-public interface ZyParkDao extends BaseMapper<ZyPark> {
+public interface ZyParkDao extends MPJBaseMapper<ZyPark> {
 
     /**
      * 通过ID查询单条数据
@@ -21,7 +22,7 @@ public interface ZyParkDao extends BaseMapper<ZyPark> {
      * @param parkId 主键
      * @return 实例对象
      */
-    ZyPark queryById(String parkId);
+    ZyParkDto queryById(String parkId);
 
     /**
      * 查询指定行数据

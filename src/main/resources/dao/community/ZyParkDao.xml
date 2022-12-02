@@ -7,7 +7,6 @@
         <result property="parkCode" column="park_code" jdbcType="VARCHAR"/>
         <result property="communityId" column="community_id" jdbcType="INTEGER"/>
         <result property="parkType" column="park_type" jdbcType="VARCHAR"/>
-        <result property="parkCost" column="park_cost" jdbcType="NUMERIC"/>
         <result property="parkStatus" column="park_status" jdbcType="VARCHAR"/>
         <result property="parkIsPublic" column="park_is_public" jdbcType="VARCHAR"/>
         <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
@@ -17,10 +16,11 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
+
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="ZyParkMap">
         select
-        park_id, park_code, community_id, park_type, park_cost, park_status, park_is_public, create_by, create_time,
+        park_id, park_code, community_id, park_type, park_status, park_is_public, create_by, create_time,
         update_by, update_time, remark
         from zy_park
         <where>
@@ -109,36 +109,38 @@
     </select>
 
     <!--查询单个-->
-    <select id="queryById" resultType="com.zy_admin.community.entity.ZyPark">
-         select
-          park_id, park_code, community_id, park_type, park_status, park_is_public, create_by, create_time, update_by, update_time, remark
-        from zy_park
-        where park_id = #{parkId}
+    <select id="queryById" resultType="com.zy_admin.community.dto.ZyParkDto">
+        select p.*, c.community_name
+        from zy_park p
+                 LEFT JOIN zy_community c ON p.community_id = c.community_id
+        WHERE p.park_id = #{parkId}
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="parkId" useGeneratedKeys="true">
-        insert into zy_park(park_code, community_id, park_type, park_cost, park_status, park_is_public, create_by, create_time, update_by, update_time, remark)
-        values (#{parkCode}, #{communityId}, #{parkType}, #{parkCost}, #{parkStatus}, #{parkIsPublic}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+        insert into zy_park(park_code, community_id, park_type, park_status, park_is_public, create_by, create_time,
+                            update_by, update_time, remark)
+        values (#{parkCode}, #{communityId}, #{parkType}, #{parkStatus}, #{parkIsPublic}, #{createBy}, #{createTime},
+                #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <insert id="insertBatch" keyProperty="parkId" useGeneratedKeys="true">
-        insert into zy_park(park_code, community_id, park_type, park_cost, park_status, park_is_public, create_by,
+        insert into zy_park(park_code, community_id, park_type, park_status, park_is_public, create_by,
         create_time, update_by, update_time, remark)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.parkCode}, #{entity.communityId}, #{entity.parkType}, #{entity.parkCost}, #{entity.parkStatus},
+            (#{entity.parkCode}, #{entity.communityId}, #{entity.parkType}, #{entity.parkStatus},
             #{entity.parkIsPublic}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime},
             #{entity.remark})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="parkId" useGeneratedKeys="true">
-        insert into zy_park(park_code, community_id, park_type, park_cost, park_status, park_is_public, create_by,
+        insert into zy_park(park_code, community_id, park_type, park_status, park_is_public, create_by,
         create_time, update_by, update_time, remark)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.parkCode}, #{entity.communityId}, #{entity.parkType}, #{entity.parkCost}, #{entity.parkStatus},
+            (#{entity.parkCode}, #{entity.communityId}, #{entity.parkType}, #{entity.parkStatus},
             #{entity.parkIsPublic}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime},
             #{entity.remark})
         </foreach>
@@ -146,7 +148,6 @@
         park_code = values(park_code),
         community_id = values(community_id),
         park_type = values(park_type),
-        park_cost = values(park_cost),
         park_status = values(park_status),
         park_is_public = values(park_is_public),
         create_by = values(create_by),
@@ -199,7 +200,9 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from zy_park where park_id = #{parkId}
+        delete
+        from zy_park
+        where park_id = #{parkId}
     </delete>
 
 </mapper>
