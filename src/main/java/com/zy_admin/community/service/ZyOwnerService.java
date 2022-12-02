@@ -87,9 +87,10 @@ public interface ZyOwnerService extends IService<ZyOwner> {
      *
      * @param zyOwner  户主信息
      * @param pageable 分页对象
+     * @param communityId 小区id
      * @return {@link Result}
      */
-    Result getOwnerList(ZyOwner zyOwner, Pageable pageable);
+    Result getOwnerList(ZyOwner zyOwner, Pageable pageable,String communityId);
 
     /**
      * 解绑房间

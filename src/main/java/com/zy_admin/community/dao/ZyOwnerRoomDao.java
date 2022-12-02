@@ -20,6 +20,14 @@ import java.util.List;
 public interface ZyOwnerRoomDao extends BaseMapper<ZyOwnerRoom> {
 
     /**
+     * 改变状态为已拒绝
+     *
+     * @param roomId 房间id
+     * @return 影响行数
+     */
+    int changeStatusReject(String roomId);
+
+    /**
      * 选择主人房间通过所有者id
      *
      * @param ownerId 所有者id
@@ -58,9 +66,10 @@ public interface ZyOwnerRoomDao extends BaseMapper<ZyOwnerRoom> {
 
     /**
      * 查询所有业主审核的和分页
-     * @param zyOwnerRoom
-     * @param pageable
-     * @return
+     *
+     * @param zyOwnerRoom 业主房间关联
+     * @param pageable    分页对象
+     * @return {@link List}<{@link ZyOwnerRoomDto}>
      */
     List<ZyOwnerRoomDto> selectAllOwnerRoomLimit(@Param("zyOwnerRoom")ZyOwnerRoom zyOwnerRoom, @Param("pageable") Pageable pageable);
 
@@ -85,6 +94,7 @@ public interface ZyOwnerRoomDao extends BaseMapper<ZyOwnerRoom> {
      */
     @Select("select * from zy_owner_room where owner_room_id = #{ownerRoomId}")
     ZyOwnerRoom selectOwnerRoomById(String ownerRoomId);
+
 
 }
 

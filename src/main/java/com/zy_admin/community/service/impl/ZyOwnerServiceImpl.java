@@ -223,12 +223,13 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
      *
      * @param zyOwner  户主信息
      * @param pageable 页码
+     * @param communityId 小区id
      * @return 获取分页结果集
      */
     @Override
-    public Result getOwnerList(ZyOwner zyOwner, Pageable pageable) {
+    public Result getOwnerList(ZyOwner zyOwner, Pageable pageable, String communityId) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        Long total = this.baseMapper.countOwner(zyOwner);
+        Long total = this.baseMapper.countOwner(zyOwner,communityId);
         long pages = 0;
         if (total > 0) {
             pages = total % pageable.getPageSize() == 0 ? total / pageable.getPageSize() : total / pageable.getPageSize() + 1;
@@ -242,7 +243,7 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
             pageable.setPageNum(0);
         }
         pageable.setTotal(total);
-        List<OwnerListDto> ownerList = this.baseMapper.getOwnerList(zyOwner, pageable);
+        List<OwnerListDto> ownerList = this.baseMapper.getOwnerList(zyOwner, pageable,communityId);
         OwnerDto ownerDto = new OwnerDto(pageable, ownerList);
         result.setData(ownerDto);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));

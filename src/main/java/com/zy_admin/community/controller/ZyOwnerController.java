@@ -154,19 +154,20 @@ public class ZyOwnerController extends ApiController {
     /**
      * 获取户主信息并分页
      *
-     * @param zyOwner  业主信息
-     * @param pageable 分页对象
+     * @param zyOwner     业主信息
+     * @param pageable    分页对象
+     * @param communityId 社区id
      * @return 查询户主结果集
      */
-
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "ZyOwner", name = "zyOwner", value = "业主信息", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "分页对象", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "分页对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "communityId", value = "社区id", required = true)
     })
     @ApiOperation(value = "获取户主信息并分页", notes = "获取户主信息并分页", httpMethod = "GET")
     @GetMapping("/getOwnerList")
-    public Result getOwnerList(ZyOwner zyOwner, Pageable pageable) {
-        return zyOwnerService.getOwnerList(zyOwner, pageable);
+    public Result getOwnerList(ZyOwner zyOwner, Pageable pageable,String communityId) {
+        return zyOwnerService.getOwnerList(zyOwner, pageable,communityId);
     }
 
 

@@ -60,7 +60,7 @@ public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> i
      * 得到访客名单
      *
      * @param zyVisitor zy访客
-     * @param pageable  可分页
+     * @param pageable  分页对象
      * @return {@link Result}
      */
     @Override

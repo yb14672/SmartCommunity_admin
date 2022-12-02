@@ -56,7 +56,7 @@ public interface ZyVisitorDao extends BaseMapper<ZyVisitor> {
      * 查询分页
      *
      * @param zyVisitor 访客
-     * @param pageable  可分页
+     * @param pageable  分页对象
      * @return {@link List}<{@link VisitorListDto}>
      */
     List<VisitorListDto> queryAllByLimit(@Param("zyVisitor") ZyVisitor zyVisitor, @Param("pageable") Pageable pageable);

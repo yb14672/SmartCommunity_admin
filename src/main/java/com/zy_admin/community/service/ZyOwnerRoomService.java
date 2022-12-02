@@ -59,10 +59,11 @@ public interface ZyOwnerRoomService extends IService<ZyOwnerRoom> {
     Result getTreeData();
 
     /**
-     * 查询所有业主审核的和分页
-     * @param zyOwnerRoom
-     * @param pageable
-     * @return
+     * 查询所有业主审核和分页
+     *
+     * @param zyOwnerRoom 业主房间关联
+     * @param pageable    分页对象
+     * @return {@link Result}
      */
     Result selectAllOwnerRoomLimit(ZyOwnerRoom zyOwnerRoom, Pageable pageable);
 
@@ -70,7 +71,7 @@ public interface ZyOwnerRoomService extends IService<ZyOwnerRoom> {
      * 更新主人房间状态
      * 修改业主审核的状态
      *
-     * @param zyOwnerRoom        zy主人房间
+     * @param zyOwnerRoom        业主房间关联
      * @param recordAuditOpinion 记录审计意见
      * @return {@link Result}
      * @throws Exception 异常

@@ -223,6 +223,9 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         zyOwnerRoomRecordDao.insert(zyOwnerRoomRecord);
         //修改时间
         zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());
+        zyOwnerRoom.setRemark(recordAuditOpinion);
+        //先把所有申请该房屋的全部设为拒绝
+        this.baseMapper.changeStatusReject(zyOwnerRoom.getRoomId());
         this.baseMapper.updateOwnerRoomStatus(zyOwnerRoom);
         //判断审核是不是通过
         if ("Binding".equals(zyOwnerRoom.getRoomStatus())){

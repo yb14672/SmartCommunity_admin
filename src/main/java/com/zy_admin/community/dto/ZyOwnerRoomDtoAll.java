@@ -26,8 +26,8 @@ public class ZyOwnerRoomDtoAll {
     @ApiModelProperty("业主房间dto列表")
     private List<ZyOwnerRoomDto> zyOwnerRoomDtoList;
     /**
-     * 可分页
+     * 分页对象
      */
-    @ApiModelProperty("可分页")
+    @ApiModelProperty("分页对象")
     private Pageable pageable;
 }

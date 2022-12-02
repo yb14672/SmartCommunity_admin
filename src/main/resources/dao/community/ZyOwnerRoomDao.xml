@@ -18,6 +18,13 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <update id="changeStatusReject">
+        update zy_owner_room
+        set room_status = 'Reject',
+            remark      = '已有其他业主绑定该房屋'
+        WHERE room_id = #{roomId}
+    </update>
+
     <select id="selectOwnerRoomByOwnerId" resultType="com.zy_admin.community.dto.OwnerRoomDto">
         select c.community_id,
                c.community_name,
@@ -61,15 +68,20 @@
 
     <!--新增所有列-->
     <insert id="insertOwnerRoom" keyProperty="ownerRoomId" useGeneratedKeys="true">
-        insert into zy_owner_room(owner_room_id,community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status, create_by, create_time, update_by, update_time, remark)
-        values (#{ownerRoomId},#{communityId}, #{buildingId}, #{unitId}, #{roomId}, #{ownerId}, #{ownerType}, #{roomStatus}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+        insert into zy_owner_room(owner_room_id, community_id, building_id, unit_id, room_id, owner_id, owner_type,
+                                  room_status, create_by, create_time, update_by, update_time, remark)
+        values (#{ownerRoomId}, #{communityId}, #{buildingId}, #{unitId}, #{roomId}, #{ownerId}, #{ownerType},
+                #{roomStatus}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="ownerRoomId" useGeneratedKeys="true">
-        insert into zy_owner_room(community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status, create_by, create_time, update_by, update_time, remark)
+        insert into zy_owner_room(community_id, building_id, unit_id, room_id, owner_id, owner_type, room_status,
+        create_by, create_time, update_by, update_time, remark)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.communityId}, #{entity.buildingId}, #{entity.unitId}, #{entity.roomId}, #{entity.ownerId}, #{entity.ownerType}, #{entity.roomStatus}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
+            (#{entity.communityId}, #{entity.buildingId}, #{entity.unitId}, #{entity.roomId}, #{entity.ownerId},
+            #{entity.ownerType}, #{entity.roomStatus}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy},
+            #{entity.updateTime}, #{entity.remark})
         </foreach>
         on duplicate key update
         community_id = values(community_id),
@@ -89,7 +101,7 @@
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
         select count(1)
-        from zy_owner_room  zor
+        from zy_owner_room zor
         left join zy_community zc on zor.community_id = zc.community_id
         left join zy_building zb on zor.building_id = zb.building_id
         LEFT JOIN zy_unit zu on zor.unit_id = zu.unit_id
@@ -140,7 +152,8 @@
 
     <!--查询所有业主审核的和分页-->
     <select id="selectAllOwnerRoomLimit" resultType="com.zy_admin.community.dto.ZyOwnerRoomDto">
-        select zor.owner_room_id,zc.community_name,zb.building_name,zu.unit_name,zr.room_name,zo.owner_real_name,zor.owner_id,zor.update_by,
+        select
+        zor.owner_room_id,zc.community_name,zb.building_name,zu.unit_name,zr.room_name,zo.owner_real_name,zor.owner_id,zor.update_by,
         zor.owner_type,zor.room_status,zor.create_time,zor.remark,zor.room_id,zc.community_id,zb.building_id,zu.unit_id
         from zy_owner_room zor
         left join zy_community zc on zor.community_id = zc.community_id
@@ -148,11 +161,10 @@
         LEFT JOIN zy_unit zu on zor.unit_id = zu.unit_id
         LEFT JOIN zy_room zr on zor.room_id = zr.room_id
         LEFT JOIN zy_owner zo on zor.owner_id = zo.owner_id
-        <where>
-            <if test="zyOwnerRoom.roomStatus!=null and zyOwnerRoom.roomStatus!=''">
-                and zor.room_status = #{zyOwnerRoom.roomStatus}
-            </if>
-        </where>
+        where zor.community_id = #{zyOwnerRoom.communityId}
+        <if test="zyOwnerRoom.roomStatus!=null and zyOwnerRoom.roomStatus!=''">
+            and zor.room_status = #{zyOwnerRoom.roomStatus}
+        </if>
         order by create_time desc
         <if test="pageable.pageSize!=null">
             limit #{pageable.index},#{pageable.pageSize}
@@ -205,12 +217,20 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from zy_owner_room where owner_room_id = #{ownerRoomId}
+        delete
+        from zy_owner_room
+        where owner_room_id = #{ownerRoomId}
     </delete>
 
     <!-- 验重记录已提交-->
     <select id="checkOwnerRoom" resultType="com.zy_admin.community.entity.ZyOwnerRoom">
-        select * from zy_owner_room where community_id = #{communityId} and building_id = #{buildingId} and unit_id = #{unitId} and room_id = #{roomId} and room_status = "Binding"
+        select *
+        from zy_owner_room
+        where community_id = #{communityId}
+          and building_id = #{buildingId}
+          and unit_id = #{unitId}
+          and room_id = #{roomId}
+          and owner_id = #{ownerId}
     </select>
 
     <!--通过主键修改数据-->
@@ -250,9 +270,14 @@
             <if test="zyOwnerRoom.updateTime != null">
                 update_time = #{zyOwnerRoom.updateTime},
             </if>
-            <if test="zyOwnerRoom.remark != null and zyOwnerRoom.remark != ''">
-                remark = #{zyOwnerRoom.remark},
-            </if>
+            <choose>
+                <when test="zyOwnerRoom.remark != null and zyOwnerRoom.remark != ''">
+                    remark = #{zyOwnerRoom.remark},
+                </when>
+                <otherwise>
+                    remark="",
+                </otherwise>
+            </choose>
         </set>
         where owner_room_id = #{zyOwnerRoom.ownerRoomId}
     </update>
