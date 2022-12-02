@@ -86,6 +86,29 @@ public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements
     }
 
     /**
+     * 根据ids查询列表，若为空根据小区id查询列表
+     *
+     * @param ids         车位ID列表
+     * @param communityId 小区id
+     * @return {@link Result}
+     */
+    @Override
+    public Result getListByIdList(ArrayList<String> ids, String communityId) {
+        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.NO_MATCHING_DATA));
+        List<ZyParkDto> dtoList = null;
+        if (ids.size() != 0) {
+            dtoList = this.baseMapper.getDtoList(ids);
+        } else {
+            dtoList = this.baseMapper.getAllDtoList(communityId);
+        }
+        if (dtoList.size() > 0) {
+            result.setData(dtoList);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+
+    /**
      * 批量插入
      *
      * @param zyPark zy公园

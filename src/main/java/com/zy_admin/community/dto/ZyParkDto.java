@@ -1,5 +1,6 @@
 package com.zy_admin.community.dto;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.zy_admin.community.entity.ZyPark;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,6 +22,7 @@ public class ZyParkDto extends ZyPark {
     /**
      * 小区名字
      */
+    @ExcelProperty("小区名字")
     @ApiModelProperty("小区名字")
     private String communityName;
 }

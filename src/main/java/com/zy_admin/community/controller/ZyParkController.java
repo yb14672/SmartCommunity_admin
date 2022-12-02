@@ -1,13 +1,21 @@
 package com.zy_admin.community.controller;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.common.core.annotation.MyLog;
+import com.zy_admin.common.enums.BusinessType;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dto.ZyParkDto;
 import com.zy_admin.community.entity.ZyPark;
 import com.zy_admin.community.service.ZyParkService;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
+import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -17,7 +25,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +52,38 @@ public class ZyParkController extends ApiController {
     @Resource
     private SnowflakeManager snowflakeManager;
 
+    /**
+     * 导出
+     *
+     * @param ids         id列表--没有导出当前小区全部
+     * @param communityId 小区id
+     * @param response    相应对象
+     * @return Excel表格
+     * @throws IOException ioexception
+     */
+    @GetMapping("/export")
+    @MyLog(title = "车位信息", optParam = "#{ids},#{communityId}", businessType = BusinessType.EXPORT)
+    public Result getExcel(@RequestParam("ids") ArrayList<String> ids, String communityId, HttpServletResponse response) throws IOException {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result1 = zyParkService.getListByIdList(ids, communityId);
+        List<ZyParkDto> list = (List<ZyParkDto>) result1.getData();
+        String fileName = URLEncoder.encode("车位信息", "UTF-8");
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("content-type", "text/html;charset=UTF-8");
+        // 内容样式
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
+        ExcelWriterSheetBuilder excel = EasyExcel.write(response.getOutputStream(), ZyParkDto.class)
+                .excelType(ExcelTypeEnum.XLS)
+                //自适应表格格式
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                .autoCloseStream(true)
+                .sheet("车位信息");
+        excel.doWrite(list);
+        result.setData(excel);
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
+    }
 
     /**
      * 批量插入

@@ -67,8 +67,10 @@
 
     <!--新增所有列-->
     <insert id="insertPark">
-        insert into zy_park(park_id,park_code, community_id, park_type, park_status, park_is_public, create_by, create_time, update_by, update_time, remark)
-        values (#{parkId},#{parkCode}, #{communityId}, #{parkType}, #{parkStatus}, #{parkIsPublic}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+        insert into zy_park(park_id, park_code, community_id, park_type, park_status, park_is_public, create_by,
+                            create_time, update_by, update_time, remark)
+        values (#{parkId}, #{parkCode}, #{communityId}, #{parkType}, #{parkStatus}, #{parkIsPublic}, #{createBy},
+                #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <insert id="insertBatch" parameterType="com.zy_admin.community.entity.ZyPark">
@@ -142,11 +144,25 @@
         where park_id = #{parkId}
     </update>
 
-    <select id="selectOwnerParkByParkId" resultType="com.zy_admin.community.entity.ZyOwnerPark" >
+    <select id="selectOwnerParkByParkId" resultType="com.zy_admin.community.entity.ZyOwnerPark">
         select * from zy_owner_park where park_id in
         <foreach collection="parkIds" item="parkId" separator="," open="(" close=")">
             #{parkId}
         </foreach>
+    </select>
+    <select id="getDtoList" resultType="com.zy_admin.community.dto.ZyParkDto">
+        select p.*,zc.community_name from zy_park p left outer join zy_community zc on p.community_id = zc.community_id
+        where p.park_id in
+        <foreach collection="ids" item="parkId" separator="," open="(" close=")">
+            #{parkId}
+        </foreach>
+    </select>
+
+    <select id="getAllDtoList" resultType="com.zy_admin.community.dto.ZyParkDto">
+        select p.*, zc.community_name
+        from zy_park p
+                 left outer join zy_community zc on p.community_id = zc.community_id
+        where p.community_id = #{communityId}
     </select>
 
     <delete id="deletedPark">

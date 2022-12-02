@@ -6,6 +6,7 @@ import com.zy_admin.community.entity.ZyOwnerPark;
 import com.zy_admin.community.entity.ZyPark;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,5 +83,19 @@ public interface ZyParkDao extends MPJBaseMapper<ZyPark> {
      * @return 影响行数
      */
     int deleteById(Long parkId);
+
+    /**
+     * 根据ID集合查询车位列表列表
+     * @param ids id集合
+     * @return 车位列表
+     */
+    List<ZyParkDto> getDtoList(@Param("ids") ArrayList<String> ids);
+
+    /**
+     * 根据小区id查询车位列表
+     * @param communityId 小区id
+     * @return 车位列表
+     */
+    List<ZyParkDto> getAllDtoList(String communityId);
 }
 
