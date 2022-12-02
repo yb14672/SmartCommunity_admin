@@ -138,6 +138,10 @@
         left join zy_community zc on zp.community_id = zc.community_id
         where zop.park_owner_status != 'Binding' and zc.community_id = #{communityId}
     </select>
+    <!--查询车牌号有没有重复-->
+    <select id="selectCarNumber" resultType="com.zy_admin.community.entity.ZyOwnerPark">
+        select * from zy_owner_park where car_number = #{carNumber}
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="ownerParkId" useGeneratedKeys="true">

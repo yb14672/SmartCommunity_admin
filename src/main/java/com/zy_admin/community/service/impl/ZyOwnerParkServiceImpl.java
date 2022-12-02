@@ -122,10 +122,16 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
                     result.setData("车牌号不符合规则");
                     result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_ERROR));
                 }else {
-                    zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
-                    int i = this.baseMapper.updateOwnerPark(zyOwnerPark);
-                    if (i == 1) {
-                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                    ZyOwnerPark zyOwnerPark2 = this.baseMapper.selectCarNumber(zyOwnerPark.getCarNumber());
+                    if (zyOwnerPark2!=null){
+                        result.setData("车牌号重复");
+                        result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_REPEAT));
+                    }else {
+                        zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
+                        int i = this.baseMapper.updateOwnerPark(zyOwnerPark);
+                        if (i == 1) {
+                            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -158,13 +164,19 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
             result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_ERROR));
         }else{
             try {
-                //新增
-                Integer i = this.baseMapper.insert(zyOwnerPark);
-                if (i == 1) {
-                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-                    result.setData("新增成功");
+                ZyOwnerPark zyOwnerPark1 = this.baseMapper.selectCarNumber(zyOwnerPark.getCarNumber());
+                if (zyOwnerPark1!=null){
+                    result.setData("车牌号重复");
+                    result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_REPEAT));
+                }else{
+                    //新增
+                    Integer i = this.baseMapper.insert(zyOwnerPark);
+                    if (i == 1) {
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                        result.setData("新增成功");
+                    }
+                    return result;
                 }
-                return result;
             } catch (Exception e) {
                 e.printStackTrace();
                 return new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));

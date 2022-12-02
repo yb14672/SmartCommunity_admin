@@ -129,6 +129,7 @@ public enum ResultCode {
     OWNER_REAL_NAME_NOT_EMPTY(3052,"真实姓名不能为空"),
     REPAIR_GET_FAIL(3053,"报修信息获取失败"),
     CARNUMBER_ERROR(3054,"车牌号不符合规则"),
+    CARNUMBER_REPEAT(3054,"车牌号重复"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

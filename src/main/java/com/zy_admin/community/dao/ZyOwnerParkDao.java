@@ -16,6 +16,13 @@ import java.util.List;
 public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
 
     /**
+     * 查询车牌号有没有重复
+     * @param carNumber 车牌号
+     * @return
+     */
+    ZyOwnerPark selectCarNumber(String carNumber);
+
+    /**
      * 查询未被绑定的车位
      * @return
      */
