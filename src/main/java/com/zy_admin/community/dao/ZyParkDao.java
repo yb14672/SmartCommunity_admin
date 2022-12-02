@@ -74,14 +74,6 @@ public interface ZyParkDao extends MPJBaseMapper<ZyPark> {
     long count(ZyPark zyPark);
 
     /**
-     * 新增数据
-     *
-     * @param zyPark 实例对象
-     * @return 影响行数
-     */
-    int insert(ZyPark zyPark);
-
-    /**
      * 批量新增数据（MyBatis原生foreach方法）
      *
      * @param entities List<ZyPark> 实例对象列表

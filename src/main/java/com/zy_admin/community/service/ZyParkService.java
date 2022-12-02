@@ -1,9 +1,8 @@
 package com.zy_admin.community.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.core.Result.Result;
-import com.zy_admin.community.dto.ZyParkDto;
 import com.zy_admin.community.entity.ZyPark;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -17,6 +16,16 @@ import java.util.List;
 public interface ZyParkService {
 
 
+    /**
+     * 批量插入
+     * 批量插入车位
+     *
+     * @param zyPark 车位
+     * @param number 数量
+     * @return {@link Result}
+     * @throws Exception 异常
+     */
+    Result batchInsert(ZyPark zyPark, int number) throws Exception;
     /**
      * 删除车位
      *
@@ -58,29 +67,4 @@ public interface ZyParkService {
      * @return 查询结果
      */
     Result queryByPage(ZyParkDto zyPark, Page page);
-
-    /**
-     * 新增数据
-     *
-     * @param zyPark 实例对象
-     * @return 实例对象
-     */
-    ZyPark insert(ZyPark zyPark);
-
-    /**
-     * 修改数据
-     *
-     * @param zyPark 实例对象
-     * @return 实例对象
-     */
-    ZyPark update(ZyPark zyPark);
-
-    /**
-     * 通过主键删除数据
-     *
-     * @param parkId 主键
-     * @return 是否成功
-     */
-    boolean deleteById(Long parkId);
-
 }

@@ -118,12 +118,12 @@
         values (#{parkId},#{parkCode}, #{communityId}, #{parkType}, #{parkCost}, #{parkStatus}, #{parkIsPublic}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
-    <insert id="insertBatch" keyProperty="parkId" useGeneratedKeys="true">
-        insert into zy_park(park_code, community_id, park_type, park_status, park_is_public, create_by,
+    <insert id="insertBatch" parameterType="com.zy_admin.community.entity.ZyPark">
+        insert into zy_park(park_id,park_code, community_id, park_type, park_status, park_is_public, create_by,
         create_time, update_by, update_time, remark)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.parkCode}, #{entity.communityId}, #{entity.parkType}, #{entity.parkStatus},
+            (#{entity.parkId},#{entity.parkCode}, #{entity.communityId}, #{entity.parkType}, #{entity.parkStatus},
             #{entity.parkIsPublic}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime},
             #{entity.remark})
         </foreach>

@@ -40,6 +40,28 @@ public class ZyParkController extends ApiController {
     @Resource
     private SnowflakeManager snowflakeManager;
 
+
+    /**
+     * 批量插入
+     *
+     * @param zyPark  停车位
+     * @param number  数量
+     * @param request 请求
+     * @return {@link Result}
+     * @throws Exception 异常
+     */
+    @PostMapping("/batchInsert")
+    public Result batchInsert(ZyPark zyPark,int number,HttpServletRequest request) throws Exception {
+        SysUser user = requestUtil.getUser(request);
+        zyPark.setCreateBy(user.getUserName());
+        zyPark.setCreateTime(LocalDateTime.now().toString());
+        return zyParkService.batchInsert(zyPark,number);
+    }
+
+
+
+
+
     /**
      * 新增停车位
      *
