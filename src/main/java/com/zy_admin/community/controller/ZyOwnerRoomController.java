@@ -22,18 +22,17 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * zy主人房间控制器
  * 房屋绑定表 (ZyOwnerRoom)表控制层
  *
  * @author makejava
  * @since 2022-11-01 19:49:02
  */
-@Api(value = "zyOwnerRoom", tags = {"zy主人房间控制器 房屋绑定表 (ZyOwnerRoom)表控制层"})
+@Api(value = "zyOwnerRoom", tags = {"房屋绑定表 (ZyOwnerRoom)表控制层"})
 @RestController
 @RequestMapping("zyOwnerRoom")
 public class ZyOwnerRoomController extends ApiController {
     /**
-     * 房屋service
+     * 业主房间关联服务
      */
     @Resource
     private ZyOwnerRoomService zyOwnerRoomService;
@@ -44,6 +43,10 @@ public class ZyOwnerRoomController extends ApiController {
     @Resource
     private RequestUtil requestUtil;
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
+    })
+    @ApiOperation(value = "", notes = "", httpMethod = "GET")
     @GetMapping("/selectOwnerRoomByOwnerId")
     public Result selectOwnerRoomByOwnerId(HttpServletRequest request){
         String ownerId = requestUtil.getOwnerId(request);
@@ -62,7 +65,7 @@ public class ZyOwnerRoomController extends ApiController {
     @GetMapping("/getOwnerRoomByOwnerId")
     public Result getOwnerRoomByOwnerId(HttpServletRequest request){
         return this.zyOwnerRoomService.getOwnerRoomByOwnerId(requestUtil.getOwnerId(request));
-    };
+    }
     
     /**
      * 新增数据
@@ -98,10 +101,10 @@ public class ZyOwnerRoomController extends ApiController {
     }
 
     /**
-     * 更新房间状态
+     * 更新拒绝主人房间状态
      * 修改业主审核的状态
      *
-     * @param zyOwnerRoom        房间
+     * @param zyOwnerRoom        业主房间关联
      * @param recordAuditOpinion 记录审计意见
      * @param status             状态
      * @param request            请求
@@ -109,7 +112,7 @@ public class ZyOwnerRoomController extends ApiController {
      * @throws Exception 异常
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyOwnerRoom", name = "zyOwnerRoom", value = "zy主人房间", required = true),
+            @ApiImplicitParam(paramType = "body", dataType = "ZyOwnerRoom", name = "zyOwnerRoom", value = "业主房间关联", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "string", name = "recordAuditOpinion", value = "记录审计意见", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "string", name = "status", value = "状态", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
@@ -129,13 +132,13 @@ public class ZyOwnerRoomController extends ApiController {
      * 选择所有房屋限制
      * 分页和查询业主审核
      *
-     * @param zyOwnerRoom 房屋
-     * @param pageable    分页
+     * @param zyOwnerRoom 业主房间关联
+     * @param pageable    分页对象
      * @return {@link Result}
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ZyOwnerRoom", name = "zyOwnerRoom", value = "zy主人房间", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "可分页", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "ZyOwnerRoom", name = "zyOwnerRoom", value = "业主房间关联", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "分页对象", required = true)
     })
     @ApiOperation(value = "分页和查询业主审核", notes = "分页和查询业主审核", httpMethod = "GET")
     @GetMapping("selectAllOwnerRoomLimit")

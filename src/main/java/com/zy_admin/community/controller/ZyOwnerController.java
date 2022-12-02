@@ -54,12 +54,17 @@ public class ZyOwnerController extends ApiController {
     private RequestUtil requestUtil;
 
     /**
-     * 更新主人头像
      *
-     * @param zyOwner zy所有者
+     *
+     * @param zyOwner 业主
      * @param request 请求
      * @return {@link Result}
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyOwner", name = "zyOwner", value = "业主", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
+    })
+    @ApiOperation(value = "更新业主头像", notes = "更新业主头像", httpMethod = "PUT")
     @PutMapping("/updateOwnerPortrait")
     public Result updateOwnerPortrait(@RequestBody ZyOwner zyOwner, HttpServletRequest request){
         return zyOwnerService.updateOwnerPortrait(zyOwner, request);
@@ -71,6 +76,11 @@ public class ZyOwnerController extends ApiController {
      * @param request 请求
      * @return 修改结果
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyOwner", name = "zyOwner", value = "新密码", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
+    })
+    @ApiOperation(value = "用户修改密码", notes = "用户修改密码", httpMethod = "PUT")
     @PutMapping("/updatePassword")
     public Result updatePassword(@RequestBody ZyOwner zyOwner, HttpServletRequest request){
         return zyOwnerService.updatePassword(zyOwner, request);
@@ -82,6 +92,10 @@ public class ZyOwnerController extends ApiController {
      * @param request 请求
      * @return {@link Result}
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
+    })
+    @ApiOperation(value = "获取业主信息", notes = "获取业主信息", httpMethod = "GET")
     @GetMapping("/getOwner")
     public Result getOwner(HttpServletRequest request){
         String ownerId = requestUtil.getOwnerId(request);
@@ -127,7 +141,7 @@ public class ZyOwnerController extends ApiController {
      * @return 新增结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyOwner", name = "zyOwner", value = "实体对象", required = true)
+            @ApiImplicitParam(paramType = "body", dataType = "ZyOwner", name = "zyOwner", value = "业主对象", required = true)
     })
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping("/register")
@@ -140,19 +154,20 @@ public class ZyOwnerController extends ApiController {
     /**
      * 获取户主信息并分页
      *
-     * @param zyOwner  业主信息
-     * @param pageable 分页对象
+     * @param zyOwner     业主信息
+     * @param pageable    分页对象
+     * @param communityId 社区id
      * @return 查询户主结果集
      */
-
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ZyOwner", name = "zyOwner", value = "户主信息", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "页码", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "ZyOwner", name = "zyOwner", value = "业主信息", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "分页对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "communityId", value = "社区id", required = true)
     })
     @ApiOperation(value = "获取户主信息并分页", notes = "获取户主信息并分页", httpMethod = "GET")
     @GetMapping("/getOwnerList")
-    public Result getOwnerList(ZyOwner zyOwner, Pageable pageable) {
-        return zyOwnerService.getOwnerList(zyOwner, pageable);
+    public Result getOwnerList(ZyOwner zyOwner, Pageable pageable,String communityId) {
+        return zyOwnerService.getOwnerList(zyOwner, pageable,communityId);
     }
 
 
@@ -164,8 +179,8 @@ public class ZyOwnerController extends ApiController {
      * @return 删除业主结果集
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "string", name = "ownerRoomId", value = "房主id", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端请求", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "ownerRoomId", value = "业主id", required = true)
     })
     @ApiOperation(value = "删除业主房屋关联", notes = "删除业主房屋关联", httpMethod = "DELETE")
     @MyLog(title = "房主信息", optParam = "#{ownerRoomId}", businessType = BusinessType.DELETE)

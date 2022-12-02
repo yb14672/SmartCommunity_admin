@@ -6,6 +6,7 @@ import com.zy_admin.community.dto.UnitListDto;
 import com.zy_admin.community.entity.ZyUnit;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -79,5 +80,14 @@ public interface ZyUnitDao extends BaseMapper<ZyUnit> {
      */
     @Select("SELECT community_id FROM zy_building where building_id = #{buildingId}")
     ZyUnit selectBuildingId(String buildingId);
+
+    /**
+     * 修改单元后更新房屋所在的楼栋
+     *
+     * @param buildingId 楼栋id
+     * @param unitId    单元id
+     */
+    @Update("update zy_room set building_id=#{buildingId} where unit_id =#{unitId}")
+    void updateRoom(@Param("buildingId") String buildingId,@Param("unitId") String unitId);
 }
 

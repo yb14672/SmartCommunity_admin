@@ -19,6 +19,8 @@ import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -221,12 +223,13 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
      *
      * @param zyOwner  户主信息
      * @param pageable 页码
+     * @param communityId 小区id
      * @return 获取分页结果集
      */
     @Override
-    public Result getOwnerList(ZyOwner zyOwner, Pageable pageable) {
+    public Result getOwnerList(ZyOwner zyOwner, Pageable pageable, String communityId) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        Long total = this.baseMapper.countOwner(zyOwner);
+        Long total = this.baseMapper.countOwner(zyOwner,communityId);
         long pages = 0;
         if (total > 0) {
             pages = total % pageable.getPageSize() == 0 ? total / pageable.getPageSize() : total / pageable.getPageSize() + 1;
@@ -240,7 +243,7 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
             pageable.setPageNum(0);
         }
         pageable.setTotal(total);
-        List<OwnerListDto> ownerList = this.baseMapper.getOwnerList(zyOwner, pageable);
+        List<OwnerListDto> ownerList = this.baseMapper.getOwnerList(zyOwner, pageable,communityId);
         OwnerDto ownerDto = new OwnerDto(pageable, ownerList);
         result.setData(ownerDto);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
@@ -256,6 +259,7 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
      * @return 修改结果集
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result deleteOwenRome(HttpServletRequest request, String owenRoomId) {
         Result result = new Result();
         try {
@@ -268,9 +272,11 @@ public class ZyOwnerServiceImpl extends ServiceImpl<ZyOwnerDao, ZyOwner> impleme
             zyOwnerRoom.setRecordId(snowflakeManager.nextId() + "");
             this.baseMapper.updateIntoRoomRecord(zyOwnerRoom);
             //解绑
+            this.baseMapper.updateRoomStatus(zyOwnerRoom.getRoomId());
             this.baseMapper.deletOwnerRoomId(owenRoomId);
             result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
         } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
             result.setMeta(ResultTool.fail(ResultCode.FAIL_UNBIND_ROOM));
         }

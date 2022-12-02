@@ -81,7 +81,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
      */
     @Override
     public Result getListByIdList(List<String> idList, String communityId) {
-        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.NO_MATCHING_DATA));
         List<ZyCommunityInteractionDto> dtoList = null;
         if (idList.size() != 0) {
             dtoList = this.baseMapper.getDtoList(idList);
@@ -104,39 +104,56 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
      */
     @Override
     public Result selectAllLimit(Page page, ZyCommunityInteractionDto interactionDto) {
-        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.COMMON_FAIL));
-        Pageable pageable = new Pageable();
-        pageable.setPageSize(page.getSize());
-        pageable.setPageNum(page.getCurrent());
-        //满足条件的总数
-        Long total = this.baseMapper.countNum(interactionDto);
-        //默认设置页面为0
-        long pages;
-        if (total > 0) {
-            //计算出总页码
-            pages = total % pageable.getPageSize() == 0 ? total / pageable.getPageSize() : total / pageable.getPageSize() + 1;
-            pageable.setPages(pages);
-            //页码修正
-            pageable.setPageNum(pageable.getPageNum() < 1 ? 1 : pageable.getPageNum());
-            pageable.setPageNum(Math.min(pageable.getPageNum(), pages));
-            //设置起始下标
-            pageable.setIndex((pageable.getPageNum() - 1) * pageable.getPageSize());
-        } else {
-            pageable.setPageNum(0);
-        }
-        pageable.setTotal(total);
-        List<ZyCommunityInteractionDto> interactionDtoList = this.baseMapper.selectAllLimit(interactionDto, pageable);
-        if (interactionDtoList.size() != 0) {
-            for (ZyCommunityInteractionDto zyCommunityInteractionDto : interactionDtoList) {
-                String parentId = zyCommunityInteractionDto.getInteractionId();
-                List<ZyFiles> files = this.zyFilesDao.queryAllFile(parentId, "CommunityInteraction");
-                List<String> fileUrl = this.zyFilesDao.queryAllFileUrl(parentId, "CommunityInteraction");
-                zyCommunityInteractionDto.setZyFiles(files);
-                zyCommunityInteractionDto.setUrlList(fileUrl);
+        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.NO_MATCHING_DATA));
+        if(page.getSize()!=0){
+            Pageable pageable = new Pageable();
+            pageable.setPageSize(page.getSize());
+            pageable.setPageNum(page.getCurrent());
+            //满足条件的总数
+            Long total = this.baseMapper.countNum(interactionDto);
+            //默认设置页面为0
+            long pages;
+            if (total > 0) {
+                //计算出总页码
+                pages = total % pageable.getPageSize() == 0 ? total / pageable.getPageSize() : total / pageable.getPageSize() + 1;
+                pageable.setPages(pages);
+                //页码修正
+                pageable.setPageNum(pageable.getPageNum() < 1 ? 1 : pageable.getPageNum());
+                pageable.setPageNum(Math.min(pageable.getPageNum(), pages));
+                //设置起始下标
+                pageable.setIndex((pageable.getPageNum() - 1) * pageable.getPageSize());
+            } else {
+                pageable.setPageNum(0);
             }
-            com.zy_admin.common.Page<ZyCommunityInteractionDto> dtoPage = new com.zy_admin.common.Page<>(interactionDtoList, pageable);
-            result.setData(dtoPage);
-            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            pageable.setTotal(total);
+            List<ZyCommunityInteractionDto> interactionDtoList = this.baseMapper.selectAllLimit(interactionDto, pageable);
+            if (interactionDtoList.size() != 0) {
+                for (ZyCommunityInteractionDto zyCommunityInteractionDto : interactionDtoList) {
+                    String parentId = zyCommunityInteractionDto.getInteractionId();
+                    List<ZyFiles> files = this.zyFilesDao.queryAllFile(parentId, "CommunityInteraction");
+                    List<String> fileUrl = this.zyFilesDao.queryAllFileUrl(parentId, "CommunityInteraction");
+                    zyCommunityInteractionDto.setZyFiles(files);
+                    zyCommunityInteractionDto.setUrlList(fileUrl);
+                }
+                com.zy_admin.common.Page<ZyCommunityInteractionDto> dtoPage = new com.zy_admin.common.Page<>(interactionDtoList, pageable);
+                result.setData(dtoPage);
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            }
+        }else{
+            List<ZyCommunityInteractionDto> allDtoList = this.baseMapper.getAllDtoList(interactionDto.getCommunityId());
+            if (allDtoList.size() != 0) {
+                for (ZyCommunityInteractionDto zyCommunityInteractionDto : allDtoList) {
+                    String parentId = zyCommunityInteractionDto.getInteractionId();
+                    List<ZyFiles> files = this.zyFilesDao.queryAllFile(parentId, "CommunityInteraction");
+                    List<String> fileUrl = this.zyFilesDao.queryAllFileUrl(parentId, "CommunityInteraction");
+                    zyCommunityInteractionDto.setZyFiles(files);
+                    zyCommunityInteractionDto.setUrlList(fileUrl);
+                }
+            }
+            if(!allDtoList.isEmpty()){
+                result.setData(allDtoList);
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            }
         }
         return result;
     }
@@ -149,7 +166,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
      * @return 所有数据
      */
     public Result selectAll(Page page, ZyCommunityInteractionDto interactionDto) {
-        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.NO_MATCHING_DATA));
         MPJLambdaWrapper<ZyCommunityInteraction> wrapper = new MPJLambdaWrapper<ZyCommunityInteraction>()
                 .selectAll(ZyCommunityInteraction.class)
                 .select(ZyOwner::getOwnerNickname)

@@ -137,6 +137,7 @@
         LEFT JOIN zy_room zr on zr.room_id = zor.room_id
         LEFT JOIN zy_unit zu on zu.unit_id = zor.unit_id
         where zor.room_status ='Binding'
+        and zor.community_id=#{communityId}
         <if test="zyOwner.ownerId != null">
             and owner_id = #{zyOwner.ownerId}
         </if>
@@ -161,20 +162,21 @@
         select count(1)
         from zy_owner_room zor left join zy_owner zo on zor.owner_id=zo.owner_id
         where zor.room_status ='Binding'
-        <if test="ownerId != null">
-            and owner_id = #{ownerId}
+        and zor.community_id=#{communityId}
+        <if test="owner.ownerId != null">
+            and owner_id = #{owner.ownerId}
         </if>
-        <if test="ownerNickname != null and ownerNickname != ''">
-            and owner_nickname like concat ('%',#{ownerNickname},'%')
+        <if test="owner.ownerNickname != null and owner.ownerNickname != ''">
+            and owner_nickname like concat ('%',#{owner.ownerNickname},'%')
         </if>
-        <if test="ownerRealName != null and ownerRealName != ''">
-            and owner_real_name like concat('%',#{ownerRealName},'%')
+        <if test="owner.ownerRealName != null and owner.ownerRealName != ''">
+            and owner_real_name like concat('%',#{owner.ownerRealName},'%')
         </if>
-        <if test="ownerIdCard != null and ownerIdCard != ''">
-            and owner_id_card like concat ('%',#{ownerIdCard},'%')
+        <if test="owner.ownerIdCard != null and owner.ownerIdCard != ''">
+            and owner_id_card like concat ('%',#{owner.ownerIdCard},'%')
         </if>
-        <if test="ownerPhoneNumber != null and ownerPhoneNumber != ''">
-            and owner_phone_number like concat('%',#{ownerPhoneNumber},'%')
+        <if test="owner.ownerPhoneNumber != null and owner.ownerPhoneNumber != ''">
+            and owner_phone_number like concat('%',#{owner.ownerPhoneNumber},'%')
         </if>
     </select>
 

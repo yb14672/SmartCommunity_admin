@@ -56,7 +56,7 @@ public interface ZyVisitorDao extends BaseMapper<ZyVisitor> {
      * 查询分页
      *
      * @param zyVisitor 访客
-     * @param pageable  可分页
+     * @param pageable  分页对象
      * @return {@link List}<{@link VisitorListDto}>
      */
     List<VisitorListDto> queryAllByLimit(@Param("zyVisitor") ZyVisitor zyVisitor, @Param("pageable") Pageable pageable);
@@ -78,8 +78,5 @@ public interface ZyVisitorDao extends BaseMapper<ZyVisitor> {
      */
     @Select("select * from zy_owner_room where owner_id=#{ownerId} and room_status = 'Binding' and community_id=#{communityId}")
     List<ZyOwnerRoom> getOwnerRoom(@Param("ownerId") String ownerId,@Param("communityId") String communityId);
-
-
-
 }
 

@@ -83,5 +83,6 @@ public class ZyVisitor extends Model<ZyVisitor> {
     /**
      * 访客操作
      */
+    @ApiModelProperty("访客操作")
     private String status;
 }

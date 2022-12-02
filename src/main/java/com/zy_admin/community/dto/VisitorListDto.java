@@ -1,6 +1,7 @@
 package com.zy_admin.community.dto;
 
 import com.zy_admin.community.entity.ZyVisitor;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,16 +13,19 @@ import lombok.NoArgsConstructor;
  * @author 张友炜
  * @date 2022/11/23
  */
+@ApiModel(description = "访客列表dto")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class VisitorListDto extends ZyVisitor {
 
 
+    @ApiModelProperty(hidden = true)
     private String communityId;
     /**
      * 小区名称
      */
+    @ApiModelProperty("小区名称")
     private String communityName;
     /**
      * 访客姓名
@@ -53,5 +57,6 @@ public class VisitorListDto extends ZyVisitor {
     /**
      * 访客操作
      */
+    @ApiModelProperty("访客操作")
     private String status;
 }

@@ -23,6 +23,7 @@ public enum ResultCode {
     PARAM_TYPE_ERROR(1003, "参数类型错误"),
     PARAM_NOT_COMPLETE(1004, "参数缺失"),
     NO_CHANGE_IN_PARAMETER(1005,"参数没有变化"),
+    NO_MATCHING_DATA(1006,"没有符合条件的数据"),
 
     /* 用户错误 */
     USER_NOT_LOGIN(2001, "用户未登录"),
@@ -126,6 +127,7 @@ public enum ResultCode {
     OWNER_ID_CARD_NOT_CERTIFICATION(3050,"未实名认证"),
     NO_REALNAME_AUTHENTICATION(3051,"该住户未实名认证"),
     OWNER_REAL_NAME_NOT_EMPTY(3052,"真实姓名不能为空"),
+    REPAIR_GET_FAIL(3053,"报修信息获取失败"),
 
 
 

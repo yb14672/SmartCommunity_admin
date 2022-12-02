@@ -14,6 +14,7 @@ import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dto.RepairDto;
 import com.zy_admin.community.entity.ZyRepair;
 import com.zy_admin.community.service.ZyRepairService;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -44,6 +45,27 @@ public class ZyRepairController extends ApiController {
      */
     @Resource
     private ZyRepairService zyRepairService;
+
+    @Resource
+    private RequestUtil requestUtil;
+
+
+    /**
+     * 通过业主Id查询报修信息
+     *
+     * @param repair  修复
+     * @param request 请求
+     * @return {@link Result}
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
+    })
+    @ApiOperation(value = "查看报修", notes = "查看报修", httpMethod = "GET")
+    @GetMapping("/getRepairByOwnerId")
+    public Result getRepairByOwnerId(ZyRepair repair, HttpServletRequest request){
+        repair.setUserId(requestUtil.getOwnerId(request));
+        return this.zyRepairService.getRepairByOwnerId(repair);
+    }
     /**
      * 报修导出
      * @param repairIds 报修id
@@ -52,8 +74,8 @@ public class ZyRepairController extends ApiController {
      * @throws IOException 输出流异常
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "repairIds", value = "", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "repairIds", value = "报修id", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "前端响应", required = true)
     })
     @ApiOperation(value = "报修导出", notes = "报修导出", httpMethod = "GET")
     @MyLog(title = "报修导出", optParam = "#{repairIds}", businessType = BusinessType.EXPORT)
@@ -90,7 +112,7 @@ public class ZyRepairController extends ApiController {
      * @return 删除结果集
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "List<Long>", name = "idList", value = "主键结合", required = true)
+            @ApiImplicitParam(paramType = "body", dataType = "List<String>", name = "repairIds", value = "报修id集合", required = true)
     })
     @ApiOperation(value = "删除报修", notes = "删除报修", httpMethod = "DELETE")
     @DeleteMapping("/deleteRepair")
@@ -103,7 +125,8 @@ public class ZyRepairController extends ApiController {
      * @return 修改结果集
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyRepair", name = "zyRepair", value = "实体对象", required = true)
+            @ApiImplicitParam(paramType = "body", dataType = "ZyRepair", name = "zyRepair", value = "报修对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
     })
     @ApiOperation(value = "修改报修", notes = "修改报修", httpMethod = "PUT")
     @PutMapping("/updateRepair")
@@ -116,7 +139,8 @@ public class ZyRepairController extends ApiController {
      * @return 新增结果级
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyRepair", name = "zyRepair", value = "查询报修对象", required = true)
+            @ApiImplicitParam(paramType = "body", dataType = "ZyRepair", name = "zyRepair", value = "查询报修对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
     })
     @ApiOperation(value = "新增报修", notes = "新增报修", httpMethod = "POST")
     @PostMapping("/insertRepair")

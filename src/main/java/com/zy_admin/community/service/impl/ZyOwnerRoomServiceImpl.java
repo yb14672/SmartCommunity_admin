@@ -14,7 +14,6 @@ import com.zy_admin.community.dto.ZyOwnerRoomDtoAll;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomService;
-import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.RoomTree;
 import com.zy_admin.util.SnowflakeManager;
@@ -26,7 +25,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * zy所有者impl客房服务
  * 房屋绑定表 (ZyOwnerRoom)表服务实现类
  *
  * @author makejava
@@ -37,6 +35,7 @@ import java.util.List;
 public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerRoom> implements ZyOwnerRoomService {
 
     /**
+     * 业主房间记录持久层
      * 系统用户
      */
     @Resource
@@ -49,7 +48,7 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
     private ZyOwnerRoomRecordDao zyOwnerRoomRecordDao;
 
     /**
-     * 房屋
+     * 房屋持久层
      */
     @Resource
     private ZyRoomDao zyRoomDao;
@@ -218,7 +217,6 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         zyOwnerRoomRecord.setRecordAuditOpinion(recordAuditOpinion);
         zyOwnerRoomRecord.setOwnerId(zyOwnerRoom.getOwnerId()+"");
         //id
-        System.out.println(zyOwnerRoom);
         zyOwnerRoomRecord.setRecordId(snowflakeManager.nextId()+"");
         zyOwnerRoomRecord.setOwnerType("yz");
         zyOwnerRoomRecord.setCommunityId(zyOwnerRoom.getCommunityId());
@@ -227,10 +225,14 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         zyOwnerRoomRecord.setRoomId(zyOwnerRoom.getRoomId());
         zyOwnerRoomRecord.setOwnerRoomId(zyOwnerRoom.getOwnerRoomId());
         zyOwnerRoomRecord.setRoomStatus(zyOwnerRoom.getRoomStatus());
+        zyOwnerRoomRecord.setUpdateBy(zyOwnerRoom.getUpdateBy());
         zyOwnerRoomRecord.setUpdateTime(LocalDateTime.now().toString());
         zyOwnerRoomRecordDao.insert(zyOwnerRoomRecord);
         //修改时间
         zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());
+        zyOwnerRoom.setRemark(recordAuditOpinion);
+        //先把所有申请该房屋的全部设为拒绝
+        this.baseMapper.changeStatusReject(zyOwnerRoom.getRoomId());
         this.baseMapper.updateOwnerRoomStatus(zyOwnerRoom);
         //判断审核是不是通过
         if ("Binding".equals(zyOwnerRoom.getRoomStatus())){
