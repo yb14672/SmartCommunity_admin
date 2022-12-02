@@ -112,15 +112,21 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断数据的值有没有改变 zyOwnerPark1是原来的对象
         ZyOwnerPark zyOwnerPark1 = this.baseMapper.queryById(zyOwnerPark.getOwnerParkId());
-        System.out.println(zyOwnerPark1);
-        System.out.println(zyOwnerPark);
-        String[] fields = new String[]{"parkOwnerStatus", "remark", "ownerId", "parkId", "ownerParkId"};
+        String[] fields = new String[]{"parkOwnerStatus", "remark", "ownerId", "parkId", "ownerParkId","carNumber"};
         if (!ObjUtil.checkEquals(zyOwnerPark1, zyOwnerPark, fields)) {
             try {
-                zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
-                int i = this.baseMapper.updateOwnerPark(zyOwnerPark);
-                if (i == 1) {
-                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                String carNumber = zyOwnerPark.getCarNumber();
+                String regex="^[测京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$";
+                boolean matches = carNumber.matches(regex);
+                if (!matches){
+                    result.setData("车牌号不符合规则");
+                    result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_ERROR));
+                }else {
+                    zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
+                    int i = this.baseMapper.updateOwnerPark(zyOwnerPark);
+                    if (i == 1) {
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -144,18 +150,27 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
         Result result = new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
         //雪花算法拿到OwnerParkId
         zyOwnerPark.setOwnerParkId(snowflakeManager.nextId() + "");
-        try {
-            //新增
-            Integer i = this.baseMapper.insert(zyOwnerPark);
-            if (i == 1) {
-                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-                result.setData("新增成功");
+        String carNumber = zyOwnerPark.getCarNumber();
+        String regex="^[测京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$";
+        boolean matches = carNumber.matches(regex);
+        if (!matches) {
+            result.setData("车牌号不符合规则");
+            result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_ERROR));
+        }else{
+            try {
+                //新增
+                Integer i = this.baseMapper.insert(zyOwnerPark);
+                if (i == 1) {
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                    result.setData("新增成功");
+                }
+                return result;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
             }
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
         }
+        return result;
     }
 
     /**

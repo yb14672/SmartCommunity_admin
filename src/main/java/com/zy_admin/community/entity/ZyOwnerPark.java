@@ -34,6 +34,10 @@ public class ZyOwnerPark implements Serializable {
      */
     private String parkOwnerStatus;
     /**
+     * 车牌号
+     */
+    private String carNumber;
+    /**
      * 创建者
      */
     private String createBy;

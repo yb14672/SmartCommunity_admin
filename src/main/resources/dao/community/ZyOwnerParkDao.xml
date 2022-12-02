@@ -27,6 +27,9 @@
             <if test="zyOwnerPark.parkOwnerStatus != null and zyOwnerPark.parkOwnerStatus != ''">
                 park_owner_status = #{zyOwnerPark.parkOwnerStatus},
             </if>
+            <if test="zyOwnerPark.carNumber != null and zyOwnerPark.carNumber != ''">
+                car_number = #{zyOwnerPark.carNumber},
+            </if>
             <if test="zyOwnerPark.createBy != null and zyOwnerPark.createBy != ''">
                 create_by = #{zyOwnerPark.createBy},
             </if>
@@ -58,6 +61,9 @@
             <if test="zyOwnerPark.parkOwnerStatus != null and zyOwnerPark.parkOwnerStatus != ''">
                 park_owner_status = #{zyOwnerPark.parkOwnerStatus},
             </if>
+            <if test="zyOwnerPark.carNumber != null and zyOwnerPark.carNumber != ''">
+                car_number = #{zyOwnerPark.carNumber},
+            </if>
             <if test="zyOwnerPark.createBy != null and zyOwnerPark.createBy != ''">
                 create_by = #{zyOwnerPark.createBy},
             </if>
@@ -81,7 +87,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="ZyOwnerParkMap">
         select
-        owner_park_id, park_id, owner_id, park_owner_status, create_by, create_time, update_by, update_time, remark
+        owner_park_id, park_id, owner_id, park_owner_status,car_number, create_by, create_time, update_by, update_time, remark
         from zy_owner_park
         <where>
             <if test="ownerParkId != null">
@@ -95,6 +101,9 @@
             </if>
             <if test="parkStatus != null and parkStatus != ''">
                 and park_owner_status = #{parkStatus}
+            </if>
+            <if test="carNumber != null and carNumber != ''">
+                and car_number = #{carNumber}
             </if>
             <if test="createBy != null and createBy != ''">
                 and create_by = #{createBy}
@@ -117,7 +126,7 @@
     <!--查询单个-->
     <select id="queryById" resultType="com.zy_admin.community.entity.ZyOwnerPark">
         select
-          owner_park_id, park_id, owner_id, park_owner_status, create_by, create_time, update_by, update_time, remark
+          owner_park_id, park_id, owner_id, park_owner_status,car_number, create_by, create_time, update_by, update_time, remark
         from zy_owner_park
         where owner_park_id = #{ownerParkId}
     </select>
@@ -132,16 +141,16 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="ownerParkId" useGeneratedKeys="true">
-        insert into zy_owner_park (owner_park_id,park_id, owner_id, park_owner_status, create_by, create_time, update_by, update_time, remark)
-        values (#{ownerParkId},#{parkId}, #{ownerId}, #{parkOwnerStatus}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+        insert into zy_owner_park (owner_park_id,park_id, owner_id, park_owner_status,car_number, create_by, create_time, update_by, update_time, remark)
+        values (#{ownerParkId},#{parkId}, #{ownerId}, #{parkOwnerStatus},#{carNumber}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <insert id="insertBatch" keyProperty="ownerParkId" useGeneratedKeys="true">
-        insert into zy_owner_park(park_id, owner_id, park_owner_status, create_by, create_time, update_by, update_time,
+        insert into zy_owner_park(park_id, owner_id, park_owner_status, car_number,create_by, create_time, update_by, update_time,
         remark)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.parkId}, #{entity.ownerId}, #{entity.parkStatus}, #{entity.createBy}, #{entity.createTime},
+            (#{entity.parkId}, #{entity.ownerId}, #{entity.parkStatus},#{entity.carNumber}, #{entity.createBy}, #{entity.createTime},
             #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
         </foreach>
     </insert>

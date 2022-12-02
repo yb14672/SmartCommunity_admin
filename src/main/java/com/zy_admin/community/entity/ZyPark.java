@@ -34,10 +34,6 @@ public class ZyPark implements Serializable {
      */
     private String parkType;
     /**
-     * 算费系数
-     */
-    private Double parkCost;
-    /**
      * 车位状态（1停用/0启用）
      */
     private String parkStatus;

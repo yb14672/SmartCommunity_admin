@@ -46,6 +46,10 @@ public class ZyOwnerParkRecord implements Serializable {
      */
     private String recordAuditType;
     /**
+     * 车牌号
+     */
+    private String carNumber;
+    /**
      * 创建者
      */
     private String createBy;
