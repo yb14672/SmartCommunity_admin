@@ -9,8 +9,10 @@ import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.entity.SysDictType;
+import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDictTypeService;
 import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -40,6 +43,11 @@ public class SysDictTypeController extends ApiController {
      */
     @Resource
     private SysDictTypeService sysDictTypeService;
+    /**
+     * 请求工具类
+     */
+    @Resource
+    private RequestUtil requestUtil;
     /**
      * 批量导出字典类型表数据
      * @param dictIds  字典类型的主键
@@ -131,8 +139,10 @@ public class SysDictTypeController extends ApiController {
     @ApiOperation(value = "新增字典", notes = "新增字典", httpMethod = "POST")
     @PostMapping("/addSysDict")
     @MyLog(title = "字典类型", optParam = "#{sysDictType}", businessType = BusinessType.INSERT)
-    public Result insertDictType(@RequestBody SysDictType sysDictType) {
+    public Result insertDictType(@RequestBody SysDictType sysDictType, HttpServletRequest request) {
+        SysUser user = requestUtil.getUser(request);
         sysDictType.setCreateTime(LocalDateTime.now().toString());
+        sysDictType.setCreateBy(user.getUserName());
         return this.sysDictTypeService.insertOrUpdateBatch(sysDictType);
     }
     /**

@@ -20,7 +20,15 @@ import java.util.List;
 public interface ZyOwnerRoomDao extends BaseMapper<ZyOwnerRoom> {
 
     /**
-     * 选择主人房间通过所有者id
+     * 改变状态为已拒绝
+     *
+     * @param roomId 房间id
+     * @return 影响行数
+     */
+    int changeStatusReject(String roomId);
+
+    /**
+     * 通过id查对象
      *
      * @param ownerId 所有者id
      * @return {@link List}<{@link OwnerRoomDto}>

@@ -17,14 +17,6 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <!--查询单个-->
-    <select id="queryById" resultMap="ZyOwnerParkRecordMap">
-        select
-          record_id, owner_park_id, community_id, owner_id, park_bunding_status, record_audit_opinion, record_audit_type, create_by, create_time, update_by, update_time, remark
-        from zy_owner_park_record
-        where record_id = #{recordId}
-    </select>
-
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="ZyOwnerParkRecordMap">
         select
@@ -115,11 +107,30 @@
             </if>
         </where>
     </select>
+    <!--查询单个-->
+    <select id="queryById" resultType="com.zy_admin.community.entity.ZyOwnerParkRecord">
+         select
+          record_id, owner_park_id, community_id, owner_id, park_bunding_status, record_audit_opinion, record_audit_type, create_by, create_time, update_by, update_time, remark
+        from zy_owner_park_record
+        where record_id = #{recordId}
+    </select>
+    <!--查询所有的审核记录的 -->
+    <select id="selectOwnerParkById" resultType="com.zy_admin.community.dto.ZyOwnerParkRecordDto">
+        select
+          zp.park_code,zc.community_id,zc.community_name,zp.park_type,zp.park_status,zp.park_is_public,zopr.record_id,
+          zopr.owner_park_id, zopr.community_id, zopr.owner_id, zopr.park_bunding_status, zopr.record_audit_opinion,
+          zopr.record_audit_type, zopr.create_by, zopr.create_time, zopr.update_by, zopr.update_time, zopr.remark
+        from zy_owner_park_record zopr
+        left join zy_owner_park zop on zopr.owner_park_id = zop.owner_park_id
+        left join zy_park zp on zop.park_id = zp.park_id
+        left join zy_community zc on zp.community_id = zc.community_id
+        where zop.owner_park_id = #{ownerParkId}
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="recordId" useGeneratedKeys="true">
-        insert into zy_owner_park_record(owner_park_id, community_id, owner_id, park_bunding_status, record_audit_opinion, record_audit_type, create_by, create_time, update_by, update_time, remark)
-        values (#{ownerParkId}, #{communityId}, #{ownerId}, #{parkBundingStatus}, #{recordAuditOpinion}, #{recordAuditType}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+        insert into zy_owner_park_record(record_id,owner_park_id, community_id, owner_id, park_bunding_status, record_audit_opinion, record_audit_type, create_by, create_time, update_by, update_time, remark)
+        values (#{recordId},#{ownerParkId}, #{communityId}, #{ownerId}, #{parkBundingStatus}, #{recordAuditOpinion}, #{recordAuditType}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <insert id="insertBatch" keyProperty="recordId" useGeneratedKeys="true">

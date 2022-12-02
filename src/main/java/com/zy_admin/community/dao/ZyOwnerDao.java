@@ -6,7 +6,6 @@ import com.zy_admin.community.dto.OwnerListDto;
 import com.zy_admin.community.dto.OwnerRoomExcel;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
-import com.zy_admin.util.RoomTree;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -66,18 +65,20 @@ public interface ZyOwnerDao extends BaseMapper<ZyOwner> {
     /**
      * @param zyOwner  户主信息
      * @param pageable 页码
+     * @param communityId 小区id
      * @return {@link List}<{@link OwnerListDto}>
      */
-    List<OwnerListDto> getOwnerList(@Param("zyOwner") ZyOwner zyOwner, @Param("pageable") Pageable pageable);
+    List<OwnerListDto> getOwnerList(@Param("zyOwner") ZyOwner zyOwner, @Param("pageable") Pageable pageable,@Param("communityId") String communityId);
 
     /**
      * 数
      * 获取总数据量
      *
      * @param zyOwner 业主
+     * @param communityId 小区id
      * @return long
      */
-    long countOwner(ZyOwner zyOwner);
+    long countOwner(@Param("owner") ZyOwner zyOwner,@Param("communityId") String communityId);
 
     /**
      * 删除业主房间id

@@ -11,7 +11,7 @@ import java.util.List;
  * (ZyPark)表数据库访问层
  *
  * @author makejava
- * @since 2022-12-01 15:18:43
+ * @since 2022-12-01 15:13:40
  */
 public interface ZyParkDao extends BaseMapper<ZyPark> {
 
@@ -21,7 +21,7 @@ public interface ZyParkDao extends BaseMapper<ZyPark> {
      * @param parkId 主键
      * @return 实例对象
      */
-    ZyPark queryById(Long parkId);
+    ZyPark queryById(String parkId);
 
     /**
      * 查询指定行数据

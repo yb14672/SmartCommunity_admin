@@ -3,6 +3,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.github.yulichang.base.MPJBaseMapper;
 import com.zy_admin.community.dto.OwnerParkListDto;
 import com.zy_admin.community.entity.ZyOwner;
+
+import com.github.yulichang.base.MPJBaseMapper;
+import com.zy_admin.common.Pageable;
 import com.zy_admin.community.entity.ZyOwnerPark;
 import com.zy_admin.community.entity.ZyOwnerParkRecord;
 import com.zy_admin.community.entity.ZyPark;
@@ -31,6 +34,20 @@ public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
     @Update("Update  zy_owner_park set park_owner_status = 'UnBuilding' where owner_park_id = #{ownerParkId}")
     void deleteOwnerPark(String ownerParkId);
 
+    /**
+     * 批量删除
+     * @param idList id集合
+     * @return
+     */
+    Integer deleteOwnerParkByIds(@Param("idList") List<String> idList);
+
+    /**
+     * 修改车位审核的状态
+     * @param zyOwnerPark 车位审核对象
+     * @return 修改的数量
+     */
+    int updateOwnerParkStatus(@Param("zyOwnerPark") ZyOwnerPark zyOwnerPark);
+
 
     /**
      * 获取车位业主信息
@@ -52,16 +69,8 @@ public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
      * @param ownerParkId 主键
      * @return 实例对象
      */
-    ZyOwnerPark queryById(Long ownerParkId);
+    ZyOwnerPark queryById(String ownerParkId);
 
-
-    /**
-     * 统计总行数
-     *
-     * @param zyOwner 查询条件
-     * @return 总行数
-     */
-    long count(ZyOwner zyOwner);
 
     /**
      * 新增数据
@@ -95,7 +104,7 @@ public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
      * @param zyOwnerPark 实例对象
      * @return 影响行数
      */
-    int update(ZyOwnerPark zyOwnerPark);
+    int updateOwnerPark(@Param("zyOwnerPark") ZyOwnerPark zyOwnerPark);
 
     /**
      * 通过主键删除数据

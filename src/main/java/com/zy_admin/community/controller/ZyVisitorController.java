@@ -135,13 +135,13 @@ public class ZyVisitorController extends ApiController {
      * 得到来访人名单
      *
      * @param zyVisitor 访客
-     * @param pageable  可分页
+     * @param pageable  分页对象
      * @return {@link Result}
      */
 
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "ZyVisitor", name = "zyVisitor", value = "访客", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "可分页", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "分页对象", required = true)
     })
     @ApiOperation(value = "得到来访人名单", notes = "得到来访人名单", httpMethod = "GET")
     @GetMapping("/getVisitorList")

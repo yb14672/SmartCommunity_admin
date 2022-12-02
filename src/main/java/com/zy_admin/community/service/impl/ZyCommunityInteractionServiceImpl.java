@@ -81,7 +81,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
      */
     @Override
     public Result getListByIdList(List<String> idList, String communityId) {
-        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.NO_MATCHING_DATA));
         List<ZyCommunityInteractionDto> dtoList = null;
         if (idList.size() != 0) {
             dtoList = this.baseMapper.getDtoList(idList);
@@ -104,7 +104,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
      */
     @Override
     public Result selectAllLimit(Page page, ZyCommunityInteractionDto interactionDto) {
-        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.NO_MATCHING_DATA));
         if(page.getSize()!=0){
             Pageable pageable = new Pageable();
             pageable.setPageSize(page.getSize());
@@ -166,7 +166,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
      * @return 所有数据
      */
     public Result selectAll(Page page, ZyCommunityInteractionDto interactionDto) {
-        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.NO_MATCHING_DATA));
         MPJLambdaWrapper<ZyCommunityInteraction> wrapper = new MPJLambdaWrapper<ZyCommunityInteraction>()
                 .selectAll(ZyCommunityInteraction.class)
                 .select(ZyOwner::getOwnerNickname)

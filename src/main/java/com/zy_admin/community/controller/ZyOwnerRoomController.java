@@ -32,13 +32,13 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("zyOwnerRoom")
 public class ZyOwnerRoomController extends ApiController {
     /**
-     * zy主人房间服务
+     * 业主房间关联服务
      */
     @Resource
     private ZyOwnerRoomService zyOwnerRoomService;
 
     /**
-     * 请求跑龙套
+     * 请求
      */
     @Resource
     private RequestUtil requestUtil;
@@ -104,7 +104,7 @@ public class ZyOwnerRoomController extends ApiController {
      * 更新拒绝主人房间状态
      * 修改业主审核的状态
      *
-     * @param zyOwnerRoom        zy主人房间
+     * @param zyOwnerRoom        业主房间关联
      * @param recordAuditOpinion 记录审计意见
      * @param status             状态
      * @param request            请求
@@ -112,7 +112,7 @@ public class ZyOwnerRoomController extends ApiController {
      * @throws Exception 异常
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyOwnerRoom", name = "zyOwnerRoom", value = "zy主人房间", required = true),
+            @ApiImplicitParam(paramType = "body", dataType = "ZyOwnerRoom", name = "zyOwnerRoom", value = "业主房间关联", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "string", name = "recordAuditOpinion", value = "记录审计意见", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "string", name = "status", value = "状态", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
@@ -129,16 +129,16 @@ public class ZyOwnerRoomController extends ApiController {
     }
 
     /**
-     * 选择所有主人房间限制
+     * 选择所有房屋限制
      * 分页和查询业主审核
      *
-     * @param zyOwnerRoom zy主人房间
-     * @param pageable    可分页
+     * @param zyOwnerRoom 业主房间关联
+     * @param pageable    分页对象
      * @return {@link Result}
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ZyOwnerRoom", name = "zyOwnerRoom", value = "zy主人房间", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "可分页", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "ZyOwnerRoom", name = "zyOwnerRoom", value = "业主房间关联", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "分页对象", required = true)
     })
     @ApiOperation(value = "分页和查询业主审核", notes = "分页和查询业主审核", httpMethod = "GET")
     @GetMapping("selectAllOwnerRoomLimit")

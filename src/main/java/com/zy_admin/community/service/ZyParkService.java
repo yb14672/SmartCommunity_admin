@@ -8,7 +8,7 @@ import org.springframework.data.domain.PageRequest;
  * (ZyPark)表服务接口
  *
  * @author makejava
- * @since 2022-12-01 15:18:43
+ * @since 2022-12-01 15:13:40
  */
 public interface ZyParkService {
 
@@ -18,7 +18,7 @@ public interface ZyParkService {
      * @param parkId 主键
      * @return 实例对象
      */
-    ZyPark queryById(Long parkId);
+    ZyPark queryById(String parkId);
 
     /**
      * 分页查询
