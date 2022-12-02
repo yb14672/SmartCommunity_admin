@@ -1,9 +1,8 @@
 package com.zy_admin.community.dao;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zy_admin.community.entity.ZyOwnerPark;
 import com.github.yulichang.base.MPJBaseMapper;
 import com.zy_admin.community.dto.ZyParkDto;
+import com.zy_admin.community.entity.ZyOwnerPark;
 import com.zy_admin.community.entity.ZyPark;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -98,14 +97,6 @@ public interface ZyParkDao extends MPJBaseMapper<ZyPark> {
      * @throws org.springframework.jdbc.BadSqlGrammarException 入参是空List的时候会抛SQL语句错误的异常，请自行校验入参
      */
     int insertOrUpdateBatch(@Param("entities") List<ZyPark> entities);
-
-    /**
-     * 修改数据
-     *
-     * @param zyPark 实例对象
-     * @return 影响行数
-     */
-    int update(ZyPark zyPark);
 
     /**
      * 通过主键删除数据

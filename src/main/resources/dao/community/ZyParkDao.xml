@@ -35,9 +35,6 @@
             <if test="parkType != null and parkType != ''">
                 and park_type = #{parkType}
             </if>
-            <if test="parkCost != null">
-                and park_cost = #{parkCost}
-            </if>
             <if test="parkStatus != null and parkStatus != ''">
                 and park_status = #{parkStatus}
             </if>
@@ -117,7 +114,7 @@
 
     <!--新增所有列-->
     <insert id="insertPark">
-        insert into zy_park(park_id,park_code, community_id, park_type, park_cost, park_status, park_is_public, create_by, create_time, update_by, update_time, remark)
+        insert into zy_park(park_id,park_code, community_id, park_type, park_status, park_is_public, create_by, create_time, update_by, update_time, remark)
         values (#{parkId},#{parkCode}, #{communityId}, #{parkType}, #{parkCost}, #{parkStatus}, #{parkIsPublic}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
@@ -196,7 +193,7 @@
     </update>
 
     <select id="selectOwnerParkByParkId" resultType="com.zy_admin.community.entity.ZyOwnerPark" >
-        select * from zy_owner_room where park_id in
+        select * from zy_owner_park where park_id in
         <foreach collection="parkIds" item="parkId" separator="," open="(" close=")">
             #{parkId}
         </foreach>

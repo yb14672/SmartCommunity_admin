@@ -1,11 +1,10 @@
 package com.zy_admin.community.controller;
 
 import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.zy_admin.common.core.Result.Result;
-import com.zy_admin.community.entity.ZyPark;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.dto.ZyParkDto;
+import com.zy_admin.community.entity.ZyPark;
 import com.zy_admin.community.service.ZyParkService;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
@@ -14,10 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +40,6 @@ public class ZyParkController extends ApiController {
     @Resource
     private SnowflakeManager snowflakeManager;
 
-
     /**
      * 新增停车位
      *
@@ -63,7 +58,7 @@ public class ZyParkController extends ApiController {
         SysUser user = requestUtil.getUser(request);
         zyPark.setCreateBy(user.getUserName());
         zyPark.setCreateTime(LocalDateTime.now().toString());
-        zyPark.setParkId(snowflakeManager.nextId());
+        zyPark.setParkId(snowflakeManager.nextId()+"");
         long now = System.currentTimeMillis();
         zyPark.setParkCode("PK_"+Long.toString(now).substring(0,13));
         return zyParkService.insertPark(zyPark);
@@ -99,8 +94,6 @@ public class ZyParkController extends ApiController {
     public Result deletePark(List<String> parkIds){
         return this.zyParkService.deletePark(parkIds);
     }
-
-
 
     /**
      * 分页查询
