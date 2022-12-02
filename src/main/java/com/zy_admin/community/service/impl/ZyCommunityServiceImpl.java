@@ -185,5 +185,22 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
             return result;
         }
     }
+
+    /**
+     * 根据登录的管理员获取所在公司负责的小区
+     *
+     * @param userId 用户id
+     * @return {@link Result}
+     */
+    @Override
+    public Result getCommunityIdByUserId(String userId) {
+        Result result = new Result("当前公司没有负责的物业", ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<ZyCommunity> communityIdByUserId = this.baseMapper.getCommunityIdByUserId(userId);
+        if(!communityIdByUserId.isEmpty()){
+            result.setData(communityIdByUserId);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
 }
 

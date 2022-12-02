@@ -48,5 +48,12 @@ public interface ZyCommunityService extends IService<ZyCommunity> {
      */
     Result selectAllByLimit(ZyCommunity community, Pageable pageable);
 
+    /**
+     * 根据登录的管理员获取所在公司负责的小区
+     *
+     * @param userId 用户id
+     * @return {@link Result}
+     */
+    Result getCommunityIdByUserId(String userId);
 }
 

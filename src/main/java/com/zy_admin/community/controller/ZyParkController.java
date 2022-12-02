@@ -59,8 +59,14 @@ public class ZyParkController extends ApiController {
      * @param communityId 小区id
      * @param response    相应对象
      * @return Excel表格
-     * @throws IOException ioexception
+     * @throws IOException ioException
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "ids", value = "id列表--没有导出当前小区全部", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "communityId", value = "小区id", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "相应对象", required = true)
+    })
+    @ApiOperation(value = "导出", notes = "导出", httpMethod = "GET")
     @GetMapping("/export")
     @MyLog(title = "车位信息", optParam = "#{ids},#{communityId}", businessType = BusinessType.EXPORT)
     public Result getExcel(@RequestParam("ids") ArrayList<String> ids, String communityId, HttpServletResponse response) throws IOException {
@@ -95,7 +101,7 @@ public class ZyParkController extends ApiController {
      * @throws Exception 异常
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ZyPark", name = "zyPark", value = "停车位", required = true),
+            @ApiImplicitParam(paramType = "body", dataType = "ZyPark", name = "zyPark", value = "停车位", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "int", name = "number", value = "数量", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
     })
@@ -117,7 +123,7 @@ public class ZyParkController extends ApiController {
      * @throws Exception 异常
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ZyPark", name = "zyPark", value = "停车位", required = true),
+            @ApiImplicitParam(paramType = "body", dataType = "ZyPark", name = "zyPark", value = "停车位", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
     })
     @ApiOperation(value = "新增停车位", notes = "新增停车位", httpMethod = "POST")
@@ -140,8 +146,8 @@ public class ZyParkController extends ApiController {
      * @return {@link Result}
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "ZyPark", name = "zyPark", value = "停车位", required = true)
+            @ApiImplicitParam(paramType = "body", dataType = "ZyPark", name = "zyPark", value = "停车位", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
     })
     @ApiOperation(value = "修改车位", notes = "修改车位", httpMethod = "PUT")
     @PutMapping("/updatePark")

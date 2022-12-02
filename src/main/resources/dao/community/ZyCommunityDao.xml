@@ -99,6 +99,17 @@
             </foreach>
         </if>
     </select>
+    <select id="getCommunityIdByUserId" resultType="com.zy_admin.community.entity.ZyCommunity">
+        SELECT *
+        FROM zy_community
+        WHERE dept_id =
+              (SELECT parent_id
+              FROM sys_dept
+              WHERE dept_id = (
+                  SELECT dept_id
+                  FROM sys_user
+                  WHERE user_id = #{userId}))
+    </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="communityId" useGeneratedKeys="true">
         insert into zy_community(community_name, community_code, community_provence_code, community_city_code,
