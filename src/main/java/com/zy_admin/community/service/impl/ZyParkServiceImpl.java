@@ -1,15 +1,20 @@
 package com.zy_admin.community.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyParkDao;
+import com.zy_admin.community.entity.ZyOwnerPark;
 import com.zy_admin.community.entity.ZyPark;
 import com.zy_admin.community.service.ZyParkService;
+import com.zy_admin.util.ResultTool;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * (ZyPark)表服务实现类
@@ -21,6 +26,65 @@ import javax.annotation.Resource;
 public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements ZyParkService {
     @Resource
     private ZyParkDao zyParkDao;
+
+
+    @Override
+    public Result deletePark(List<String> parkIds) {
+        Result result = new Result();
+        List<ZyOwnerPark> zyOwnerParks = this.baseMapper.selectOwnerParkByParkId(parkIds);
+        if (zyOwnerParks.size()>0)
+        {
+            result.setMeta(ResultTool.fail(ResultCode.DELETED_PARK_FAIL));
+        }else
+        {
+            try {
+                this.baseMapper.deletedPark(parkIds);
+                result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            } catch (Exception e) {
+                e.printStackTrace();
+                result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+            }
+        }
+        return result;
+    }
+
+    /**
+     *修改停车位
+     *
+     * @param zyPark 停车位
+     * @return {@link Result}
+     */
+    @Override
+    public Result updatePark(ZyPark zyPark) {
+        Result result = new Result();
+        try {
+            this.baseMapper.updatePark(zyPark);
+            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.UPDATE_PARK_FAIL));
+        }
+        return result;
+    }
+
+    /**
+     * 新增停车位
+     *
+     * @param zyPark 停车位
+     * @return {@link Result}
+     */
+    @Override
+    public Result insertPark(ZyPark zyPark) {
+        Result result = new Result();
+        try {
+            this.baseMapper.insertPark(zyPark);
+            result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.INSERT_PARK_FAIL));
+        }
+        return result;
+    }
 
     /**
      * 通过ID查询单条数据

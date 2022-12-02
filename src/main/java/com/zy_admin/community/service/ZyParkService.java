@@ -1,8 +1,11 @@
 package com.zy_admin.community.service;
 
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.entity.ZyPark;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
+import java.util.List;
 
 /**
  * (ZyPark)表服务接口
@@ -11,6 +14,32 @@ import org.springframework.data.domain.PageRequest;
  * @since 2022-12-01 15:13:40
  */
 public interface ZyParkService {
+
+
+    /**
+     * 删除车位
+     *
+     * @param parkIds 公园id
+     * @return {@link Result}
+     */
+    Result deletePark(List<String> parkIds);
+
+    /**
+     * 修改停车位信息
+     *
+     * @param zyPark 停车位
+     * @return {@link Result}
+     */
+    Result updatePark(ZyPark zyPark);
+
+
+    /**
+     * 插入车位
+     *
+     * @param zyPark zy公园
+     * @return {@link Result}
+     */
+    Result insertPark(ZyPark zyPark);
 
     /**
      * 通过ID查询单条数据

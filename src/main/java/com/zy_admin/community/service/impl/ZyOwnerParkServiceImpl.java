@@ -62,7 +62,7 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     private SnowflakeManager snowflakeManager;
 
     /**
-     * 删除所有者公园
+     * 解绑
      *
      * @param ownerParkId 公园所有者id
      * @param request     请求
@@ -119,7 +119,7 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
                 .like(StringUtil.isNotEmpty(ownerParkListDto.getOwnerRealName()),ZyOwner::getOwnerRealName,ownerParkListDto.getOwnerRealName())
                 .like(StringUtil.isNotEmpty(ownerParkListDto.getOwnerIdCard()),ZyOwner::getOwnerIdCard,ownerParkListDto.getOwnerIdCard())
                 .like(StringUtil.isNotEmpty(ownerParkListDto.getOwnerPhoneNumber()),ZyOwner::getOwnerPhoneNumber,ownerParkListDto.getOwnerPhoneNumber())
-                .eq(ZyOwnerPark::getParkOwnerStatus,"Building");
+                .eq(ZyOwnerPark::getParkOwnerStatus,"Binding");
         IPage<OwnerParkListDto> ownerParkListDtoIPage = this.baseMapper.selectJoinPage(page, OwnerParkListDto.class, zyOwnerParkMPJLambdaWrapper);
         if (ownerParkListDtoIPage.getTotal()>=0)
         {

@@ -117,9 +117,9 @@
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" keyProperty="parkId" useGeneratedKeys="true">
-        insert into zy_park(park_code, community_id, park_type, park_cost, park_status, park_is_public, create_by, create_time, update_by, update_time, remark)
-        values (#{parkCode}, #{communityId}, #{parkType}, #{parkCost}, #{parkStatus}, #{parkIsPublic}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+    <insert id="insertPark">
+        insert into zy_park(park_id,park_code, community_id, park_type, park_cost, park_status, park_is_public, create_by, create_time, update_by, update_time, remark)
+        values (#{parkId},#{parkCode}, #{communityId}, #{parkType}, #{parkCost}, #{parkStatus}, #{parkIsPublic}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <insert id="insertBatch" keyProperty="parkId" useGeneratedKeys="true">
@@ -157,7 +157,7 @@
     </insert>
 
     <!--通过主键修改数据-->
-    <update id="update">
+    <update id="updatePark">
         update zy_park
         <set>
             <if test="parkCode != null and parkCode != ''">
@@ -196,6 +196,20 @@
         </set>
         where park_id = #{parkId}
     </update>
+
+    <select id="selectOwnerParkByParkId" resultType="com.zy_admin.community.entity.ZyOwnerPark" >
+        select * from zy_owner_room where park_id in
+        <foreach collection="parkIds" item="parkId" separator="," open="(" close=")">
+            #{parkId}
+        </foreach>
+    </select>
+
+    <delete id="deletedPark">
+        delete from zy_park where park_id in
+        <foreach collection="parkIds" item="parkId" separator="," open="(" close=")">
+            #{parkId}
+        </foreach>
+    </delete>
 
     <!--通过主键删除-->
     <delete id="deleteById">
