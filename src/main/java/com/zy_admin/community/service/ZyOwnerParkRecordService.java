@@ -1,5 +1,6 @@
 package com.zy_admin.community.service;
 
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.entity.ZyOwnerParkRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +12,12 @@ import org.springframework.data.domain.PageRequest;
  * @since 2022-12-01 15:13:40
  */
 public interface ZyOwnerParkRecordService {
+    /**
+     * 查询车位审核记录
+     * @param ownerParkId 车位审核记录的id
+     * @return 车位审核记录
+     */
+    Result selectOwnerParkById(String ownerParkId);
 
     /**
      * 通过ID查询单条数据
@@ -18,7 +25,7 @@ public interface ZyOwnerParkRecordService {
      * @param recordId 主键
      * @return 实例对象
      */
-    ZyOwnerParkRecord queryById(Long recordId);
+    ZyOwnerParkRecord queryById(String recordId);
 
     /**
      * 分页查询

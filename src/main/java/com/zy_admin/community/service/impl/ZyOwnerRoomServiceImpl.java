@@ -218,8 +218,13 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         zyOwnerRoomRecord.setRecordAuditOpinion(recordAuditOpinion);
         zyOwnerRoomRecord.setOwnerId(zyOwnerRoom.getOwnerId()+"");
         //id
+        System.out.println(zyOwnerRoom);
         zyOwnerRoomRecord.setRecordId(snowflakeManager.nextId()+"");
         zyOwnerRoomRecord.setOwnerType("yz");
+        zyOwnerRoomRecord.setCommunityId(zyOwnerRoom.getCommunityId());
+        zyOwnerRoomRecord.setBuildingId(zyOwnerRoom.getBuildingId());
+        zyOwnerRoomRecord.setUnitId(zyOwnerRoom.getUnitId());
+        zyOwnerRoomRecord.setRoomId(zyOwnerRoom.getRoomId());
         zyOwnerRoomRecord.setOwnerRoomId(zyOwnerRoom.getOwnerRoomId());
         zyOwnerRoomRecord.setRoomStatus(zyOwnerRoom.getRoomStatus());
         zyOwnerRoomRecord.setUpdateTime(LocalDateTime.now().toString());

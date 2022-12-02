@@ -44,7 +44,7 @@ public class ZyParkController extends ApiController {
      * @return 单条数据
      */
     @GetMapping("{id}")
-    public ResponseEntity<ZyPark> queryById(@PathVariable("id") Long id) {
+    public ResponseEntity<ZyPark> queryById(@PathVariable("id") String id) {
         return ResponseEntity.ok(this.zyParkService.queryById(id));
     }
 

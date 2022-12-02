@@ -21,7 +21,7 @@ public interface ZyParkDao extends BaseMapper<ZyPark> {
      * @param parkId 主键
      * @return 实例对象
      */
-    ZyPark queryById(Long parkId);
+    ZyPark queryById(String parkId);
 
     /**
      * 查询指定行数据

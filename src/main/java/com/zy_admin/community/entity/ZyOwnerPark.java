@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.io.Serializable;
 
 /**
@@ -21,15 +20,15 @@ public class ZyOwnerPark implements Serializable {
     /**
      * 房屋绑定id
      */
-    private Long ownerParkId;
+    private String ownerParkId;
     /**
      * 车位id
      */
-    private Long parkId;
+    private String parkId;
     /**
      * 业主id
      */
-    private Long ownerId;
+    private String ownerId;
     /**
      * 绑定状态（0审核中 1绑定 2审核失败）
      */
@@ -41,7 +40,7 @@ public class ZyOwnerPark implements Serializable {
     /**
      * 创建时间
      */
-    private Date createTime;
+    private String createTime;
     /**
      * 更新者
      */
@@ -49,7 +48,7 @@ public class ZyOwnerPark implements Serializable {
     /**
      * 更新时间
      */
-    private Date updateTime;
+    private String updateTime;
     /**
      * 备注
      */

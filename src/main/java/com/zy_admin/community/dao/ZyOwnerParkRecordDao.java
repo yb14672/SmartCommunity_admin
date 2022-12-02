@@ -1,6 +1,7 @@
 package com.zy_admin.community.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zy_admin.community.dto.ZyOwnerParkRecordDto;
 import com.zy_admin.community.entity.ZyOwnerParkRecord;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -18,10 +19,17 @@ public interface ZyOwnerParkRecordDao extends BaseMapper<ZyOwnerParkRecord> {
     /**
      * 通过ID查询单条数据
      *
-     * @param recordId 主键
+     * @param ownerParkId 主键
      * @return 实例对象
      */
-    ZyOwnerParkRecord queryById(Long recordId);
+    List<ZyOwnerParkRecordDto> selectOwnerParkById(String ownerParkId);
+
+    /**
+     * 根据id查当前车位审核记录
+     * @param recordId
+     * @return
+     */
+    ZyOwnerParkRecord queryById(String recordId);
 
     /**
      * 查询指定行数据

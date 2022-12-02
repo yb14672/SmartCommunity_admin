@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.dto.ZyOwnerParkDto;
 import com.zy_admin.community.entity.ZyOwnerPark;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.PageRequest;
+
+import java.util.List;
 
 /**
  * 房屋绑定表 (ZyOwnerPark)表服务接口
@@ -15,12 +18,33 @@ import org.springframework.data.domain.PageRequest;
 public interface ZyOwnerParkService {
 
     /**
+     * 批量删除
+     * @param idList id的集合
+     * @return
+     */
+    Result deleteOwnerParkByIds(@Param("idList") List<String> idList);
+
+    /**
+     * 修改数据
+     *
+     * @param zyOwnerPark 实例对象
+     * @return 实例对象
+     */
+    Result updateOwnerPark(ZyOwnerPark zyOwnerPark);
+    /**
+     * 新增车位审核
+     * @param zyOwnerPark 车位审核对象
+     * @return 车位审核的条数
+     */
+    Result insertOwnerPark(ZyOwnerPark zyOwnerPark) throws Exception;
+
+    /**
      * 提交车位审核以后审核状态改变
      * @param zyOwnerPark 车位审核对象
      * @param recordAuditOpinion 车位审核意见
      * @return 修改的个数
      */
-    Result updateOwnerParkStatus(ZyOwnerPark zyOwnerPark,String recordAuditOpinion);
+    Result updateOwnerParkStatus(ZyOwnerPark zyOwnerPark,String recordAuditOpinion) throws Exception;
 
     /**
      *查询所有的车位审核并分页
@@ -35,7 +59,7 @@ public interface ZyOwnerParkService {
      * @param ownerParkId 主键
      * @return 实例对象
      */
-    ZyOwnerPark queryById(Long ownerParkId);
+    ZyOwnerPark queryById(String ownerParkId);
 
     /**
      * 分页查询
@@ -53,14 +77,6 @@ public interface ZyOwnerParkService {
      * @return 实例对象
      */
     ZyOwnerPark insert(ZyOwnerPark zyOwnerPark);
-
-    /**
-     * 修改数据
-     *
-     * @param zyOwnerPark 实例对象
-     * @return 实例对象
-     */
-    ZyOwnerPark update(ZyOwnerPark zyOwnerPark);
 
     /**
      * 通过主键删除数据

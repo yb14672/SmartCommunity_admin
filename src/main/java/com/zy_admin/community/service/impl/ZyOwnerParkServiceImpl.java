@@ -7,12 +7,15 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerParkDao;
+import com.zy_admin.community.dao.ZyOwnerParkRecordDao;
+import com.zy_admin.community.dao.ZyParkDao;
 import com.zy_admin.community.dto.ZyOwnerParkDto;
 import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.community.entity.ZyOwnerPark;
 import com.zy_admin.community.entity.ZyOwnerParkRecord;
 import com.zy_admin.community.entity.ZyPark;
 import com.zy_admin.community.service.ZyOwnerParkService;
+import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
 import com.zy_admin.util.StringUtil;
@@ -20,6 +23,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 房屋绑定表 (ZyOwnerPark)表服务实现类
@@ -29,14 +34,111 @@ import javax.annotation.Resource;
  */
 @Service("zyOwnerParkService")
 public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerPark> implements ZyOwnerParkService {
+    /**
+     * 审核表
+     */
     @Resource
     private ZyOwnerParkDao zyOwnerParkDao;
+
+    /**
+     * 车位表
+     */
+    @Resource
+    private ZyParkDao zyParkDao;
+
+    /**
+     * 审核记录
+     */
+    @Resource
+    private ZyOwnerParkRecordDao zyOwnerParkRecordDao;
 
     /**
      * 雪花算法
      */
     @Resource
     private SnowflakeManager snowflakeManager;
+
+    /**
+     * 批量删除
+     *
+     * @param idList id的集合
+     * @return
+     */
+    @Override
+    public Result deleteOwnerParkByIds(List<String> idList) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        //判断是单个
+        int i = this.baseMapper.deleteOwnerParkByIds(idList);
+        if (idList.size() == 1) {
+            result.setData("删除成功，影响的行数：" + i);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            //多个就是批量删除
+        } else {
+            if (i >= 1) {
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            } else {
+                result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 修改数据
+     *
+     * @param zyOwnerPark 实例对象
+     * @return 实例对象
+     */
+    @Override
+    public Result updateOwnerPark(ZyOwnerPark zyOwnerPark) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        //判断数据的值有没有改变 zyOwnerPark1是原来的对象
+        ZyOwnerPark zyOwnerPark1 = this.baseMapper.queryById(zyOwnerPark.getOwnerParkId());
+        System.out.println(zyOwnerPark1);
+        System.out.println(zyOwnerPark);
+        String[] fields = new String[]{"parkOwnerStatus","remark","ownerId","parkId","ownerParkId"};
+        if(!ObjUtil.checkEquals(zyOwnerPark1,zyOwnerPark,fields)){
+                try {
+                    zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
+                    int i = this.baseMapper.updateOwnerPark(zyOwnerPark);
+                    if (i == 1) {
+                        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+                }
+        }else {
+            result.setMeta(ResultTool.fail(ResultCode.NO_CHANGE_IN_PARAMETER));
+            result.setData("参数没有变化");
+        }
+        return result;
+    }
+
+    /**
+     * 新增车位审核
+     *
+     * @param zyOwnerPark 车位审核对象
+     * @return 车位审核的条数
+     */
+    @Override
+    public Result insertOwnerPark(ZyOwnerPark zyOwnerPark) throws Exception {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        //雪花算法拿到OwnerParkId
+        zyOwnerPark.setOwnerParkId(snowflakeManager.nextId() + "");
+        try {
+            //新增
+            Integer i = this.baseMapper.insert(zyOwnerPark);
+            if (i == 1) {
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                result.setData("新增成功");
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        }
+    }
 
     /**
      * 提交车位审核以后审核状态改变
@@ -46,26 +148,35 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
      * @return
      */
     @Override
-    public Result updateOwnerParkStatus(ZyOwnerPark zyOwnerPark,String recordAuditOpinion) {
+    public Result updateOwnerParkStatus(ZyOwnerPark zyOwnerPark,String recordAuditOpinion) throws Exception {
         //默认给失败
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        //新增车位审核记录
         ZyOwnerParkRecord zyOwnerParkRecord=new ZyOwnerParkRecord();
+        //审核记录的id
+        zyOwnerParkRecord.setRecordId(snowflakeManager.nextId()+"");
+        //车位id x
+        zyOwnerParkRecord.setOwnerParkId(zyOwnerPark.getOwnerParkId()+"");
+        //小区id 先根据parkId找到zyPark，再拿小区id
+        ZyPark zyPark = zyParkDao.queryById(zyOwnerPark.getParkId());
+        zyOwnerParkRecord.setCommunityId(zyPark.getCommunityId()+"");
+        //业主id
+        zyOwnerParkRecord.setOwnerId(zyOwnerPark.getOwnerId());
+        //业主id
+        zyOwnerParkRecord.setOwnerParkId(zyOwnerPark.getOwnerParkId()+"");
+        //绑定状态
+        zyOwnerParkRecord.setParkBundingStatus(zyOwnerPark.getParkOwnerStatus());
+        //审核意见
         zyOwnerParkRecord.setRecordAuditOpinion(recordAuditOpinion);
-        zyOwnerParkRecord.setOwnerId(zyOwnerPark.getOwnerParkId());
-        //id
-//        zyOwnerParkRecord.setRecordId(snowflakeManager.nextId());
-//        zyOwnerParkRecord.setOwnerType("yz");
-//        zyOwnerParkRecord.setOwnerRoomId(zyOwnerRoom.getOwnerRoomId());
-//        zyOwnerParkRecord.setRoomStatus(zyOwnerRoom.getRoomStatus());
-//        zyOwnerParkRecord.setUpdateTime(LocalDateTime.now().toString());
-//        zyOwnerRoomRecordDao.insert(zyOwnerRoomRecord);
-//        //修改时间
-//        zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());
-//        this.baseMapper.updateOwnerRoomStatus(zyOwnerRoom);
-//        //判断审核是不是通过
-//        if ("Binding".equals(zyOwnerRoom.getRoomStatus())){
-//            zyRoomDao.updateRoomStatus(zyOwnerRoom.getRoomId()+"");
-//        }
+        //审核人类型
+        zyOwnerParkRecord.setRecordAuditType("Web");
+       //创建时间
+        zyOwnerParkRecord.setUpdateTime(LocalDateTime.now().toString());
+        zyOwnerParkRecordDao.insert(zyOwnerParkRecord);
+        //修改时间
+        zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
+        System.out.println(zyOwnerPark);
+        this.baseMapper.updateOwnerParkStatus(zyOwnerPark);
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         return result;
     }
@@ -111,7 +222,7 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
      * @return 实例对象
      */
     @Override
-    public ZyOwnerPark queryById(Long ownerParkId) {
+    public ZyOwnerPark queryById(String ownerParkId) {
         return this.zyOwnerParkDao.queryById(ownerParkId);
     }
 
@@ -137,18 +248,6 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     public ZyOwnerPark insert(ZyOwnerPark zyOwnerPark) {
         this.zyOwnerParkDao.insert(zyOwnerPark);
         return zyOwnerPark;
-    }
-
-    /**
-     * 修改数据
-     *
-     * @param zyOwnerPark 实例对象
-     * @return 实例对象
-     */
-    @Override
-    public ZyOwnerPark update(ZyOwnerPark zyOwnerPark) {
-        this.zyOwnerParkDao.update(zyOwnerPark);
-        return this.queryById(zyOwnerPark.getOwnerParkId());
     }
 
     /**

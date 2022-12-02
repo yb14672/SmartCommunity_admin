@@ -1,8 +1,12 @@
 package com.zy_admin.community.controller;
 
 import com.baomidou.mybatisplus.extension.api.ApiController;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.entity.ZyOwnerParkRecord;
 import com.zy_admin.community.service.ZyOwnerParkRecordService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +30,20 @@ public class ZyOwnerParkRecordController extends ApiController {
     private ZyOwnerParkRecordService zyOwnerParkRecordService;
 
     /**
+     * 审核记录
+     * @param ownerParkId 审核记录的id
+     * @return  审核记录对象
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "recordId", value = "", required = true)
+    })
+    @ApiOperation(value = "审核车位记录", notes = "审核车位记录", httpMethod = "GET")
+    @GetMapping("/selectOwnerParkById")
+    public Result selectOwnerParkById(String ownerParkId) {
+        return zyOwnerParkRecordService.selectOwnerParkById(ownerParkId);
+    }
+
+    /**
      * 分页查询
      *
      * @param zyOwnerParkRecord 筛选条件
@@ -44,7 +62,7 @@ public class ZyOwnerParkRecordController extends ApiController {
      * @return 单条数据
      */
     @GetMapping("{id}")
-    public ResponseEntity<ZyOwnerParkRecord> queryById(@PathVariable("id") Long id) {
+    public ResponseEntity<ZyOwnerParkRecord> queryById(@PathVariable("id") String id) {
         return ResponseEntity.ok(this.zyOwnerParkRecordService.queryById(id));
     }
 

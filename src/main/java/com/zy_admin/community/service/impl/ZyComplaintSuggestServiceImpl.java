@@ -12,7 +12,6 @@ import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dto.OwnerRoomDto;
 import com.zy_admin.community.dto.ZyComplaintSuggestDto;
 import com.zy_admin.community.entity.ZyComplaintSuggest;
-import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.service.ZyComplaintSuggestService;
 import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.ResultTool;
@@ -152,7 +151,6 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
             result.setMeta(ResultTool.success(ResultCode.OWNER_NOT_BOUND));
             result.setData("新增失败");
         }
-        //判断是否重复x
         try {
             //新增
             Integer i = this.baseMapper.insertSuggest(zyComplaintSuggest);

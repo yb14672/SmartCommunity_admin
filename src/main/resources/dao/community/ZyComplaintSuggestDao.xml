@@ -15,8 +15,6 @@
         <result property="userId" column="user_id" jdbcType="INTEGER"/>
     </resultMap>
 
-
-
     <!--查询单个-->
     <select id="queryById" resultMap="ZyComplaintSuggestMap">
         select

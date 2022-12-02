@@ -17,14 +17,6 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <!--查询单个-->
-    <select id="queryById" resultMap="ZyParkMap">
-        select
-          park_id, park_code, community_id, park_type, park_cost, park_status, park_is_public, create_by, create_time, update_by, update_time, remark
-        from zy_park
-        where park_id = #{parkId}
-    </select>
-
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="ZyParkMap">
         select
@@ -114,6 +106,14 @@
                 and remark = #{remark}
             </if>
         </where>
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultType="com.zy_admin.community.entity.ZyPark">
+         select
+          park_id, park_code, community_id, park_type, park_status, park_is_public, create_by, create_time, update_by, update_time, remark
+        from zy_park
+        where park_id = #{parkId}
     </select>
 
     <!--新增所有列-->

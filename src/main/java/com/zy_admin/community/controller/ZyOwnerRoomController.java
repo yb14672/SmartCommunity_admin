@@ -98,10 +98,10 @@ public class ZyOwnerRoomController extends ApiController {
     }
 
     /**
-     * 更新拒绝主人房间状态
+     * 更新房间状态
      * 修改业主审核的状态
      *
-     * @param zyOwnerRoom        zy主人房间
+     * @param zyOwnerRoom        房间
      * @param recordAuditOpinion 记录审计意见
      * @param status             状态
      * @param request            请求

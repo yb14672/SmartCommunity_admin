@@ -18,7 +18,7 @@ public interface ZyParkService {
      * @param parkId 主键
      * @return 实例对象
      */
-    ZyPark queryById(Long parkId);
+    ZyPark queryById(String parkId);
 
     /**
      * 分页查询

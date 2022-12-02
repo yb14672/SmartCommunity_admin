@@ -29,7 +29,7 @@ public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements
      * @return 实例对象
      */
     @Override
-    public ZyPark queryById(Long parkId) {
+    public ZyPark queryById(String parkId) {
         return this.zyParkDao.queryById(parkId);
     }
 
@@ -67,7 +67,7 @@ public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements
     @Override
     public ZyPark update(ZyPark zyPark) {
         this.zyParkDao.update(zyPark);
-        return this.queryById(zyPark.getParkId());
+        return this.queryById(zyPark.getParkId()+"");
     }
 
     /**

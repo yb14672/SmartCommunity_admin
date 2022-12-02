@@ -2,7 +2,6 @@ package com.zy_admin.community.dao;
 
 import com.github.yulichang.base.MPJBaseMapper;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.community.dto.ZyOwnerParkDto;
 import com.zy_admin.community.entity.ZyOwnerPark;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,6 +16,13 @@ import java.util.List;
 public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
 
     /**
+     * 批量删除
+     * @param idList id集合
+     * @return
+     */
+    Integer deleteOwnerParkByIds(@Param("idList") List<String> idList);
+
+    /**
      * 修改车位审核的状态
      * @param zyOwnerPark 车位审核对象
      * @return 修改的数量
@@ -24,26 +30,12 @@ public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
     int updateOwnerParkStatus(@Param("zyOwnerPark") ZyOwnerPark zyOwnerPark);
 
     /**
-     * 统计车位审核总数量
-     * @param zyOwnerParkDto 车位审核对象
-     * @return
-     */
-    Long count(@Param("zyOwnerParkDto") ZyOwnerParkDto zyOwnerParkDto);
-
-    /**
-     * 查询所有的车位审核并分页
-     * @param zyOwnerParkDto 车位审核对象
-     * @return
-     */
-    List<ZyOwnerParkDto> selectAllParkLimit(@Param("zyOwnerParkDto") ZyOwnerParkDto zyOwnerParkDto);
-
-    /**
      * 通过ID查询单条数据
      *
      * @param ownerParkId 主键
      * @return 实例对象
      */
-    ZyOwnerPark queryById(Long ownerParkId);
+    ZyOwnerPark queryById(String ownerParkId);
 
     /**
      * 查询指定行数据
@@ -60,6 +52,7 @@ public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
      * @param zyOwnerPark 实例对象
      * @return 影响行数
      */
+    @Override
     int insert(ZyOwnerPark zyOwnerPark);
 
     /**
@@ -85,7 +78,7 @@ public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
      * @param zyOwnerPark 实例对象
      * @return 影响行数
      */
-    int update(ZyOwnerPark zyOwnerPark);
+    int updateOwnerPark(@Param("zyOwnerPark") ZyOwnerPark zyOwnerPark);
 
     /**
      * 通过主键删除数据
