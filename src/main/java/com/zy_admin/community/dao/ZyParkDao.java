@@ -20,7 +20,7 @@ import java.util.List;
 public interface ZyParkDao extends MPJBaseMapper<ZyPark> {
 
 
-    @Select("select * from ")
+    @Select("select count(1) from zy_park where community_id =#{communityId}")
     long getCont(String communityId);
 
     /**
