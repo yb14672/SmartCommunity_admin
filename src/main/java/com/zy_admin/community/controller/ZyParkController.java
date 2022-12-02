@@ -11,9 +11,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -44,6 +41,27 @@ public class ZyParkController extends ApiController {
 
 
     /**
+     * 批量插入
+     *
+     * @param zyPark  停车位
+     * @param number  数量
+     * @param request 请求
+     * @return {@link Result}
+     * @throws Exception 异常
+     */
+    @PostMapping("/batchInsert")
+    public Result batchInsert(ZyPark zyPark,int number,HttpServletRequest request) throws Exception {
+        SysUser user = requestUtil.getUser(request);
+        zyPark.setCreateBy(user.getUserName());
+        zyPark.setCreateTime(LocalDateTime.now().toString());
+        return zyParkService.batchInsert(zyPark,number);
+    }
+
+
+
+
+
+    /**
      * 新增停车位
      *
      * @param zyPark  停车位
@@ -61,7 +79,7 @@ public class ZyParkController extends ApiController {
         SysUser user = requestUtil.getUser(request);
         zyPark.setCreateBy(user.getUserName());
         zyPark.setCreateTime(LocalDateTime.now().toString());
-        zyPark.setParkId(snowflakeManager.nextId());
+        zyPark.setParkId(snowflakeManager.nextId()+"");
         long now = System.currentTimeMillis();
         zyPark.setParkCode("PK_"+Long.toString(now).substring(0,13));
         return zyParkService.insertPark(zyPark);
@@ -97,85 +115,5 @@ public class ZyParkController extends ApiController {
     public Result deletePark(List<String> parkIds){
         return this.zyParkService.deletePark(parkIds);
     }
-
-
-
-    /**
-     * 分页查询
-     *
-     * @param zyPark      筛选条件
-     * @param pageRequest 分页对象
-     * @return 查询结果
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ZyPark", name = "zyPark", value = "筛选条件", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "PageRequest", name = "pageRequest", value = "分页对象", required = true)
-    })
-    @ApiOperation(value = "分页查询", notes = "分页查询", httpMethod = "GET")
-    @GetMapping
-    public ResponseEntity<Page<ZyPark>> queryByPage(ZyPark zyPark, PageRequest pageRequest) {
-        return ResponseEntity.ok(this.zyParkService.queryByPage(zyPark, pageRequest));
-    }
-
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "path", dataType = "string", name = "id", value = "主键", required = true)
-    })
-    @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
-    @GetMapping("{id}")
-    public ResponseEntity<ZyPark> queryById(@PathVariable("id") String id) {
-        return ResponseEntity.ok(this.zyParkService.queryById(id));
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param zyPark 实体
-     * @return 新增结果
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ZyPark", name = "zyPark", value = "实体", required = true)
-    })
-    @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
-    @PostMapping
-    public ResponseEntity<ZyPark> add(ZyPark zyPark) {
-        return ResponseEntity.ok(this.zyParkService.insert(zyPark));
-    }
-
-    /**
-     * 编辑数据
-     *
-     * @param zyPark 实体
-     * @return 编辑结果
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ZyPark", name = "zyPark", value = "实体", required = true)
-    })
-    @ApiOperation(value = "编辑数据", notes = "编辑数据", httpMethod = "PUT")
-    @PutMapping
-    public ResponseEntity<ZyPark> edit(ZyPark zyPark) {
-        return ResponseEntity.ok(this.zyParkService.update(zyPark));
-    }
-
-    /**
-     * 删除数据
-     *
-     * @param id 主键
-     * @return 删除是否成功
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "long", name = "id", value = "主键", required = true)
-    })
-    @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
-    @DeleteMapping
-    public ResponseEntity<Boolean> deleteById(Long id) {
-        return ResponseEntity.ok(this.zyParkService.deleteById(id));
-    }
-
 }
 

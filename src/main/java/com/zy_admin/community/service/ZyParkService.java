@@ -2,8 +2,6 @@ package com.zy_admin.community.service;
 
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.entity.ZyPark;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -16,6 +14,16 @@ import java.util.List;
 public interface ZyParkService {
 
 
+    /**
+     * 批量插入
+     * 批量插入车位
+     *
+     * @param zyPark 车位
+     * @param number 数量
+     * @return {@link Result}
+     * @throws Exception 异常
+     */
+    Result batchInsert(ZyPark zyPark, int number) throws Exception;
     /**
      * 删除车位
      *
@@ -40,46 +48,5 @@ public interface ZyParkService {
      * @return {@link Result}
      */
     Result insertPark(ZyPark zyPark);
-
-    /**
-     * 通过ID查询单条数据
-     *
-     * @param parkId 主键
-     * @return 实例对象
-     */
-    ZyPark queryById(String parkId);
-
-    /**
-     * 分页查询
-     *
-     * @param zyPark      筛选条件
-     * @param pageRequest 分页对象
-     * @return 查询结果
-     */
-    Page<ZyPark> queryByPage(ZyPark zyPark, PageRequest pageRequest);
-
-    /**
-     * 新增数据
-     *
-     * @param zyPark 实例对象
-     * @return 实例对象
-     */
-    ZyPark insert(ZyPark zyPark);
-
-    /**
-     * 修改数据
-     *
-     * @param zyPark 实例对象
-     * @return 实例对象
-     */
-    ZyPark update(ZyPark zyPark);
-
-    /**
-     * 通过主键删除数据
-     *
-     * @param parkId 主键
-     * @return 是否成功
-     */
-    boolean deleteById(Long parkId);
 
 }

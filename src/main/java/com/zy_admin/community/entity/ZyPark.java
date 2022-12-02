@@ -20,7 +20,7 @@ public class ZyPark implements Serializable {
     /**
      * 车位id
      */
-    private Long parkId;
+    private String parkId;
     /**
      * 车位编号
      */
@@ -28,15 +28,11 @@ public class ZyPark implements Serializable {
     /**
      * 小区id
      */
-    private Long communityId;
+    private String communityId;
     /**
      * 车位类型（地下停车位/地面停车位/人防车位）
      */
     private String parkType;
-    /**
-     * 算费系数
-     */
-    private Double parkCost;
     /**
      * 车位状态（1停用/0启用）
      */

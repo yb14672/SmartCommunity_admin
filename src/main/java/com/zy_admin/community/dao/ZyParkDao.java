@@ -16,6 +16,7 @@ import java.util.List;
  */
 public interface ZyParkDao extends BaseMapper<ZyPark> {
 
+
     /**
      * 通过车位Id查询是否被业主绑定
      *
@@ -73,14 +74,6 @@ public interface ZyParkDao extends BaseMapper<ZyPark> {
     long count(ZyPark zyPark);
 
     /**
-     * 新增数据
-     *
-     * @param zyPark 实例对象
-     * @return 影响行数
-     */
-    int insert(ZyPark zyPark);
-
-    /**
      * 批量新增数据（MyBatis原生foreach方法）
      *
      * @param entities List<ZyPark> 实例对象列表
@@ -96,22 +89,5 @@ public interface ZyParkDao extends BaseMapper<ZyPark> {
      * @throws org.springframework.jdbc.BadSqlGrammarException 入参是空List的时候会抛SQL语句错误的异常，请自行校验入参
      */
     int insertOrUpdateBatch(@Param("entities") List<ZyPark> entities);
-
-    /**
-     * 修改数据
-     *
-     * @param zyPark 实例对象
-     * @return 影响行数
-     */
-    int update(ZyPark zyPark);
-
-    /**
-     * 通过主键删除数据
-     *
-     * @param parkId 主键
-     * @return 影响行数
-     */
-    int deleteById(Long parkId);
-
 }
 

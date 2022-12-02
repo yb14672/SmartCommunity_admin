@@ -8,12 +8,12 @@ import com.zy_admin.community.entity.ZyOwnerPark;
 import com.zy_admin.community.entity.ZyPark;
 import com.zy_admin.community.service.ZyParkService;
 import com.zy_admin.util.ResultTool;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import com.zy_admin.util.SnowflakeManager;
+import com.zy_admin.util.StringUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,18 +25,43 @@ import java.util.List;
 @Service("zyParkService")
 public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements ZyParkService {
     @Resource
-    private ZyParkDao zyParkDao;
+    private SnowflakeManager snowflakeManager;
 
+
+    @Override
+    public Result batchInsert(ZyPark zyPark, int number) throws Exception {
+        Result result = new Result();
+        List<ZyPark> zyParks = new ArrayList<>();
+        for (int i = 0; i < number; i++) {
+            ZyPark zyPark1 = new ZyPark();
+            if (StringUtil.isNotEmpty(zyPark.getRemark())) {
+                zyPark1.setRemark(zyPark.getRemark());
+            }
+            zyPark1.setParkId(snowflakeManager.nextId() + "");
+            long now = System.currentTimeMillis();
+            zyPark1.setParkCode("PK_" + Long.toString(now).substring(0, 13));
+            zyParks.add(zyPark1);
+        }
+        try {
+            int i = this.baseMapper.insertBatch(zyParks);
+            if (i > 0) {
+                result.setData("批量添加成功，影响的行数：" + i);
+                result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMeta(ResultTool.fail(ResultCode.INSERT_PARK_FAIL));
+        }
+        return result;
+    }
 
     @Override
     public Result deletePark(List<String> parkIds) {
         Result result = new Result();
         List<ZyOwnerPark> zyOwnerParks = this.baseMapper.selectOwnerParkByParkId(parkIds);
-        if (zyOwnerParks.size()>0)
-        {
+        if (zyOwnerParks.size() > 0) {
             result.setMeta(ResultTool.fail(ResultCode.DELETED_PARK_FAIL));
-        }else
-        {
+        } else {
             try {
                 this.baseMapper.deletedPark(parkIds);
                 result.setMeta(ResultTool.fail(ResultCode.SUCCESS));
@@ -49,7 +74,7 @@ public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements
     }
 
     /**
-     *修改停车位
+     * 修改停车位
      *
      * @param zyPark 停车位
      * @return {@link Result}
@@ -84,64 +109,5 @@ public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements
             result.setMeta(ResultTool.fail(ResultCode.INSERT_PARK_FAIL));
         }
         return result;
-    }
-
-    /**
-     * 通过ID查询单条数据
-     *
-     * @param parkId 主键
-     * @return 实例对象
-     */
-    @Override
-    public ZyPark queryById(String parkId) {
-        return this.zyParkDao.queryById(parkId);
-    }
-
-    /**
-     * 分页查询
-     *
-     * @param zyPark      筛选条件
-     * @param pageRequest 分页对象
-     * @return 查询结果
-     */
-    @Override
-    public Page<ZyPark> queryByPage(ZyPark zyPark, PageRequest pageRequest) {
-        long total = this.zyParkDao.count(zyPark);
-        return new PageImpl<>(this.zyParkDao.queryAllByLimit(zyPark, pageRequest), pageRequest, total);
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param zyPark 实例对象
-     * @return 实例对象
-     */
-    @Override
-    public ZyPark insert(ZyPark zyPark) {
-        this.zyParkDao.insert(zyPark);
-        return zyPark;
-    }
-
-    /**
-     * 修改数据
-     *
-     * @param zyPark 实例对象
-     * @return 实例对象
-     */
-    @Override
-    public ZyPark update(ZyPark zyPark) {
-        this.zyParkDao.update(zyPark);
-        return this.queryById(zyPark.getParkId()+"");
-    }
-
-    /**
-     * 通过主键删除数据
-     *
-     * @param parkId 主键
-     * @return 是否成功
-     */
-    @Override
-    public boolean deleteById(Long parkId) {
-        return this.zyParkDao.deleteById(parkId) > 0;
     }
 }
