@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.dto.ZyOwnerParkDto;
 import com.zy_admin.community.entity.ZyOwnerPark;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -18,11 +17,17 @@ import java.util.List;
 public interface ZyOwnerParkService {
 
     /**
+     * 获取所有未绑定的车位审核信息
+     * @return 车位审核集合
+     */
+    Result selectNoBindingPark(String communityId);
+
+    /**
      * 批量删除
      * @param idList id的集合
      * @return
      */
-    Result deleteOwnerParkByIds(@Param("idList") List<String> idList);
+    Result deleteOwnerParkByIds(List<String> idList);
 
     /**
      * 修改数据

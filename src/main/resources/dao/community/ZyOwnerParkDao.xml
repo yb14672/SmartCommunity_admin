@@ -123,7 +123,11 @@
     </select>
     <!--查询未被绑定的车位-->
     <select id="selectNoBindingPark" resultType="com.zy_admin.community.entity.ZyOwnerPark">
-        select * from zy_owner_park where park_owner_status != 'Binding'
+        select *,zc.community_name
+        from zy_owner_park zop
+        left join zy_park zp on zop.park_id = zp.park_id
+        left join zy_community zc on zp.community_id = zc.community_id
+        where zop.park_owner_status != 'Binding' and zc.community_id = #{communityId}
     </select>
 
     <!--新增所有列-->
