@@ -62,6 +62,8 @@ public class ZyParkController extends ApiController {
         zyPark.setCreateBy(user.getUserName());
         zyPark.setCreateTime(LocalDateTime.now().toString());
         zyPark.setParkId(snowflakeManager.nextId());
+        long now = System.currentTimeMillis();
+        zyPark.setParkCode("PK_"+Long.toString(now).substring(0,13));
         return zyParkService.insertPark(zyPark);
     }
 
