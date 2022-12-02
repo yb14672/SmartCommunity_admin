@@ -1,5 +1,7 @@
 package com.zy_admin.community.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zy_admin.community.entity.ZyOwnerPark;
 import com.github.yulichang.base.MPJBaseMapper;
 import com.zy_admin.community.dto.ZyParkDto;
 import com.zy_admin.community.entity.ZyPark;
@@ -15,6 +17,37 @@ import java.util.List;
  * @since 2022-12-01 15:13:40
  */
 public interface ZyParkDao extends MPJBaseMapper<ZyPark> {
+
+    /**
+     * 通过车位Id查询是否被业主绑定
+     *
+     * @param parkIds 公园id
+     * @return {@link List}<{@link ZyOwnerPark}>
+     */
+    List<ZyOwnerPark> selectOwnerParkByParkId(@Param("parkIds") List<String> parkIds);
+
+
+    /**
+     * 删除停车位
+     *
+     * @param parkIds 公园id
+     */
+    void deletedPark(@Param("parkIds") List<String> parkIds);
+
+
+    /**
+     * 修改停车位信息
+     *
+     * @param zyPark 停车位
+     */
+    void updatePark(ZyPark zyPark);
+
+    /**
+     * 新增停车位
+     *
+     * @param zyPark 停车位
+     */
+    void insertPark(ZyPark zyPark);
 
     /**
      * 通过ID查询单条数据

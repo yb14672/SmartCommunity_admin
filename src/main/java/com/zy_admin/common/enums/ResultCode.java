@@ -128,6 +128,9 @@ public enum ResultCode {
     NO_REALNAME_AUTHENTICATION(3051,"该住户未实名认证"),
     OWNER_REAL_NAME_NOT_EMPTY(3052,"真实姓名不能为空"),
     REPAIR_GET_FAIL(3053,"报修信息获取失败"),
+    INSERT_PARK_FAIL(3054,"新增车位失败"),
+    UPDATE_PARK_FAIL(3055,"修改车位失败"),
+    DELETED_PARK_FAIL(3056,"删除车位失败，选择中有车位被绑定"),
 
 
 

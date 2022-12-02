@@ -1,15 +1,7 @@
 package com.zy_admin.community.dao;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.github.yulichang.base.MPJBaseMapper;
 import com.zy_admin.community.dto.OwnerParkListDto;
-import com.zy_admin.community.entity.ZyOwner;
-
-import com.github.yulichang.base.MPJBaseMapper;
-import com.zy_admin.common.Pageable;
 import com.zy_admin.community.entity.ZyOwnerPark;
-import com.zy_admin.community.entity.ZyOwnerParkRecord;
-import com.zy_admin.community.entity.ZyPark;
-import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -31,7 +23,7 @@ public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
      *
      * @param ownerParkId 业主停车位Id;
      */
-    @Update("Update  zy_owner_park set park_owner_status = 'UnBuilding' where owner_park_id = #{ownerParkId}")
+    @Update("Update  zy_owner_park set park_owner_status = 'Unbinding' where owner_park_id = #{ownerParkId}")
     void deleteOwnerPark(String ownerParkId);
 
     /**

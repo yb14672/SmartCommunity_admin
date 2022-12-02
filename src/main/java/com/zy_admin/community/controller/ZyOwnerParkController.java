@@ -91,6 +91,7 @@ public class ZyOwnerParkController {
         zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
         return zyOwnerParkService.updateOwnerPark(zyOwnerPark);
     }
+
     @GetMapping("/getOwnerParkList")
     public Result getOwnerParkList(OwnerParkListDto ownerParkListDto, Page page ) {
         return zyOwnerParkService.getOwnerParkList(ownerParkListDto, page);

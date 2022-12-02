@@ -62,7 +62,7 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     private SnowflakeManager snowflakeManager;
 
     /**
-     * 删除所有者公园
+     * 解绑
      *
      * @param ownerParkId 公园所有者id
      * @param request     请求
