@@ -243,13 +243,16 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
             MPJLambdaWrapper<ZyOwnerPark> zyOwnerParkDtoMPJLambdaWrapper = new MPJLambdaWrapper<>();
             zyOwnerParkDtoMPJLambdaWrapper.selectAll(ZyOwnerPark.class)
                     .select(ZyCommunity::getCommunityName)
+                    .select(ZyCommunity::getCommunityId)
                     .select(ZyPark::getParkCode)
                     .select(ZyPark::getParkType)
                     .select(ZyPark::getParkIsPublic)
                     .select(ZyPark::getParkStatus)
                     .leftJoin(ZyPark.class, ZyPark::getParkId, ZyOwnerPark::getParkId)
                     .leftJoin(ZyCommunity.class, ZyCommunity::getCommunityId, ZyPark::getCommunityId)
-                    .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getParkOwnerStatus()), ZyOwnerPark::getParkOwnerStatus, zyOwnerParkDto.getParkOwnerStatus());
+                    .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getParkOwnerStatus()), ZyOwnerPark::getParkOwnerStatus, zyOwnerParkDto.getParkOwnerStatus())
+                    .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getCommunityId()),ZyCommunity::getCommunityId,zyOwnerParkDto.getCommunityId());
+            //where zor.community_id = #{zyOwnerRoom.communityId}
             IPage<ZyOwnerParkDto> zyOwnerParkDtoIPage = this.baseMapper.selectJoinPage(page, ZyOwnerParkDto.class, zyOwnerParkDtoMPJLambdaWrapper);
             if (zyOwnerParkDtoIPage.getTotal() != 0) {
                 result.setData(zyOwnerParkDtoIPage);
