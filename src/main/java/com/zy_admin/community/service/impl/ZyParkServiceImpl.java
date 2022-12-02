@@ -23,11 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * zy公园管理局impl
  * (ZyPark)表服务实现类
  *
  * @author makejava
- * @date 2022/12/02
  * @since 2022-12-01 15:13:40
  */
 @Service("zyParkService")
@@ -37,6 +35,27 @@ public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements
      */
     @Resource
     private SnowflakeManager snowflakeManager;
+
+    /**
+     * 查询车位状态是启用0的
+     *
+     * @return 集合对象
+     */
+    @Override
+    public Result selectParkStatusOpen() {
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<ZyPark> zyParkList = this.baseMapper.selectParkStatusOpen();
+        if (zyParkList.size()!=0){
+            result.setData(zyParkList);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            return result;
+        }else {
+            result.setData("没有被启用的");
+            result.setMeta(ResultTool.fail(ResultCode.NO_MATCHING_DATA));
+            return result;
+        }
+
+    }
 
     /**
      * 通过ID查询单条数据

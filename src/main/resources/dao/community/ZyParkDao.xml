@@ -64,6 +64,10 @@
                  LEFT JOIN zy_community c ON p.community_id = c.community_id
         WHERE p.park_id = #{parkId}
     </select>
+    <!--查询车位状态是启用0的-->
+    <select id="selectParkStatusOpen" resultType="com.zy_admin.community.entity.ZyPark">
+         select * from zy_park where park_status = '0'
+    </select>
 
     <!--新增所有列-->
     <insert id="insertPark">

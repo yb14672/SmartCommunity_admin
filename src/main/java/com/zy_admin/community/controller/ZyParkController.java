@@ -174,6 +174,16 @@ public class ZyParkController extends ApiController {
     }
 
     /**
+     * 查询车位状态是启用0的
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "查询车位状态是启用的", notes = "查询车位状态是启用的", httpMethod = "GET")
+    @GetMapping("/selectParkStatusOpen")
+    public Result selectParkStatusOpen(){
+        return this.zyParkService.selectParkStatusOpen();
+    }
+
+    /**
      * 分页查询
      *
      * @param zyPark 筛选条件

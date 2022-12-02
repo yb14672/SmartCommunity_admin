@@ -23,29 +23,27 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * impl zy所有者公园服务
  * 房屋绑定表 (ZyOwnerPark)表服务实现类
  *
  * @author makejava
- * @date 2022/12/02
- * @since 2022-12-01 15:18:41
+ * @since 2022-12-01 15:50:35
  */
 @Service("zyOwnerParkService")
 public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerPark> implements ZyOwnerParkService {
     /**
-     * zy所有者公园道
+     * 审核表
      */
     @Resource
     private ZyOwnerParkDao zyOwnerParkDao;
 
     /**
-     * zy公园道
+     * 车位表
      */
     @Resource
     private ZyParkDao zyParkDao;
 
     /**
-     * zy所有者公园记录道
+     * 审核记录
      */
     @Resource
     private ZyOwnerParkRecordDao zyOwnerParkRecordDao;
@@ -56,10 +54,36 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     private RequestUtil requestUtil;
 
     /**
-     * 雪花经理
+     * 雪花算法
      */
     @Resource
     private SnowflakeManager snowflakeManager;
+
+    /**
+     * 获取所有未绑定的车位审核信息
+     *
+     * @return 车位审核集合
+     */
+    @Override
+    public Result selectNoBindingPark(String communityId) {
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        try {
+            List<ZyOwnerPark> zyOwnerParks = this.baseMapper.selectNoBindingPark(communityId);
+            System.out.println(zyOwnerParks);
+            if (zyOwnerParks.size() == 0) {
+                result.setData("改小区内没有未绑定的车位信息");
+                result.setMeta(ResultTool.fail(ResultCode.NO_MATCHING_DATA));
+                return result;
+            } else {
+                result.setData(zyOwnerParks);
+                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                return result;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return result;
+        }
+    }
 
     /**
      * 解绑
@@ -149,7 +173,6 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     }
 
     /**
-     * 更新所有者公园
      * 修改数据
      *
      * @param zyOwnerPark 实例对象
@@ -180,12 +203,10 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     }
 
     /**
-     * 插入所有者公园
      * 新增车位审核
      *
      * @param zyOwnerPark 车位审核对象
      * @return 车位审核的条数
-     * @throws Exception 异常
      */
     @Override
     public Result insertOwnerPark(ZyOwnerPark zyOwnerPark) throws Exception {
@@ -207,7 +228,6 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     }
 
     /**
-     * 更新所有者公园状态
      * 提交车位审核以后审核状态改变
      *
      * @param zyOwnerPark        车位审核对象
@@ -252,7 +272,6 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     }
 
     /**
-     * 选择所有公园限制
      * 查询所有的车位审核并分页
      *
      * @param zyOwnerParkDto 车位审核对象
@@ -273,7 +292,8 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
                     .select(ZyPark::getParkStatus)
                     .leftJoin(ZyPark.class, ZyPark::getParkId, ZyOwnerPark::getParkId)
                     .leftJoin(ZyCommunity.class, ZyCommunity::getCommunityId, ZyPark::getCommunityId)
-                    .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getParkOwnerStatus()), ZyOwnerPark::getParkOwnerStatus, zyOwnerParkDto.getParkOwnerStatus());
+                    .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getParkOwnerStatus()), ZyOwnerPark::getParkOwnerStatus, zyOwnerParkDto.getParkOwnerStatus())
+                    .orderByDesc(ZyOwnerPark::getCreateTime);
             IPage<ZyOwnerParkDto> zyOwnerParkDtoIPage = this.baseMapper.selectJoinPage(page, ZyOwnerParkDto.class, zyOwnerParkDtoMPJLambdaWrapper);
             if (zyOwnerParkDtoIPage.getTotal() != 0) {
                 result.setData(zyOwnerParkDtoIPage);
@@ -288,7 +308,6 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     }
 
     /**
-     * 查询通过id
      * 通过ID查询单条数据
      *
      * @param ownerParkId 主键
@@ -300,7 +319,6 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     }
 
     /**
-     * 插入
      * 新增数据
      *
      * @param zyOwnerPark 实例对象
@@ -313,7 +331,6 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     }
 
     /**
-     * 删除通过id
      * 通过主键删除数据
      *
      * @param ownerParkId 主键

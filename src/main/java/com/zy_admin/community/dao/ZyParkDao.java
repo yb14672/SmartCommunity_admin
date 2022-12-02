@@ -1,8 +1,6 @@
 package com.zy_admin.community.dao;
 
-import com.github.yulichang.base.MPJBaseMapper;
-import com.zy_admin.community.dto.ZyParkDto;
-import com.zy_admin.community.entity.ZyOwnerPark;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.community.entity.ZyPark;
 import org.apache.ibatis.annotations.Param;
 
@@ -51,6 +49,12 @@ public interface ZyParkDao extends MPJBaseMapper<ZyPark> {
      * @return int
      */
     int insertPark(ZyPark zyPark);
+
+    /**
+     * 查询车位状态是启用0的
+     * @return
+     */
+    List<ZyPark> selectParkStatusOpen();
 
     /**
      * 通过ID查询单条数据

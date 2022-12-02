@@ -14,10 +14,15 @@ import java.util.List;
  * 房屋绑定表 (ZyOwnerPark)表服务接口
  *
  * @author makejava
- * @date 2022/12/02
- * @since 2022-12-01 15:18:39
+ * @since 2022-12-01 15:50:35
  */
 public interface ZyOwnerParkService extends IService<ZyOwnerPark> {
+
+    /**
+     * 获取所有未绑定的车位审核信息
+     * @return 车位审核集合
+     */
+    Result selectNoBindingPark(String communityId);
 
     /**
      * 批量删除

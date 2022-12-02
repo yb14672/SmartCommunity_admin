@@ -52,6 +52,12 @@ public interface ZyParkService {
     Result insertPark(ZyPark zyPark);
 
     /**
+     * 查询车位状态是启用0的
+     * @return 集合对象
+     */
+    Result selectParkStatusOpen();
+
+    /**
      * 通过ID查询单条数据
      *
      * @param parkId 主键

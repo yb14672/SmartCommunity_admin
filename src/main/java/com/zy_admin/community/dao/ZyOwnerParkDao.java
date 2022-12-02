@@ -12,7 +12,7 @@ import java.util.List;
  * 房屋绑定表 (ZyOwnerPark)表数据库访问层
  *
  * @author makejava
- * @since 2022-12-01 15:18:33
+ * @since 2022-12-01 15:50:35
  */
 public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
 
@@ -25,6 +25,12 @@ public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
      */
     @Update("Update  zy_owner_park set park_owner_status = 'Unbinding' where owner_park_id = #{ownerParkId}")
     void deleteOwnerPark(String ownerParkId);
+
+    /**
+     * 查询未被绑定的车位
+     * @return
+     */
+    List<ZyOwnerPark> selectNoBindingPark(String communityId);
 
     /**
      * 批量删除

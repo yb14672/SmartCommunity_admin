@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * 房屋绑定表 (ZyOwnerPark)表控制层
  *
  * @author makejava
- * @since 2022-12-01 15:18:32
+ * @since 2022-12-01 15:50:35
  */
 @Api(value = "zyOwnerPark", tags = {"车位审核 (zyOwnerPark)表控制层"})
 @RestController
@@ -47,6 +47,17 @@ public class ZyOwnerParkController {
      */
     @Resource
     private RequestUtil requestUtil;
+
+    /**
+     * 获取未绑定的车位审核信息
+     *
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "未绑定的车位审核信息", notes = "未绑定的车位审核信息", httpMethod = "GET")
+    @GetMapping("/selectNoBindingPark")
+    public Result selectNoBindingPark(String communityId){
+        return this.zyOwnerParkService.selectNoBindingPark(communityId);
+    }
 
     /**
      * 删除车位审核
@@ -91,10 +102,29 @@ public class ZyOwnerParkController {
         zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
         return zyOwnerParkService.updateOwnerPark(zyOwnerPark);
     }
-
     @GetMapping("/getOwnerParkList")
     public Result getOwnerParkList(OwnerParkListDto ownerParkListDto, Page page ) {
         return zyOwnerParkService.getOwnerParkList(ownerParkListDto, page);
+    }
+    /**
+     * 新增车位审核
+     * @param zyOwnerPark 要新增的车位审核
+     * @param request 前端请求
+     * @return  查询的车位审核结果集
+     * @throws Exception 将存在的异常抛出
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "body", dataType = "ZyOwnerPark", name = "zyOwnerPark", value = "要新增的车位审核信息", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端请求", required = true)
+    })
+    @ApiOperation(value = "新增车位审核", notes = "新增车位审核", httpMethod = "POST")
+    @PostMapping("/insertOwnerPark")
+    public Result insertOwnerPark(@RequestBody ZyOwnerPark zyOwnerPark, HttpServletRequest request) throws Exception {
+        ZyOwner owner = this.requestUtil.getOwner(request);
+        zyOwnerPark.setCreateBy(owner.getOwnerRealName());
+        zyOwnerPark.setCreateTime(LocalDateTime.now().toString());
+        zyOwnerPark.setOwnerId(owner.getOwnerId());
+        return this.zyOwnerParkService.insertOwnerPark(zyOwnerPark);
     }
 
     /**
