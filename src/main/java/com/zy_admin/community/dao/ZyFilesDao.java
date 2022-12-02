@@ -13,6 +13,14 @@ import java.util.List;
  * @since 2022-11-01 19:49:01
  */
 public interface ZyFilesDao extends BaseMapper<ZyFiles> {
+
+    /**
+     * 根据互动id列表逻辑删除文件
+     *
+     * @param idList id列表
+     * @return 影响行数
+     */
+    int deleteFileByInteractionId(@Param("idList") List<String> idList);
     /**
      * 根据id查询文件链接
      * @param id        图片id
