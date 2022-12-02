@@ -73,8 +73,8 @@ public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements
                 .eq(StringUtil.isNotEmpty(zyPark.getParkType()), ZyPark::getParkType, zyPark.getParkType())
                 .eq(StringUtil.isNotEmpty(zyPark.getParkStatus()), ZyPark::getParkStatus, zyPark.getParkStatus())
                 .eq(StringUtil.isNotEmpty(zyPark.getParkIsPublic()), ZyPark::getParkIsPublic, zyPark.getParkIsPublic())
-                .eq(StringUtil.isNotEmpty(zyPark.getCommunityId()), ZyPark::getCommunityId, zyPark.getCommunityId())
-                .orderByDesc(ZyPark::getCreateTime);
+                .eq(StringUtil.isNotEmpty(zyPark.getCommunityId()), ZyPark::getCommunityId, zyPark.getCommunityId());
+//                .orderByDesc(ZyPark::getCreateTime);
         IPage<ZyParkDto> IPage = this.baseMapper.selectJoinPage(page, ZyParkDto.class, wrapper);
         if (IPage.getTotal() != 0) {
             result.setData(IPage);
@@ -98,6 +98,7 @@ public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements
     public Result batchInsert(ZyPark zyPark, int number) throws Exception {
         Result result = new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
         List<ZyPark> zyParks = new ArrayList<>();
+        long cont = this.baseMapper.getCont(zyPark.getCommunityId());
         for (int i = 0; i < number; i++) {
             ZyPark zyPark1 = new ZyPark();
             if (StringUtil.isNotEmpty(zyPark.getRemark())) {
@@ -108,10 +109,10 @@ public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements
             zyPark1.setCommunityId(zyPark.getCommunityId());
             zyPark1.setParkIsPublic(zyPark.getParkIsPublic());
             zyPark1.setCreateTime(LocalDateTime.now().toString());
-            zyPark1.setCreateBy(zyPark1.getCreateBy());
+            zyPark1.setCreateBy(zyPark.getCreateBy());
             zyPark1.setParkId(snowflakeManager.nextId() + "");
-            long now = System.currentTimeMillis();
-            zyPark1.setParkCode("PK_" + Long.toString(now).substring(0, 13));
+            zyPark1.setParkCode("PK_" +cont);
+            cont++;
             zyParks.add(zyPark1);
         }
         try {
