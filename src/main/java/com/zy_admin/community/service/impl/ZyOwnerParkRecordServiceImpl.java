@@ -1,19 +1,19 @@
 package com.zy_admin.community.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
-import com.zy_admin.community.dao.ZyOwnerParkDao;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerParkRecordDao;
-import com.zy_admin.community.entity.ZyOwner;
-import com.zy_admin.community.entity.ZyOwnerPark;
+import com.zy_admin.community.dto.ZyOwnerParkRecordDto;
 import com.zy_admin.community.entity.ZyOwnerParkRecord;
 import com.zy_admin.community.service.ZyOwnerParkRecordService;
-import org.springframework.stereotype.Service;
+import com.zy_admin.util.ResultTool;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 房屋绑定记录表 (ZyOwnerParkRecord)表服务实现类

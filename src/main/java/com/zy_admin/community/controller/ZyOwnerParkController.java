@@ -1,19 +1,15 @@
 package com.zy_admin.community.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.api.ApiController;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.core.Result.Result;
-import com.zy_admin.community.dto.OwnerParkListDto;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.community.dto.OwnerParkListDto;
 import com.zy_admin.community.dto.ZyOwnerParkDto;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.entity.ZyOwnerPark;
 import com.zy_admin.community.service.ZyOwnerParkService;
-import org.apache.ibatis.annotations.Delete;
-import org.springframework.data.domain.PageRequest;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
@@ -26,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -75,8 +70,6 @@ public class ZyOwnerParkController {
 
     @DeleteMapping("/deleteOwnerPark")
     public Result deleteOwnerPark(HttpServletRequest request,String ownerParkId) throws Exception {
-        System.err.println(ownerParkId);
-
         return zyOwnerParkService.deleteOwnerPark(ownerParkId,request);
     }
     /**
@@ -99,11 +92,8 @@ public class ZyOwnerParkController {
         return zyOwnerParkService.updateOwnerPark(zyOwnerPark);
     }
     @GetMapping("/getOwnerParkList")
-    public Result getOwnerParkList(OwnerParkListDto ownerParkListDto, Page page )
-    {
-        Result ownerParkList = zyOwnerParkService.getOwnerParkList(ownerParkListDto, page);
-        System.out.println(ownerParkList.toString());
-        return ownerParkList;
+    public Result getOwnerParkList(OwnerParkListDto ownerParkListDto, Page page ) {
+        return zyOwnerParkService.getOwnerParkList(ownerParkListDto, page);
     }
 
     /**
@@ -156,7 +146,7 @@ public class ZyOwnerParkController {
      * @return 单条数据
      */
     @GetMapping("{id}")
-    public ResponseEntity<ZyOwnerPark> queryById(@PathVariable("id") Long id) {
+    public ResponseEntity<ZyOwnerPark> queryById(@PathVariable("id") String id) {
         return ResponseEntity.ok(this.zyOwnerParkService.queryById(id));
     }
 }
