@@ -133,6 +133,8 @@ public enum ResultCode {
     DELETED_PARK_FAIL(3056,"删除车位失败，选择中有车位被绑定"),
     CARNUMBER_ERROR(3057,"车牌号不符合规则"),
     CARNUMBER_REPEAT(3058,"车牌号重复"),
+    PARK_HAVE_BINDING(3059,"车位已经被绑定"),
+    PARK_HAVE_AUDITING(3060,"车位正在审核"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

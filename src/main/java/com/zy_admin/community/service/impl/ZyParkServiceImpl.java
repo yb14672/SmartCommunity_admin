@@ -19,6 +19,8 @@ import com.zy_admin.util.StringUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +95,7 @@ public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements
                 .eq(StringUtil.isNotEmpty(zyPark.getParkStatus()), ZyPark::getParkStatus, zyPark.getParkStatus())
                 .eq(StringUtil.isNotEmpty(zyPark.getParkIsPublic()), ZyPark::getParkIsPublic, zyPark.getParkIsPublic())
                 .eq(StringUtil.isNotEmpty(zyPark.getCommunityId()), ZyPark::getCommunityId, zyPark.getCommunityId())
+                .eq(ZyPark::getDelFlag, 0)
                 .orderByDesc(ZyPark::getCreateTime)
                 .orderByDesc(ZyPark::getParkCode);
         IPage<ZyParkDto> IPage = this.baseMapper.selectJoinPage(page, ZyParkDto.class, wrapper);
@@ -141,7 +144,9 @@ public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements
     public Result batchInsert(ZyPark zyPark, int number) throws Exception {
         Result result = new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
         List<ZyPark> zyParks = new ArrayList<>();
-        long cont = this.baseMapper.getCont(zyPark.getCommunityId());
+        //设置几位数字
+        NumberFormat f = new DecimalFormat("0000");
+        long cont = this.baseMapper.getCont(zyPark.getCommunityId())+1;
         for (int i = 0; i < number; i++) {
             ZyPark zyPark1 = new ZyPark();
             if (StringUtil.isNotEmpty(zyPark.getRemark())) {
@@ -154,7 +159,7 @@ public class ZyParkServiceImpl extends ServiceImpl<ZyParkDao, ZyPark> implements
             zyPark1.setCreateTime(LocalDateTime.now().toString());
             zyPark1.setCreateBy(zyPark.getCreateBy());
             zyPark1.setParkId(snowflakeManager.nextId() + "");
-            zyPark1.setParkCode("PK_" +cont);
+            zyPark1.setParkCode("PK_" + f.format(cont));
             cont++;
             zyParks.add(zyPark1);
         }

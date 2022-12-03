@@ -27,7 +27,6 @@ public class ZyPark implements Serializable {
     /**
      * 车位id
      */
-    @ExcelProperty("车位id")
     @ApiModelProperty("车位id")
     private String parkId;
     /**
@@ -36,6 +35,12 @@ public class ZyPark implements Serializable {
     @ExcelProperty("车位编号")
     @ApiModelProperty("车位编号")
     private String parkCode;
+    /**
+     * 删除状态
+     */
+    @ExcelProperty("删除状态")
+    @ApiModelProperty("删除状态")
+    private String delFlag;
     /**
      * 小区id
      */

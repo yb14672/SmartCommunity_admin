@@ -20,6 +20,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ZyParkDto extends ZyPark {
     /**
+     * 小区id
+     */
+    @ApiModelProperty("小区id")
+    private String communityId;
+    /**
      * 小区名字
      */
     @ExcelProperty("小区名字")

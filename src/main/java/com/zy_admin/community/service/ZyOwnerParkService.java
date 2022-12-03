@@ -1,13 +1,14 @@
 package com.zy_admin.community.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.dto.OwnerParkListDto;
 import com.zy_admin.community.dto.ZyOwnerParkDto;
 import com.zy_admin.community.entity.ZyOwnerPark;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +18,15 @@ import java.util.List;
  * @since 2022-12-01 15:50:35
  */
 public interface ZyOwnerParkService extends IService<ZyOwnerPark> {
+
+    /**
+     * 根据ids查询列表，若为空根据小区id查询列表
+     *
+     * @param ids 车位ID列表
+     * @param communityId 小区id
+     * @return {@link Result}
+     */
+    Result getListByIdList(ArrayList<String> ids, String communityId);
 
     /**
      * 查询未被绑定和启用的车位

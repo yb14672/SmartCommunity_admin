@@ -55,14 +55,14 @@ public class ZyParkController extends ApiController {
     /**
      * 导出
      *
-     * @param ids         id列表--没有导出当前小区全部
+     * @param ids         id列表--没有导出当前全部车位
      * @param communityId 小区id
      * @param response    相应对象
      * @return Excel表格
      * @throws IOException ioException
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "ids", value = "id列表--没有导出当前小区全部", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "ids", value = "id列表--没有导出当前全部车位", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "string", name = "communityId", value = "小区id", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletResponse", name = "response", value = "相应对象", required = true)
     })

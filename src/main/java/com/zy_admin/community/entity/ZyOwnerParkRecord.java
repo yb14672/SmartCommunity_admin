@@ -1,5 +1,7 @@
 package com.zy_admin.community.entity;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -25,6 +27,7 @@ public class ZyOwnerParkRecord implements Serializable {
      * 车位绑定记录id
      */
     @ApiModelProperty("车位绑定记录id")
+    @ExcelIgnore
     private String recordId;
     /**
      * 车位id
@@ -35,11 +38,13 @@ public class ZyOwnerParkRecord implements Serializable {
      * 小区id
      */
     @ApiModelProperty("小区id")
+    @ExcelIgnore
     private String communityId;
     /**
      * 业主id
      */
     @ApiModelProperty("业主id")
+    @ExcelIgnore
     private String ownerId;
     /**
      * 绑定状态（0审核中 1绑定 2审核失败,3解绑）
@@ -50,11 +55,13 @@ public class ZyOwnerParkRecord implements Serializable {
      * 审核意见
      */
     @ApiModelProperty("审核意见")
+    @ExcelProperty("审核意见")
     private String recordAuditOpinion;
     /**
      * 审核人类型
      */
     @ApiModelProperty("审核人类型")
+    @ExcelProperty("审核人类型")
     private String recordAuditType;
     /**
      * 车牌号
