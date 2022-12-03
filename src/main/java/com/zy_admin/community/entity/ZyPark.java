@@ -27,6 +27,7 @@ public class ZyPark implements Serializable {
     /**
      * 车位id
      */
+    @ExcelIgnore
     @ApiModelProperty("车位id")
     private String parkId;
     /**

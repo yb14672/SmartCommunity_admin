@@ -8,9 +8,11 @@ import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerParkDao;
 import com.zy_admin.community.dao.ZyOwnerParkRecordDao;
+import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dao.ZyParkDao;
 import com.zy_admin.community.dto.OwnerParkExcelDto;
 import com.zy_admin.community.dto.OwnerParkListDto;
+import com.zy_admin.community.dto.OwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerParkDto;
 import com.zy_admin.community.entity.*;
 import com.zy_admin.community.service.ZyOwnerParkService;
@@ -50,10 +52,16 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     @Resource
     private ZyOwnerParkRecordDao zyOwnerParkRecordDao;
     /**
-     * 请求跑龙套
+     * 请求
      */
     @Resource
     private RequestUtil requestUtil;
+
+    /**
+     * 房屋
+     */
+    @Resource
+    private ZyOwnerRoomDao zyOwnerRoomDao;
 
     /**
      * 雪花算法
@@ -213,25 +221,32 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断数据的值有没有改变 zyOwnerPark1是原来的对象
         ZyOwnerPark zyOwnerPark1 = this.baseMapper.queryById(zyOwnerPark.getOwnerParkId());
-        String[] fields = new String[]{"parkOwnerStatus", "remark", "ownerId", "parkId", "ownerParkId","carNumber"};
+        String[] fields = new String[]{"parkOwnerStatus","remark","carNumber"};
         if (!ObjUtil.checkEquals(zyOwnerPark1, zyOwnerPark, fields)) {
             try {
-                String carNumber = zyOwnerPark.getCarNumber();
-                String regex="^[测京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$";
-                boolean matches = carNumber.matches(regex);
-                if (!matches){
-                    result.setData("车牌号不符合规则");
-                    result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_ERROR));
+                //判断下面有没有房屋绑定
+                List<OwnerRoomDto> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyOwnerPark.getOwnerId());
+                if (ownerRoomByOwnerId.size() == 0) {
+                    result.setData("未绑定房屋,不允许修改");
+                    result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
                 }else {
-                    ZyOwnerPark zyOwnerPark2 = this.baseMapper.selectCarNumber(zyOwnerPark.getCarNumber());
-                    if (zyOwnerPark2!=null){
-                        result.setData("车牌号重复");
-                        result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_REPEAT));
+                    String carNumber = zyOwnerPark.getCarNumber();
+                    String regex="^[测京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$";
+                    boolean matches = carNumber.matches(regex);
+                    if (!matches){
+                        result.setData("车牌号不符合规则");
+                        result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_ERROR));
                     }else {
-                        zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
-                        int i = this.baseMapper.updateOwnerPark(zyOwnerPark);
-                        if (i == 1) {
-                            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                        ZyOwnerPark zyOwnerPark2 = this.baseMapper.selectCarNumber(zyOwnerPark.getCarNumber());
+                        if (zyOwnerPark2!=null){
+                            result.setData("车牌号重复");
+                            result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_REPEAT));
+                        }else {
+                            zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
+                            int i = this.baseMapper.updateOwnerPark(zyOwnerPark);
+                            if (i == 1) {
+                                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                            }
                         }
                     }
                 }
@@ -270,21 +285,28 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
                     result.setData("车牌号重复");
                     result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_REPEAT));
                 }else{
-                    String status = this.baseMapper.selectParkOwnerStatus(zyOwnerPark.getParkId());
-                    if ("Binding".equals(status)){
-                        result.setData("该车位已经被绑定了,不允许新增");
-                        result.setMeta(ResultTool.fail(ResultCode.PARK_HAVE_BINDING));
-                    }else if ("Auditing".equals(status)){
-                        result.setData("该车位正在审核,不允许新增");
-                        result.setMeta(ResultTool.fail(ResultCode.PARK_HAVE_AUDITING));
-                    }else{
-                        //新增
-                        Integer i = this.baseMapper.insert(zyOwnerPark);
-                        if (i == 1) {
-                            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-                            result.setData("新增成功");
+                    //判断下面有没有房屋绑定
+                    List<OwnerRoomDto> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyOwnerPark.getOwnerId());
+                    if (ownerRoomByOwnerId.size() == 0) {
+                        result.setData("未绑定房屋,不允许修改");
+                        result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
+                    }else {
+                        String status = this.baseMapper.selectParkOwnerStatus(zyOwnerPark.getParkId());
+                        if ("Binding".equals(status)){
+                            result.setData("该车位已经被绑定了,不允许新增");
+                            result.setMeta(ResultTool.fail(ResultCode.PARK_HAVE_BINDING));
+                        }else if ("Auditing".equals(status)){
+                            result.setData("该车位正在审核,不允许新增");
+                            result.setMeta(ResultTool.fail(ResultCode.PARK_HAVE_AUDITING));
+                        }else{
+                            //新增
+                            Integer i = this.baseMapper.insert(zyOwnerPark);
+                            if (i == 1) {
+                                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                                result.setData("新增成功");
+                            }
+                            return result;
                         }
-                        return result;
                     }
                 }
             } catch (Exception e) {
