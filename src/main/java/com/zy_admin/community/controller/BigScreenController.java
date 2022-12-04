@@ -3,6 +3,7 @@ package com.zy_admin.community.controller;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.service.ZyCommunityInteractionService;
 import com.zy_admin.community.service.ZyComplaintSuggestService;
+import com.zy_admin.community.service.ZyOwnerRoomService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,8 @@ public class BigScreenController {
     private ZyCommunityInteractionService interactionService;
     @Resource
     private ZyComplaintSuggestService suggestService;
+    @Resource
+    private ZyOwnerRoomService ownerRoomService;
 
     /**
      * 获取一个月内的互动信息
@@ -41,5 +44,15 @@ public class BigScreenController {
     @GetMapping("/getSuggestInMonth")
     public Result getSuggestInMonth(String limitNum) {
         return suggestService.getSuggestInMonth(limitNum);
+    }
+
+    /**
+     * 获取绑定率
+     *
+     * @return 获取绑定率
+     */
+    @GetMapping("/getTheNumberOfHouseBindings")
+    public Result getTheNumberOfHouseBindings() {
+        return ownerRoomService.getTheNumberOfHouseBindings();
     }
 }
