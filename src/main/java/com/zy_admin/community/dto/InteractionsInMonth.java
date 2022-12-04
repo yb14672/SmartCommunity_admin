@@ -8,12 +8,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 一周内的交互信息
+ * 一月内的交互信息
  *
  * @author yb14672
  * Time:2022 - 2022/12/4 - 20:56
  **/
-@ApiModel(description = "一周内的交互信息")
+@ApiModel(description = "一月内的交互信息")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

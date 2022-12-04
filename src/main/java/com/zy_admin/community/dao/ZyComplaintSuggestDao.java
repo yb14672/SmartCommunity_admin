@@ -2,6 +2,7 @@ package com.zy_admin.community.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.community.dto.SuggestInMonth;
 import com.zy_admin.community.dto.ZyComplaintSuggestDto;
 import com.zy_admin.community.entity.ZyComplaintSuggest;
 import org.apache.ibatis.annotations.Param;
@@ -77,10 +78,19 @@ public interface ZyComplaintSuggestDao extends BaseMapper<ZyComplaintSuggest> {
 
     /**
      * 根据id查对象
+     *
      * @param complaintSuggestId 投诉建议的id
      * @return
      */
     ZyComplaintSuggest queryById(String complaintSuggestId);
 
+    /**
+     * 获取一个月内的投诉建议
+     *
+     * @param lastWeek 30天前的日期
+     * @param limitNum 总共显示多少条
+     * @return 一个月内的投诉建议
+     */
+    List<SuggestInMonth> getSuggestInMonth(@Param("lastWeek") String lastWeek, @Param("limitNum") Integer limitNum);
 }
 

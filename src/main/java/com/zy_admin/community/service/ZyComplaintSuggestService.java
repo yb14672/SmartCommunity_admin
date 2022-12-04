@@ -72,9 +72,18 @@ public interface ZyComplaintSuggestService extends IService<ZyComplaintSuggest> 
 
     /**
      * 批量删除
+     *
      * @param idList id的集合
      * @return
      */
     Result deleteSuggestByIds(@Param("idList") List<String> idList);
+
+    /**
+     * 获取一个月内的投诉建议
+     *
+     * @param limitNum 总共显示多少条
+     * @return 一个月内的投诉建议
+     */
+    Result getSuggestInMonth(String limitNum);
 }
 

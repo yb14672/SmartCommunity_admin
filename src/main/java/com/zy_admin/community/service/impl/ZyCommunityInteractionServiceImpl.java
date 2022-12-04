@@ -49,14 +49,14 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
     private SnowflakeManager snowflakeManager;
 
     /**
-     * 获取一周内的互动信息
+     * 获取一个月内的互动信息
      *
      * @param limitNum
-     * @return 一周以内的互动信息
+     * @return 一个月内的互动信息
      */
     @Override
     public Result getInteractionInMonth(String limitNum) {
-        Result result = new Result("最近一周没有新的互动文章", ResultTool.fail(ResultCode.COMMON_FAIL));
+        Result result = new Result("最近一个月没有新的互动文章", ResultTool.fail(ResultCode.COMMON_FAIL));
         //获取七天前的日期
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar calendar = Calendar.getInstance();
