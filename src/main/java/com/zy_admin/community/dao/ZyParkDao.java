@@ -20,7 +20,7 @@ import java.util.List;
 public interface ZyParkDao extends MPJBaseMapper<ZyPark> {
 
 
-    @Select("select count(1) from zy_park where community_id =#{communityId}")
+    @Select("select count(1) from zy_park where community_id =#{communityId} and del_flag = 0")
     long getCont(String communityId);
 
     /**
@@ -41,7 +41,6 @@ public interface ZyParkDao extends MPJBaseMapper<ZyPark> {
 
 
     /**
-     * 更新公园
      * 修改停车位信息
      *
      * @param zyPark 停车位
@@ -50,7 +49,6 @@ public interface ZyParkDao extends MPJBaseMapper<ZyPark> {
     int updatePark(ZyPark zyPark);
 
     /**
-     * 插入公园
      * 新增停车位
      *
      * @param zyPark 停车位

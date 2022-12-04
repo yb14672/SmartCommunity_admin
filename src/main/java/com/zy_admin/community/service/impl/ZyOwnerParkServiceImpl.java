@@ -1,25 +1,29 @@
 package com.zy_admin.community.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerParkDao;
 import com.zy_admin.community.dao.ZyOwnerParkRecordDao;
+import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dao.ZyParkDao;
+import com.zy_admin.community.dto.OwnerParkExcelDto;
 import com.zy_admin.community.dto.OwnerParkListDto;
+import com.zy_admin.community.dto.OwnerRoomDto;
 import com.zy_admin.community.dto.ZyOwnerParkDto;
 import com.zy_admin.community.entity.*;
 import com.zy_admin.community.service.ZyOwnerParkService;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.*;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,10 +52,16 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     @Resource
     private ZyOwnerParkRecordDao zyOwnerParkRecordDao;
     /**
-     * 请求跑龙套
+     * 请求
      */
     @Resource
     private RequestUtil requestUtil;
+
+    /**
+     * 房屋
+     */
+    @Resource
+    private ZyOwnerRoomDao zyOwnerRoomDao;
 
     /**
      * 雪花算法
@@ -60,21 +70,43 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     private SnowflakeManager snowflakeManager;
 
     /**
-     * 获取所有未绑定的车位审核信息
+     * 根据ids查询列表，若为空根据小区id查询列表
      *
+     * @param ids         车位ID列表
+     * @param communityId 小区id
+     * @return {@link Result}
+     */
+    @Override
+    public Result getListByIdList(ArrayList<String> ids, String communityId) {
+        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.NO_MATCHING_DATA));
+        List<OwnerParkExcelDto> dtoList = null;
+        if (ids.size() != 0) {
+            dtoList = this.baseMapper.getDtoList(ids,communityId);
+        } else {
+            dtoList = this.baseMapper.getAllDtoList(communityId);
+        }
+        if (dtoList.size() > 0) {
+            result.setData(dtoList);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+
+    /**
+     * 查询未被绑定和启用的车位
      * @return 车位审核集合
      */
     @Override
-    public Result selectNoBindingPark(String communityId) {
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+    public Result selectNoBindingAndStatusPark(String communityId) {
+        Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
-            List<ZyOwnerPark> zyOwnerParks = this.baseMapper.selectNoBindingPark(communityId);
+            List<ZyOwnerPark> zyOwnerParks = this.baseMapper.selectNoBindingAndStatusPark(communityId);
             System.out.println(zyOwnerParks);
-            if (zyOwnerParks.size() == 0) {
+            if (zyOwnerParks.size()==0){
                 result.setData("改小区内没有未绑定的车位信息");
                 result.setMeta(ResultTool.fail(ResultCode.NO_MATCHING_DATA));
                 return result;
-            } else {
+            }else {
                 result.setData(zyOwnerParks);
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 return result;
@@ -103,7 +135,7 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
         ownerPark.setCommunityId(communityId);
         ownerPark.setRecordId(snowflakeManager.nextId()+"");
         ownerPark.setUpdateBy(user.getUserName());
-        ownerPark.setParkBundingStatus("3");
+        ownerPark.setParkBundingStatus("Unbinding");
         ownerPark.setUpdateTime(LocalDateTime.now().toString());
         //插入数据到记录表
         try {
@@ -119,10 +151,10 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     }
 
     /**
-     * 得到老板公园列表
+     * 得到车位信息
      *
-     * @param ownerParkListDto 主人dto公园列表
-     * @param page             页面
+     * @param ownerParkListDto 车位审核列表
+     * @param page             分页
      * @return {@link Result}
      */
     @Override
@@ -136,6 +168,11 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
                 .select(ZyOwnerPark::getOwnerParkId)
                 .select(ZyPark::getParkType)
                 .select(ZyPark::getParkId)
+                .select(ZyOwner::getOwnerNickname)
+                .select(ZyOwner::getOwnerRealName)
+                .select(ZyOwner::getOwnerGender)
+                .select(ZyOwner::getOwnerAge)
+                .select(ZyOwner::getOwnerIdCard)
                 .leftJoin(ZyPark.class,ZyPark::getParkId,ZyOwnerPark::getParkId)
                 .leftJoin(ZyCommunity.class,ZyCommunity::getCommunityId,ZyPark::getCommunityId)
                 .leftJoin(ZyOwner.class,ZyOwner::getOwnerId,ZyOwnerPark::getOwnerId)
@@ -143,6 +180,7 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
                 .like(StringUtil.isNotEmpty(ownerParkListDto.getOwnerRealName()),ZyOwner::getOwnerRealName,ownerParkListDto.getOwnerRealName())
                 .like(StringUtil.isNotEmpty(ownerParkListDto.getOwnerIdCard()),ZyOwner::getOwnerIdCard,ownerParkListDto.getOwnerIdCard())
                 .like(StringUtil.isNotEmpty(ownerParkListDto.getOwnerPhoneNumber()),ZyOwner::getOwnerPhoneNumber,ownerParkListDto.getOwnerPhoneNumber())
+                .eq(StringUtil.isNotEmpty(ownerParkListDto.getCommunityId()),ZyCommunity::getCommunityId,ownerParkListDto.getCommunityId())
                 .eq(ZyOwnerPark::getParkOwnerStatus,"Binding");
         IPage<OwnerParkListDto> ownerParkListDtoIPage = this.baseMapper.selectJoinPage(page, OwnerParkListDto.class, zyOwnerParkMPJLambdaWrapper);
         if (ownerParkListDtoIPage.getTotal()>=0)
@@ -183,13 +221,34 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断数据的值有没有改变 zyOwnerPark1是原来的对象
         ZyOwnerPark zyOwnerPark1 = this.baseMapper.queryById(zyOwnerPark.getOwnerParkId());
-        String[] fields = new String[]{"parkOwnerStatus", "remark", "ownerId", "parkId", "ownerParkId"};
+        String[] fields = new String[]{"parkOwnerStatus","remark","carNumber"};
         if (!ObjUtil.checkEquals(zyOwnerPark1, zyOwnerPark, fields)) {
             try {
-                zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
-                int i = this.baseMapper.updateOwnerPark(zyOwnerPark);
-                if (i == 1) {
-                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                //判断下面有没有房屋绑定
+                List<OwnerRoomDto> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyOwnerPark.getOwnerId());
+                if (ownerRoomByOwnerId.size() == 0) {
+                    result.setData("未绑定房屋,不允许修改");
+                    result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
+                }else {
+                    String carNumber = zyOwnerPark.getCarNumber();
+                    String regex="^[测京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$";
+                    boolean matches = carNumber.matches(regex);
+                    if (!matches){
+                        result.setData("车牌号不符合规则");
+                        result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_ERROR));
+                    }else {
+                        ZyOwnerPark zyOwnerPark2 = this.baseMapper.selectCarNumber(zyOwnerPark.getCarNumber());
+                        if (zyOwnerPark2!=null){
+                            result.setData("车牌号重复");
+                            result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_REPEAT));
+                        }else {
+                            zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
+                            int i = this.baseMapper.updateOwnerPark(zyOwnerPark);
+                            if (i == 1) {
+                                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                            }
+                        }
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -213,18 +272,49 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
         Result result = new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
         //雪花算法拿到OwnerParkId
         zyOwnerPark.setOwnerParkId(snowflakeManager.nextId() + "");
-        try {
-            //新增
-            Integer i = this.baseMapper.insert(zyOwnerPark);
-            if (i == 1) {
-                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-                result.setData("新增成功");
+        String carNumber = zyOwnerPark.getCarNumber();
+        String regex="^[测京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$";
+        boolean matches = carNumber.matches(regex);
+        if (!matches) {
+            result.setData("车牌号不符合规则");
+            result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_ERROR));
+        }else{
+            try {
+                ZyOwnerPark zyOwnerPark1 = this.baseMapper.selectCarNumber(zyOwnerPark.getCarNumber());
+                if (zyOwnerPark1!=null){
+                    result.setData("车牌号重复");
+                    result.setMeta(ResultTool.fail(ResultCode.CARNUMBER_REPEAT));
+                }else{
+                    //判断下面有没有房屋绑定
+                    List<OwnerRoomDto> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyOwnerPark.getOwnerId());
+                    if (ownerRoomByOwnerId.size() == 0) {
+                        result.setData("未绑定房屋,不允许修改");
+                        result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
+                    }else {
+                        String status = this.baseMapper.selectParkOwnerStatus(zyOwnerPark.getParkId());
+                        if ("Binding".equals(status)){
+                            result.setData("该车位已经被绑定了,不允许新增");
+                            result.setMeta(ResultTool.fail(ResultCode.PARK_HAVE_BINDING));
+                        }else if ("Auditing".equals(status)){
+                            result.setData("该车位正在审核,不允许新增");
+                            result.setMeta(ResultTool.fail(ResultCode.PARK_HAVE_AUDITING));
+                        }else{
+                            //新增
+                            Integer i = this.baseMapper.insert(zyOwnerPark);
+                            if (i == 1) {
+                                result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                                result.setData("新增成功");
+                            }
+                            return result;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
             }
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Result("添加失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
         }
+        return result;
     }
 
     /**
@@ -286,6 +376,7 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
             MPJLambdaWrapper<ZyOwnerPark> zyOwnerParkDtoMPJLambdaWrapper = new MPJLambdaWrapper<>();
             zyOwnerParkDtoMPJLambdaWrapper.selectAll(ZyOwnerPark.class)
                     .select(ZyCommunity::getCommunityName)
+                    .select(ZyCommunity::getCommunityId)
                     .select(ZyPark::getParkCode)
                     .select(ZyPark::getParkType)
                     .select(ZyPark::getParkIsPublic)
@@ -293,6 +384,9 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
                     .leftJoin(ZyPark.class, ZyPark::getParkId, ZyOwnerPark::getParkId)
                     .leftJoin(ZyCommunity.class, ZyCommunity::getCommunityId, ZyPark::getCommunityId)
                     .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getParkOwnerStatus()), ZyOwnerPark::getParkOwnerStatus, zyOwnerParkDto.getParkOwnerStatus())
+                    .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getCommunityId()),ZyCommunity::getCommunityId,zyOwnerParkDto.getCommunityId())
+                    .eq(StringUtil.isNotEmpty(zyOwnerParkDto.getParkOwnerStatus()), ZyOwnerPark::getParkOwnerStatus, zyOwnerParkDto.getParkOwnerStatus())
+                    .eq(ZyOwnerPark::getDelFlag,0)
                     .orderByDesc(ZyOwnerPark::getCreateTime);
             IPage<ZyOwnerParkDto> zyOwnerParkDtoIPage = this.baseMapper.selectJoinPage(page, ZyOwnerParkDto.class, zyOwnerParkDtoMPJLambdaWrapper);
             if (zyOwnerParkDtoIPage.getTotal() != 0) {

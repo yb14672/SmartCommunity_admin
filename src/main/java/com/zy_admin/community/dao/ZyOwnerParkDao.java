@@ -1,11 +1,14 @@
 package com.zy_admin.community.dao;
+
 import com.github.yulichang.base.MPJBaseMapper;
+import com.zy_admin.community.dto.OwnerParkExcelDto;
 import com.zy_admin.community.dto.OwnerParkListDto;
 import com.zy_admin.community.entity.ZyOwnerPark;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,6 +19,28 @@ import java.util.List;
  */
 public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
 
+    /**
+     * 根据ID集合查询车位列表列表
+     * @param ids id集合
+     * @return 车位列表
+     */
+    List<OwnerParkExcelDto> getDtoList(@Param("ids") ArrayList<String> ids,String communityId);
+
+    /**
+     * 根据小区id查询车位列表
+     * @param communityId 小区id
+     * @return 车位列表
+     */
+    List<OwnerParkExcelDto> getAllDtoList(String communityId);
+
+    /**
+     * 根据parkId查车位状态
+     * @param parkId 车位id
+     * @return 状态
+     */
+    @Select("select park_owner_status from zy_owner_park where park_id = #{parkId}")
+    String selectParkOwnerStatus(String parkId);
+
 
 
     /**
@@ -23,14 +48,21 @@ public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
      *
      * @param ownerParkId 业主停车位Id;
      */
-    @Update("Update  zy_owner_park set park_owner_status = 'Unbinding' where owner_park_id = #{ownerParkId}")
+    @Update("Update  zy_owner_park set park_owner_status = 'Unbinding' where owner_park_id = #{ownerParkId} and del_flag = 0")
     void deleteOwnerPark(String ownerParkId);
 
     /**
-     * 查询未被绑定的车位
+     * 查询车牌号有没有重复
+     * @param carNumber 车牌号
      * @return
      */
-    List<ZyOwnerPark> selectNoBindingPark(String communityId);
+    ZyOwnerPark selectCarNumber(String carNumber);
+
+    /**
+     * 查询未被绑定和启用0的车位
+     * @return
+     */
+    List<ZyOwnerPark> selectNoBindingAndStatusPark(String communityId);
 
     /**
      * 批量删除
@@ -53,10 +85,10 @@ public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
      * @param ownerParkId 公园所有者id
      * @return {@link OwnerParkListDto}
      */
-    @Select("select*from zy_owner_park where owner_park_id =#{ownerParkId}")
+    @Select("select*from zy_owner_park where owner_park_id =#{ownerParkId} and del_flag = 0")
     OwnerParkListDto getOwnerPark(String ownerParkId);
 
-    @Select("select community_id from zy_park where park_id = #{parkId}")
+    @Select("select community_id from zy_park where park_id = #{parkId} and del_flag = 0")
     String getCommunityId(String parkId);
 
 

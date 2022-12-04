@@ -22,9 +22,9 @@
     <!--查询单个-->
     <select id="queryById" resultMap="ZyOwnerParkMap">
         select
-          owner_park_id, park_id, owner_id, park_status, create_by, create_time, update_by, update_time, remark
+          owner_park_id, park_id, owner_id, park_owner_status, create_by, create_time, update_by, update_time, remark
         from zy_owner_park
-        where owner_park_id = #{ownerParkId}
+        where owner_park_id = #{ownerParkId} and del_flag = 0
     </select>
     <!--修改车位审核的状态-->
     <update id="updateOwnerParkStatus">
@@ -39,6 +39,9 @@
             <if test="zyOwnerPark.parkOwnerStatus != null and zyOwnerPark.parkOwnerStatus != ''">
                 park_owner_status = #{zyOwnerPark.parkOwnerStatus},
             </if>
+            <if test="zyOwnerPark.carNumber != null and zyOwnerPark.carNumber != ''">
+                car_number = #{zyOwnerPark.carNumber},
+            </if>
             <if test="zyOwnerPark.createBy != null and zyOwnerPark.createBy != ''">
                 create_by = #{zyOwnerPark.createBy},
             </if>
@@ -55,7 +58,7 @@
                 remark = #{zyOwnerPark.remark},
             </if>
         </set>
-        where owner_park_id = #{zyOwnerPark.ownerParkId}
+        where owner_park_id = #{zyOwnerPark.ownerParkId} and del_flag = 0
     </update>
 
     <update id="updateOwnerPark">
@@ -70,6 +73,9 @@
             <if test="zyOwnerPark.parkOwnerStatus != null and zyOwnerPark.parkOwnerStatus != ''">
                 park_owner_status = #{zyOwnerPark.parkOwnerStatus},
             </if>
+            <if test="zyOwnerPark.carNumber != null and zyOwnerPark.carNumber != ''">
+                car_number = #{zyOwnerPark.carNumber},
+            </if>
             <if test="zyOwnerPark.createBy != null and zyOwnerPark.createBy != ''">
                 create_by = #{zyOwnerPark.createBy},
             </if>
@@ -86,14 +92,14 @@
                 remark = #{zyOwnerPark.remark},
             </if>
         </set>
-        where owner_park_id = #{zyOwnerPark.ownerParkId}
+        where owner_park_id = #{zyOwnerPark.ownerParkId} and del_flag = 0
     </update>
 
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="ZyOwnerParkMap">
         select
-        owner_park_id, park_id, owner_id, park_owner_status, create_by, create_time, update_by, update_time, remark
+        owner_park_id, park_id, owner_id, park_owner_status,car_number, create_by, create_time, update_by, update_time, remark
         from zy_owner_park
         <where>
             <if test="ownerParkId != null">
@@ -107,6 +113,9 @@
             </if>
             <if test="parkStatus != null and parkStatus != ''">
                 and park_owner_status = #{parkStatus}
+            </if>
+            <if test="carNumber != null and carNumber != ''">
+                and car_number = #{carNumber}
             </if>
             <if test="createBy != null and createBy != ''">
                 and create_by = #{createBy}
@@ -129,31 +138,56 @@
     <!--查询单个-->
     <select id="queryById" resultType="com.zy_admin.community.entity.ZyOwnerPark">
         select
-          owner_park_id, park_id, owner_id, park_owner_status, create_by, create_time, update_by, update_time, remark
+          owner_park_id, park_id, owner_id, park_owner_status,car_number, create_by, create_time, update_by, update_time, remark
         from zy_owner_park
-        where owner_park_id = #{ownerParkId}
+        where owner_park_id = #{ownerParkId} and del_flag = 0
     </select>
-    <!--查询未被绑定的车位-->
-    <select id="selectNoBindingPark" resultType="com.zy_admin.community.entity.ZyOwnerPark">
+    <!--查询未被绑定和启用的车位-->
+    <select id="selectNoBindingAndStatusPark" resultType="com.zy_admin.community.entity.ZyOwnerPark">
         select *,zc.community_name
         from zy_owner_park zop
         left join zy_park zp on zop.park_id = zp.park_id
         left join zy_community zc on zp.community_id = zc.community_id
-        where zop.park_owner_status != 'Binding' and zc.community_id = #{communityId}
+        where zop.park_owner_status != 'Binding' and zp.park_status = '0' and zc.community_id = #{communityId} and zop.del_flag = 0
+    </select>
+    <!--查询车牌号有没有重复-->
+    <select id="selectCarNumber" resultType="com.zy_admin.community.entity.ZyOwnerPark">
+        select * from zy_owner_park where car_number = #{carNumber} and del_flag = 0
+    </select>
+
+    <!--根据ID集合查询车位列表列表-->
+    <select id="getDtoList" resultType="com.zy_admin.community.dto.OwnerParkExcelDto">
+        select zo.*,zop.*,zc.community_name,zp.park_code,zp.park_type from zy_owner_park zop
+        left join zy_park zp on zop.park_id = zp.park_id
+        left join zy_community zc on zp.community_id = zc.community_id
+        left join zy_owner zo on zo.owner_id = zop.owner_id
+        where zop.del_flag = 0 and zp.del_flag = 0 and zop.park_owner_status = 'Binding'
+        and zp.community_id = #{communityId} and zop.owner_park_id in
+        <foreach collection="ids" item="ownerParkId" separator="," open="(" close=")">
+            #{ownerParkId}
+        </foreach>
+    </select>
+    <!--根据小区id查询车位列表-->
+    <select id="getAllDtoList" resultType="com.zy_admin.community.dto.OwnerParkExcelDto">
+         select zo.*,zop.*,zc.community_name,zp.park_code,zp.park_type from zy_owner_park zop
+          left join zy_park zp on zop.park_id = zp.park_id
+        left join zy_community zc on zp.community_id = zc.community_id
+        left join zy_owner zo on zo.owner_id = zop.owner_id
+        where zp.community_id = #{communityId} and zop.del_flag = 0 and zp.del_flag = 0 and zop.park_owner_status = 'Binding'
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="ownerParkId" useGeneratedKeys="true">
-        insert into zy_owner_park (owner_park_id,park_id, owner_id, park_owner_status, create_by, create_time, update_by, update_time, remark)
-        values (#{ownerParkId},#{parkId}, #{ownerId}, #{parkOwnerStatus}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
+        insert into zy_owner_park (owner_park_id,park_id, owner_id, park_owner_status,car_number, create_by, create_time, update_by, update_time, remark)
+        values (#{ownerParkId},#{parkId}, #{ownerId}, #{parkOwnerStatus},#{carNumber}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark})
     </insert>
 
     <insert id="insertBatch" keyProperty="ownerParkId" useGeneratedKeys="true">
-        insert into zy_owner_park(park_id, owner_id, park_owner_status, create_by, create_time, update_by, update_time,
+        insert into zy_owner_park(park_id, owner_id, park_owner_status, car_number,create_by, create_time, update_by, update_time,
         remark)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.parkId}, #{entity.ownerId}, #{entity.parkStatus}, #{entity.createBy}, #{entity.createTime},
+            (#{entity.parkId}, #{entity.ownerId}, #{entity.parkStatus},#{entity.carNumber}, #{entity.createBy}, #{entity.createTime},
             #{entity.updateBy}, #{entity.updateTime}, #{entity.remark})
         </foreach>
     </insert>
@@ -183,14 +217,12 @@
     </delete>
 
     <!--批量删除-->
-    <delete id="deleteOwnerParkByIds">
-        delete
-        from zy_owner_park
+    <update id="deleteOwnerParkByIds">
+        update zy_owner_park set del_flag = 1
         where owner_park_id in
         <foreach collection="idList" item="owner_park_id" separator="," open="(" close=")">
             #{owner_park_id}
         </foreach>
-    </delete>
-
+    </update>
 </mapper>
 

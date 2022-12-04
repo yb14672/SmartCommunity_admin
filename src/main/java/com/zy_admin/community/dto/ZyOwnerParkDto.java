@@ -40,6 +40,10 @@ public class ZyOwnerParkDto extends ZyOwnerPark {
      */
     @ApiModelProperty("车位状态")
     private String parkStatus;
-
+    /**
+     * 小区id
+     */
+    @ApiModelProperty("小区id")
+    private String communityId;
 
 }

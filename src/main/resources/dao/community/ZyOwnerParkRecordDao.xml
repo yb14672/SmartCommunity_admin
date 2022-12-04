@@ -110,7 +110,7 @@
     <!--查询单个-->
     <select id="queryById" resultType="com.zy_admin.community.entity.ZyOwnerParkRecord">
          select
-          record_id, owner_park_id, community_id, owner_id, park_bunding_status, record_audit_opinion, record_audit_type, create_by, create_time, update_by, update_time, remark
+          record_id, owner_park_id, community_id, owner_id,car_number, park_bunding_status, record_audit_opinion, record_audit_type, create_by, create_time, update_by, update_time, remark
         from zy_owner_park_record
         where record_id = #{recordId}
     </select>
@@ -119,7 +119,7 @@
         select
           zp.park_code,zc.community_id,zc.community_name,zp.park_type,zp.park_status,zp.park_is_public,zopr.record_id,
           zopr.owner_park_id, zopr.community_id, zopr.owner_id, zopr.park_bunding_status, zopr.record_audit_opinion,
-          zopr.record_audit_type, zopr.create_by, zopr.create_time, zopr.update_by, zopr.update_time, zopr.remark
+          zopr.record_audit_type, zop.car_number,zopr.create_by, zopr.create_time, zopr.update_by, zopr.update_time, zopr.remark
         from zy_owner_park_record zopr
         left join zy_owner_park zop on zopr.owner_park_id = zop.owner_park_id
         left join zy_park zp on zop.park_id = zp.park_id

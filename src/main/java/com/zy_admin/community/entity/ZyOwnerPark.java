@@ -1,5 +1,7 @@
 package com.zy_admin.community.entity;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -25,12 +27,20 @@ public class ZyOwnerPark implements Serializable {
      * 房屋绑定id
      */
     @ApiModelProperty("房屋绑定id")
+    @ExcelIgnore
     private String ownerParkId;
     /**
      * 车位id
      */
     @ApiModelProperty("车位id")
+    @ExcelIgnore
     private String parkId;
+    /**
+     * 删除状态
+     */
+    @ExcelProperty("删除状态")
+    @ApiModelProperty("删除状态")
+    private String delFlag;
     /**
      * 业主id
      */
@@ -41,6 +51,11 @@ public class ZyOwnerPark implements Serializable {
      */
     @ApiModelProperty("绑定状态（0审核中 1绑定 2审核失败）")
     private String parkOwnerStatus;
+    /**
+     * 车牌号
+     */
+    @ApiModelProperty("车牌号")
+    private String carNumber;
     /**
      * 创建者
      */
