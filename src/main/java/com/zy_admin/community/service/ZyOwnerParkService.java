@@ -29,7 +29,10 @@ public interface ZyOwnerParkService extends IService<ZyOwnerPark> {
     Result getListByIdList(ArrayList<String> ids, String communityId);
 
     /**
+     *
      * 查询未被绑定和启用的车位
+     *
+     * @param communityId 社区id
      * @return 车位审核集合
      */
     Result selectNoBindingAndStatusPark(String communityId);
