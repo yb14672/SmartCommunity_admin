@@ -59,5 +59,12 @@ public interface ZyCommunityDao extends BaseMapper<ZyCommunity> {
     Long count(@Param("community") ZyCommunity community);
 
 
+    /**
+     * 根据登录的管理员获取所在公司负责的小区
+     *
+     * @param userId 用户id
+     * @return {@link List}<{@link ZyCommunity}>
+     */
+    List<ZyCommunity> getCommunityIdByUserId(String userId);
 }
 

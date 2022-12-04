@@ -1,6 +1,13 @@
 package com.zy_admin.community.entity;
 
-import java.util.Date;
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -9,117 +16,72 @@ import java.io.Serializable;
  * @author makejava
  * @since 2022-12-01 15:18:36
  */
+@ApiModel(description = "房屋绑定表 (ZyOwnerPark)实体类")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ZyOwnerPark implements Serializable {
-    private static final long serialVersionUID = -93830376049597730L;
+    @ApiModelProperty(hidden = true)
+    private static final long serialVersionUID = 276187551511950633L;
     /**
      * 房屋绑定id
      */
-    private Long ownerParkId;
+    @ApiModelProperty("房屋绑定id")
+    @ExcelIgnore
+    private String ownerParkId;
     /**
      * 车位id
      */
-    private Long parkId;
+    @ApiModelProperty("车位id")
+    @ExcelIgnore
+    private String parkId;
+    /**
+     * 删除状态
+     */
+    @ExcelProperty("删除状态")
+    @ApiModelProperty("删除状态")
+    private String delFlag;
     /**
      * 业主id
      */
-    private Long ownerId;
+    @ApiModelProperty("业主id")
+    private String ownerId;
     /**
      * 绑定状态（0审核中 1绑定 2审核失败）
      */
-    private String parkStatus;
+    @ApiModelProperty("绑定状态（0审核中 1绑定 2审核失败）")
+    private String parkOwnerStatus;
+    /**
+     * 车牌号
+     */
+    @ApiModelProperty("车牌号")
+    private String carNumber;
     /**
      * 创建者
      */
+    @ApiModelProperty("创建者")
     private String createBy;
     /**
      * 创建时间
      */
-    private Date createTime;
+    @ApiModelProperty("创建时间")
+    private String createTime;
     /**
      * 更新者
      */
+    @ApiModelProperty("更新者")
     private String updateBy;
     /**
      * 更新时间
      */
-    private Date updateTime;
+    @ApiModelProperty("更新时间")
+    private String updateTime;
     /**
      * 备注
      */
+    @ApiModelProperty("备注")
     private String remark;
 
-
-    public Long getOwnerParkId() {
-        return ownerParkId;
-    }
-
-    public void setOwnerParkId(Long ownerParkId) {
-        this.ownerParkId = ownerParkId;
-    }
-
-    public Long getParkId() {
-        return parkId;
-    }
-
-    public void setParkId(Long parkId) {
-        this.parkId = parkId;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public String getParkStatus() {
-        return parkStatus;
-    }
-
-    public void setParkStatus(String parkStatus) {
-        this.parkStatus = parkStatus;
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
 
 }
 

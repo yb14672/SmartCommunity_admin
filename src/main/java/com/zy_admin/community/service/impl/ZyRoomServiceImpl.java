@@ -41,38 +41,45 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
      */
     @Override
     public Result getAllCommunity(Page page, ZyRoom zyRoom) {
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
-        MPJLambdaWrapper<ZyRoom> queryWrapper = new MPJLambdaWrapper<ZyRoom>()
-                .selectAll(ZyRoom.class)
-                .select(ZyCommunity::getCommunityName)
-                .select(ZyUnit::getUnitName)
-                .select(ZyBuilding::getBuildingName)
-                .selectAssociation(ZyRoom.class, ZyRoomDto::getZyRoom)
-                .selectAssociation(ZyCommunity.class, ZyRoomDto::getZyCommunity)
-                .selectAssociation(ZyUnit.class, ZyRoomDto::getZyUnit)
-                .selectAssociation(ZyBuilding.class, ZyRoomDto::getZyBuilding)
-                .leftJoin(ZyCommunity.class, ZyCommunity::getCommunityId, ZyRoom::getCommunityId)
-                .leftJoin(ZyUnit.class, ZyUnit::getUnitId, ZyRoom::getUnitId)
-                .leftJoin(ZyBuilding.class, ZyBuilding::getBuildingId, ZyRoom::getBuildingId)
-                .eq(zyRoom.getBuildingId() != null && !"".equals(zyRoom.getBuildingId()),
-                        ZyRoom::getBuildingId, zyRoom.getBuildingId())
-                .eq(zyRoom.getCommunityId() != null && !"".equals(zyRoom.getCommunityId()),
-                        ZyRoom::getCommunityId, zyRoom.getCommunityId())
-                .eq(zyRoom.getUnitId() != null && !"".equals(zyRoom.getUnitId()),
-                        ZyRoom::getUnitId, zyRoom.getUnitId())
-                .eq(zyRoom.getRoomStatus() != null && !"".equals(zyRoom.getRoomStatus()),
-                        ZyRoom::getRoomStatus, zyRoom.getRoomStatus())
-                .orderBy(true, true, ZyRoom::getCreateTime);
-        if (page.getSize() != 0) {
-            IPage<ZyRoomDto> page1 = this.baseMapper.selectJoinPage(page, ZyRoomDto.class, queryWrapper);
-            if (page1.getTotal() > 0) {
-                result.setData(page1);
+        Result result = new Result("没有符合条件的数据", ResultTool.fail(ResultCode.NO_MATCHING_DATA));
+        try {
+            MPJLambdaWrapper<ZyRoom> queryWrapper = new MPJLambdaWrapper<ZyRoom>()
+                    .selectAll(ZyRoom.class)
+                    .select(ZyCommunity::getCommunityName)
+                    .select(ZyUnit::getUnitName)
+                    .select(ZyBuilding::getBuildingName)
+                    .selectAssociation(ZyRoom.class, ZyRoomDto::getZyRoom)
+                    .selectAssociation(ZyCommunity.class, ZyRoomDto::getZyCommunity)
+                    .selectAssociation(ZyUnit.class, ZyRoomDto::getZyUnit)
+                    .selectAssociation(ZyBuilding.class, ZyRoomDto::getZyBuilding)
+                    .leftJoin(ZyCommunity.class, ZyCommunity::getCommunityId, ZyRoom::getCommunityId)
+                    .leftJoin(ZyUnit.class, ZyUnit::getUnitId, ZyRoom::getUnitId)
+                    .leftJoin(ZyBuilding.class, ZyBuilding::getBuildingId, ZyRoom::getBuildingId)
+                    .eq(zyRoom.getBuildingId() != null && !"".equals(zyRoom.getBuildingId()),
+                            ZyRoom::getBuildingId, zyRoom.getBuildingId())
+                    .eq(zyRoom.getCommunityId() != null && !"".equals(zyRoom.getCommunityId()),
+                            ZyRoom::getCommunityId, zyRoom.getCommunityId())
+                    .eq(zyRoom.getUnitId() != null && !"".equals(zyRoom.getUnitId()),
+                            ZyRoom::getUnitId, zyRoom.getUnitId())
+                    .eq(zyRoom.getRoomStatus() != null && !"".equals(zyRoom.getRoomStatus()),
+                            ZyRoom::getRoomStatus, zyRoom.getRoomStatus())
+                    .orderBy(true, true, ZyRoom::getCreateTime);
+            if (page.getSize() != 0) {
+                IPage<ZyRoomDto> page1 = this.baseMapper.selectJoinPage(page, ZyRoomDto.class, queryWrapper);
+                if (page1.getTotal() > 0) {
+                    result.setData(page1);
+                    result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+                }
+            } else {
+                List<ZyRoomDto> zyRoomList = this.baseMapper.selectJoinList(ZyRoomDto.class, queryWrapper);
+                result.setData(zyRoomList);
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
             }
-        } else {
-            List<ZyRoomDto> zyRoomList = this.baseMapper.selectJoinList(ZyRoomDto.class, queryWrapper);
-            result.setData(zyRoomList);
-            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setData("获取失败");
+            result.setMeta(ResultTool.fail(ResultCode.COMMON_FAIL));
+            return result;
         }
         return result;
     }

@@ -49,16 +49,16 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
      */
     @Override
     public Result deleteByIds(List<String> ids) {
-        Result result = new Result(null, ResultTool.fail(ResultCode.COMMUNITY_UPDATE_FAIL));
+        Result result = new Result("删除失败", ResultTool.fail(ResultCode.COMMUNITY_UPDATE_FAIL));
         List<ZyBuilding> buildingListsByIds = zyBuildingDao.getBuildingListsByIds(ids);
         if (buildingListsByIds.size() == 0) {
             int i = this.baseMapper.deleteBatchIds(ids);
             if (i >= 1) {
                 result.setData("删除成功");
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-            } else {
-                result.setMeta(ResultTool.fail(ResultCode.COMMUNITY_HAVE_CHILD));
             }
+        } else {
+            result.setMeta(ResultTool.fail(ResultCode.COMMUNITY_HAVE_CHILD));
         }
         return result;
     }
@@ -184,6 +184,23 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
             e.printStackTrace();
             return result;
         }
+    }
+
+    /**
+     * 根据登录的管理员获取所在公司负责的小区
+     *
+     * @param userId 用户id
+     * @return {@link Result}
+     */
+    @Override
+    public Result getCommunityIdByUserId(String userId) {
+        Result result = new Result("当前公司没有负责的物业", ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<ZyCommunity> communityIdByUserId = this.baseMapper.getCommunityIdByUserId(userId);
+        if(!communityIdByUserId.isEmpty()){
+            result.setData(communityIdByUserId);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
     }
 }
 

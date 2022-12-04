@@ -1,19 +1,19 @@
 package com.zy_admin.community.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
-import com.zy_admin.community.dao.ZyOwnerParkDao;
+import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyOwnerParkRecordDao;
-import com.zy_admin.community.entity.ZyOwner;
-import com.zy_admin.community.entity.ZyOwnerPark;
+import com.zy_admin.community.dto.ZyOwnerParkRecordDto;
 import com.zy_admin.community.entity.ZyOwnerParkRecord;
 import com.zy_admin.community.service.ZyOwnerParkRecordService;
-import org.springframework.stereotype.Service;
+import com.zy_admin.util.ResultTool;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 房屋绑定记录表 (ZyOwnerParkRecord)表服务实现类
@@ -26,9 +26,22 @@ public class ZyOwnerParkRecordServiceImpl extends ServiceImpl<ZyOwnerParkRecordD
     @Resource
     private ZyOwnerParkRecordDao zyOwnerParkRecordDao;
 
-
-    public Result getOwnerParkList(ZyOwner zyOwner, Pageable pageable) {
-        return null;
+    /**
+     * 查询车位审核记录
+     * @param ownerParkId 车位审核记录的id
+     * @return 车位审核记录
+     */
+    @Override
+    public Result selectOwnerParkById(String ownerParkId) {
+        //默认给失败
+        Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
+        //把找到的存到集合里面
+        List<ZyOwnerParkRecordDto> zyOwnerParkRecordDtoList = this.baseMapper.selectOwnerParkById(ownerParkId);
+        //存信息
+        result.setData(zyOwnerParkRecordDtoList);
+        //存信号
+        result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
     }
 
     /**
@@ -38,7 +51,7 @@ public class ZyOwnerParkRecordServiceImpl extends ServiceImpl<ZyOwnerParkRecordD
      * @return 实例对象
      */
     @Override
-    public ZyOwnerParkRecord queryById(Long recordId) {
+    public ZyOwnerParkRecord queryById(String recordId) {
         return this.zyOwnerParkRecordDao.queryById(recordId);
     }
 

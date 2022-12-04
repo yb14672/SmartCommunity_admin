@@ -23,6 +23,7 @@ public enum ResultCode {
     PARAM_TYPE_ERROR(1003, "参数类型错误"),
     PARAM_NOT_COMPLETE(1004, "参数缺失"),
     NO_CHANGE_IN_PARAMETER(1005,"参数没有变化"),
+    NO_MATCHING_DATA(1006,"没有符合条件的数据"),
 
     /* 用户错误 */
     USER_NOT_LOGIN(2001, "用户未登录"),
@@ -127,8 +128,13 @@ public enum ResultCode {
     NO_REALNAME_AUTHENTICATION(3051,"该住户未实名认证"),
     OWNER_REAL_NAME_NOT_EMPTY(3052,"真实姓名不能为空"),
     REPAIR_GET_FAIL(3053,"报修信息获取失败"),
-
-
+    INSERT_PARK_FAIL(3054,"新增车位失败"),
+    UPDATE_PARK_FAIL(3055,"修改车位失败"),
+    DELETED_PARK_FAIL(3056,"删除车位失败，选择中有车位被绑定"),
+    CARNUMBER_ERROR(3057,"车牌号不符合规则"),
+    CARNUMBER_REPEAT(3058,"车牌号重复"),
+    PARK_HAVE_BINDING(3059,"车位已经被绑定"),
+    PARK_HAVE_AUDITING(3060,"车位正在审核"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),

@@ -36,25 +36,26 @@ import java.util.List;
 public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerRoom> implements ZyOwnerRoomService {
 
     /**
-     * 系统用户刀
+     * 业主房间记录持久层
+     * 系统用户
      */
     @Resource
     private SysUserDao sysUserDao;
 
     /**
-     * 业主房间记录道
+     * 业主房间记录
      */
     @Resource
     private ZyOwnerRoomRecordDao zyOwnerRoomRecordDao;
 
     /**
-     * 房屋
+     * 房屋持久层
      */
     @Resource
     private ZyRoomDao zyRoomDao;
 
     /**
-     * 雪花经理
+     * 雪花算法
      */
     @Resource
     private SnowflakeManager snowflakeManager;
@@ -219,12 +220,22 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         //id
         zyOwnerRoomRecord.setRecordId(snowflakeManager.nextId()+"");
         zyOwnerRoomRecord.setOwnerType("yz");
+        zyOwnerRoomRecord.setCommunityId(zyOwnerRoom.getCommunityId());
+        zyOwnerRoomRecord.setBuildingId(zyOwnerRoom.getBuildingId());
+        zyOwnerRoomRecord.setUnitId(zyOwnerRoom.getUnitId());
+        zyOwnerRoomRecord.setRoomId(zyOwnerRoom.getRoomId());
         zyOwnerRoomRecord.setOwnerRoomId(zyOwnerRoom.getOwnerRoomId());
         zyOwnerRoomRecord.setRoomStatus(zyOwnerRoom.getRoomStatus());
+        zyOwnerRoomRecord.setUpdateBy(zyOwnerRoom.getUpdateBy());
         zyOwnerRoomRecord.setUpdateTime(LocalDateTime.now().toString());
+        zyOwnerRoomRecord.setCreateBy(zyOwnerRoom.getCreateBy());
+        zyOwnerRoomRecord.setCreateTime(zyOwnerRoom.getCreateTime());
         zyOwnerRoomRecordDao.insert(zyOwnerRoomRecord);
         //修改时间
         zyOwnerRoom.setUpdateTime(LocalDateTime.now().toString());
+        zyOwnerRoom.setRemark(recordAuditOpinion);
+        //先把所有申请该房屋的全部设为拒绝
+        this.baseMapper.changeStatusReject(zyOwnerRoom.getRoomId());
         this.baseMapper.updateOwnerRoomStatus(zyOwnerRoom);
         //判断审核是不是通过
         if ("Binding".equals(zyOwnerRoom.getRoomStatus())){
