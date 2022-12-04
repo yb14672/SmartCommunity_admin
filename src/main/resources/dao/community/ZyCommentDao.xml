@@ -59,7 +59,7 @@
             <if test="interactionId != null ">and wc.interaction_id = #{interactionId}</if>
             and wc.del_flag = 0
         </where>
-        order by wc.create_time asc
+        order by wc.create_time desc
     </select>
 
     <!--查询指定行数据-->

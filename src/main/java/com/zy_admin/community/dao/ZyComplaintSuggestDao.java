@@ -52,11 +52,14 @@ public interface ZyComplaintSuggestDao extends BaseMapper<ZyComplaintSuggest> {
      */
     List<ZyComplaintSuggestDto> querySuggestAll();
 
+
     /**
-     * 新增投诉建议对象
-     * @return
+     * 插入建议
+     *
+     * @param zyComplaintSuggest zy投诉建议
+     * @return {@link Integer}
      */
-    Integer insertSuggest(@Param("zyComplaintSuggest") ZyComplaintSuggest zyComplaintSuggest);
+    Integer insertSuggest(@Param("zyComplaintSuggest") ZyComplaintSuggestDto zyComplaintSuggest);
 
     /**
      * 修改投诉建议

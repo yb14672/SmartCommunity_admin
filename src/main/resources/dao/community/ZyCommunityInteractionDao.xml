@@ -59,7 +59,8 @@
 
     <!--查询单个-->
     <select id="selectInteractionById" resultType="com.zy_admin.community.dto.ZyCommunityInteractionDto">
-        SELECT a.interaction_id,
+        SELECT a.user_id,
+               a.interaction_id,
                a.create_time,
                a.content,
                b.owner_nickname,
