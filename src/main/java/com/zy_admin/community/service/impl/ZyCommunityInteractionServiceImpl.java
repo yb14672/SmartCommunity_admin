@@ -19,10 +19,7 @@ import com.zy_admin.community.entity.ZyCommunityInteraction;
 import com.zy_admin.community.entity.ZyFiles;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.service.ZyCommunityInteractionService;
-import com.zy_admin.util.ObjUtil;
-import com.zy_admin.util.ResultTool;
-import com.zy_admin.util.SnowflakeManager;
-import com.zy_admin.util.StringUtil;
+import com.zy_admin.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,6 +86,8 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
         //获取当前文章的详细信息
         ZyCommunityInteractionDto interactionDto = this.baseMapper.selectInteractionById(interactionId);
         if (interactionDto != null && ObjUtil.isNotEmpty(interactionDto)) {
+            List<String> urlList = this.zyFilesDao.queryAllFileUrl(interactionId, "CommunityInteraction");
+            interactionDto.setUrlList(urlList);
             interactionDto.setZyCommentList(commentList);
             result.setData(interactionDto);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));

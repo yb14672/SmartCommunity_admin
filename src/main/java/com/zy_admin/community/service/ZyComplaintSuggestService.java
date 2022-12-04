@@ -46,12 +46,15 @@ public interface ZyComplaintSuggestService extends IService<ZyComplaintSuggest> 
      */
     List<ZyComplaintSuggestDto> querySuggestAll();
 
+
     /**
-     * 新增投诉建议对象
-     * @param zyComplaintSuggest 投诉建议对象
-     * @return
+     * 插入建议
+     *
+     * @param zyComplaintSuggest zy投诉建议
+     * @return {@link Result}
+     * @throws Exception 异常
      */
-    Result insertSuggest(ZyComplaintSuggest zyComplaintSuggest) throws Exception;
+    Result insertSuggest(ZyComplaintSuggestDto zyComplaintSuggest) throws Exception;
 
     /**
      * 修改投诉建议

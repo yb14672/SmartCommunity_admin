@@ -82,8 +82,9 @@ public class ZyCommunityInteractionController extends ApiController {
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping
     public Result insert(@RequestBody ZyCommunityInteractionDto zyCommunityInteraction, HttpServletRequest request) throws Exception {
-        zyCommunityInteraction.setCreateBy(requestUtil.getOwnerId(request));
+        zyCommunityInteraction.setCreateBy(requestUtil.getOwner(request).getOwnerNickname());
         zyCommunityInteraction.setUserId(requestUtil.getOwnerId(request));
+        System.err.println("zyCommunityInteraction = " + zyCommunityInteraction.getCommunityId());
         return this.zyCommunityInteractionService.insert(zyCommunityInteraction);
     }
 

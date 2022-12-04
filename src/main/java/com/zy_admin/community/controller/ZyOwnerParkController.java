@@ -104,8 +104,9 @@ public class ZyOwnerParkController {
      */
     @ApiOperation(value = "查询未被绑定和启用的车位", notes = "查询未被绑定和启用的车位", httpMethod = "GET")
     @GetMapping("/selectNoBindingAndStatusPark")
-    public Result selectNoBindingAndStatusPark(String communityId){
-        return this.zyOwnerParkService.selectNoBindingAndStatusPark(communityId);
+    public Result selectNoBindingAndStatusPark(HttpServletRequest request){
+        String ownerId = requestUtil.getOwnerId(request);
+        return this.zyOwnerParkService.selectNoBindingAndStatusPark(ownerId);
     }
 
     /**
@@ -169,10 +170,12 @@ public class ZyOwnerParkController {
     @ApiOperation(value = "新增车位审核", notes = "新增车位审核", httpMethod = "POST")
     @PostMapping("/insertOwnerPark")
     public Result insertOwnerPark(@RequestBody ZyOwnerPark zyOwnerPark, HttpServletRequest request) throws Exception {
+        System.err.println(zyOwnerPark);
         ZyOwner owner = this.requestUtil.getOwner(request);
         zyOwnerPark.setCreateBy(owner.getOwnerRealName());
         zyOwnerPark.setCreateTime(LocalDateTime.now().toString());
         zyOwnerPark.setOwnerId(owner.getOwnerId());
+        zyOwnerPark.setParkOwnerStatus("Auditing");
         return this.zyOwnerParkService.insertOwnerPark(zyOwnerPark);
     }
 

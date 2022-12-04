@@ -97,17 +97,19 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
      * @return 车位审核集合
      */
     @Override
-    public Result selectNoBindingAndStatusPark(String communityId) {
+    public Result selectNoBindingAndStatusPark(String ownerId) {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
-            List<ZyOwnerPark> zyOwnerParks = this.baseMapper.selectNoBindingAndStatusPark(communityId);
+            List<RoomTree> zyOwnerParks = this.baseMapper.selectNoBindingAndStatusPark(ownerId);
             System.out.println(zyOwnerParks);
             if (zyOwnerParks.size()==0){
                 result.setData("改小区内没有未绑定的车位信息");
                 result.setMeta(ResultTool.fail(ResultCode.NO_MATCHING_DATA));
                 return result;
             }else {
-                result.setData(zyOwnerParks);
+                TreeData treeData = new TreeData(zyOwnerParks);
+                List<RoomTree> parkTrees = treeData.buildTree();
+                result.setData(parkTrees);
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 return result;
             }
