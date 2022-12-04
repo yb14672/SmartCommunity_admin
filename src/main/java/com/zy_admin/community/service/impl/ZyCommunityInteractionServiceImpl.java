@@ -11,6 +11,7 @@ import com.zy_admin.community.dao.ZyCommentDao;
 import com.zy_admin.community.dao.ZyCommunityInteractionDao;
 import com.zy_admin.community.dao.ZyFilesDao;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
+import com.zy_admin.community.dto.InteractionsInMonth;
 import com.zy_admin.community.dto.OwnerRoomDto;
 import com.zy_admin.community.dto.ZyCommentDto;
 import com.zy_admin.community.dto.ZyCommunityInteractionDto;
@@ -26,8 +27,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -47,6 +50,28 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
     private ZyCommentDao zyCommentDao;
     @Resource
     private SnowflakeManager snowflakeManager;
+
+    /**
+     * 获取一周内的互动信息
+     *
+     * @param limitNum
+     * @return 一周以内的互动信息
+     */
+    @Override
+    public Result getInteractionInMonth(String limitNum) {
+        Result result = new Result("最近一周没有新的互动文章", ResultTool.fail(ResultCode.COMMON_FAIL));
+        //获取七天前的日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 30);
+        String lastWeek = sdf.format(calendar.getTime());
+        List<InteractionsInMonth> interactionsInMonthList = this.baseMapper.getInteractionInMonth(lastWeek, Integer.valueOf(limitNum));
+        if (!interactionsInMonthList.isEmpty()) {
+            result.setData(interactionsInMonthList);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
 
     /**
      * 通过id获取互动文章信息

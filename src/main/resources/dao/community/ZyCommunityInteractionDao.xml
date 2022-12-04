@@ -18,7 +18,8 @@
             <!-- 如果业主ID不为空则代表是小程序用户，只能看自己已绑定的房屋所在小区 -->
             <when test="zyCommunityInteractionDto.userId != null and zyCommunityInteractionDto.userId != ''">
                 and community_id IN
-                (SELECT community_id FROM zy_owner_room WHERE room_status='Binding' and owner_id=#{zyCommunityInteractionDto.userId})
+                (SELECT community_id FROM zy_owner_room WHERE room_status='Binding' and
+                owner_id=#{zyCommunityInteractionDto.userId})
             </when>
             <!-- 如果业主ID为空则代表是后台管理用户，能看所有 -->
             <otherwise>
@@ -147,7 +148,8 @@
         </where>
     </select>
 
-    <select id="countNum" parameterType="com.zy_admin.community.dto.ZyCommunityInteractionDto" resultType="java.lang.Long">
+    <select id="countNum" parameterType="com.zy_admin.community.dto.ZyCommunityInteractionDto"
+            resultType="java.lang.Long">
         SELECT
         count(1)
         FROM zy_community_interaction ci
@@ -210,7 +212,8 @@
         <result property="ownerPortrait" column="owner_portrait" jdbcType="VARCHAR"/>
     </resultMap>
     <!--条件查询-->
-    <select id="selectAllLimit" parameterType="com.zy_admin.community.dto.ZyCommunityInteractionDto" resultMap="InteractionDtoMap">
+    <select id="selectAllLimit" parameterType="com.zy_admin.community.dto.ZyCommunityInteractionDto"
+            resultMap="InteractionDtoMap">
         select
         ci.*,o.owner_nickname,o.owner_real_name,o.owner_phone_number,o.owner_portrait
         from zy_community_interaction ci
@@ -259,6 +262,17 @@
         <if test="pageable.pageSize!=0">
             limit #{pageable.index},#{pageable.pageSize}
         </if>
+    </select>
+
+    <select id="getInteractionInMonth" resultType="com.zy_admin.community.dto.InteractionsInMonth">
+        SELECT ci.*,
+               o.owner_nickname,
+               (SELECT community_name FROM zy_community WHERE community_id = ci.community_id) community_name
+        FROM zy_community_interaction ci
+                 LEFT JOIN zy_owner o ON ci.user_id = o.owner_id
+        WHERE ci.create_time > #{lastWeek}
+        order by ci.create_time desc
+        limit #{limitNum}
     </select>
 
     <!--新增所有列-->

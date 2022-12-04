@@ -1,12 +1,12 @@
 package com.zy_admin.community.controller;
 
 import com.zy_admin.common.core.Result.Result;
-import com.zy_admin.common.enums.ResultCode;
-import com.zy_admin.sys.entity.UserNum;
-import com.zy_admin.util.ResultTool;
+import com.zy_admin.community.service.ZyCommunityInteractionService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @author yb14672
@@ -15,8 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("bigScreen")
 public class BigScreenController {
-    @GetMapping("/countUserNum")
-    public Result index() {
-        return new Result(new UserNum(), ResultTool.fail(ResultCode.COMMON_FAIL));
+    @Resource
+    private ZyCommunityInteractionService interactionService;
+
+    /**
+     * 获取一周内的互动信息
+     *
+     * @return 一周以内的互动信息
+     */
+    @GetMapping("/ssyj")
+    public Result getInteractionInMonth(String limitNum) {
+        return interactionService.getInteractionInMonth(limitNum);
     }
 }

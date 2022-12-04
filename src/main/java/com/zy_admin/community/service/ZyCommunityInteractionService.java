@@ -17,6 +17,14 @@ import java.util.List;
 public interface ZyCommunityInteractionService extends IService<ZyCommunityInteraction> {
 
     /**
+     * 获取一周内的互动信息
+     *
+     * @param limitNum 总共显示多少条
+     * @return 一周以内的互动信息
+     */
+    Result getInteractionInMonth(String limitNum);
+
+    /**
      * 通过id获取互动文章信息
      *
      * @param interactionId 文章id

@@ -2,6 +2,7 @@ package com.zy_admin.community.dao;
 
 import com.github.yulichang.base.MPJBaseMapper;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.community.dto.InteractionsInMonth;
 import com.zy_admin.community.dto.ZyCommunityInteractionDto;
 import com.zy_admin.community.entity.ZyCommunityInteraction;
 import org.apache.ibatis.annotations.Param;
@@ -59,6 +60,15 @@ public interface ZyCommunityInteractionDao extends MPJBaseMapper<ZyCommunityInte
      * @param pageable                  分页对象
      * @return {@link List}<{@link ZyCommunityInteractionDto}>
      */
-    List<ZyCommunityInteractionDto> selectAllLimit(@Param("zyCommunityInteractionDto") ZyCommunityInteractionDto zyCommunityInteractionDto,@Param("pageable") Pageable pageable);
+    List<ZyCommunityInteractionDto> selectAllLimit(@Param("zyCommunityInteractionDto") ZyCommunityInteractionDto zyCommunityInteractionDto, @Param("pageable") Pageable pageable);
+
+    /**
+     * 获取一周内的互动信息
+     *
+     * @param lastWeek 7天前的日期
+     * @param limitNum 总共显示多少条
+     * @return 交互列表
+     */
+    List<InteractionsInMonth> getInteractionInMonth(@Param("lastWeek") String lastWeek, @Param("limitNum") Integer limitNum);
 }
 
