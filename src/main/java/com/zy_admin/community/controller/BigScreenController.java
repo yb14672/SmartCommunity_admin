@@ -1,10 +1,6 @@
 package com.zy_admin.community.controller;
 
 import com.zy_admin.common.core.Result.Result;
-import com.zy_admin.community.dto.GetRoomSDto;
-import com.zy_admin.community.dto.TreeDto;
-import com.zy_admin.community.entity.ZyCommunity;
-import com.zy_admin.community.entity.ZyRoom;
 import com.zy_admin.community.service.ZyCommunityInteractionService;
 import com.zy_admin.community.service.ZyCommunityService;
 import com.zy_admin.community.service.ZyRoomService;

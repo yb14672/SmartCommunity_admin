@@ -110,7 +110,7 @@
                   FROM sys_user
                   WHERE user_id = #{userId}))
     </select>
-    <select id="getProvinces" resultType="com.zy_admin.community.dto.TreeDto">
+    <select id="getProvinces" resultType="com.zy_admin.community.dto.AreaInfo">
     SELECT
 	a.name,COUNT(1) `value`
     FROM zy_community c

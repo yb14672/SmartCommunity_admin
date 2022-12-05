@@ -14,11 +14,11 @@ import java.util.List;
  * @author lvwei
  * @date 2022/12/05
  */
-@ApiModel(description = "通用树")
+@ApiModel(description = "地区信息")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TreeDto {
+public class AreaInfo {
     /**
      * 名字
      */
@@ -30,8 +30,8 @@ public class TreeDto {
     @ApiModelProperty("值")
     private String value;
     /**
-     * 子类
+     * 地区代码
      */
-    @ApiModelProperty("子类")
-    private List<TreeDto> children;
+    @ApiModelProperty("地区代码")
+    private String regionCode="china";
 }

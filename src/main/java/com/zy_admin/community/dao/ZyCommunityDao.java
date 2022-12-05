@@ -1,10 +1,9 @@
 package com.zy_admin.community.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.dto.CommunityDto;
 import com.zy_admin.community.dto.CommunityExcel;
-import com.zy_admin.community.dto.TreeDto;
+import com.zy_admin.community.dto.AreaInfo;
 import com.zy_admin.community.entity.ZyCommunity;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -75,7 +74,7 @@ public interface ZyCommunityDao extends BaseMapper<ZyCommunity> {
      *
      * @return 查询省的小区总数量
      */
-    List<TreeDto> getProvinces();
+    List<AreaInfo> getProvinces();
 
     /**
      * 得到城市
@@ -84,6 +83,6 @@ public interface ZyCommunityDao extends BaseMapper<ZyCommunity> {
      * @return 查询省的小区总数量
      */
     @Select("select community_city_code as name , count(*) as value FROM zy_community WHERE community_provence_code = #{provence} GROUP BY community_city_code")
-    List<TreeDto> getCities(String provence);
+    List<AreaInfo> getCities(String provence);
 }
 
