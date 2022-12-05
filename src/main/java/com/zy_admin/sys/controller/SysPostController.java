@@ -1,10 +1,12 @@
 package com.zy_admin.sys.controller;
+
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
@@ -12,12 +14,12 @@ import com.zy_admin.sys.entity.SysPost;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysPostService;
 import com.zy_admin.util.RequestUtil;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -50,6 +52,7 @@ public class SysPostController extends ApiController {
      */
     @ApiOperation(value = "获取所有的岗位", notes = "获取所有的岗位", httpMethod = "GET")
     @GetMapping("/getAllPost")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result getAllPost() {
         return sysPostService.getAllPost();
     }
@@ -65,6 +68,7 @@ public class SysPostController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有岗位数据", notes = "分页查询所有岗位数据", httpMethod = "GET")
     @GetMapping("/getPostList")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result getPostList(SysPost sysPost, Pageable pageable) {
         return this.sysPostService.selectPostByLimit(sysPost, pageable);
     }
@@ -81,6 +85,7 @@ public class SysPostController extends ApiController {
     @ApiOperation(value = "添加岗位信息", notes = "添加岗位信息", httpMethod = "POST")
     @PostMapping("/addPost")
     @MyLog(title = "岗位管理", optParam = "#{sysPost}", businessType = BusinessType.INSERT)
+    @PreAuthorize("hasAnyAuthority('system:post:add')")
     public Result addPost(HttpServletRequest request, @RequestBody SysPost sysPost) {
         SysUser user = this.requestUtil.getUser(request);
         sysPost.setCreateTime(LocalDateTime.now().toString());
@@ -100,6 +105,7 @@ public class SysPostController extends ApiController {
     @ApiOperation(value = "修改岗位信息", notes = "修改岗位信息", httpMethod = "PUT")
     @PutMapping("/updatePost")
     @MyLog(title = "岗位管理", optParam = "#{sysPost}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:post:edit')")
     public Result updatePost(HttpServletRequest request, @RequestBody SysPost sysPost) {
         SysUser user = this.requestUtil.getUser(request);
         sysPost.setUpdateBy(user.getUserName());
@@ -120,6 +126,7 @@ public class SysPostController extends ApiController {
     @ApiOperation(value = "岗位信息导出", notes = "岗位信息导出", httpMethod = "GET")
     @MyLog(title = "岗位管理", optParam = "#{postIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
+    @PreAuthorize("hasAnyAuthority('system:post:export')")
     public Result getExcel(@RequestParam("postIds") ArrayList<Integer> postIds, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysPost> sysPosts;
@@ -157,6 +164,7 @@ public class SysPostController extends ApiController {
     @ApiOperation(value = "删除岗位", notes = "删除岗位", httpMethod = "DELETE")
     @DeleteMapping("/deletePost")
     @MyLog(title = "岗位管理", optParam = "#{postIds}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('system:post:remove')")
     public Result deletePost(@RequestParam("ids") List<Integer> postIds) {
         return sysPostService.deletePost(postIds);
     }

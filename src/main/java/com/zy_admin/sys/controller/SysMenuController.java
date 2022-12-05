@@ -16,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -76,6 +77,7 @@ public class SysMenuController extends ApiController {
     })
     @ApiOperation(value = "获取所有菜单", notes = "获取所有菜单", httpMethod = "GET")
     @GetMapping("/getMenus")
+    @PreAuthorize("hasAnyAuthority('ROLE_admin')")
     public Result getMenuList(HttpServletRequest request) {
         String userId = requestUtil.getUserId(request);
         return this.sysMenuService.getAllMenu(userId);
@@ -93,6 +95,7 @@ public class SysMenuController extends ApiController {
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping("/addMenu")
     @MyLog(title = "菜单管理", optParam = "#{sysMenu}", businessType = BusinessType.INSERT)
+    @PreAuthorize("hasAnyAuthority('system:menu:add')")
     public Result insert(@RequestBody SysMenu sysMenu, HttpServletRequest request) {
         String userId = requestUtil.getUserId(request);
         Result result = this.sysUserService.queryById(userId);
@@ -119,6 +122,7 @@ public class SysMenuController extends ApiController {
     @ApiOperation(value = "修改数据", notes = "修改数据", httpMethod = "PUT")
     @PutMapping("/updateMenu")
     @MyLog(title = "菜单管理", optParam = "#{sysMenu}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:menu:edit')")
     public Result updateMenu(@RequestBody SysMenu sysMenu) {
         return this.sysMenuService.updateMenu(sysMenu);
     }
@@ -133,6 +137,7 @@ public class SysMenuController extends ApiController {
     @ApiOperation(value = "根据id删除菜单", notes = "根据id删除菜单", httpMethod = "DELETE")
     @DeleteMapping("/deleteById")
     @MyLog(title = "菜单管理", optParam = "#{id}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('system:menu:remove')")
     public Result deleteById(@RequestParam String id) {
         return this.sysMenuService.deteleById(Long.valueOf(id));
     }
@@ -147,6 +152,7 @@ public class SysMenuController extends ApiController {
     @ApiOperation(value = "批量删除菜单", notes = "批量删除菜单", httpMethod = "DELETE")
     @DeleteMapping
     @MyLog(title = "菜单管理", optParam = "#{idList}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('system:menu:remove')")
     public Result deleteByIdList(@RequestParam String[] idList) {
         List<Long> idList1 = new ArrayList<Long>();
         for (String str : idList) {

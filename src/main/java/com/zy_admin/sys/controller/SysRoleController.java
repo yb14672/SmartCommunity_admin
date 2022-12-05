@@ -1,4 +1,5 @@
 package com.zy_admin.sys.controller;
+
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
@@ -6,6 +7,7 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
@@ -13,12 +15,12 @@ import com.zy_admin.sys.dto.RoleAndRoleMenu;
 import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.service.SysRoleMenuService;
 import com.zy_admin.sys.service.SysRoleService;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +57,7 @@ public class SysRoleController extends ApiController {
     })
     @ApiOperation(value = "获取所有角色数据", notes = "获取所有角色数据", httpMethod = "GET")
     @GetMapping("/getAllRole")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result getAllRole(SysRole sysRole) {
         return sysRoleService.getAllRole(sysRole);
     }
@@ -68,6 +71,7 @@ public class SysRoleController extends ApiController {
     })
     @ApiOperation(value = "获取所有除去管理员以外的角色并分页", notes = "获取所有除去管理员以外的角色并分页", httpMethod = "GET")
     @GetMapping("/getRoleList")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result getRoleList(Page page) {
         return this.sysRoleService.getRoleList(page);
     }
@@ -85,6 +89,7 @@ public class SysRoleController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping("/selectRoleByLimit")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime) {
         return sysRoleService.selectRoleByLimit(sysRole, pageable, startTime, endTime);
     }
@@ -102,6 +107,7 @@ public class SysRoleController extends ApiController {
     @ApiOperation(value = "用于批量导出角色列表数据", notes = "用于批量导出角色列表数据", httpMethod = "GET")
     @MyLog(title = "角色管理", optParam = "#{roleIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
+    @PreAuthorize("hasAnyAuthority('system:role:export')")
     public Result getExcel(@RequestParam("roleIds") ArrayList<Integer> roleIds, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysRole> sysRoles;
@@ -141,6 +147,7 @@ public class SysRoleController extends ApiController {
     @ApiOperation(value = "修改角色信息", notes = "修改角色信息", httpMethod = "PUT")
     @PutMapping
     @MyLog(title = "角色管理", optParam = "#{sysRole}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:role:edit')")
     public Result update(@RequestBody SysRole sysRole) {
         return this.sysRoleService.changeStatus(sysRole);
     }
@@ -156,6 +163,7 @@ public class SysRoleController extends ApiController {
     @DeleteMapping
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "角色管理", optParam = "#{idList}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('system:role:remove')")
     public Result delete(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<>();
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -188,6 +196,7 @@ public class SysRoleController extends ApiController {
     @PostMapping("/addRole")
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "角色管理", optParam = "#{roleAndRoleMenu}", businessType = BusinessType.INSERT)
+    @PreAuthorize("hasAnyAuthority('system:role:add')")
     public Result insert(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
         roleAndRoleMenu.setCreateTime(LocalDateTime.now().toString());
         roleAndRoleMenu.setDeptCheckStrictly(null);
@@ -208,6 +217,7 @@ public class SysRoleController extends ApiController {
     @PutMapping("/updateRole")
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "角色管理", optParam = "#{roleAndRoleMenu}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:role:edit')")
     public Result update(@RequestBody RoleAndRoleMenu roleAndRoleMenu) {
         roleAndRoleMenu.setDeptCheckStrictly(null);
         roleAndRoleMenu.setMenuCheckStrictly(null);

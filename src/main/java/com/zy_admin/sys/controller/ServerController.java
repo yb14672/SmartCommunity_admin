@@ -5,6 +5,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,6 +38,7 @@ public class ServerController {
      */
     @ApiOperation(value = "初始化", notes = "初始化", httpMethod = "GET")
     @GetMapping("getAll")
+    @PreAuthorize("hasAnyAuthority('monitor:server:list')")
     public void init() {
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
             try {
@@ -139,6 +141,7 @@ public class ServerController {
     })
     @ApiOperation(value = "println cpu信息 打印 CPU 信息", notes = "println cpu信息 打印 CPU 信息", httpMethod = "GET")
     @GetMapping("/getService")
+    @PreAuthorize("hasAnyAuthority('monitor:server:list')")
     private void printlnCpuInfo(SystemInfo systemInfo) throws InterruptedException {
         CentralProcessor processor = systemInfo.getHardware().getProcessor();
         long[] prevTicks = processor.getSystemCpuLoadTicks();

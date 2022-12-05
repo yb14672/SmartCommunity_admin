@@ -23,6 +23,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -73,6 +74,7 @@ public class ZyComplaintSuggestController extends ApiController {
     })
     @ApiOperation(value = "查询", notes = "查询", httpMethod = "GET")
     @GetMapping("/selectSuggestById")
+    @PreAuthorize("hasAnyAuthority('system:suggest:query')")
     public Result selectSuggestById(String suggestId){
         return zyComplaintSuggestService.selectSuggestById(suggestId);
     }
@@ -87,6 +89,7 @@ public class ZyComplaintSuggestController extends ApiController {
     })
     @ApiOperation(value = "删除投诉建议", notes = "删除投诉建议", httpMethod = "DELETE")
     @DeleteMapping
+    @PreAuthorize("hasAnyAuthority('system:suggest:remove')")
     public Result deleteSuggestByIds(@RequestParam("idList") ArrayList<String> idList){
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
@@ -108,6 +111,7 @@ public class ZyComplaintSuggestController extends ApiController {
     })
     @ApiOperation(value = "回复投诉建议", notes = "回复投诉建议", httpMethod = "PUT")
     @PutMapping("/updateSuggest")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result updateSuggest(@RequestBody ZyComplaintSuggest zyComplaintSuggest, HttpServletRequest request){
         SysUser user = this.requestUtil.getUser(request);
         zyComplaintSuggest.setUpdateBy(user.getUserName());
@@ -127,6 +131,7 @@ public class ZyComplaintSuggestController extends ApiController {
     })
     @ApiOperation(value = "更新投诉建议", notes = "更新投诉建议", httpMethod = "PUT")
     @PutMapping("/updateSuggestOwner")
+    @PreAuthorize("hasAnyAuthority('system:suggest:edit')")
     public Result updateSuggestOwner(@RequestBody ZyComplaintSuggest zyComplaintSuggest, HttpServletRequest request){
         ZyOwner owner = this.requestUtil.getOwner(request);
         zyComplaintSuggest.setUpdateBy(owner.getOwnerRealName());
@@ -148,6 +153,7 @@ public class ZyComplaintSuggestController extends ApiController {
     })
     @ApiOperation(value = "新增投诉建议", notes = "新增投诉建议", httpMethod = "POST")
     @PostMapping("/insertSuggest")
+    @PreAuthorize("hasAnyAuthority('system:suggest:add')")
     public Result insertSuggest(@RequestBody ZyComplaintSuggest zyComplaintSuggest, HttpServletRequest request) throws Exception {
         ZyOwner owner = this.requestUtil.getOwner(request);
         zyComplaintSuggest.setCreateBy(owner.getOwnerRealName());
@@ -171,6 +177,7 @@ public class ZyComplaintSuggestController extends ApiController {
     @ApiOperation(value = "用于批量导出投诉建议数据", notes = "用于批量导出投诉建议数据", httpMethod = "GET")
     @MyLog(title = "投诉建议导出", optParam = "#{suggestIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
+    @PreAuthorize("hasAnyAuthority('system:suggest:export')")
     public Result getExcel(@RequestParam("suggestIds") ArrayList<String> suggestIds, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<ZyComplaintSuggestDto> zyComplaintSuggestList;
@@ -210,6 +217,7 @@ public class ZyComplaintSuggestController extends ApiController {
     })
     @ApiOperation(value = "分页查询", notes = "分页查询", httpMethod = "GET")
     @GetMapping("/selectSuggestLimit")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result selectSuggestLimit(ZyComplaintSuggest zyComplaintSuggest, Pageable pageable){
         return zyComplaintSuggestService.selectSuggestLimit(zyComplaintSuggest, pageable);
     }

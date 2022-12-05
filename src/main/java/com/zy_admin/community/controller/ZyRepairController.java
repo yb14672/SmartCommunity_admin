@@ -20,6 +20,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -62,6 +63,7 @@ public class ZyRepairController extends ApiController {
     })
     @ApiOperation(value = "查看报修", notes = "查看报修", httpMethod = "GET")
     @GetMapping("/getRepairByOwnerId")
+    @PreAuthorize("hasAnyAuthority('system:repair:query')")
     public Result getRepairByOwnerId(ZyRepair repair, HttpServletRequest request){
         repair.setUserId(requestUtil.getOwnerId(request));
         return this.zyRepairService.getRepairByOwnerId(repair);
@@ -80,6 +82,7 @@ public class ZyRepairController extends ApiController {
     @ApiOperation(value = "报修导出", notes = "报修导出", httpMethod = "GET")
     @MyLog(title = "报修导出", optParam = "#{repairIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
+    @PreAuthorize("hasAnyAuthority('system:repair:export')")
     public Result getExcel(@RequestParam("repairIds") ArrayList<String> repairIds, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<RepairDto> repairList;
@@ -116,6 +119,7 @@ public class ZyRepairController extends ApiController {
     })
     @ApiOperation(value = "删除报修", notes = "删除报修", httpMethod = "DELETE")
     @DeleteMapping("/deleteRepair")
+    @PreAuthorize("hasAnyAuthority('system:repair:remove')")
     public Result deleteRepair(@RequestBody List<String> repairIds) {
         return zyRepairService.deleteRepair(repairIds);
     }
@@ -130,6 +134,7 @@ public class ZyRepairController extends ApiController {
     })
     @ApiOperation(value = "修改报修", notes = "修改报修", httpMethod = "PUT")
     @PutMapping("/updateRepair")
+    @PreAuthorize("hasAnyAuthority('system:repair:edit')")
     public Result updateRepair(@RequestBody ZyRepair zyRepair, HttpServletRequest request) {
         return this.zyRepairService.updateRepair(zyRepair,request);
     }
@@ -144,6 +149,7 @@ public class ZyRepairController extends ApiController {
     })
     @ApiOperation(value = "新增报修", notes = "新增报修", httpMethod = "POST")
     @PostMapping("/insertRepair")
+    @PreAuthorize("hasAnyAuthority('system:repair:add')")
     public Result insertRepair(@RequestBody ZyRepair zyRepair, HttpServletRequest request) {
         return this.zyRepairService.insertRepair(zyRepair,request);
     }
@@ -159,6 +165,7 @@ public class ZyRepairController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping("/getAllRepairs")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result getAllRepairs(Pageable pageable, RepairDto repairDto) {
         return zyRepairService.getAllRepairs(pageable, repairDto);
     };

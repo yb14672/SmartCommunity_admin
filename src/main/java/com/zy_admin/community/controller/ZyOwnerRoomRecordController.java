@@ -8,6 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,6 +41,7 @@ public class ZyOwnerRoomRecordController extends ApiController {
     })
     @ApiOperation(value = "审核记录", notes = "审核记录", httpMethod = "GET")
     @GetMapping("/selectZyOwnerRoomRecord")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result selectZyOwnerRoomRecord(String zyOwnerRoomRecordId) {
         return zyOwnerRoomRecordService.selectZyOwnerRoomRecord(zyOwnerRoomRecordId);
     }

@@ -7,12 +7,12 @@ import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.service.ZyBuildingService;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
@@ -20,6 +20,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,6 +66,7 @@ public class ZyBuildingController extends ApiController {
     @ApiOperation(value = "用于批量导出楼层数据", notes = "用于批量导出楼层数据", httpMethod = "GET")
     @MyLog(title = "楼层导出", optParam = "#{buildingIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
+    @PreAuthorize("hasAnyAuthority('system:building:export')")
     public Result getExcel(@RequestParam("buildingIds") ArrayList<String> buildingIds, @RequestParam("communityId") String communityId, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<ZyBuilding> zyBuildingList;
@@ -103,6 +105,7 @@ public class ZyBuildingController extends ApiController {
     @ApiOperation(value = "删除楼层", notes = "删除楼层", httpMethod = "DELETE")
     @DeleteMapping
     @MyLog(title = "楼层信息", optParam = "#{idList}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('system:building:remove')")
     public Result delete(@RequestParam("idList") ArrayList<String> idList){
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
@@ -127,6 +130,7 @@ public class ZyBuildingController extends ApiController {
     @PutMapping("/updateZyBuilding")
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "楼层信息", optParam = "#{zyBuilding}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:building:edit')")
     public Result updateZyBuilding(@RequestBody ZyBuilding zyBuilding,HttpServletRequest request){
         SysUser user = requestUtil.getUser(request);
         zyBuilding.setUpdateBy(user.getUserName());
@@ -147,6 +151,7 @@ public class ZyBuildingController extends ApiController {
     @ApiOperation(value = "新增楼层", notes = "新增楼层", httpMethod = "POST")
     @PostMapping("/addZyBuilding")
     @MyLog(title = "楼层信息", optParam = "#{zyBuilding}", businessType = BusinessType.INSERT)
+    @PreAuthorize("hasAnyAuthority('system:building:add')")
     public Result insertDictType(@RequestBody ZyBuilding zyBuilding, HttpServletRequest request) throws Exception {
         SysUser user = requestUtil.getUser(request);
         zyBuilding.setCreateBy(user.getUserName());
@@ -165,6 +170,7 @@ public class ZyBuildingController extends ApiController {
     })
     @ApiOperation(value = "分页查询", notes = "分页查询", httpMethod = "GET")
     @GetMapping("/selectBuildLimit")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result selectBuildLimit(ZyBuilding zyBuilding, Pageable pageable){
         return zyBuildingService.selectBuildLimit(zyBuilding, pageable);
     }
@@ -179,6 +185,7 @@ public class ZyBuildingController extends ApiController {
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result selectOne(@PathVariable String id) {
         return zyBuildingService.queryById(id);
     }

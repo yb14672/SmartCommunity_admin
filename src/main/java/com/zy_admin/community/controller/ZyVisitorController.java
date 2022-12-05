@@ -24,6 +24,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -75,6 +76,7 @@ public class ZyVisitorController extends ApiController {
     @ApiOperation(value = "获取excel", notes = "获取excel", httpMethod = "GET")
     @GetMapping("/getExcel")
     @MyLog(title = "访客管理", optParam = "#{visitorIds}", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAnyAuthority('system:visitor:export')")
     public Result getExcel(@RequestParam("visitorIds") List<String> visitorIds, HttpServletResponse response,String communityId) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<VisitorGetExcelDto> visitorGetExcelDtos;
@@ -120,6 +122,7 @@ public class ZyVisitorController extends ApiController {
     })
     @ApiOperation(value = "插入访客", notes = "插入访客", httpMethod = "POST")
     @PostMapping("/insertVisitor")
+    @PreAuthorize("hasAnyAuthority('system:visitor:add')")
     public Result insertVisitor(HttpServletRequest request,   @RequestBody ZyVisitor zyVisitor) throws Exception {
         ZyOwner owner = this.requestUtil.getOwner(request);
         zyVisitor.setCreateBy(owner.getOwnerRealName());
@@ -145,6 +148,7 @@ public class ZyVisitorController extends ApiController {
     })
     @ApiOperation(value = "得到来访人名单", notes = "得到来访人名单", httpMethod = "GET")
     @GetMapping("/getVisitorList")
+    @PreAuthorize("hasAnyAuthority('system:visitor:query')")
     public Result getVisitorList(ZyVisitor zyVisitor, Pageable pageable){
         Result visitorList = zyVisitorService.getVisitorList(zyVisitor, pageable);
         return visitorList;
@@ -163,6 +167,7 @@ public class ZyVisitorController extends ApiController {
     @ApiOperation(value = "更新状态", notes = "更新状态", httpMethod = "PUT")
     @PutMapping("/updateStatus")
     @MyLog(title = "访客管理", optParam = "#{zyVisitor}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:visitor:edit')")
     public Result updateStatus(@RequestBody ZyVisitor zyVisitor){
        return this.zyVisitorService.updateStatus(zyVisitor);
     }

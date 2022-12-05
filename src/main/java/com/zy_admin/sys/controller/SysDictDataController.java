@@ -1,10 +1,12 @@
 package com.zy_admin.sys.controller;
+
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
@@ -13,12 +15,12 @@ import com.zy_admin.sys.entity.SysDictData;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDictDataService;
 import com.zy_admin.util.RequestUtil;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -26,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.List;
 /**
  * 字典数据表(SysDictData)表控制层
@@ -56,6 +57,7 @@ public class SysDictDataController extends ApiController {
     })
     @ApiOperation(value = "根据查询条件获取字典数据并分页", notes = "分页查询所有字典数据", httpMethod = "GET")
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_admin')")
     public Result selectAll(SysDictData sysDictData, Page page) {
         return this.sysDictDataService.selectDictDataLimit(sysDictData, page);
     }
@@ -86,6 +88,7 @@ public class SysDictDataController extends ApiController {
     @ApiOperation(value = "添加字典数据", notes = "新增字典数据", httpMethod = "POST")
     @PostMapping
     @MyLog(title = "字典数据", optParam = "#{sysDictData}", businessType = BusinessType.INSERT)
+    @PreAuthorize("hasAnyAuthority('system:dict:add')")
     public Result insert(@RequestBody SysDictData sysDictData, HttpServletRequest request) {
         //获取当前登录的用户，用于添加创建人
         SysUser user = requestUtil.getUser(request);
@@ -105,6 +108,7 @@ public class SysDictDataController extends ApiController {
     @ApiOperation(value = "修改字典数据", notes = "修改字典数据", httpMethod = "PUT")
     @PutMapping
     @MyLog(title = "字典数据", optParam = "#{sysDictData}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:dict:edit')")
     public Result update(@RequestBody SysDictData sysDictData, HttpServletRequest request) {
         //获取当前登录的用户，用于添加创建人
         SysUser user = requestUtil.getUser(request);
@@ -122,6 +126,7 @@ public class SysDictDataController extends ApiController {
     @DeleteMapping
     @ApiImplicitParam(name = "idList", value = "要删除的ID集合", required = true)
     @MyLog(title = "字典数据", optParam = "#{idList}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('system:dict:remove')")
     public Result delete(@RequestParam("idList") List<String> idList) {
         return this.sysDictDataService.removeDictDataByIds(idList);
     }
@@ -153,6 +158,7 @@ public class SysDictDataController extends ApiController {
     @ApiOperation(value = "导出字典数据", notes = "导出字典数据", httpMethod = "GET")
     @GetMapping("/export")
     @MyLog(title = "字典数据", optParam = "#{ids}", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAnyAuthority('system:dict:export')")
     public Result export(@RequestParam("ids") List<Integer> ids, @RequestParam("dictType") String dictType, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //用于存储要导出的数据列表

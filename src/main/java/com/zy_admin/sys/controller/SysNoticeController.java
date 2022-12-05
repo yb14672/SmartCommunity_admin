@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -46,6 +47,7 @@ public class SysNoticeController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public R selectAll(Page<SysNotice> page, SysNotice sysNotice) {
         return success(this.sysNoticeService.page(page, new QueryWrapper<>(sysNotice)));
     }
@@ -61,6 +63,7 @@ public class SysNoticeController extends ApiController {
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public R selectOne(@PathVariable Serializable id) {
         return success(this.sysNoticeService.getById(id));
     }
@@ -76,6 +79,7 @@ public class SysNoticeController extends ApiController {
     })
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('system:notice:add')")
     public R insert(@RequestBody SysNotice sysNotice) {
         return success(this.sysNoticeService.save(sysNotice));
     }
@@ -91,6 +95,7 @@ public class SysNoticeController extends ApiController {
     })
     @ApiOperation(value = "修改数据", notes = "修改数据", httpMethod = "PUT")
     @PutMapping
+    @PreAuthorize("hasAnyAuthority('system:notice:edit')")
     public R update(@RequestBody SysNotice sysNotice) {
         return success(this.sysNoticeService.updateById(sysNotice));
     }
@@ -106,6 +111,7 @@ public class SysNoticeController extends ApiController {
     })
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping
+    @PreAuthorize("hasAnyAuthority('system:notice:remove')")
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.sysNoticeService.removeByIds(idList));
     }

@@ -3,6 +3,7 @@ package com.zy_admin.community.controller;
 
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.community.entity.ZyOwner;
@@ -10,11 +11,11 @@ import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.service.ZyOwnerRoomService;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
-import com.zy_admin.common.core.Result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +49,7 @@ public class ZyOwnerRoomController extends ApiController {
     })
     @ApiOperation(value = "", notes = "", httpMethod = "GET")
     @GetMapping("/selectOwnerRoomByOwnerId")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result selectOwnerRoomByOwnerId(HttpServletRequest request){
         String ownerId = requestUtil.getOwnerId(request);
         return this.zyOwnerRoomService.selectOwnerRoomByOwnerId(ownerId);
@@ -63,6 +65,7 @@ public class ZyOwnerRoomController extends ApiController {
     })
     @ApiOperation(value = "根据业主ID获取其房屋绑定列表", notes = "根据业主ID获取其房屋绑定列表", httpMethod = "GET")
     @GetMapping("/getOwnerRoomByOwnerId")
+    @PreAuthorize("hasAnyAuthority('system:ownerRoom:query')")
     public Result getOwnerRoomByOwnerId(HttpServletRequest request){
         return this.zyOwnerRoomService.getOwnerRoomByOwnerId(requestUtil.getOwnerId(request));
     }
@@ -81,6 +84,7 @@ public class ZyOwnerRoomController extends ApiController {
     })
     @ApiOperation(value = "插入 新增数据", notes = "插入 新增数据", httpMethod = "POST")
     @PostMapping("/insert")
+    @PreAuthorize("hasAnyAuthority('system:ownerRoom:add')")
     public Result insert(@RequestBody ZyOwnerRoom ownerRoom, HttpServletRequest request) throws Exception {
         ZyOwner owner = requestUtil.getOwner(request);
         ownerRoom.setOwnerId(owner.getOwnerId());
@@ -121,6 +125,7 @@ public class ZyOwnerRoomController extends ApiController {
     @PutMapping("/updateOwnerRoomStatus")
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "业主审核", optParam = "#{zyOwnerRoom}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:ownerRoom:edit')")
     public Result updateOwnerRoomStatusReject(@RequestBody ZyOwnerRoom zyOwnerRoom, String recordAuditOpinion,String status, HttpServletRequest request) throws Exception {
         SysUser user = requestUtil.getUser(request);
         zyOwnerRoom.setUpdateBy(user.getUserName());
@@ -142,6 +147,7 @@ public class ZyOwnerRoomController extends ApiController {
     })
     @ApiOperation(value = "分页和查询业主审核", notes = "分页和查询业主审核", httpMethod = "GET")
     @GetMapping("selectAllOwnerRoomLimit")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result selectAllOwnerRoomLimit(ZyOwnerRoom zyOwnerRoom, Pageable pageable){
         return zyOwnerRoomService.selectAllOwnerRoomLimit(zyOwnerRoom,pageable);
     }

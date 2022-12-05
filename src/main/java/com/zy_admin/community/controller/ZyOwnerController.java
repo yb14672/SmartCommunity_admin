@@ -8,6 +8,7 @@ import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
@@ -15,13 +16,13 @@ import com.zy_admin.community.dto.OwnerRoomExcel;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.service.ZyOwnerService;
 import com.zy_admin.util.ExcelUtil;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -66,6 +67,7 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "更新业主头像", notes = "更新业主头像", httpMethod = "PUT")
     @PutMapping("/updateOwnerPortrait")
+    @PreAuthorize("hasAnyAuthority('system:owner:edit')")
     public Result updateOwnerPortrait(@RequestBody ZyOwner zyOwner, HttpServletRequest request){
         return zyOwnerService.updateOwnerPortrait(zyOwner, request);
     }
@@ -82,6 +84,7 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "用户修改密码", notes = "用户修改密码", httpMethod = "PUT")
     @PutMapping("/updatePassword")
+    @PreAuthorize("hasAnyAuthority('system:owner:edit')")
     public Result updatePassword(@RequestBody ZyOwner zyOwner, HttpServletRequest request){
         return zyOwnerService.updatePassword(zyOwner, request);
     }
@@ -97,6 +100,7 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "获取业主信息", notes = "获取业主信息", httpMethod = "GET")
     @GetMapping("/getOwner")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result getOwner(HttpServletRequest request){
         String ownerId = requestUtil.getOwnerId(request);
         return this.zyOwnerService.getOwnerById(ownerId);
@@ -114,6 +118,7 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "修改数据", notes = "修改数据", httpMethod = "PUT")
     @PutMapping("/update")
+    @PreAuthorize("hasAnyAuthority('system:owner:edit')")
     public Result update(@RequestBody ZyOwner zyOwner, HttpServletRequest request) {
         ZyOwner owner = requestUtil.getOwner(request);
         zyOwner.setOwnerId(owner.getOwnerId());
@@ -145,6 +150,7 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping("/register")
+    @PreAuthorize("hasAnyAuthority('system:owner:add')")
     public Result insert(@RequestBody ZyOwner zyOwner) throws Exception {
         zyOwner.setOwnerType("qt");
         return zyOwnerService.ownerRegister(zyOwner);
@@ -166,6 +172,7 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "获取户主信息并分页", notes = "获取户主信息并分页", httpMethod = "GET")
     @GetMapping("/getOwnerList")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result getOwnerList(ZyOwner zyOwner, Pageable pageable,String communityId) {
         return zyOwnerService.getOwnerList(zyOwner, pageable,communityId);
     }
@@ -185,6 +192,7 @@ public class ZyOwnerController extends ApiController {
     @ApiOperation(value = "删除业主房屋关联", notes = "删除业主房屋关联", httpMethod = "DELETE")
     @MyLog(title = "房主信息", optParam = "#{ownerRoomId}", businessType = BusinessType.DELETE)
     @DeleteMapping("/deleteOwner")
+    @PreAuthorize("hasAnyAuthority('system:owner:remove')")
     public Result deleteOwnerHome(HttpServletRequest request, String ownerRoomId) {
         return zyOwnerService.deleteOwenRome(request, ownerRoomId);
     }
@@ -204,6 +212,7 @@ public class ZyOwnerController extends ApiController {
     @ApiOperation(value = "得到Excel表格", notes = "得到Excel表格", httpMethod = "GET")
     @GetMapping("/getExcel")
     @MyLog(title = "房主信息", optParam = "#{ids}", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAnyAuthority('system:owner:export')")
     public Result getExcel(@RequestParam("ownerIds") List<String> ids, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<OwnerRoomExcel> ownerRoomExcelList;

@@ -21,6 +21,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -69,6 +70,7 @@ public class ZyParkController extends ApiController {
     @ApiOperation(value = "导出", notes = "导出", httpMethod = "GET")
     @GetMapping("/export")
     @MyLog(title = "车位信息", optParam = "#{ids},#{communityId}", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAnyAuthority('system:park:export')")
     public Result getExcel(@RequestParam("ids") ArrayList<String> ids, String communityId, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         Result result1 = zyParkService.getListByIdList(ids, communityId);
@@ -107,6 +109,7 @@ public class ZyParkController extends ApiController {
     })
     @ApiOperation(value = "批量插入", notes = "批量插入", httpMethod = "POST")
     @PostMapping("/batchInsert")
+    @PreAuthorize("hasAnyAuthority('system:park:add')")
     public Result batchInsert(@RequestBody ZyPark zyPark, Integer number, HttpServletRequest request) throws Exception {
         SysUser user = requestUtil.getUser(request);
         zyPark.setCreateBy(user.getUserName());
@@ -129,6 +132,7 @@ public class ZyParkController extends ApiController {
     })
     @ApiOperation(value = "新增停车位", notes = "新增停车位", httpMethod = "POST")
     @PostMapping("/insertPark")
+    @PreAuthorize("hasAnyAuthority('system:park:add')")
     public Result insertPark(@RequestBody ZyPark zyPark, HttpServletRequest request) throws Exception {
         SysUser user = requestUtil.getUser(request);
         zyPark.setCreateBy(user.getUserName());
@@ -152,6 +156,7 @@ public class ZyParkController extends ApiController {
     })
     @ApiOperation(value = "修改车位", notes = "修改车位", httpMethod = "PUT")
     @PutMapping("/updatePark")
+    @PreAuthorize("hasAnyAuthority('system:park:edit')")
     public Result updatePark(@RequestBody ZyPark zyPark,HttpServletRequest request) {
         SysUser user = requestUtil.getUser(request);
         zyPark.setUpdateBy(user.getUserName());
@@ -170,6 +175,7 @@ public class ZyParkController extends ApiController {
     })
     @ApiOperation(value = "删除停车位", notes = "删除停车位", httpMethod = "DELETE")
     @DeleteMapping
+    @PreAuthorize("hasAnyAuthority('system:park:remove')")
     public Result deletePark(@RequestParam("parkIds") List<String> parkIds) {
         return this.zyParkService.deletePark(parkIds);
     }
@@ -180,6 +186,7 @@ public class ZyParkController extends ApiController {
      */
     @ApiOperation(value = "查询车位状态是启用的", notes = "查询车位状态是启用的", httpMethod = "GET")
     @GetMapping("/selectParkStatusOpen")
+    @PreAuthorize("hasAnyAuthority('system:park:query')")
     public Result selectParkStatusOpen(){
         return this.zyParkService.selectParkStatusOpen();
     }
@@ -197,6 +204,7 @@ public class ZyParkController extends ApiController {
     })
     @ApiOperation(value = "分页查询", notes = "分页查询", httpMethod = "GET")
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result queryByPage(ZyParkDto zyPark, Page page) {
         return this.zyParkService.queryByPage(zyPark, page);
     }
@@ -212,6 +220,7 @@ public class ZyParkController extends ApiController {
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyAuthority('system:park:query')")
     public Result queryById(@PathVariable("id") String id) {
         return this.zyParkService.queryById(id);
     }

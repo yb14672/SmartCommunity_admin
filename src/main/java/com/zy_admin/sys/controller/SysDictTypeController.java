@@ -1,23 +1,25 @@
 package com.zy_admin.sys.controller;
+
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.entity.SysDictType;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDictTypeService;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,6 +64,7 @@ public class SysDictTypeController extends ApiController {
     @ApiOperation(value = "批量导出字典类型表数据", notes = "批量导出字典类型表数据", httpMethod = "GET")
     @MyLog(title = "字典类型", optParam = "#{dictIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
+    @PreAuthorize("hasAnyAuthority('system:config:export')")
     public Result getExcel(@RequestParam("dictIds") ArrayList<Integer> dictIds, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysDictType> sysDictTypeList;
@@ -98,6 +101,7 @@ public class SysDictTypeController extends ApiController {
     @ApiOperation(value = "删除字典类型", notes = "删除字典类型", httpMethod = "DELETE")
     @DeleteMapping
     @MyLog(title = "字典类型", optParam = "#{idList}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('system:config:remove')")
     public Result delete(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<>();
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -125,6 +129,7 @@ public class SysDictTypeController extends ApiController {
     @PutMapping("/updateDict")
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "字典类型", optParam = "#{sysDictType}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:config:edit')")
     public Result updateDict(@RequestBody SysDictType sysDictType) {
         return sysDictTypeService.updateDict(sysDictType);
     }
@@ -139,6 +144,7 @@ public class SysDictTypeController extends ApiController {
     @ApiOperation(value = "新增字典", notes = "新增字典", httpMethod = "POST")
     @PostMapping("/addSysDict")
     @MyLog(title = "字典类型", optParam = "#{sysDictType}", businessType = BusinessType.INSERT)
+    @PreAuthorize("hasAnyAuthority('system:config:add')")
     public Result insertDictType(@RequestBody SysDictType sysDictType, HttpServletRequest request) {
         SysUser user = requestUtil.getUser(request);
         sysDictType.setCreateTime(LocalDateTime.now().toString());
@@ -161,6 +167,7 @@ public class SysDictTypeController extends ApiController {
     })
     @ApiOperation(value = "分页查询字典类型", notes = "分页查询字典类型", httpMethod = "GET")
     @GetMapping("/selectDictByLimit")
+    @PreAuthorize("hasAnyAuthority('ROLE_admin')")
     public Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime) {
         return sysDictTypeService.selectDictByLimit(sysDictType, pageable, startTime, endTime);
     }
@@ -183,6 +190,7 @@ public class SysDictTypeController extends ApiController {
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_admin')")
     public Result selectOne(@PathVariable String id) {
         return this.sysDictTypeService.getDictTypeById(id);
     }

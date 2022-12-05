@@ -7,13 +7,13 @@ import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dto.CommunityExcel;
 import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.community.service.ZyCommunityService;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
@@ -21,6 +21,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -63,6 +64,7 @@ public class ZyCommunityController extends ApiController {
     })
     @ApiOperation(value = "根据登录的管理员获取所在公司负责的小区", notes = "根据登录的管理员获取所在公司负责的小区", httpMethod = "GET")
     @GetMapping("/getCommunityIdByUserId")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result getCommunityIdByUserId(HttpServletRequest request){
         String userId = requestUtil.getUserId(request);
         return this.zyCommunityService.getCommunityIdByUserId(userId);
@@ -82,6 +84,7 @@ public class ZyCommunityController extends ApiController {
     @ApiOperation(value = "根据所得id导出小区信息", notes = "根据所得id导出小区信息", httpMethod = "GET")
     @MyLog(title = "小区信息", optParam = "#{ids}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
+    @PreAuthorize("hasAnyAuthority('system:community:export')")
     public Result getExcel(@RequestParam("ids") ArrayList<Long> ids, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<CommunityExcel> communityExcelList = zyCommunityService.selectByIds(ids);
@@ -115,6 +118,7 @@ public class ZyCommunityController extends ApiController {
     @ApiOperation(value = "修改数据", notes = "修改数据", httpMethod = "PUT")
     @PutMapping("/updateCommunity")
     @MyLog(title = "小区信息", optParam = "#{community}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:community:edit')")
     public Result update(@RequestBody ZyCommunity community,HttpServletRequest request) {
         SysUser user = requestUtil.getUser(request);
         community.setUpdateBy(user.getUserName());
@@ -133,6 +137,7 @@ public class ZyCommunityController extends ApiController {
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping("/insertCommunity")
     @MyLog(title = "小区信息", optParam = "#{community}", businessType = BusinessType.INSERT)
+    @PreAuthorize("hasAnyAuthority('system:community:add')")
     public Result insert(@RequestBody ZyCommunity community, HttpServletRequest request) {
         SysUser user = requestUtil.getUser(request);
         community.setCreateBy(user.getUserName());
@@ -150,6 +155,7 @@ public class ZyCommunityController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping("/selectAll")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result selectAll(ZyCommunity community, Pageable pageable){
         return zyCommunityService.selectAllByLimit(community,pageable);
     }
@@ -163,6 +169,7 @@ public class ZyCommunityController extends ApiController {
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result selectOne(@PathVariable Serializable id) {
         return new Result(this.zyCommunityService.getById(id),ResultTool.fail(ResultCode.SUCCESS));
     }
@@ -177,6 +184,7 @@ public class ZyCommunityController extends ApiController {
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping("/deleteCommunity")
     @MyLog(title = "小区信息", optParam = "#{communityIds}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('system:community:remove')")
     public Result delete(@RequestBody List<String> communityIds) {
         return this.zyCommunityService.deleteByIds(communityIds);
     }
