@@ -261,7 +261,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
             if (insert == 1) {
                 List<String> urlList = interactionDto.getUrlList();
                 //如果有添加文件或者图片则添加
-                if (urlList.size() > 0 || !urlList.isEmpty()) {
+                if (urlList != null) {
                     List<ZyFiles> files = new ArrayList<>();
                     for (String url : urlList) {
                         ZyFiles zyFile = new ZyFiles();

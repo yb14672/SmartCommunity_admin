@@ -144,10 +144,11 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         zyComplaintSuggest.setComplaintSuggestId(snowflakeManager.nextId() + "");
         //判断下面有没有房屋绑定
-        List<OwnerRoomDto> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComplaintSuggest.getComplaintSuggestId());
-        if (ownerRoomByOwnerId != null) {
+        List<OwnerRoomDto> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComplaintSuggest.getUserId());
+        if (ownerRoomByOwnerId == null) {
             result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
             result.setData("新增失败");
+            return result;
         }
         try {
             //新增
@@ -155,7 +156,7 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
             if (i == 1) {
                 List<String> urlList = zyComplaintSuggest.getFilesUrl();
                 //如果有添加文件或者图片则添加
-                if (urlList.size() > 0 || !urlList.isEmpty()) {
+                if (urlList!=null) {
                     List<ZyFiles> files = new ArrayList<>();
                     for (String url : urlList) {
                         ZyFiles zyFile = new ZyFiles();
