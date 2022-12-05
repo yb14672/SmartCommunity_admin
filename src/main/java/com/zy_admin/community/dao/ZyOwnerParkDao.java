@@ -3,7 +3,9 @@ package com.zy_admin.community.dao;
 import com.github.yulichang.base.MPJBaseMapper;
 import com.zy_admin.community.dto.OwnerParkExcelDto;
 import com.zy_admin.community.dto.OwnerParkListDto;
+import com.zy_admin.community.dto.ZyOwnerParkRecordDto;
 import com.zy_admin.community.entity.ZyOwnerPark;
+import com.zy_admin.util.RoomTree;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -18,6 +20,15 @@ import java.util.List;
  * @since 2022-12-01 15:50:35
  */
 public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
+
+    /**
+     * 查询所有者公园纪录所有者id
+     *
+     * @param ownerId 所有者id
+     * @return {@link List}<{@link ZyOwnerParkRecordDto}>
+     */
+    @Select("select zop.*,zop.park_owner_status parkStatus,zc.community_name,zp.park_code from zy_owner_park zop LEFT JOIN zy_park zp on zop.park_id = zp.park_id LEFT JOIN zy_community zc on zc.community_id = zp.community_id where owner_id = #{ownerId}")
+    List<ZyOwnerParkRecordDto> queryOwnerParkRecordByOwnerId(String ownerId);
 
     /**
      * 根据ID集合查询车位列表列表
@@ -59,10 +70,14 @@ public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
     ZyOwnerPark selectCarNumber(String carNumber);
 
     /**
+     *
      * 查询未被绑定和启用0的车位
-     * @return
+     *
+     * @param ownerId 所有者id
+     * @return {@link List}<{@link ZyOwnerPark}>
      */
-    List<ZyOwnerPark> selectNoBindingAndStatusPark(String communityId);
+    @Select("select community_id id,community_name name,0 parent_id from zy_community c where exists (select * from (select community_id from zy_owner_room where owner_id = #{ownerId} and room_status = 'Binding' GROUP BY community_id) co where c.community_id = co.community_id) union select z.park_id id, z.park_code name ,z.community_id parent_id from zy_park z where  not exists (select * from zy_owner_park where z.park_id = owner_park_id) and exists (select community_id from zy_owner_room where owner_id = #{ownerId} and room_status = 'Binding'  GROUP BY community_id HAVING z.community_id = community_id) and z.del_flag = 0 and z.park_id not in (select park_id from zy_owner_park GROUP BY park_id )")
+    List<RoomTree> selectNoBindingAndStatusPark(String ownerId);
 
     /**
      * 批量删除

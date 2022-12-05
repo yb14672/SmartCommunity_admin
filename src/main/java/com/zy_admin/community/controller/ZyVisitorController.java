@@ -61,6 +61,22 @@ public class ZyVisitorController extends ApiController {
     private SnowflakeManager snowflakeManager;
 
     /**
+     * 查询访客记录
+     *
+     * @param request 请求
+     * @return {@link Result}
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
+    })
+    @ApiOperation(value = "查询访客记录", notes = "查询访客记录")
+    @GetMapping("/queryVisitorRecord")
+    public Result queryVisitorRecord(HttpServletRequest request){
+        String ownerId = requestUtil.getOwnerId(request);
+        return this.zyVisitorService.queryVisitorRecordByOwnerId(ownerId);
+    }
+
+    /**
      * 获取excel
      *
      * @param visitorIds 游客id

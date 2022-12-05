@@ -22,6 +22,15 @@ import java.util.List;
 
 public interface ZyVisitorDao extends BaseMapper<ZyVisitor> {
 
+    /**
+     * 通过所有者id查询访客记录
+     *
+     * @param OwnerId 所有者id
+     * @return {@link List}<{@link ZyVisitor}>
+     */
+    @Select("select * from zy_visitor where create_by_id = #{OwnerId}")
+    List<ZyVisitor> queryVisitorRecordByOwnerId(String OwnerId);
+
 
     /**通过社区Id获取所有访客信息
      * @param communityId 社区Id

@@ -7,11 +7,15 @@ import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.dao.SysMenuDao;
+import com.zy_admin.community.dao.ZyCommunityDao;
+import com.zy_admin.community.entity.ZyCommunity;
+import com.zy_admin.sys.dao.SysDeptDao;
 import com.zy_admin.sys.dao.SysRoleDao;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.sys.dao.SysUserRoleDao;
 import com.zy_admin.sys.dto.*;
 import com.zy_admin.sys.entity.SysMenu;
+import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.RedisService;
@@ -63,6 +67,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private SysMenuDao sysMenuDao;
 
 
+    @Resource
+    private ZyCommunityDao zyCommunityDao;
+    @Resource
+    private SysDeptDao sysDeptDao;
+    @Resource
+    private SysUserDao sysUserDao;
     /**
      * 注销
      *
@@ -189,7 +199,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
 
     /**
      * 导出所有用户
-     *
      * @return 查询用户集合
      */
     @Override
@@ -347,7 +356,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         }
         return true;
     }
-
     /**
      * 检查电话号码判断
      *
@@ -361,11 +369,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         Matcher m = p.matcher(stringCellValue);
         return m.matches();
     }
-
     /**
      * 检查用户名
      * 验证用户名不能重复
-     *
      * @param stringCellValue 字符串单元格值
      * @return boolean
      */
@@ -447,7 +453,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     /**
      * 判断行
      * 判断当前行数是否为空行数
-     *
      * @param row 行
      * @return boolean
      */
@@ -722,10 +727,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     public Result selectAll(Page page, SysUser sysUser) {
         return null;
     }
-
     /**
      * 新增用户
-     *
      * @param sysUserDto 用户dto对象
      * @return 新增用户结果集
      */
@@ -766,7 +769,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     /**
      * 管理更新用户
      * 管理员修改用户
-     *
      * @param userDto 用户dto
      * @return 用户更新结果集
      */
@@ -810,7 +812,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
 
     /**
      * 按账号名称查询用户
-     *
      * @param sysUserDto 用户dto对象
      * @return 查询用户结果集
      */
@@ -829,10 +830,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             }
         }
     }
-
     /**
      * 检查电话
-     *
      * @param type       判断是新增0或者修改1
      * @param sysUserDto 用户dto对象
      * @return 成功或失败的结果集
@@ -852,10 +851,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             }
         }
     }
-
     /**
      * 检查电子邮件
-     *
      * @param type       判断是新增0或者修改1
      * @param sysUserDto 用户dto对象
      * @return 成功或失败的结果集
@@ -875,7 +872,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             }
         }
     }
-
     /**
      * 检查用户名
      *
@@ -898,10 +894,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             }
         }
     }
-
     /**
      * 重置密码
-     *
      * @param sysUser 用户对象
      * @return {@code Result}
      */
@@ -963,6 +957,34 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         }
         System.out.println("authority:" + authority.toString());
         return authority.toString();
+    }
+
+    /**
+     * 查询用户用户id
+     *
+     * @param userId 用户id
+     * @return {@code Result}
+     */
+    @Override
+    public Result queryUserByUserId(Long userId) {
+        return  this.baseMapper.queryUserByUserId(userId);
+    }
+    /**
+     * 查询制定部门
+     *
+     * @param communityId
+     * @return 查询结果
+     */
+    @Override
+    public Result getUserByDeptAndCommunityId(Long communityId) {
+        //通过小区id查询小区对象
+        ZyCommunity zyCommunity = zyCommunityDao.queryById(communityId);
+        //将小区对象的部门id(公司）用来查询维修部门id
+        Long deptId = sysDeptDao.queryDeptIdByParentId(zyCommunity.getDeptId());
+        SysDept sysDept = new SysDept();
+        sysDept.setDeptId(deptId);
+        //查询维修部门的所有员工
+        return sysUserDao.selectUserByDept(sysDept);
     }
 }
 

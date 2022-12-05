@@ -42,7 +42,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-12-01 15:50:35
  */
-@Api(value = "zyOwnerPark", tags = {"车位审核 (zyOwnerPark)表控制层"})
+@Api(value = "zyOwnerPark", tags = {"房屋绑定表 (ZyOwnerPark)表控制层"})
 @RestController
 @RequestMapping("zyOwnerPark")
 public class ZyOwnerParkController {
@@ -57,6 +57,22 @@ public class ZyOwnerParkController {
      */
     @Resource
     private RequestUtil requestUtil;
+
+    /**
+     * 查询记录所有者公园
+     *
+     * @param request 请求
+     * @return {@link Result}
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
+    })
+    @ApiOperation(value = "查询记录所有者公园", notes = "查询记录所有者公园")
+    @GetMapping("/queryOwnerParkRecord")
+    public Result queryOwnerParkRecord(HttpServletRequest request){
+        String ownerId = requestUtil.getOwnerId(request);
+        return this.zyOwnerParkService.queryOwnerParkRecordByOwnerId(ownerId);
+    }
 
     /**
      * 导出下面的
@@ -104,11 +120,14 @@ public class ZyOwnerParkController {
      *
      * @return {@link Result}
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
+    })
     @ApiOperation(value = "查询未被绑定和启用的车位", notes = "查询未被绑定和启用的车位", httpMethod = "GET")
     @GetMapping("/selectNoBindingAndStatusPark")
-    @PreAuthorize("hasAnyAuthority('system:parkOwner:query')")
-    public Result selectNoBindingAndStatusPark(String communityId){
-        return this.zyOwnerParkService.selectNoBindingAndStatusPark(communityId);
+    public Result selectNoBindingAndStatusPark(HttpServletRequest request){
+        String ownerId = requestUtil.getOwnerId(request);
+        return this.zyOwnerParkService.selectNoBindingAndStatusPark(ownerId);
     }
 
     /**
@@ -117,11 +136,10 @@ public class ZyOwnerParkController {
      * @return 返回
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "idList", value = "要删除的车位审核的id", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "ArrayList<String>", name = "idList", value = "要删除的投诉建议id", required = true)
     })
     @ApiOperation(value = "删除车位审核", notes = "删除车位审核", httpMethod = "DELETE")
     @DeleteMapping
-    @PreAuthorize("hasAnyAuthority('system:parkOwner:remove')")
     public Result deleteOwnerParkByIds(@RequestParam("idList") ArrayList<String> idList){
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
@@ -132,6 +150,11 @@ public class ZyOwnerParkController {
         return result;
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "ownerParkId", value = "", required = true)
+    })
+    @ApiOperation(value = "", notes = "", httpMethod = "DELETE")
     @DeleteMapping("/deleteOwnerPark")
     public Result deleteOwnerPark(HttpServletRequest request,String ownerParkId) throws Exception {
         return zyOwnerParkService.deleteOwnerPark(ownerParkId,request);
@@ -143,7 +166,7 @@ public class ZyOwnerParkController {
      * @return 更新车位审核结果集
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "zyOwnerPark", name = "zyOwnerPark", value = "要修改的车位审核对象", required = true),
+            @ApiImplicitParam(paramType = "body", dataType = "ZyOwnerPark", name = "zyOwnerPark", value = "要更新的车位审核对象", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端请求", required = true)
     })
     @ApiOperation(value = "修改车位审核", notes = "修改车位审核", httpMethod = "PUT")
@@ -156,6 +179,11 @@ public class ZyOwnerParkController {
         zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
         return zyOwnerParkService.updateOwnerPark(zyOwnerPark);
     }
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", dataType = "OwnerParkListDto", name = "ownerParkListDto", value = "", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Page", name = "page", value = "", required = true)
+    })
+    @ApiOperation(value = "", notes = "", httpMethod = "GET")
     @GetMapping("/getOwnerParkList")
     public Result getOwnerParkList(OwnerParkListDto ownerParkListDto, Page page ) {
         return zyOwnerParkService.getOwnerParkList(ownerParkListDto, page);
@@ -168,17 +196,19 @@ public class ZyOwnerParkController {
      * @throws Exception 将存在的异常抛出
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "ZyOwnerPark", name = "zyOwnerPark", value = "要新增的车位审核信息", required = true),
+            @ApiImplicitParam(paramType = "body", dataType = "ZyOwnerPark", name = "zyOwnerPark", value = "要新增的车位审核", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "前端请求", required = true)
     })
     @ApiOperation(value = "新增车位审核", notes = "新增车位审核", httpMethod = "POST")
     @PostMapping("/insertOwnerPark")
     @PreAuthorize("hasAnyAuthority('system:parkOwner:add')")
     public Result insertOwnerPark(@RequestBody ZyOwnerPark zyOwnerPark, HttpServletRequest request) throws Exception {
+        System.err.println(zyOwnerPark);
         ZyOwner owner = this.requestUtil.getOwner(request);
         zyOwnerPark.setCreateBy(owner.getOwnerRealName());
         zyOwnerPark.setCreateTime(LocalDateTime.now().toString());
         zyOwnerPark.setOwnerId(owner.getOwnerId());
+        zyOwnerPark.setParkOwnerStatus("Auditing");
         return this.zyOwnerParkService.insertOwnerPark(zyOwnerPark);
     }
 
@@ -193,8 +223,8 @@ public class ZyOwnerParkController {
      * @throws Exception 异常
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", dataType = "zyOwnerPark", name = "zyOwnerPark", value = "车位审核对象", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "string", name = "recordAuditOpinion", value = "记录审核意见", required = true),
+            @ApiImplicitParam(paramType = "body", dataType = "ZyOwnerPark", name = "zyOwnerPark", value = "车位审核对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "recordAuditOpinion", value = "记录审计意见", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "string", name = "status", value = "状态", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
     })
@@ -217,8 +247,8 @@ public class ZyOwnerParkController {
      * @return {@link Result}
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "zyOwnerParkDto", name = "zyOwnerParkDto", value = "车位审核对象", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "Pageable", name = "pageable", value = "分页", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "ZyOwnerParkDto", name = "zyOwnerParkDto", value = "车位审核对象", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "Page", name = "page", value = "", required = true)
     })
     @ApiOperation(value = "分页和查询车位审核", notes = "分页和查询车位审核", httpMethod = "GET")
     @GetMapping("selectAllParkLimit")
@@ -233,6 +263,10 @@ public class ZyOwnerParkController {
      * @param id 主键
      * @return 单条数据
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", dataType = "string", name = "id", value = "主键", required = true)
+    })
+    @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
     public ResponseEntity<ZyOwnerPark> queryById(@PathVariable("id") String id) {
         return ResponseEntity.ok(this.zyOwnerParkService.queryById(id));

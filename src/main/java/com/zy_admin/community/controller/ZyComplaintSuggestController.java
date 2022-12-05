@@ -155,7 +155,7 @@ public class ZyComplaintSuggestController extends ApiController {
     @PreAuthorize("hasAnyAuthority('system:suggest:add')")
     public Result insertSuggest(@RequestBody ZyComplaintSuggest zyComplaintSuggest, HttpServletRequest request) throws Exception {
         ZyOwner owner = this.requestUtil.getOwner(request);
-        zyComplaintSuggest.setCreateBy(owner.getOwnerRealName());
+        zyComplaintSuggest.setCreateBy(owner.getOwnerNickname());
         zyComplaintSuggest.setCreateTime(LocalDateTime.now().toString());
         zyComplaintSuggest.setComplaintSuggestId(snowflakeManager.nextId()+"");
         zyComplaintSuggest.setUserId(owner.getOwnerId());

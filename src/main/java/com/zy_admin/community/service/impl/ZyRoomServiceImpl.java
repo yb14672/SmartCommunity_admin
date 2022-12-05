@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyRoomDao;
+import com.zy_admin.community.dto.GetRoomSDto;
 import com.zy_admin.community.dto.ZyRoomDto;
 import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.entity.ZyCommunity;
@@ -22,6 +23,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 房间 (ZyRoom)表服务实现类
@@ -33,6 +35,23 @@ import java.util.List;
 public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements ZyRoomService {
     @Resource
     private SnowflakeManager snowflakeManager;
+
+    /**
+     * 查询房间状态总数
+     *
+     * @return 查询结果集
+     */
+    @Override
+    public Result getRoomStatuses() {
+        Result result = new Result("查询失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
+        GetRoomSDto roomStatuses = this.baseMapper.getRoomStatuses();
+        if (ObjUtil.isNotEmpty(roomStatuses)) {
+            result.setData(roomStatuses);
+            result.setMeta(ResultTool.success());
+        }
+        return result;
+    }
+
     /**
      * 分页查询小区信息
      * @param page  分页对象
@@ -194,6 +213,7 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
         }
         return result;
     }
+
     /**
      * 判断楼层号是否重复
      * @param type 判断是新增0还是修改1

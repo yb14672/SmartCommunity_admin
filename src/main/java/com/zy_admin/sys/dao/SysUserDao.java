@@ -2,10 +2,12 @@ package com.zy_admin.sys.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.sys.dto.SysUserDeptDto;
 import com.zy_admin.sys.dto.SysUserDto;
 import com.zy_admin.sys.dto.UserDto;
 import com.zy_admin.sys.dto.UserRoleDto;
+import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysUser;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
@@ -187,5 +189,22 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @return 成功或失败
      */
     boolean saveBatch(@Param("userEntityList") List<SysUser> userEntityList);
+
+    /**
+     * 查询用户用户id
+     *
+     * @param userId 用户id
+     * @return {@code Result}
+     */
+    @Select("select * from sys_user where user_id=#{userId} and del_flag =0")
+    Result queryUserByUserId(Long userId);
+    /**
+     * 选择用户部门
+     *
+     * @param sysDept 系统部门
+     * @return {@code Result}
+     */
+    @Select("select * from sys_user where dept_id =#{sysDept.deptId} and del_flag=0")
+    Result selectUserByDept(@Param("sysDept") SysDept sysDept);
 }
 

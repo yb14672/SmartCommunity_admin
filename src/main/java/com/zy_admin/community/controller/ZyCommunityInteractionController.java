@@ -86,8 +86,9 @@ public class ZyCommunityInteractionController extends ApiController {
     @PostMapping
     @PreAuthorize("hasAnyAuthority('system:interaction:add')")
     public Result insert(@RequestBody ZyCommunityInteractionDto zyCommunityInteraction, HttpServletRequest request) throws Exception {
-        zyCommunityInteraction.setCreateBy(requestUtil.getOwnerId(request));
+        zyCommunityInteraction.setCreateBy(requestUtil.getOwner(request).getOwnerNickname());
         zyCommunityInteraction.setUserId(requestUtil.getOwnerId(request));
+        System.err.println("zyCommunityInteraction = " + zyCommunityInteraction.getCommunityId());
         return this.zyCommunityInteractionService.insert(zyCommunityInteraction);
     }
 

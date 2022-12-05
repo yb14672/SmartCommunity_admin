@@ -135,21 +135,6 @@
         </where>
         limit #{pageable.offset}, #{pageable.pageSize}
     </select>
-    <!--查询单个-->
-    <select id="queryById" resultType="com.zy_admin.community.entity.ZyOwnerPark">
-        select
-          owner_park_id, park_id, owner_id, park_owner_status,car_number, create_by, create_time, update_by, update_time, remark
-        from zy_owner_park
-        where owner_park_id = #{ownerParkId} and del_flag = 0
-    </select>
-    <!--查询未被绑定和启用的车位-->
-    <select id="selectNoBindingAndStatusPark" resultType="com.zy_admin.community.entity.ZyOwnerPark">
-        select *,zc.community_name
-        from zy_owner_park zop
-        left join zy_park zp on zop.park_id = zp.park_id
-        left join zy_community zc on zp.community_id = zc.community_id
-        where zop.park_owner_status != 'Binding' and zp.park_status = '0' and zc.community_id = #{communityId} and zop.del_flag = 0
-    </select>
     <!--查询车牌号有没有重复-->
     <select id="selectCarNumber" resultType="com.zy_admin.community.entity.ZyOwnerPark">
         select * from zy_owner_park where car_number = #{carNumber} and del_flag = 0

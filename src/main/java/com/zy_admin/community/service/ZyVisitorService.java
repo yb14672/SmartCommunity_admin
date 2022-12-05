@@ -16,7 +16,28 @@ import java.util.List;
  */
 public interface ZyVisitorService extends IService<ZyVisitor> {
 
+    /**
+     * 通过业主id查询访客记录
+     *
+     * @param ownerId 所有者id
+     * @return {@link Result}
+     */
+    Result queryVisitorRecordByOwnerId(String ownerId);
+
+    /**
+     * 导出小区访客记录
+     *
+     * @param communityId 社区id
+     * @return {@link List}<{@link VisitorGetExcelDto}>
+     */
     List<VisitorGetExcelDto>getLists(String communityId);
+
+    /**
+     * 导出访客记录
+     *
+     * @param ids id
+     * @return {@link List}<{@link VisitorGetExcelDto}>
+     */
     List<VisitorGetExcelDto> queryVisitorById(List<String> ids);
     /**
      * 得到访客名单

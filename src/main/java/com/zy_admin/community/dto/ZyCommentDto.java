@@ -9,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 评论对象 zy_comment
  * @description 存储评论信息
@@ -91,4 +94,11 @@ public class ZyCommentDto {
     @ApiModelProperty("被回复者姓名")
     @ExcelProperty("被回复者姓名")
     private String passiveOwnerName;
+
+    /**
+     * 子级评论
+     */
+    @ApiModelProperty("评论发表时间")
+    @ExcelProperty("评论发表时间")
+    private String createTime;
 }

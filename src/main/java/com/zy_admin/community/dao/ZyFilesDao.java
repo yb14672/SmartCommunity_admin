@@ -20,7 +20,7 @@ public interface ZyFilesDao extends BaseMapper<ZyFiles> {
      * @param idList id列表
      * @return 影响行数
      */
-    int deleteFileByInteractionId(@Param("idList") List<String> idList);
+    int deleteByInteractionIdList(@Param("idList") List<String> idList);
     /**
      * 根据id查询文件链接
      * @param id        图片id

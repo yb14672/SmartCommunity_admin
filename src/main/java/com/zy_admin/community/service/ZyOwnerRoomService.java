@@ -78,6 +78,11 @@ public interface ZyOwnerRoomService extends IService<ZyOwnerRoom> {
      */
     Result updateOwnerRoomStatus(ZyOwnerRoom zyOwnerRoom, String recordAuditOpinion) throws Exception;
 
-
+    /**
+     * 获取绑定率
+     *
+     * @return 获取绑定率
+     */
+    Result getTheNumberOfHouseBindings();
 }
 

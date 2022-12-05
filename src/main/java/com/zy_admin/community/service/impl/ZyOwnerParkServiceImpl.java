@@ -10,10 +10,7 @@ import com.zy_admin.community.dao.ZyOwnerParkDao;
 import com.zy_admin.community.dao.ZyOwnerParkRecordDao;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dao.ZyParkDao;
-import com.zy_admin.community.dto.OwnerParkExcelDto;
-import com.zy_admin.community.dto.OwnerParkListDto;
-import com.zy_admin.community.dto.OwnerRoomDto;
-import com.zy_admin.community.dto.ZyOwnerParkDto;
+import com.zy_admin.community.dto.*;
 import com.zy_admin.community.entity.*;
 import com.zy_admin.community.service.ZyOwnerParkService;
 import com.zy_admin.sys.entity.SysUser;
@@ -70,6 +67,25 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
     private SnowflakeManager snowflakeManager;
 
     /**
+     * 根据业主Id查询业主车位的纪录
+     *
+     * @param OwnerId 所有者id
+     * @return {@link Result}
+     */
+    @Override
+    public Result queryOwnerParkRecordByOwnerId(String OwnerId) {
+        Result result = new Result("车位绑定信息获取失败",ResultTool.fail(ResultCode.OWNER_PARK_GET_FAIL));
+        try {
+            List<ZyOwnerParkRecordDto> zyOwnerParkRecordDtos = this.baseMapper.queryOwnerParkRecordByOwnerId(OwnerId);
+            result.setData(zyOwnerParkRecordDtos);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            return result;
+        } catch (Exception e) {
+            return result;
+        }
+    }
+
+    /**
      * 根据ids查询列表，若为空根据小区id查询列表
      *
      * @param ids         车位ID列表
@@ -97,17 +113,19 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
      * @return 车位审核集合
      */
     @Override
-    public Result selectNoBindingAndStatusPark(String communityId) {
+    public Result selectNoBindingAndStatusPark(String ownerId) {
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
-            List<ZyOwnerPark> zyOwnerParks = this.baseMapper.selectNoBindingAndStatusPark(communityId);
+            List<RoomTree> zyOwnerParks = this.baseMapper.selectNoBindingAndStatusPark(ownerId);
             System.out.println(zyOwnerParks);
             if (zyOwnerParks.size()==0){
                 result.setData("改小区内没有未绑定的车位信息");
                 result.setMeta(ResultTool.fail(ResultCode.NO_MATCHING_DATA));
                 return result;
             }else {
-                result.setData(zyOwnerParks);
+                TreeData treeData = new TreeData(zyOwnerParks);
+                List<RoomTree> parkTrees = treeData.buildTree();
+                result.setData(parkTrees);
                 result.setMeta(ResultTool.success(ResultCode.SUCCESS));
                 return result;
             }

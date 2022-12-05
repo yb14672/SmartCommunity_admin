@@ -11,6 +11,7 @@ import com.zy_admin.community.dao.ZyCommentDao;
 import com.zy_admin.community.dao.ZyCommunityInteractionDao;
 import com.zy_admin.community.dao.ZyFilesDao;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
+import com.zy_admin.community.dto.InteractionsInMonth;
 import com.zy_admin.community.dto.OwnerRoomDto;
 import com.zy_admin.community.dto.ZyCommentDto;
 import com.zy_admin.community.dto.ZyCommunityInteractionDto;
@@ -18,16 +19,15 @@ import com.zy_admin.community.entity.ZyCommunityInteraction;
 import com.zy_admin.community.entity.ZyFiles;
 import com.zy_admin.community.entity.ZyOwner;
 import com.zy_admin.community.service.ZyCommunityInteractionService;
-import com.zy_admin.util.ObjUtil;
-import com.zy_admin.util.ResultTool;
-import com.zy_admin.util.SnowflakeManager;
-import com.zy_admin.util.StringUtil;
+import com.zy_admin.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -49,6 +49,28 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
     private SnowflakeManager snowflakeManager;
 
     /**
+     * 获取一个月内的互动信息
+     *
+     * @param limitNum
+     * @return 一个月内的互动信息
+     */
+    @Override
+    public Result getInteractionInMonth(String limitNum) {
+        Result result = new Result("最近一个月没有新的互动文章", ResultTool.fail(ResultCode.COMMON_FAIL));
+        //获取七天前的日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 30);
+        String lastWeek = sdf.format(calendar.getTime());
+        List<InteractionsInMonth> interactionsInMonthList = this.baseMapper.getInteractionInMonth(lastWeek, Integer.valueOf(limitNum));
+        if (!interactionsInMonthList.isEmpty()) {
+            result.setData(interactionsInMonthList);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+
+    /**
      * 通过id获取互动文章信息
      *
      * @param interactionId 文章id
@@ -64,6 +86,8 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
         //获取当前文章的详细信息
         ZyCommunityInteractionDto interactionDto = this.baseMapper.selectInteractionById(interactionId);
         if (interactionDto != null && ObjUtil.isNotEmpty(interactionDto)) {
+            List<String> urlList = this.zyFilesDao.queryAllFileUrl(interactionId, "CommunityInteraction");
+            interactionDto.setUrlList(urlList);
             interactionDto.setZyCommentList(commentList);
             result.setData(interactionDto);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
@@ -200,7 +224,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
         int i = this.baseMapper.deleteInteractionByIdList(idList);
         if (i > 0) {
             //删除文件表
-            this.zyFilesDao.deleteFileByInteractionId(idList);
+            this.zyFilesDao.deleteByInteractionIdList(idList);
             //删除评论
             this.zyCommentDao.deleteByInteractionIdList(idList);
             result.setData("删除成功");
@@ -237,7 +261,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
             if (insert == 1) {
                 List<String> urlList = interactionDto.getUrlList();
                 //如果有添加文件或者图片则添加
-                if (urlList.size() > 0 || !urlList.isEmpty()) {
+                if (urlList != null) {
                     List<ZyFiles> files = new ArrayList<>();
                     for (String url : urlList) {
                         ZyFiles zyFile = new ZyFiles();

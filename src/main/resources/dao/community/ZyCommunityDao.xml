@@ -104,11 +104,26 @@
         FROM zy_community
         WHERE dept_id =
               (SELECT parent_id
-              FROM sys_dept
-              WHERE dept_id = (
-                  SELECT dept_id
-                  FROM sys_user
-                  WHERE user_id = #{userId}))
+               FROM sys_dept
+               WHERE dept_id = (
+                   SELECT dept_id
+                   FROM sys_user
+                   WHERE user_id = #{userId}))
+    </select>
+    <select id="getProvinces" resultType="com.zy_admin.community.dto.AreaInfo">
+        SELECT a.name,
+               COUNT(1) `value`
+        FROM zy_community c
+                 LEFT JOIN sys_area a
+                           on c.community_provence_code = a.code
+        GROUP BY a.name
+    </select>
+    <select id="getCities" resultType="com.zy_admin.community.dto.AreaInfo">
+        SELECT a.name, count(1) `value`
+        FROM zy_community c
+                 LEFT JOIN sys_area a ON c.community_city_code = a.`code`
+        WHERE parentId = (SELECT code FROM sys_area WHERE name like CONCAT('%', #{provence}, '%') and parentId = 0)
+        GROUP BY a.name
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="communityId" useGeneratedKeys="true">

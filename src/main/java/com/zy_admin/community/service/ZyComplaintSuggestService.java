@@ -46,12 +46,15 @@ public interface ZyComplaintSuggestService extends IService<ZyComplaintSuggest> 
      */
     List<ZyComplaintSuggestDto> querySuggestAll();
 
+
     /**
-     * 新增投诉建议对象
-     * @param zyComplaintSuggest 投诉建议对象
-     * @return
+     * 插入建议
+     *
+     * @param zyComplaintSuggest zy投诉建议
+     * @return {@link Result}
+     * @throws Exception 异常
      */
-    Result insertSuggest(ZyComplaintSuggest zyComplaintSuggest) throws Exception;
+    Result insertSuggest(ZyComplaintSuggestDto zyComplaintSuggest) throws Exception;
 
     /**
      * 修改投诉建议
@@ -69,9 +72,18 @@ public interface ZyComplaintSuggestService extends IService<ZyComplaintSuggest> 
 
     /**
      * 批量删除
+     *
      * @param idList id的集合
      * @return
      */
     Result deleteSuggestByIds(@Param("idList") List<String> idList);
+
+    /**
+     * 获取一个月内的投诉建议
+     *
+     * @param limitNum 总共显示多少条
+     * @return 一个月内的投诉建议
+     */
+    Result getSuggestInMonth(String limitNum);
 }
 

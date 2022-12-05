@@ -1,18 +1,16 @@
 package com.zy_admin.community.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.community.dao.ZyBuildingDao;
 import com.zy_admin.community.dao.ZyCommunityDao;
-import com.zy_admin.community.dto.CommunityDto;
-import com.zy_admin.community.dto.CommunityExcel;
-import com.zy_admin.community.dto.ZyCommunityDto;
+import com.zy_admin.community.dto.*;
 import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.community.service.ZyCommunityService;
-import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.util.ObjUtil;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
@@ -37,9 +35,49 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
     @Resource
     private SnowflakeManager snowflakeManager;
     @Resource
-    private SysUserDao sysUserDao;
-    @Resource
     private ZyBuildingDao zyBuildingDao;
+
+    /**
+     * 获得城市
+     *
+     * @param provence 对象
+     * @return 查询结果集
+     */
+    @Override
+    public Result getCities(String provence) {
+        Result result = new Result("查询城市失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<AreaInfo> areaInfoList = this.baseMapper.getCities(provence);
+        if (areaInfoList != null) {
+            result.setData(areaInfoList);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+
+    /**
+     * 获得省
+     *
+     * @param regionCode 查询的范围
+     * @return 查询结果集
+     */
+    @Override
+    public Result getProvinces(String regionCode) {
+        Result result = new Result("查询失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
+        AreaInfoList provinces = null;
+        //如果为空或者为china则是查询每个省的小区
+        if (ObjectUtil.isEmpty(regionCode) || "china".equals(regionCode)) {
+            provinces = new AreaInfoList(this.baseMapper.getProvinces(), "china");
+        } else {
+            //不为空且不是china则是查询所在省的每个市的小区
+            provinces = new AreaInfoList(this.baseMapper.getCities(regionCode), regionCode);
+        }
+        if (provinces != null && ObjectUtil.isNotEmpty(provinces.getRegionCode())) {
+            result.setData(provinces);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+
+    }
 
     /**
      * 删除数据
@@ -196,7 +234,7 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
     public Result getCommunityIdByUserId(String userId) {
         Result result = new Result("当前公司没有负责的物业", ResultTool.fail(ResultCode.COMMON_FAIL));
         List<ZyCommunity> communityIdByUserId = this.baseMapper.getCommunityIdByUserId(userId);
-        if(!communityIdByUserId.isEmpty()){
+        if (!communityIdByUserId.isEmpty()) {
             result.setData(communityIdByUserId);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
