@@ -169,7 +169,7 @@ public class ZyRoomController extends ApiController {
     })
     @ApiOperation(value = "分页查询小区信息", notes = "分页查询小区信息", httpMethod = "GET")
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:room:query')")
     public Result getAllCommunity(Page page, ZyRoom zyRoom) {
         return zyRoomService.getAllCommunity(page,zyRoom);
     }

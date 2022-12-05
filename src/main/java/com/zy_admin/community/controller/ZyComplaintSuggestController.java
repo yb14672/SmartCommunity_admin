@@ -111,7 +111,6 @@ public class ZyComplaintSuggestController extends ApiController {
     })
     @ApiOperation(value = "回复投诉建议", notes = "回复投诉建议", httpMethod = "PUT")
     @PutMapping("/updateSuggest")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public Result updateSuggest(@RequestBody ZyComplaintSuggest zyComplaintSuggest, HttpServletRequest request){
         SysUser user = this.requestUtil.getUser(request);
         zyComplaintSuggest.setUpdateBy(user.getUserName());
@@ -217,7 +216,7 @@ public class ZyComplaintSuggestController extends ApiController {
     })
     @ApiOperation(value = "分页查询", notes = "分页查询", httpMethod = "GET")
     @GetMapping("/selectSuggestLimit")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:suggest:query')")
     public Result selectSuggestLimit(ZyComplaintSuggest zyComplaintSuggest, Pageable pageable){
         return zyComplaintSuggestService.selectSuggestLimit(zyComplaintSuggest, pageable);
     }

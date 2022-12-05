@@ -106,7 +106,7 @@ public class ZyOwnerParkController {
      */
     @ApiOperation(value = "查询未被绑定和启用的车位", notes = "查询未被绑定和启用的车位", httpMethod = "GET")
     @GetMapping("/selectNoBindingAndStatusPark")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:parkOwner:query')")
     public Result selectNoBindingAndStatusPark(String communityId){
         return this.zyOwnerParkService.selectNoBindingAndStatusPark(communityId);
     }
@@ -222,7 +222,7 @@ public class ZyOwnerParkController {
     })
     @ApiOperation(value = "分页和查询车位审核", notes = "分页和查询车位审核", httpMethod = "GET")
     @GetMapping("selectAllParkLimit")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:parkOwner:query')")
     public Result selectAllParkLimit(ZyOwnerParkDto zyOwnerParkDto, Page page){
         return zyOwnerParkService.selectAllParkLimit(zyOwnerParkDto,page);
     }

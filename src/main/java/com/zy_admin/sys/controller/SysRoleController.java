@@ -57,7 +57,7 @@ public class SysRoleController extends ApiController {
     })
     @ApiOperation(value = "获取所有角色数据", notes = "获取所有角色数据", httpMethod = "GET")
     @GetMapping("/getAllRole")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:role:query')")
     public Result getAllRole(SysRole sysRole) {
         return sysRoleService.getAllRole(sysRole);
     }
@@ -71,7 +71,7 @@ public class SysRoleController extends ApiController {
     })
     @ApiOperation(value = "获取所有除去管理员以外的角色并分页", notes = "获取所有除去管理员以外的角色并分页", httpMethod = "GET")
     @GetMapping("/getRoleList")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:role:query')")
     public Result getRoleList(Page page) {
         return this.sysRoleService.getRoleList(page);
     }
@@ -89,7 +89,7 @@ public class SysRoleController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping("/selectRoleByLimit")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:role:query')")
     public Result selectRoleByLimit(SysRole sysRole, Pageable pageable, String startTime, String endTime) {
         return sysRoleService.selectRoleByLimit(sysRole, pageable, startTime, endTime);
     }

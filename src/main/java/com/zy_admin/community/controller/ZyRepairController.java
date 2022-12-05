@@ -165,7 +165,7 @@ public class ZyRepairController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping("/getAllRepairs")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:repair:query')")
     public Result getAllRepairs(Pageable pageable, RepairDto repairDto) {
         return zyRepairService.getAllRepairs(pageable, repairDto);
     };

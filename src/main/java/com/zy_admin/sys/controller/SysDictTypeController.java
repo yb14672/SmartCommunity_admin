@@ -167,7 +167,7 @@ public class SysDictTypeController extends ApiController {
     })
     @ApiOperation(value = "分页查询字典类型", notes = "分页查询字典类型", httpMethod = "GET")
     @GetMapping("/selectDictByLimit")
-    @PreAuthorize("hasAnyAuthority('ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:dict:query')")
     public Result selectDictByLimit(SysDictType sysDictType, Pageable pageable, String startTime, String endTime) {
         return sysDictTypeService.selectDictByLimit(sysDictType, pageable, startTime, endTime);
     }
@@ -190,7 +190,7 @@ public class SysDictTypeController extends ApiController {
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:dict:query')")
     public Result selectOne(@PathVariable String id) {
         return this.sysDictTypeService.getDictTypeById(id);
     }

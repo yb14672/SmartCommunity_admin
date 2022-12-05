@@ -100,7 +100,7 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "获取业主信息", notes = "获取业主信息", httpMethod = "GET")
     @GetMapping("/getOwner")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:owner:list')")
     public Result getOwner(HttpServletRequest request){
         String ownerId = requestUtil.getOwnerId(request);
         return this.zyOwnerService.getOwnerById(ownerId);
@@ -172,7 +172,7 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "获取户主信息并分页", notes = "获取户主信息并分页", httpMethod = "GET")
     @GetMapping("/getOwnerList")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:owner:query')")
     public Result getOwnerList(ZyOwner zyOwner, Pageable pageable,String communityId) {
         return zyOwnerService.getOwnerList(zyOwner, pageable,communityId);
     }

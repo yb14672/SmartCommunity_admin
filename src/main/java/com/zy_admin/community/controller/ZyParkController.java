@@ -204,7 +204,7 @@ public class ZyParkController extends ApiController {
     })
     @ApiOperation(value = "分页查询", notes = "分页查询", httpMethod = "GET")
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:park:query')")
     public Result queryByPage(ZyParkDto zyPark, Page page) {
         return this.zyParkService.queryByPage(zyPark, page);
     }

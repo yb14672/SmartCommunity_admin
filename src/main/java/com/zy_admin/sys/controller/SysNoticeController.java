@@ -47,7 +47,7 @@ public class SysNoticeController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:notice:query')")
     public R selectAll(Page<SysNotice> page, SysNotice sysNotice) {
         return success(this.sysNoticeService.page(page, new QueryWrapper<>(sysNotice)));
     }
@@ -63,7 +63,7 @@ public class SysNoticeController extends ApiController {
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:notice:query')")
     public R selectOne(@PathVariable Serializable id) {
         return success(this.sysNoticeService.getById(id));
     }

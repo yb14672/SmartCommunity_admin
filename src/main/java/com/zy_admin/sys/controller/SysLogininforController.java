@@ -96,7 +96,7 @@ public class SysLogininforController extends ApiController {
     })
     @ApiOperation(value = "查询登录日志", notes = "查询登录日志", httpMethod = "GET")
     @GetMapping("/queryLoginInfor")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('monitor:logininfor:query')")
     public Result queryLoginInfor(SysLogininfor sysLogininfor, Pageable pageable, String startTime, String endTime) {
         return sysLogininforService.queryLoginInfor(sysLogininfor,pageable,startTime,endTime);
     }

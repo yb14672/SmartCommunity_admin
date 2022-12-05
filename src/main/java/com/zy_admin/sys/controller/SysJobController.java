@@ -48,7 +48,7 @@ public class SysJobController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('monitor:job:query')")
     public R selectAll(Page<SysJob> page, SysJob sysJob) {
         return success(this.sysJobService.page(page, new QueryWrapper<>(sysJob)));
     }
@@ -64,7 +64,7 @@ public class SysJobController extends ApiController {
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('monitor:job:query')")
     public R selectOne(@PathVariable Serializable id) {
         return success(this.sysJobService.getById(id));
     }

@@ -121,7 +121,7 @@ public class SysOperLogController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有操作日志数据", notes = "分页查询所有操作日志数据", httpMethod = "GET")
     @GetMapping("/getOperLogList")
-    @PreAuthorize("hasAnyAuthority('ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('monitor:logininfor:query')")
     public Result getOperLogList(SysOperLog sysOperLog, Pageable pageable, String startTime, String endTime, @RequestParam(value = "orderByColumn",defaultValue = "oper_time") String orderByColumn, @RequestParam(value = "isAsc",defaultValue = "desc") String isAsc){
         return this.sysOperLogService.getOperLogList(sysOperLog, pageable, startTime, endTime, orderByColumn, isAsc);
     }

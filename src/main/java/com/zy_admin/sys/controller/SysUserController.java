@@ -107,7 +107,7 @@ public class SysUserController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有用户对象数据", notes = "分页查询所有用户对象数据", httpMethod = "GET")
     @GetMapping("/selectUsers")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:user:query')")
     public Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime) {
         return this.sysUserService.selectUsers(pageable, sysUser, startTime, endTime);
     }
@@ -121,7 +121,7 @@ public class SysUserController extends ApiController {
     })
     @ApiOperation(value = "根据用户ID获取其信息和对应的角色", notes = "根据用户ID获取其信息和对应的角色", httpMethod = "GET")
     @GetMapping("/authRole/{userId}")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:user:query')")
     public Result authRole(@PathVariable("userId") Long userId) {
         return this.sysUserService.authRole(userId);
     }
@@ -243,7 +243,7 @@ public class SysUserController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:user:query')")
     public Result selectAll(Page page, SysUser sysUser) {
         return this.sysUserService.selectAll(page, sysUser);
     }
@@ -257,7 +257,7 @@ public class SysUserController extends ApiController {
     })
     @ApiOperation(value = "根据用户ID获取头像", notes = "根据用户ID获取头像", httpMethod = "GET")
     @GetMapping("/getAvatarById")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:user:query')")
     public Result getAvatarById(HttpServletRequest request) {
         String id = JwtUtil.getMemberIdByJwtToken(request,"token");
         return this.sysUserService.getAvatarById(id);

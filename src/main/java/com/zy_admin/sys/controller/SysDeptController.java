@@ -51,7 +51,7 @@ public class SysDeptController extends ApiController {
     })
     @ApiOperation(value = "根据小区ID查询对应物业的维修人员列表", notes = "根据小区ID查询对应物业的维修人员列表", httpMethod = "GET")
     @GetMapping("/getRepairByCommunityId")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin','ROLE_repair','ROLE_mgr')")
+    @PreAuthorize("hasAnyAuthority('system:dept:query')")
     public Result getRepairByCommunityId(String communityId){
         return this.sysDeptService.getRepairByCommunityId(communityId);
     }
@@ -66,7 +66,7 @@ public class SysDeptController extends ApiController {
     })
     @ApiOperation(value = "获取部门列表", notes = "通过条件搜索部门", httpMethod = "GET")
     @GetMapping("/getDeptList")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:dept:query')")
     public Result getDeptList(SysDept sysDept) {
         return sysDeptService.getDeptList(sysDept);
     }

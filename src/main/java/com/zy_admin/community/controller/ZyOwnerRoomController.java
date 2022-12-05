@@ -49,7 +49,7 @@ public class ZyOwnerRoomController extends ApiController {
     })
     @ApiOperation(value = "", notes = "", httpMethod = "GET")
     @GetMapping("/selectOwnerRoomByOwnerId")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:ownerRoom:list')")
     public Result selectOwnerRoomByOwnerId(HttpServletRequest request){
         String ownerId = requestUtil.getOwnerId(request);
         return this.zyOwnerRoomService.selectOwnerRoomByOwnerId(ownerId);
@@ -147,7 +147,7 @@ public class ZyOwnerRoomController extends ApiController {
     })
     @ApiOperation(value = "分页和查询业主审核", notes = "分页和查询业主审核", httpMethod = "GET")
     @GetMapping("selectAllOwnerRoomLimit")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:ownerRoom:query')")
     public Result selectAllOwnerRoomLimit(ZyOwnerRoom zyOwnerRoom, Pageable pageable){
         return zyOwnerRoomService.selectAllOwnerRoomLimit(zyOwnerRoom,pageable);
     }

@@ -52,7 +52,7 @@ public class SysPostController extends ApiController {
      */
     @ApiOperation(value = "获取所有的岗位", notes = "获取所有的岗位", httpMethod = "GET")
     @GetMapping("/getAllPost")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:post:query')")
     public Result getAllPost() {
         return sysPostService.getAllPost();
     }
@@ -68,7 +68,7 @@ public class SysPostController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有岗位数据", notes = "分页查询所有岗位数据", httpMethod = "GET")
     @GetMapping("/getPostList")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:post:query')")
     public Result getPostList(SysPost sysPost, Pageable pageable) {
         return this.sysPostService.selectPostByLimit(sysPost, pageable);
     }

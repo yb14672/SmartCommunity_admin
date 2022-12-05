@@ -11,7 +11,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -62,7 +61,6 @@ public class SysRoleDeptController extends ApiController {
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
     public R selectOne(@PathVariable Serializable id) {
         return success(this.sysRoleDeptService.getById(id));
     }
@@ -78,7 +76,6 @@ public class SysRoleDeptController extends ApiController {
     })
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('system:user:add')")
     public R insert(@RequestBody SysRoleDept sysRoleDept) {
         return success(this.sysRoleDeptService.save(sysRoleDept));
     }

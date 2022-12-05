@@ -62,7 +62,7 @@ public class ZyUnitController extends ApiController {
     })
     @ApiOperation(value = "分页查询单元楼信息", notes = "分页查询单元楼信息", httpMethod = "GET")
     @GetMapping("/getUnitList")
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:unit:query')")
     public Result getUnitList(ZyUnit zyUnit, Pageable pageable) {
         return zyUnitService.getUnitList(zyUnit, pageable);
     }

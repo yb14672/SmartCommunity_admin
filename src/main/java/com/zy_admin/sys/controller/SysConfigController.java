@@ -48,7 +48,7 @@ public class SysConfigController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:config:query')")
     public R selectAll(Page<SysConfig> page, SysConfig sysConfig) {
         return success(this.sysConfigService.page(page, new QueryWrapper<>(sysConfig)));
     }

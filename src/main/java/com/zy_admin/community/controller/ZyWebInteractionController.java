@@ -95,7 +95,7 @@ public class ZyWebInteractionController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_common','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('system:interaction:query')")
     public Result selectAll(Page page, ZyCommunityInteractionDto interactionDto) {
         return this.zyCommunityInteractionService.selectAllLimit(page, interactionDto);
     }
