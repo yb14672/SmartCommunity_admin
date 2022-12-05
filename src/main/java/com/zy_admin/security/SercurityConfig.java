@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +32,8 @@ public class SercurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private LoginSuccessLogOutHandler loginSuccessLogOutHandler;
+    @Autowired
+    private MyAccessDenied myAccessDenied;
 
     private static final String[] URL_WHITELIST = {
             "/sysUser/login",
@@ -98,13 +101,14 @@ public class SercurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(myAccessDenied)
                 //自定配置
                 .and()
                 .addFilter(jwtAuthenticationFilter());
 
                 //无权访问
-//                 .exceptionHandling()
-//                 .accessDeniedHandler(accessDeniedHandler);
+//
     }
 }
