@@ -63,7 +63,7 @@ public interface ZyCommunityInteractionDao extends MPJBaseMapper<ZyCommunityInte
     List<ZyCommunityInteractionDto> selectAllLimit(@Param("zyCommunityInteractionDto") ZyCommunityInteractionDto zyCommunityInteractionDto, @Param("pageable") Pageable pageable);
 
     /**
-     * 获取一周内的互动信息
+     * 获取一个月内的互动信息
      *
      * @param lastWeek 7天前的日期
      * @param limitNum 总共显示多少条

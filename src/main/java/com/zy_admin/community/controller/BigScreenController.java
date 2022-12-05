@@ -12,6 +12,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import com.zy_admin.community.service.ZyComplaintSuggestService;
+import com.zy_admin.community.service.ZyOwnerRoomService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,15 +26,22 @@ import javax.annotation.Resource;
  **/
 @Api(value = "bigScreen", tags = {"Time:2022 - 2022/12/4 - 16:48*/"})
 @RestController
-@RequestMapping("bigScreen")
+@RequestMapping("/bigScreen")
 public class BigScreenController {
     @Resource
     private ZyCommunityInteractionService interactionService;
     @Resource
+    private ZyComplaintSuggestService suggestService;
+    @Resource
+    private ZyOwnerRoomService ownerRoomService;
+    @Resource
     private ZyCommunityService zyCommunityService;
     @Resource
     private ZyRoomService zyRoomService;
-
+    @Resource
+    private ZyCommunityService zyCommunityService;
+    @Resource
+    private ZyRoomService zyRoomService;
     /**
      * 获取不同销售状态的房屋总数
      * @return 查询结果集
@@ -69,16 +78,34 @@ public class BigScreenController {
         return  zyCommunityService.getCities(provence);
     }
     /**
-     * 获取一周内的互动信息
+     * 获取一个月内的互动信息
      *
-     * @return 一周以内的互动信息
+     * @param limitNum 总共显示多少条
+     * @return 一个月内的互动信息
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "string", name = "limitNum", value = "", required = true)
-    })
-    @ApiOperation(value = "获取一周内的互动信息", notes = "获取一周内的互动信息", httpMethod = "GET")
-    @GetMapping("/ssyj")
+    @GetMapping("/getInteractionInMonth")
     public Result getInteractionInMonth(String limitNum) {
         return interactionService.getInteractionInMonth(limitNum);
+    }
+
+    /**
+     * 获取一个月内的投诉建议
+     *
+     * @param limitNum 总共显示多少条
+     * @return 一个月内的投诉建议
+     */
+    @GetMapping("/getSuggestInMonth")
+    public Result getSuggestInMonth(String limitNum) {
+        return suggestService.getSuggestInMonth(limitNum);
+    }
+
+    /**
+     * 获取绑定率
+     *
+     * @return 获取绑定率
+     */
+    @GetMapping("/getTheNumberOfHouseBindings")
+    public Result getTheNumberOfHouseBindings() {
+        return ownerRoomService.getTheNumberOfHouseBindings();
     }
 }

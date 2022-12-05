@@ -232,6 +232,13 @@
           and room_id = #{roomId}
           and owner_id = #{ownerId}
     </select>
+    <select id="getTheNumberOfHouseBindings" resultType="com.zy_admin.community.dto.RoomInfo">
+        SELECT COUNT(1)                                                                          roomNum,
+               (SELECT COUNT(1) FROM zy_owner_room zor WHERE zor.community_id = r.community_id)  bingingNum,
+               (SELECT community_name FROM zy_community c WHERE c.community_id = r.community_id) communityName
+        FROM zy_room r
+        GROUP BY community_id
+    </select>
 
     <!--通过主键修改数据-->
     <update id="updateOwnerRoomStatus">

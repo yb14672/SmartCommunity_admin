@@ -10,6 +10,7 @@ import com.zy_admin.community.dao.ZyFilesDao;
 import com.zy_admin.community.dao.ZyOwnerDao;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dto.OwnerRoomDto;
+import com.zy_admin.community.dto.SuggestInMonth;
 import com.zy_admin.community.dto.ZyComplaintSuggestDto;
 import com.zy_admin.community.entity.ZyComplaintSuggest;
 import com.zy_admin.community.entity.ZyFiles;
@@ -20,8 +21,10 @@ import com.zy_admin.util.SnowflakeManager;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -269,6 +272,28 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
             } else {
                 result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
             }
+        }
+        return result;
+    }
+
+    /**
+     * 获取一个月内的投诉建议
+     *
+     * @param limitNum 总共显示多少条
+     * @return 一个月内的投诉建议
+     */
+    @Override
+    public Result getSuggestInMonth(String limitNum) {
+        Result result = new Result("最近一个月没有新的投诉建议", ResultTool.fail(ResultCode.COMMON_FAIL));
+        //获取七天前的日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 30);
+        String lastWeek = sdf.format(calendar.getTime());
+        List<SuggestInMonth> suggestInMonthList = this.baseMapper.getSuggestInMonth(lastWeek, Integer.valueOf(limitNum));
+        if (!suggestInMonthList.isEmpty()) {
+            result.setData(suggestInMonthList);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
     }
