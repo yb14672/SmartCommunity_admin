@@ -17,7 +17,7 @@
     </resultMap>
 
     <!--根据文章ID列表批量逻辑删除文件-->
-    <delete id="deleteByInteractionIdList">
+    <delete id="deleteFileByInteractionId">
         update zy_files set del_flag = 1
         where parent_id in
         <foreach collection="idList" item="id" separator="," open="(" close=")">
@@ -117,7 +117,6 @@
             </if>
         </where>
     </select>
-
 
 
     <!--根据id查询文件信息-->

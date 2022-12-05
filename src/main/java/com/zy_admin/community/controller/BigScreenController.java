@@ -12,6 +12,7 @@ import com.zy_admin.community.service.ZyComplaintSuggestService;
 import com.zy_admin.community.service.ZyOwnerRoomService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -67,12 +68,13 @@ public class BigScreenController {
     /**
      * 获取所有省的总小区数
      *
+     * @param regionCode 查询的范围
      * @return 查询结果集
      */
     @ApiOperation(value = "获取所有省的总小区数", notes = "获取所有省的总小区数", httpMethod = "GET")
     @GetMapping("/getProvinces")
-    public Result getProvinces(){
-        return  zyCommunityService.getProvinces();
+    public Result getProvinces(@RequestParam(value = "regionCode",defaultValue = "china") String regionCode){
+        return  zyCommunityService.getProvinces(regionCode);
     }
 
     /**
@@ -81,7 +83,6 @@ public class BigScreenController {
      * @param provence 普罗旺斯
      * @return 查询结果集
      */
-
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "string", name = "provence", value = "普罗旺斯", required = true)
     })

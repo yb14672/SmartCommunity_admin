@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
  * 通用树
  *
@@ -29,9 +27,4 @@ public class AreaInfo {
      */
     @ApiModelProperty("值")
     private String value;
-    /**
-     * 地区代码
-     */
-    @ApiModelProperty("地区代码")
-    private String regionCode="china";
 }

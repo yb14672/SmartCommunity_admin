@@ -91,7 +91,6 @@ public interface ZyCommunityDao extends BaseMapper<ZyCommunity> {
      * @param provence 数量
      * @return 查询省的小区总数量
      */
-    @Select("select community_city_code as name , count(*) as value FROM zy_community WHERE community_provence_code = #{provence} GROUP BY community_city_code")
     List<AreaInfo> getCities(String provence);
 }
 

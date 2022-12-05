@@ -59,12 +59,13 @@ public interface ZyCommunityService extends IService<ZyCommunity> {
     /**
      * 获得省
      *
+     * @param regionCode 查询的范围
      * @return 查询结果集
      */
-    Result getProvinces();
+    Result getProvinces(String regionCode);
 
     /**
-     * 得到城市
+     * 根据省名获取每个市的小区数
      *
      * @param provence 对象
      * @return 查询结果集
