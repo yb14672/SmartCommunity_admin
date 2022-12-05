@@ -17,10 +17,12 @@ import com.zy_admin.util.JwtUtil;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -105,6 +107,7 @@ public class SysUserController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有用户对象数据", notes = "分页查询所有用户对象数据", httpMethod = "GET")
     @GetMapping("/selectUsers")
+    @PreAuthorize("hasAnyAuthority('ROLE_common')")
     public Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime) {
         return this.sysUserService.selectUsers(pageable, sysUser, startTime, endTime);
     }
@@ -118,6 +121,7 @@ public class SysUserController extends ApiController {
     })
     @ApiOperation(value = "根据用户ID获取其信息和对应的角色", notes = "根据用户ID获取其信息和对应的角色", httpMethod = "GET")
     @GetMapping("/authRole/{userId}")
+
     public Result authRole(@PathVariable("userId") Long userId) {
         return this.sysUserService.authRole(userId);
     }
@@ -264,6 +268,7 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "登录", notes = "登录", httpMethod = "POST")
     @PostMapping("/login")
     public Result login(SysUser sysUser) {
+        System.out.println(sysUser.toString());
         return sysUserService.login(sysUser);
     }
     /**
@@ -360,6 +365,7 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "新增用户", notes = "新增用户", httpMethod = "POST")
     @PostMapping("/insertUser")
     @MyLog(title = "用户管理", optParam = "#{sysUserDto}", businessType = BusinessType.INSERT)
+    @PreAuthorize("hasAnyAuthority('system:user:add')")
     public Result insertUser(HttpServletRequest request, @RequestBody UserDto sysUserDto) {
         sysUserDto.setCreateTime(LocalDateTime.now().toString());
         SysUser user = this.requestUtil.getUser(request);

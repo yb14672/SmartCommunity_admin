@@ -165,5 +165,9 @@ public interface SysUserService extends IService<SysUser> {
      * @return {@code Result}
      */
     Result resetPassword(SysUser sysUser);
+
+    SysUser getByUsername(String username);
+
+    String getUserAuthorityInfo(Long userId);
 }
 

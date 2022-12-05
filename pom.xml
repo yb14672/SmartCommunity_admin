@@ -21,6 +21,11 @@
             <artifactId>swagger-bootstrap-ui</artifactId>
             <version>1.9.6</version>
         </dependency>
+<!--        security-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
         <!--swagger接口文档生成-->
         <dependency>
             <groupId>io.springfox</groupId>
