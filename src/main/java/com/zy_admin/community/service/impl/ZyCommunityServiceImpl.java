@@ -8,6 +8,7 @@ import com.zy_admin.community.dao.ZyBuildingDao;
 import com.zy_admin.community.dao.ZyCommunityDao;
 import com.zy_admin.community.dto.CommunityDto;
 import com.zy_admin.community.dto.CommunityExcel;
+import com.zy_admin.community.dto.AreaInfo;
 import com.zy_admin.community.dto.ZyCommunityDto;
 import com.zy_admin.community.entity.ZyBuilding;
 import com.zy_admin.community.entity.ZyCommunity;
@@ -40,7 +41,37 @@ public class ZyCommunityServiceImpl extends ServiceImpl<ZyCommunityDao, ZyCommun
     private SysUserDao sysUserDao;
     @Resource
     private ZyBuildingDao zyBuildingDao;
+    /**
+     * 获得城市
+     * @param provence 对象
+     * @return 查询结果集
+     */
+    @Override
+    public Result getCities(String provence) {
+        Result result = new Result("查询城市失败，请稍后再试",ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<AreaInfo> areaInfoList = this.baseMapper.getCities(provence);
+        if(areaInfoList !=null){
+            result.setData(areaInfoList);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
+    }
+    /**
+     * 获得省
+     *
+     * @return 查询结果集
+     */
+    @Override
+    public Result getProvinces() {
+        Result result = new Result("查询省失败，请稍后再试",ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<AreaInfo> provinces = this.baseMapper.getProvinces();
+        if(provinces!=null){
+            result.setData(provinces);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
+        return result;
 
+    }
     /**
      * 删除数据
      *
