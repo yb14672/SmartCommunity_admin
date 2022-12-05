@@ -1,4 +1,5 @@
 package com.zy_admin.community.dao;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.community.dto.CommunityDto;
@@ -16,6 +17,14 @@ import java.util.List;
  * @since 2022-11-01 19:49:01
  */
 public interface ZyCommunityDao extends BaseMapper<ZyCommunity> {
+    /**
+     * 查询通过id
+     *
+     * @param communityId 社区id
+     * @return {@code ZyCommunity}
+     */
+    @Select("select dept_id from zy_community where community_id =#{communityId} ")
+    ZyCommunity queryById(@Param("communityId") Long communityId);
     /**
      * 根据部门ID查询小区
      * @param idList 用于查询的部门id 集合

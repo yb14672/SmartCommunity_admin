@@ -165,5 +165,19 @@ public interface SysUserService extends IService<SysUser> {
      * @return {@code Result}
      */
     Result resetPassword(SysUser sysUser);
+
+    /**
+     * 查询用户用户id
+     *
+     * @param userId 用户id
+     * @return {@code Result}
+     */
+    Result queryUserByUserId(Long userId);
+    /**
+     * 查询制定部门
+     * @param communityId
+     * @return 查询结果
+     */
+    Result getUserByDeptAndCommunityId(Long communityId);
 }
 
