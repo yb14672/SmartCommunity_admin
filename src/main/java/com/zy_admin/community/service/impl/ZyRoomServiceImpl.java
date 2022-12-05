@@ -45,7 +45,7 @@ public class ZyRoomServiceImpl extends ServiceImpl<ZyRoomDao, ZyRoom> implements
     public Result getRoomStatuses() {
         Result result = new Result("查询失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
         GetRoomSDto roomStatuses = this.baseMapper.getRoomStatuses();
-        if (Objects.isNull(roomStatuses)) {
+        if (ObjUtil.isNotEmpty(roomStatuses)) {
             result.setData(roomStatuses);
             result.setMeta(ResultTool.success());
         }

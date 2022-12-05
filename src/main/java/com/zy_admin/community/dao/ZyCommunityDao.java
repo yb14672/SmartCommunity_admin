@@ -75,7 +75,6 @@ public interface ZyCommunityDao extends BaseMapper<ZyCommunity> {
      *
      * @return 查询省的小区总数量
      */
-    @Select("SELECT community_provence_code, COUNT(*) FROM zy_com GROUP BY community_provence_code")
     List<TreeDto> getProvinces();
 
     /**
