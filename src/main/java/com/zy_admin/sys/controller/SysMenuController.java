@@ -77,7 +77,7 @@ public class SysMenuController extends ApiController {
     })
     @ApiOperation(value = "获取所有菜单", notes = "获取所有菜单", httpMethod = "GET")
     @GetMapping("/getMenus")
-    @PreAuthorize("hasAnyAuthority('system:menu:query')")
+//    @PreAuthorize("hasAnyAuthority('system:menu:query')")
     public Result getMenuList(HttpServletRequest request) {
         String userId = requestUtil.getUserId(request);
         return this.sysMenuService.getAllMenu(userId);

@@ -57,7 +57,7 @@ public class SysRoleController extends ApiController {
     })
     @ApiOperation(value = "获取所有角色数据", notes = "获取所有角色数据", httpMethod = "GET")
     @GetMapping("/getAllRole")
-    @PreAuthorize("hasAnyAuthority('system:role:query')")
+    @PreAuthorize("hasAnyAuthority('system:role:query','system:role:list')")
     public Result getAllRole(SysRole sysRole) {
         return sysRoleService.getAllRole(sysRole);
     }

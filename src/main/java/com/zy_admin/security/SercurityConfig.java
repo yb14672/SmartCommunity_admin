@@ -40,7 +40,8 @@ public class SercurityConfig extends WebSecurityConfigurerAdapter {
             "/sysUser/logout",
 //            "/user/profile",
             "/sysUser/logout",
-            "sysMenu/getMenus"
+            "sysMenu/getMenus",
+            "sysUser/getAvatarById"
 
 
     };

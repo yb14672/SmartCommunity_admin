@@ -284,7 +284,7 @@ public class SysUserController extends ApiController {
     })
     @ApiOperation(value = "根据用户ID获取头像", notes = "根据用户ID获取头像", httpMethod = "GET")
     @GetMapping("/getAvatarById")
-    @PreAuthorize("hasAnyAuthority('system:user:query')")
+//    @PreAuthorize("hasAnyAuthority('system:user:query')")
     public Result getAvatarById(HttpServletRequest request) {
         String id = JwtUtil.getMemberIdByJwtToken(request,"token");
         return this.sysUserService.getAvatarById(id);
