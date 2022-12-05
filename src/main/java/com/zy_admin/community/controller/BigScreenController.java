@@ -58,7 +58,7 @@ public class BigScreenController {
      *
      * @return 查询结果集
      */
-    @ApiOperation(value = "让房间状态 获取不同销售状态的房屋总数", notes = "让房间状态 获取不同销售状态的房屋总数", httpMethod = "GET")
+    @ApiOperation(value = "获取不同销售状态的房屋总数", notes = "获取不同销售状态的房屋总数", httpMethod = "GET")
     @GetMapping("/getRoomStatuses")
     public Result getRoomStatuses() {
         return zyRoomService.getRoomStatuses();
