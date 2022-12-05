@@ -6,10 +6,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.community.dao.ZyCommunityDao;
+import com.zy_admin.community.entity.ZyCommunity;
+import com.zy_admin.sys.dao.SysDeptDao;
 import com.zy_admin.sys.dao.SysRoleDao;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.sys.dao.SysUserRoleDao;
 import com.zy_admin.sys.dto.*;
+import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.RedisService;
@@ -56,7 +60,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private SysRoleDao sysRoleDao;
     @Resource
     private RequestUtil requestUtil;
-
+    @Resource
+    private ZyCommunityDao zyCommunityDao;
+    @Resource
+    private SysDeptDao sysDeptDao;
+    @Resource
+    private SysUserDao sysUserDao;
     /**
      * 注销
      *
@@ -894,6 +903,34 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_SAME_PASSWORD));
         }
         return result;
+    }
+
+    /**
+     * 查询用户用户id
+     *
+     * @param userId 用户id
+     * @return {@code Result}
+     */
+    @Override
+    public Result queryUserByUserId(Long userId) {
+        return  this.baseMapper.queryUserByUserId(userId);
+    }
+    /**
+     * 查询制定部门
+     *
+     * @param communityId
+     * @return 查询结果
+     */
+    @Override
+    public Result getUserByDeptAndCommunityId(Long communityId) {
+        //通过小区id查询小区对象
+        ZyCommunity zyCommunity = zyCommunityDao.queryById(communityId);
+        //将小区对象的部门id(公司）用来查询维修部门id
+        Long deptId = sysDeptDao.queryDeptIdByParentId(zyCommunity.getDeptId());
+        SysDept sysDept = new SysDept();
+        sysDept.setDeptId(deptId);
+        //查询维修部门的所有员工
+        return sysUserDao.selectUserByDept(sysDept);
     }
 }
 

@@ -10,6 +10,7 @@ import com.zy_admin.community.dao.ZyFilesDao;
 import com.zy_admin.community.dao.ZyOwnerDao;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dto.OwnerRoomDto;
+import com.zy_admin.community.dto.SuggestInMonth;
 import com.zy_admin.community.dto.ZyComplaintSuggestDto;
 import com.zy_admin.community.entity.ZyComplaintSuggest;
 import com.zy_admin.community.entity.ZyFiles;
@@ -20,8 +21,10 @@ import com.zy_admin.util.SnowflakeManager;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -141,10 +144,11 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         zyComplaintSuggest.setComplaintSuggestId(snowflakeManager.nextId() + "");
         //判断下面有没有房屋绑定
-        List<OwnerRoomDto> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComplaintSuggest.getComplaintSuggestId());
-        if (ownerRoomByOwnerId != null) {
+        List<OwnerRoomDto> ownerRoomByOwnerId = zyOwnerRoomDao.getOwnerRoomByOwnerId(zyComplaintSuggest.getUserId());
+        if (ownerRoomByOwnerId == null) {
             result.setMeta(ResultTool.fail(ResultCode.OWNER_NOT_BOUND));
             result.setData("新增失败");
+            return result;
         }
         try {
             //新增
@@ -152,7 +156,7 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
             if (i == 1) {
                 List<String> urlList = zyComplaintSuggest.getFilesUrl();
                 //如果有添加文件或者图片则添加
-                if (urlList.size() > 0 || !urlList.isEmpty()) {
+                if (urlList!=null) {
                     List<ZyFiles> files = new ArrayList<>();
                     for (String url : urlList) {
                         ZyFiles zyFile = new ZyFiles();
@@ -269,6 +273,28 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
             } else {
                 result.setMeta(ResultTool.fail(ResultCode.DELETE_FAIL));
             }
+        }
+        return result;
+    }
+
+    /**
+     * 获取一个月内的投诉建议
+     *
+     * @param limitNum 总共显示多少条
+     * @return 一个月内的投诉建议
+     */
+    @Override
+    public Result getSuggestInMonth(String limitNum) {
+        Result result = new Result("最近一个月没有新的投诉建议", ResultTool.fail(ResultCode.COMMON_FAIL));
+        //获取七天前的日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 30);
+        String lastWeek = sdf.format(calendar.getTime());
+        List<SuggestInMonth> suggestInMonthList = this.baseMapper.getSuggestInMonth(lastWeek, Integer.valueOf(limitNum));
+        if (!suggestInMonthList.isEmpty()) {
+            result.setData(suggestInMonthList);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
         }
         return result;
     }

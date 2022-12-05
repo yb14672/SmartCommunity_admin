@@ -6,6 +6,7 @@ import com.zy_admin.sys.dto.DeptTreeDto;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysUser;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,6 +19,14 @@ import java.util.List;
  */
 @Repository
 public interface SysDeptDao extends BaseMapper<SysDept> {
+    /**
+     * 由父id查询部门id
+     *
+     * @param deptId 部门id
+     * @return {@code Long}
+     */
+    @Select("select dept_id from sys_dept where del_flag=0 and parent_id =#{deptId} and dept_name='维修部门'")
+    Long queryDeptIdByParentId(@Param("deptId") Long deptId);
     /**
      * 根据小区ID查询对应物业的维修人员列表
      * @param communityId 小区ID

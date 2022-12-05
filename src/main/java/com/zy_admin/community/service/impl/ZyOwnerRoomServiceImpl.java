@@ -8,17 +8,11 @@ import com.zy_admin.community.dao.ZyOwnerDao;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dao.ZyOwnerRoomRecordDao;
 import com.zy_admin.community.dao.ZyRoomDao;
-import com.zy_admin.community.dto.OwnerRoomDto;
-import com.zy_admin.community.dto.ZyOwnerRoomDto;
-import com.zy_admin.community.dto.ZyOwnerRoomDtoAll;
+import com.zy_admin.community.dto.*;
 import com.zy_admin.community.entity.ZyOwnerRoom;
 import com.zy_admin.community.entity.ZyOwnerRoomRecord;
 import com.zy_admin.community.service.ZyOwnerRoomService;
-import com.zy_admin.sys.dao.SysUserDao;
-import com.zy_admin.util.ResultTool;
-import com.zy_admin.util.RoomTree;
-import com.zy_admin.util.SnowflakeManager;
-import com.zy_admin.util.TreeData;
+import com.zy_admin.util.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -35,12 +29,6 @@ import java.util.List;
 @Service("zyOwnerRoomService")
 public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerRoom> implements ZyOwnerRoomService {
 
-    /**
-     * 业主房间记录持久层
-     * 系统用户
-     */
-    @Resource
-    private SysUserDao sysUserDao;
 
     /**
      * 业主房间记录
@@ -238,10 +226,39 @@ public class ZyOwnerRoomServiceImpl extends ServiceImpl<ZyOwnerRoomDao, ZyOwnerR
         this.baseMapper.changeStatusReject(zyOwnerRoom.getRoomId());
         this.baseMapper.updateOwnerRoomStatus(zyOwnerRoom);
         //判断审核是不是通过
-        if ("Binding".equals(zyOwnerRoom.getRoomStatus())){
-            zyRoomDao.updateRoomStatus(zyOwnerRoom.getRoomId()+"");
+        if ("Binding".equals(zyOwnerRoom.getRoomStatus())) {
+            zyRoomDao.updateRoomStatus(zyOwnerRoom.getRoomId() + "");
         }
         result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        return result;
+    }
+
+    /**
+     * 获取绑定率
+     *
+     * @return 获取绑定率
+     */
+    @Override
+    public Result getTheNumberOfHouseBindings() {
+        Result result = new Result("获取失败，请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
+        List<RoomInfo> roomInfoList = this.baseMapper.getTheNumberOfHouseBindings();
+        if (!roomInfoList.isEmpty()) {
+            RoomInfoDto roomInfoDto = new RoomInfoDto();
+            for (int i = 0; i < roomInfoList.size(); i++) {
+                RoomInfo roomInfo = roomInfoList.get(i);
+                //获取当前小区的房屋绑定率
+                Double rate = roomInfo.getBingingNum() != 0 ? roomInfo.getBingingNum() / roomInfo.getRoomNum() : 0;
+                //将绑定率保留两位小数
+                String str = String.format("%.2f", rate * 100);
+                Double rateFormat = Double.parseDouble(str);
+                roomInfoDto.getBindingRate().add(rateFormat);
+                roomInfoDto.getRoomNum().add(roomInfo.getRoomNum());
+                roomInfoDto.getBingingNum().add(roomInfo.getBingingNum());
+                roomInfoDto.getCommunityName().add(roomInfo.getCommunityName());
+            }
+            result.setData(roomInfoDto);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+        }
         return result;
     }
 

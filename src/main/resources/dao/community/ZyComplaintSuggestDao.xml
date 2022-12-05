@@ -17,8 +17,7 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="ZyComplaintSuggestMap">
-        select
-            *
+        select *
         from zy_complaint_suggest
         where complaint_suggest_id = #{complaintSuggestId}
     </select>
@@ -72,7 +71,7 @@
             </if>
             and zcs.community_id = #{zyComplaintSuggest.communityId}
         </where>
-        order by  create_time desc
+        order by create_time desc
         <if test="pageable.pageSize!=null">
             limit #{pageable.index},#{pageable.pageSize}
         </if>
@@ -80,9 +79,10 @@
 
     <!--所有的导出-->
     <select id="querySuggestAll" resultType="com.zy_admin.community.dto.ZyComplaintSuggestDto">
-        select zcs.*,zo.owner_real_name,zo.owner_phone_number,zf.files_url
-        from zy_complaint_suggest zcs left join zy_owner zo on zcs.user_id = zo.owner_id
-                                      left join zy_files zf on zcs.complaint_suggest_id = zf.parent_id
+        select zcs.*, zo.owner_real_name, zo.owner_phone_number, zf.files_url
+        from zy_complaint_suggest zcs
+                 left join zy_owner zo on zcs.user_id = zo.owner_id
+                 left join zy_files zf on zcs.complaint_suggest_id = zf.parent_id
     </select>
     <!--选中的导出-->
     <select id="querySuggestByIds" resultType="com.zy_admin.community.dto.ZyComplaintSuggestDto">
@@ -98,7 +98,7 @@
         </if>
     </select>
     <select id="selectSuggestById" resultType="com.zy_admin.community.dto.ZyComplaintSuggestDto">
-        select DISTINCT zcs.*,zo.owner_real_name,zo.owner_phone_number
+        select DISTINCT zcs.*, zo.owner_real_name, zo.owner_phone_number
         from zy_complaint_suggest zcs
                  left join zy_owner zo
                            on zcs.user_id = zo.owner_id
@@ -106,11 +106,24 @@
                            on zcs.complaint_suggest_id = zf.parent_id
         where complaint_suggest_id = #{suggestId}
     </select>
+    <select id="getSuggestInMonth" resultType="com.zy_admin.community.dto.SuggestInMonth">
+        SELECT s.*, c.community_name
+        FROM zy_complaint_suggest s
+                 LEFT JOIN zy_community c on s.community_id = c.community_id
+        WHERE s.create_time > #{lastWeek}
+        ORDER BY s.create_time DESC
+        LIMIT #{limitNum}
+    </select>
 
     <!--新增所有列-->
     <insert id="insertSuggest" keyProperty="complaintSuggestId" useGeneratedKeys="true">
-        insert into zy_complaint_suggest(complaint_suggest_id,community_id, complaint_suggest_type, complaint_suggest_content, create_by, create_time, update_by, update_time, remark, user_id)
-        values (#{zyComplaintSuggest.complaintSuggestId},#{zyComplaintSuggest.communityId}, #{zyComplaintSuggest.complaintSuggestType}, #{zyComplaintSuggest.complaintSuggestContent}, #{zyComplaintSuggest.createBy}, #{zyComplaintSuggest.createTime}, #{zyComplaintSuggest.updateBy}, #{zyComplaintSuggest.updateTime}, #{zyComplaintSuggest.remark}, #{zyComplaintSuggest.userId})
+        insert into zy_complaint_suggest(complaint_suggest_id, community_id, complaint_suggest_type,
+                                         complaint_suggest_content, create_by, create_time, update_by, update_time,
+                                         remark, user_id)
+        values (#{zyComplaintSuggest.complaintSuggestId}, #{zyComplaintSuggest.communityId},
+                #{zyComplaintSuggest.complaintSuggestType}, #{zyComplaintSuggest.complaintSuggestContent},
+                #{zyComplaintSuggest.createBy}, #{zyComplaintSuggest.createTime}, #{zyComplaintSuggest.updateBy},
+                #{zyComplaintSuggest.updateTime}, #{zyComplaintSuggest.remark}, #{zyComplaintSuggest.userId})
     </insert>
 
     <insert id="insertBatch" keyProperty="complaintSuggestId" useGeneratedKeys="true">
@@ -185,7 +198,9 @@
 
     <!--通过主键删除-->
     <delete id="deleteSuggestById">
-        delete from zy_complaint_suggest where complaint_suggest_id = #{complaintSuggestId}
+        delete
+        from zy_complaint_suggest
+        where complaint_suggest_id = #{complaintSuggestId}
     </delete>
 
     <!--批量删除-->

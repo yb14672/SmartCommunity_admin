@@ -2,6 +2,7 @@ package com.zy_admin.community.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zy_admin.community.dto.GetRoomSDto;
 import com.zy_admin.community.dto.ZyRoomDto;
 import com.zy_admin.community.entity.ZyRoom;
 import com.zy_admin.common.core.Result.Result;
@@ -50,5 +51,11 @@ public interface ZyRoomService extends IService<ZyRoom> {
      * @return 返回正确或错误信息
      */
     Result deleteZyRoom(ArrayList<String> idList);
+
+    /**
+     * 查询房间状态总数
+     * @return 查询结果集
+     */
+    Result getRoomStatuses();
 }
 

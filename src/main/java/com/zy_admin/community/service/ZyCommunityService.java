@@ -55,5 +55,21 @@ public interface ZyCommunityService extends IService<ZyCommunity> {
      * @return {@link Result}
      */
     Result getCommunityIdByUserId(String userId);
+
+    /**
+     * 获得省
+     *
+     * @param regionCode 查询的范围
+     * @return 查询结果集
+     */
+    Result getProvinces(String regionCode);
+
+    /**
+     * 根据省名获取每个市的小区数
+     *
+     * @param provence 对象
+     * @return 查询结果集
+     */
+    Result getCities(String provence);
 }
 
