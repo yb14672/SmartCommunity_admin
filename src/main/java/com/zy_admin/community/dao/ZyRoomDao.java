@@ -1,8 +1,11 @@
 package com.zy_admin.community.dao;
 
 import com.github.yulichang.base.MPJBaseMapper;
+import com.zy_admin.common.core.Result.Result;
+import com.zy_admin.community.dto.GetRoomSDto;
 import com.zy_admin.community.entity.ZyRoom;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,5 +67,16 @@ public interface ZyRoomDao extends MPJBaseMapper<ZyRoom> {
      * @return
      */
     int updateRoomStatus(String roomId);
+
+    /**
+     * 查询房间状态总数
+     *
+     * @return {@code Result}
+     */
+    @Select("SELECT DISTINCT (SELECT COUNT(1) FROM zy_room) as RoomTotal,\n" +
+            "(SELECT COUNT(1) FROM zy_room WHERE room_status = 'none') as UnsoldTotal,\n" +
+            "(SELECT COUNT(1) FROM zy_room WHERE room_status IN ('has_give','none_stay')) as SoldTotal,\n" +
+            "(SELECT COUNT(1) FROM zy_room WHERE room_status = 'has_stay') as MoveInTotal FROM zy_room")
+    GetRoomSDto getRoomStatuses();
 }
 

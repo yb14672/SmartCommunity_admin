@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.dto.CommunityExcel;
+import com.zy_admin.community.dto.TreeDto;
 import com.zy_admin.community.entity.ZyCommunity;
 
 import java.util.ArrayList;
@@ -55,5 +56,20 @@ public interface ZyCommunityService extends IService<ZyCommunity> {
      * @return {@link Result}
      */
     Result getCommunityIdByUserId(String userId);
+
+    /**
+     * 获得省
+     *
+     * @return 查询结果集
+     */
+    Result getProvinces();
+
+    /**
+     * 得到城市
+     *
+     * @param provence 对象
+     * @return 查询结果集
+     */
+    Result getCities(String provence);
 }
 

@@ -1,10 +1,13 @@
 package com.zy_admin.community.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.community.dto.CommunityDto;
 import com.zy_admin.community.dto.CommunityExcel;
+import com.zy_admin.community.dto.TreeDto;
 import com.zy_admin.community.entity.ZyCommunity;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,5 +69,22 @@ public interface ZyCommunityDao extends BaseMapper<ZyCommunity> {
      * @return {@link List}<{@link ZyCommunity}>
      */
     List<ZyCommunity> getCommunityIdByUserId(String userId);
+
+    /**
+     * 获得省
+     *
+     * @return 查询省的小区总数量
+     */
+    @Select("SELECT community_provence_code, COUNT(*) FROM zy_com GROUP BY community_provence_code")
+    List<TreeDto> getProvinces();
+
+    /**
+     * 得到城市
+     *
+     * @param provence 数量
+     * @return 查询省的小区总数量
+     */
+    @Select("select community_city_code as name , count(*) as value FROM zy_community WHERE community_provence_code = #{provence} GROUP BY community_city_code")
+    List<TreeDto> getCities(String provence);
 }
 
