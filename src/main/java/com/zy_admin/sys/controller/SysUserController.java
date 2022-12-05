@@ -22,7 +22,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,6 +53,9 @@ public class SysUserController extends ApiController {
     private SysUserService sysUserService;
     @Resource
     private RequestUtil requestUtil;
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
     /**
      * 退出
      * @param request 前端请求
@@ -107,7 +112,7 @@ public class SysUserController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有用户对象数据", notes = "分页查询所有用户对象数据", httpMethod = "GET")
     @GetMapping("/selectUsers")
-    @PreAuthorize("hasAnyAuthority('ROLE_common')")
+    @PreAuthorize("hasAnyAuthority('system:role:query')")
     public Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime) {
         return this.sysUserService.selectUsers(pageable, sysUser, startTime, endTime);
     }
@@ -367,6 +372,8 @@ public class SysUserController extends ApiController {
     @MyLog(title = "用户管理", optParam = "#{sysUserDto}", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAnyAuthority('system:user:add')")
     public Result insertUser(HttpServletRequest request, @RequestBody UserDto sysUserDto) {
+        String encode = bCryptPasswordEncoder.encode(sysUserDto.getPassword());
+        sysUserDto.setPassword(encode);
         sysUserDto.setCreateTime(LocalDateTime.now().toString());
         SysUser user = this.requestUtil.getUser(request);
         sysUserDto.setCreateBy(user.getUserName());

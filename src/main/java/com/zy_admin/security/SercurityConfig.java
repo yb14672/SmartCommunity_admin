@@ -38,7 +38,7 @@ public class SercurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] URL_WHITELIST = {
             "/sysUser/login",
             "/sysUser/logout",
-//            "/user/profile",
+            "/user/profile",
             "/sysUser/logout",
             "sysMenu/getMenus"
 
