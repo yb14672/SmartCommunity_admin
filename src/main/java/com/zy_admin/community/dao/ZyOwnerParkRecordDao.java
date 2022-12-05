@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zy_admin.community.dto.ZyOwnerParkRecordDto;
 import com.zy_admin.community.entity.ZyOwnerParkRecord;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

@@ -3,6 +3,7 @@ package com.zy_admin.community.dao;
 import com.github.yulichang.base.MPJBaseMapper;
 import com.zy_admin.community.dto.OwnerParkExcelDto;
 import com.zy_admin.community.dto.OwnerParkListDto;
+import com.zy_admin.community.dto.ZyOwnerParkRecordDto;
 import com.zy_admin.community.entity.ZyOwnerPark;
 import com.zy_admin.util.RoomTree;
 import org.apache.ibatis.annotations.Param;
@@ -19,6 +20,15 @@ import java.util.List;
  * @since 2022-12-01 15:50:35
  */
 public interface ZyOwnerParkDao extends MPJBaseMapper<ZyOwnerPark> {
+
+    /**
+     * 查询所有者公园纪录所有者id
+     *
+     * @param ownerId 所有者id
+     * @return {@link List}<{@link ZyOwnerParkRecordDto}>
+     */
+    @Select("select zop.*,zop.park_owner_status parkStatus,zc.community_name,zp.park_code from zy_owner_park zop LEFT JOIN zy_park zp on zop.park_id = zp.park_id LEFT JOIN zy_community zc on zc.community_id = zp.community_id where owner_id = #{ownerId}")
+    List<ZyOwnerParkRecordDto> queryOwnerParkRecordByOwnerId(String ownerId);
 
     /**
      * 根据ID集合查询车位列表列表

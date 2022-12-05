@@ -27,9 +27,24 @@ import java.util.List;
 @Service("zyVisitorService")
 public class ZyVisitorServiceImpl extends ServiceImpl<ZyVisitorDao, ZyVisitor> implements ZyVisitorService {
 
-
-    @Resource
-    private ZyOwnerRoomDao ownerRoomDao;
+    /**
+     * 通过业主id查询访客记录
+     *
+     * @param ownerId 所有者id
+     * @return {@link Result}
+     */
+    @Override
+    public Result queryVisitorRecordByOwnerId(String ownerId) {
+        Result result = new Result("加载失败！请稍后再试", ResultTool.fail(ResultCode.COMMON_FAIL));
+        try {
+            List<ZyVisitor> zyVisitors = this.baseMapper.queryVisitorRecordByOwnerId(ownerId);
+            result.setData(zyVisitors);
+            result.setMeta(ResultTool.success(ResultCode.SUCCESS));
+            return result;
+        } catch (Exception e) {
+            return result;
+        }
+    }
 
     /**
      * 得到访客列表通过社区ID

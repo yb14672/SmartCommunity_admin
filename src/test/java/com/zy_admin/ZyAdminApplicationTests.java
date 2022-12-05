@@ -1,7 +1,9 @@
 package com.zy_admin;
 
+import com.zy_admin.community.dao.ZyOwnerParkDao;
 import com.zy_admin.community.dao.ZyOwnerRoomDao;
 import com.zy_admin.community.dto.OwnerRoomDto;
+import com.zy_admin.community.dto.ZyOwnerParkRecordDto;
 import com.zy_admin.util.SnowflakeManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,19 +16,14 @@ import java.util.List;
 class ZyAdminApplicationTests {
 
     @Resource
-    ZyOwnerRoomDao ownerRoomDao;
-    @Resource
-    SnowflakeManager snowflakeManager;
+    ZyOwnerParkDao ownerRoomDao;
+
 
     @Test
     void contextLoads() {
-        List<OwnerRoomDto> ownerRoomDtos = ownerRoomDao.selectOwnerRoomByOwnerId("1708134700616388618");
+        List<ZyOwnerParkRecordDto> zyOwnerParkRecordDtos = ownerRoomDao.queryOwnerParkRecordByOwnerId("1709701013516193802");
+        System.out.println(zyOwnerParkRecordDtos);
     }
-    @Test
-    void test() throws Exception {
-        for (int i = 0; i <10 ; i++) {
-            System.out.println(snowflakeManager.nextId());
-        }
-    }
+
 
 }

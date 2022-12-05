@@ -199,7 +199,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
         int i = this.baseMapper.deleteInteractionByIdList(idList);
         if (i > 0) {
             //删除文件表
-            this.zyFilesDao.deleteFileByInteractionId(idList);
+            this.zyFilesDao.deleteByInteractionIdList(idList);
             //删除评论
             this.zyCommentDao.deleteByInteractionIdList(idList);
             result.setData("删除成功");

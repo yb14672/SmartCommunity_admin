@@ -20,6 +20,14 @@ import java.util.List;
 public interface ZyOwnerParkService extends IService<ZyOwnerPark> {
 
     /**
+     * 根据业主Id查询业主车位的纪录
+     *
+     * @param OwnerId 所有者id
+     * @return {@link Result}
+     */
+    Result queryOwnerParkRecordByOwnerId(String OwnerId);
+
+    /**
      * 根据ids查询列表，若为空根据小区id查询列表
      *
      * @param ids 车位ID列表

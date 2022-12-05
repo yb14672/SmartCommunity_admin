@@ -135,6 +135,7 @@ public enum ResultCode {
     CARNUMBER_REPEAT(3058,"车牌号重复"),
     PARK_HAVE_BINDING(3059,"车位已经被绑定"),
     PARK_HAVE_AUDITING(3060,"车位正在审核"),
+    OWNER_PARK_GET_FAIL(3061,"车位信息获取失败"),
 
     /* http自带请求码 */
     CONTINUE(100, "请继续发送请求的剩余部分"),
