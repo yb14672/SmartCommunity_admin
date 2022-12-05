@@ -1,12 +1,15 @@
 package com.zy_admin.security;
 
 import cn.hutool.json.JSONUtil;
+import com.zy_admin.UserException.UserLockedException;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 
 import com.zy_admin.util.ResultTool;
 import org.springframework.security.authentication.BadCredentialsException;
 
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -30,8 +33,15 @@ public class LoginFailurHandler implements AuthenticationFailureHandler {
         httpServletResponse.setContentType("application/json;charset=UTF-8");
         ServletOutputStream outputStream = httpServletResponse.getOutputStream();
 
+
         if (e instanceof BadCredentialsException){
             result.setMeta(ResultTool.fail(ResultCode.USER_WRONG_ACCOUNT_OR_PASSWORD));
+        }else if(e instanceof InternalAuthenticationServiceException){
+            if(e.getMessage().indexOf("账号被锁定") != -1) {
+                result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED));
+            }else{
+                result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_EXPIRED));
+            }
         }
 
 
