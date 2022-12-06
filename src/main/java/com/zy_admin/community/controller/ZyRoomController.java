@@ -7,6 +7,7 @@ import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
@@ -15,12 +16,12 @@ import com.zy_admin.community.entity.ZyRoom;
 import com.zy_admin.community.service.ZyRoomService;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -60,6 +61,7 @@ public class ZyRoomController extends ApiController {
     @ApiOperation(value = "删除房屋", notes = "删除房屋", httpMethod = "DELETE")
     @DeleteMapping("/deleteZyRoom")
     @MyLog(title = "房屋信息", optParam = "#{idList}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('system:room:remove')")
     public Result deleteZyRoom(@RequestParam("idList") ArrayList<String> idList){
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
@@ -84,6 +86,7 @@ public class ZyRoomController extends ApiController {
     @ApiOperation(value = "修改房屋", notes = "修改房屋", httpMethod = "PUT")
     @PutMapping("/updateZyRoom")
     @MyLog(title = "房屋信息", optParam = "#{zyRoom}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:room:edit')")
     public Result updateZyRoom(@RequestBody ZyRoom zyRoom, HttpServletRequest request) {
         SysUser user = requestUtil.getUser(request);
         zyRoom.setUpdateBy(user.getUserName());
@@ -103,6 +106,7 @@ public class ZyRoomController extends ApiController {
     @ApiOperation(value = "新增房屋", notes = "新增房屋", httpMethod = "POST")
     @PostMapping("/insertZyRoom")
     @MyLog(title = "房屋信息", optParam = "#{zyRoom}", businessType = BusinessType.INSERT)
+    @PreAuthorize("hasAnyAuthority('system:room:add')")
     public Result insertZyRoom(@RequestBody ZyRoom zyRoom, HttpServletRequest request){
         SysUser user = requestUtil.getUser(request);
         zyRoom.setCreateBy(user.getUserName());
@@ -124,6 +128,7 @@ public class ZyRoomController extends ApiController {
     @ApiOperation(value = "房屋数据导出", notes = "房屋数据导出", httpMethod = "GET")
     @GetMapping("/getExcel")
     @MyLog(title = "房屋信息", optParam = "#{roomIds}", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAnyAuthority('system:room:export')")
     public Result getExcel(@RequestParam("ids") ArrayList<String> roomIds, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //用于存储要导出的数据列表
@@ -164,6 +169,7 @@ public class ZyRoomController extends ApiController {
     })
     @ApiOperation(value = "分页查询小区信息", notes = "分页查询小区信息", httpMethod = "GET")
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('system:room:query')")
     public Result getAllCommunity(Page page, ZyRoom zyRoom) {
         return zyRoomService.getAllCommunity(page,zyRoom);
     }

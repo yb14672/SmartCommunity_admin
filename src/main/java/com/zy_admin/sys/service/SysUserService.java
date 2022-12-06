@@ -179,5 +179,9 @@ public interface SysUserService extends IService<SysUser> {
      * @return 查询结果
      */
     Result getUserByDeptAndCommunityId(Long communityId);
+
+    SysUser getByUsername(String username);
+
+    String getUserAuthorityInfo(Long userId);
 }
 

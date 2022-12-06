@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -47,6 +48,7 @@ public class SysJobController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('monitor:job:query')")
     public R selectAll(Page<SysJob> page, SysJob sysJob) {
         return success(this.sysJobService.page(page, new QueryWrapper<>(sysJob)));
     }
@@ -62,6 +64,7 @@ public class SysJobController extends ApiController {
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyAuthority('monitor:job:query')")
     public R selectOne(@PathVariable Serializable id) {
         return success(this.sysJobService.getById(id));
     }
@@ -77,6 +80,7 @@ public class SysJobController extends ApiController {
     })
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('monitor:job:add')")
     public R insert(@RequestBody SysJob sysJob) {
         return success(this.sysJobService.save(sysJob));
     }
@@ -92,6 +96,7 @@ public class SysJobController extends ApiController {
     })
     @ApiOperation(value = "修改数据", notes = "修改数据", httpMethod = "PUT")
     @PutMapping
+    @PreAuthorize("hasAnyAuthority('monitor:job:edit')")
     public R update(@RequestBody SysJob sysJob) {
         return success(this.sysJobService.updateById(sysJob));
     }
@@ -107,6 +112,7 @@ public class SysJobController extends ApiController {
     })
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping
+    @PreAuthorize("hasAnyAuthority('monitor:job:remove')")
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.sysJobService.removeByIds(idList));
     }

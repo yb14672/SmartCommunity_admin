@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Pageable;
 import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
+import com.zy_admin.sys.dao.SysMenuDao;
 import com.zy_admin.community.dao.ZyCommunityDao;
 import com.zy_admin.community.entity.ZyCommunity;
 import com.zy_admin.sys.dao.SysDeptDao;
@@ -13,18 +14,17 @@ import com.zy_admin.sys.dao.SysRoleDao;
 import com.zy_admin.sys.dao.SysUserDao;
 import com.zy_admin.sys.dao.SysUserRoleDao;
 import com.zy_admin.sys.dto.*;
+import com.zy_admin.sys.entity.SysMenu;
 import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysRole;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.sys.service.SysUserService;
-import com.zy_admin.util.JwtUtil;
-import com.zy_admin.util.ObjUtil;
-import com.zy_admin.util.RequestUtil;
-import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.*;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,9 +35,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * 系统用户服务impl
@@ -60,6 +63,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private SysRoleDao sysRoleDao;
     @Resource
     private RequestUtil requestUtil;
+    @Resource
+    private SysMenuDao sysMenuDao;
+
+
     @Resource
     private ZyCommunityDao zyCommunityDao;
     @Resource
@@ -152,7 +159,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysRole> roleListByUserId = sysRoleDao.getRoleListByUserId(userId + "");
         //判断该用户之前是否有角色，避免空删除
-        if(roleListByUserId.size()!=0){
+        if (roleListByUserId.size() != 0) {
             //先删除原本用户拥有的所有角色
             int i = this.sysUserRoleDao.deleteByUserId(userId + "");
             if (i == 0) {
@@ -182,8 +189,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         if (userRoleDto != null) {
             result.setData(userRoleDto);
             result.setMeta(ResultTool.success(ResultCode.SUCCESS));
-        }else{
-            SysUser user = this.baseMapper.queryById(userId+"");
+        } else {
+            SysUser user = this.baseMapper.queryById(userId + "");
             result.setData(user);
             result.setMeta(ResultTool.fail(ResultCode.NO_ROLE));
         }
@@ -262,7 +269,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                     result.setMeta(ResultTool.fail(ResultCode.MASSAGE_NULL));
                     errorMsg.append("第").append(i).append("条邮箱为空,");
                 }
-                if (!checkRequire( 3, sheet.getRow(i))) {
+                if (!checkRequire(3, sheet.getRow(i))) {
                     result.setMeta(ResultTool.fail(ResultCode.MASSAGE_NULL));
                     errorMsg.append("第").append(i).append("条手机号为空,");
                 }
@@ -903,6 +910,53 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_SAME_PASSWORD));
         }
         return result;
+    }
+
+    /**
+     * 得到用户
+     *
+     * @param username 用户名
+     * @return {@link SysUser}
+     */
+    @Override
+    public SysUser getByUsername(String username) {
+        return getOne(new QueryWrapper<SysUser>().eq("user_name", username));
+    }
+
+    /**
+     * 根据用户id获取用户权限
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public String getUserAuthorityInfo(Long userId) {
+        //涉及到字符串拼接 用stringbuffer
+        StringBuffer authority = new StringBuffer();
+        //根据用户Id获取权限信息
+        List<SysRole> roleList = sysRoleDao.selectList(new QueryWrapper<SysRole>().inSql("role_id", "select role_id from sys_user_role where user_id =" + userId));
+        if (roleList.size() > 0) {
+            String roleKey = roleList.stream().map(r -> "ROLE_" + r.getRoleKey()).collect(Collectors.joining(","));
+            authority.append(roleKey);
+        }
+        //遍历所有角色，获取菜单权限，而且不重复
+        Set<String> menuCodeSet = new HashSet<>();
+        for (SysRole sysRole : roleList) {
+            List<SysMenu> sysMenuList = sysMenuDao.selectList(new QueryWrapper<SysMenu>().inSql("menu_id", "select menu_id from sys_role_menu where role_id=" + sysRole.getRoleId()));
+            for (SysMenu sysMenu : sysMenuList) {
+                String perms = sysMenu.getPerms();
+                if (StringUtil.isNotEmpty(perms)) {
+                    menuCodeSet.add(perms);
+                }
+            }
+        }
+        if (menuCodeSet.size() > 0) {
+            authority.append(",");
+            String menuCodes = menuCodeSet.stream().collect(Collectors.joining(","));
+            authority.append(menuCodes);
+        }
+        System.out.println("authority:" + authority.toString());
+        return authority.toString();
     }
 
     /**

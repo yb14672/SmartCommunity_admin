@@ -1,21 +1,23 @@
 package com.zy_admin.sys.controller;
+
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
 import com.zy_admin.sys.entity.SysOperLog;
 import com.zy_admin.sys.service.SysOperLogService;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -53,6 +55,7 @@ public class SysOperLogController extends ApiController {
     @ApiOperation(value = "批量导出操作日志数据", notes = "批量导出操作日志数据", httpMethod = "GET")
     @MyLog(title = "操作日志", optParam = "#{operLogIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
+    @PreAuthorize("hasAnyAuthority('monitor:operlog:export')")
     public Result getExcel(@RequestParam("operLogIds") ArrayList<Integer> operLogIds, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysOperLog> sysOperLogList;
@@ -91,6 +94,7 @@ public class SysOperLogController extends ApiController {
     @ApiOperation(value = "删除操作日志", notes = "删除操作日志", httpMethod = "DELETE")
     @DeleteMapping("/deleteLog")
     @MyLog(title = "操作日志", optParam = "#{idList}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('monitor:operlog:remove')")
     public Result deleteLog(@RequestParam("idList") List<Integer> logIds) {
         if (logIds.size()==0){
             return this.sysOperLogService.deleteLogs();
@@ -117,6 +121,7 @@ public class SysOperLogController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有操作日志数据", notes = "分页查询所有操作日志数据", httpMethod = "GET")
     @GetMapping("/getOperLogList")
+    @PreAuthorize("hasAnyAuthority('monitor:logininfor:query')")
     public Result getOperLogList(SysOperLog sysOperLog, Pageable pageable, String startTime, String endTime, @RequestParam(value = "orderByColumn",defaultValue = "oper_time") String orderByColumn, @RequestParam(value = "isAsc",defaultValue = "desc") String isAsc){
         return this.sysOperLogService.getOperLogList(sysOperLog, pageable, startTime, endTime, orderByColumn, isAsc);
     }

@@ -6,6 +6,7 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
@@ -15,12 +16,13 @@ import com.zy_admin.sys.entity.SysUserUpload;
 import com.zy_admin.sys.service.SysUserService;
 import com.zy_admin.util.JwtUtil;
 import com.zy_admin.util.RequestUtil;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,6 +51,9 @@ public class SysUserController extends ApiController {
     private SysUserService sysUserService;
     @Resource
     private RequestUtil requestUtil;
+
+    @Resource
+    BCryptPasswordEncoder bCryptPasswordEncoder;
     /**
      * 查询制定部门
      * @param communityId
@@ -100,6 +105,7 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "删除用户数据", notes = "删除用户数据", httpMethod = "DELETE")
     @DeleteMapping
     @MyLog(title = "用户管理", optParam = "#{idList}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('system:user:remove')")
     public Result deleteUserById(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<>();
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -132,6 +138,7 @@ public class SysUserController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有用户对象数据", notes = "分页查询所有用户对象数据", httpMethod = "GET")
     @GetMapping("/selectUsers")
+    @PreAuthorize("hasAnyAuthority('system:user:query')")
     public Result selectUsers(Pageable pageable, SysUser sysUser, String startTime, String endTime) {
         return this.sysUserService.selectUsers(pageable, sysUser, startTime, endTime);
     }
@@ -145,6 +152,7 @@ public class SysUserController extends ApiController {
     })
     @ApiOperation(value = "根据用户ID获取其信息和对应的角色", notes = "根据用户ID获取其信息和对应的角色", httpMethod = "GET")
     @GetMapping("/authRole/{userId}")
+    @PreAuthorize("hasAnyAuthority('system:user:query')")
     public Result authRole(@PathVariable("userId") Long userId) {
         return this.sysUserService.authRole(userId);
     }
@@ -159,6 +167,7 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "根据用户ID修改其对应的角色列表", notes = "根据用户ID修改其对应的角色列表", httpMethod = "PUT")
     @PutMapping("/authRole")
     @MyLog(title = "分配角色", optParam = "#{map}", businessType = BusinessType.INSERT)
+    @PreAuthorize("hasAnyAuthority('system:user:edit')")
     public Result insertAuthRole(@RequestBody Map<String, Object> map) throws Exception {
         Integer userId = (Integer) map.get("userId");
         String roleId = map.get("roleId").toString();
@@ -175,6 +184,7 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "导入用户数据", notes = "导入用户数据", httpMethod = "POST")
     @PostMapping("/import-data")
     @MyLog(title = "用户管理", optParam = "#{file}", businessType = BusinessType.IMPORT)
+    @PreAuthorize("hasAnyAuthority('system:user:import')")
     public Result importData(@RequestParam("file") MultipartFile file) {
         return sysUserService.importData(file);
     }
@@ -192,6 +202,7 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "用于批量导出用户列表数据", notes = "用于批量导出用户列表数据", httpMethod = "GET")
     @MyLog(title = "用户管理", optParam = "#{userIds}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
+    @PreAuthorize("hasAnyAuthority('system:user:export')")
     public Result getExcel(@RequestParam("userIds") ArrayList<Integer> userIds, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<SysUser> sysUserList;
@@ -263,6 +274,7 @@ public class SysUserController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('system:user:query')")
     public Result selectAll(Page page, SysUser sysUser) {
         return this.sysUserService.selectAll(page, sysUser);
     }
@@ -276,6 +288,7 @@ public class SysUserController extends ApiController {
     })
     @ApiOperation(value = "根据用户ID获取头像", notes = "根据用户ID获取头像", httpMethod = "GET")
     @GetMapping("/getAvatarById")
+//    @PreAuthorize("hasAnyAuthority('system:user:query')")
     public Result getAvatarById(HttpServletRequest request) {
         String id = JwtUtil.getMemberIdByJwtToken(request,"token");
         return this.sysUserService.getAvatarById(id);
@@ -291,6 +304,7 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "登录", notes = "登录", httpMethod = "POST")
     @PostMapping("/login")
     public Result login(SysUser sysUser) {
+        System.out.println(sysUser.toString());
         return sysUserService.login(sysUser);
     }
     /**
@@ -357,6 +371,7 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "修改用户基本信息", notes = "修改用户基本信息", httpMethod = "PUT")
     @PutMapping("/updateUser")
     @MyLog(title = "用户管理", optParam = "#{sysUser}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:user:edit')")
     public Result updateUser(@RequestBody SysUser sysUser) {
         return this.sysUserService.updateUser(sysUser);
     }
@@ -387,7 +402,10 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "新增用户", notes = "新增用户", httpMethod = "POST")
     @PostMapping("/insertUser")
     @MyLog(title = "用户管理", optParam = "#{sysUserDto}", businessType = BusinessType.INSERT)
+    @PreAuthorize("hasAnyAuthority('system:user:add')")
     public Result insertUser(HttpServletRequest request, @RequestBody UserDto sysUserDto) {
+        String encode = bCryptPasswordEncoder.encode(sysUserDto.getPassword());
+        sysUserDto.setPassword(encode);
         sysUserDto.setCreateTime(LocalDateTime.now().toString());
         SysUser user = this.requestUtil.getUser(request);
         sysUserDto.setCreateBy(user.getUserName());
@@ -406,6 +424,7 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "修改用户", notes = "修改用户", httpMethod = "PUT")
     @PutMapping("/adminUpdateUser")
     @MyLog(title = "用户管理", optParam = "#{userDto}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:user:edit')")
     public Result updateUser(HttpServletRequest request, @RequestBody UserDto userDto) {
         userDto.setUpdateTime(LocalDateTime.now().toString());
         SysUser user = this.requestUtil.getUser(request);
@@ -425,6 +444,7 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "重置密码", notes = "重置密码", httpMethod = "POST")
     @PostMapping("/resetPassword")
     @MyLog(title = "重置密码", optParam = "#{sysUser}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:user:resetPwd')")
     public Result resetPassword(HttpServletRequest request, @RequestBody SysUser sysUser) {
         SysUser user = this.requestUtil.getUser(request);
         sysUser.setUpdateBy(user.getUserName());

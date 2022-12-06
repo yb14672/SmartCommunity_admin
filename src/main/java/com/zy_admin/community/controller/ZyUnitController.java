@@ -1,10 +1,12 @@
 package com.zy_admin.community.controller;
+
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
@@ -13,13 +15,13 @@ import com.zy_admin.community.entity.ZyUnit;
 import com.zy_admin.community.service.ZyUnitService;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import com.zy_admin.util.SnowflakeManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -60,6 +62,7 @@ public class ZyUnitController extends ApiController {
     })
     @ApiOperation(value = "分页查询单元楼信息", notes = "分页查询单元楼信息", httpMethod = "GET")
     @GetMapping("/getUnitList")
+    @PreAuthorize("hasAnyAuthority('system:unit:query')")
     public Result getUnitList(ZyUnit zyUnit, Pageable pageable) {
         return zyUnitService.getUnitList(zyUnit, pageable);
     }
@@ -77,6 +80,7 @@ public class ZyUnitController extends ApiController {
     @ApiOperation(value = "新增单元楼", notes = "新增单元楼", httpMethod = "POST")
     @PostMapping("/insertUnit")
     @MyLog(title = "单元信息", optParam = "#{zyUnit}", businessType = BusinessType.INSERT)
+    @PreAuthorize("hasAnyAuthority('system:unit:add')")
     public Result insertUnit(HttpServletRequest request, @RequestBody ZyUnit zyUnit) throws Exception {
         zyUnit.setUnitId(snowflakeManager.nextId() + "");
         SysUser user = this.requestUtil.getUser(request);
@@ -97,6 +101,7 @@ public class ZyUnitController extends ApiController {
     @ApiOperation(value = "修改单元楼", notes = "修改单元楼", httpMethod = "PUT")
     @PutMapping("/updateUnit")
     @MyLog(title = "单元信息", optParam = "#{zyUnit}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:unit:edit')")
     public Result updateUnit(HttpServletRequest request, @RequestBody ZyUnit zyUnit) {
         SysUser user = this.requestUtil.getUser(request);
         zyUnit.setUpdateBy(user.getUserName());
@@ -114,6 +119,7 @@ public class ZyUnitController extends ApiController {
     @ApiOperation(value = "删除单元", notes = "删除单元", httpMethod = "DELETE")
     @DeleteMapping("/deleteUnit")
     @MyLog(title = "单元信息", optParam = "#{unitIds}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('system:unit:remove')")
     public Result deleteUnit(@RequestBody List<String> unitIds) {
         return zyUnitService.deleteUnit(unitIds);
     }
@@ -133,6 +139,7 @@ public class ZyUnitController extends ApiController {
     @ApiOperation(value = "单元导出", notes = "单元导出", httpMethod = "GET")
     @GetMapping("/getExcel")
     @MyLog(title = "单元信息", optParam = "#{unitIds}", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAnyAuthority('system:unit:export')")
     public Result getExcel(@RequestParam("unitIds") ArrayList<String> unitIds,@RequestParam("communityId") String communityId, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         List<ZyUnit> zyUnits;
@@ -170,6 +177,7 @@ public class ZyUnitController extends ApiController {
     })
     @ApiOperation(value = "通过社区id获取楼栋", notes = "通过社区id获取楼栋", httpMethod = "GET")
     @GetMapping("/getBuildingList")
+    @PreAuthorize("hasAnyAuthority('system:unit:query')")
     public Result getBuildingList(ZyUnit zyUnit) {
         return zyUnitService.getBuildingList(zyUnit.getCommunityId());
     }

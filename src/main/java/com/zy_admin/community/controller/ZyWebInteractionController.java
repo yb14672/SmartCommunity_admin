@@ -16,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -58,6 +59,7 @@ public class ZyWebInteractionController {
     @ApiOperation(value = "根据ID导出Excel", notes = "根据ID导出Excel", httpMethod = "GET")
     @GetMapping("/export")
     @MyLog(title = "互动信息", optParam = "#{ids}", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAnyAuthority('system:interaction:export')")
     public Result getExcel(@RequestParam("ids") ArrayList<String> ids, String communityId, HttpServletResponse response) throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         Result result1 = zyCommunityInteractionService.getListByIdList(ids, communityId);
@@ -93,6 +95,7 @@ public class ZyWebInteractionController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('system:interaction:query')")
     public Result selectAll(Page page, ZyCommunityInteractionDto interactionDto) {
         return this.zyCommunityInteractionService.selectAllLimit(page, interactionDto);
     }
@@ -108,6 +111,7 @@ public class ZyWebInteractionController {
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyAuthority('system:interaction:query')")
     public Result selectOne(@PathVariable String id) {
         return this.zyCommunityInteractionService.getInteractionInfoById(id);
     }
@@ -125,6 +129,7 @@ public class ZyWebInteractionController {
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping
     @MyLog(title = "互动信息", optParam = "#{idList}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('system:interaction:remove')")
     public Result delete(@RequestParam("ids") List<String> idList) throws Exception {
         return this.zyCommunityInteractionService.deleteInteractionByIdList(idList);
     }

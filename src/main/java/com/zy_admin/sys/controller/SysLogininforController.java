@@ -1,4 +1,5 @@
 package com.zy_admin.sys.controller;
+
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
@@ -6,6 +7,7 @@ import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.zy_admin.common.Pageable;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
@@ -13,12 +15,12 @@ import com.zy_admin.sys.dto.LoginInForExcelDto;
 import com.zy_admin.sys.entity.SysLogininfor;
 import com.zy_admin.sys.service.SysLogininforService;
 import com.zy_admin.util.ExcelUtil;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -55,6 +57,7 @@ public class SysLogininforController extends ApiController {
     @ApiOperation(value = "导出登录日志信息", notes = "导出登录日志信息", httpMethod = "GET")
     @MyLog(title = "登录日志", optParam = "#{ids}", businessType = BusinessType.EXPORT)
     @GetMapping("/getExcel")
+    @PreAuthorize("hasAnyAuthority('monitor:logininfor:export')")
     public Result getExcel(@RequestParam("ids") ArrayList<Integer> ids, HttpServletResponse response)throws IOException {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //导出数据
@@ -93,6 +96,7 @@ public class SysLogininforController extends ApiController {
     })
     @ApiOperation(value = "查询登录日志", notes = "查询登录日志", httpMethod = "GET")
     @GetMapping("/queryLoginInfor")
+    @PreAuthorize("hasAnyAuthority('monitor:logininfor:query')")
     public Result queryLoginInfor(SysLogininfor sysLogininfor, Pageable pageable, String startTime, String endTime) {
         return sysLogininforService.queryLoginInfor(sysLogininfor,pageable,startTime,endTime);
     }
@@ -107,6 +111,7 @@ public class SysLogininforController extends ApiController {
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping("/deleteByIds")
     @MyLog(title = "登录日志", optParam = "#{infoIds}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('monitor:logininfor:remove')")
     public Result delete(@RequestBody int[] infoIds) {
         return sysLogininforService.deleteByIds(infoIds);
     }

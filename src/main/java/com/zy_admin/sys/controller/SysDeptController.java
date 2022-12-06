@@ -1,6 +1,7 @@
 package com.zy_admin.sys.controller;
 
 import com.baomidou.mybatisplus.extension.api.ApiController;
+import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.core.annotation.MyLog;
 import com.zy_admin.common.enums.BusinessType;
 import com.zy_admin.common.enums.ResultCode;
@@ -8,12 +9,12 @@ import com.zy_admin.sys.entity.SysDept;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.sys.service.SysDeptService;
 import com.zy_admin.util.RequestUtil;
-import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.util.ResultTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -80,6 +81,7 @@ public class SysDeptController extends ApiController {
     @ApiOperation(value = "添加部门", notes = "新增部门", httpMethod = "POST")
     @PostMapping("/insertDept")
     @MyLog(title = "部门管理", optParam = "#{sysDept}", businessType = BusinessType.INSERT)
+    @PreAuthorize("hasAnyAuthority('system:dept:add')")
     public Result insertDept(@RequestBody SysDept sysDept, HttpServletRequest request) {
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //从token获值
@@ -108,6 +110,7 @@ public class SysDeptController extends ApiController {
     @ApiOperation(value = "修改部门", notes = "修改部门", httpMethod = "PUT")
     @PutMapping("/updateDept")
     @MyLog(title = "部门管理", optParam = "#{sysDept}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:dept:edit')")
     public Result updateDept(@RequestBody SysDept sysDept, HttpServletRequest request) {
         SysUser user = requestUtil.getUser(request);
         sysDept.setUpdateBy(user.getUserName());
@@ -126,6 +129,7 @@ public class SysDeptController extends ApiController {
     @DeleteMapping("/deleteDept")
     @ApiImplicitParam(name="idList",value = "部门ID集合",required = true)
     @MyLog(title = "部门管理", optParam = "#{idList}", businessType = BusinessType.DELETE)
+    @PreAuthorize("hasAnyAuthority('system:dept:remove')")
     public Result deleteDept(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<>();
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));

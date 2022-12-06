@@ -23,6 +23,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,7 +67,7 @@ public class ZyOwnerParkController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
     })
-    @ApiOperation(value = "查询记录所有者公园", notes = "查询记录所有者公园")
+    @ApiOperation(value = "查询记录所有车位记录", notes = "查询记录所有车位记录")
     @GetMapping("/queryOwnerParkRecord")
     public Result queryOwnerParkRecord(HttpServletRequest request){
         String ownerId = requestUtil.getOwnerId(request);
@@ -90,6 +91,7 @@ public class ZyOwnerParkController {
     @ApiOperation(value = "导出", notes = "导出", httpMethod = "GET")
     @GetMapping("/export")
     @MyLog(title = "车位信息", optParam = "#{ids},#{communityId}", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAnyAuthority('system:parkOwner:export')")
     public Result getExcel(@RequestParam("ids") ArrayList<String> ids, String communityId, HttpServletResponse response) throws IOException {
         System.out.println(ids+" "+communityId);
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -169,6 +171,7 @@ public class ZyOwnerParkController {
     })
     @ApiOperation(value = "修改车位审核", notes = "修改车位审核", httpMethod = "PUT")
     @PutMapping("/updateOwnerPark")
+    @PreAuthorize("hasAnyAuthority('system:parkOwner:edit')")
     public Result updateOwnerPark(@RequestBody ZyOwnerPark zyOwnerPark, HttpServletRequest request){
         ZyOwner owner = this.requestUtil.getOwner(request);
         zyOwnerPark.setUpdateBy(owner.getOwnerRealName());
@@ -228,6 +231,7 @@ public class ZyOwnerParkController {
     @PutMapping("/updateOwnerParkStatus")
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "车位审核", optParam = "#{zyOwnerPark}", businessType = BusinessType.UPDATE)
+    @PreAuthorize("hasAnyAuthority('system:parkOwner:edit')")
     public Result updateOwnerParkStatus(@RequestBody ZyOwnerPark zyOwnerPark, String recordAuditOpinion, String status, HttpServletRequest request) throws Exception {
         SysUser user = requestUtil.getUser(request);
         zyOwnerPark.setUpdateBy(user.getUserName());
@@ -247,6 +251,7 @@ public class ZyOwnerParkController {
     })
     @ApiOperation(value = "分页和查询车位审核", notes = "分页和查询车位审核", httpMethod = "GET")
     @GetMapping("selectAllParkLimit")
+    @PreAuthorize("hasAnyAuthority('system:parkOwner:query')")
     public Result selectAllParkLimit(ZyOwnerParkDto zyOwnerParkDto, Page page){
         return zyOwnerParkService.selectAllParkLimit(zyOwnerParkDto,page);
     }
