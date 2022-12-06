@@ -117,7 +117,6 @@ public class ZyOwnerParkServiceImpl extends ServiceImpl<ZyOwnerParkDao, ZyOwnerP
         Result result = new Result(null,ResultTool.fail(ResultCode.COMMON_FAIL));
         try {
             List<RoomTree> zyOwnerParks = this.baseMapper.selectNoBindingAndStatusPark(ownerId);
-            System.out.println(zyOwnerParks);
             if (zyOwnerParks.size()==0){
                 result.setData("改小区内没有未绑定的车位信息");
                 result.setMeta(ResultTool.fail(ResultCode.NO_MATCHING_DATA));

@@ -93,7 +93,6 @@ public class ZyOwnerParkController {
     @MyLog(title = "车位信息", optParam = "#{ids},#{communityId}", businessType = BusinessType.EXPORT)
     @PreAuthorize("hasAnyAuthority('system:parkOwner:export')")
     public Result getExcel(@RequestParam("ids") ArrayList<String> ids, String communityId, HttpServletResponse response) throws IOException {
-        System.out.println(ids+" "+communityId);
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         Result result1 = zyOwnerParkService.getListByIdList(ids, communityId);
         List<OwnerParkExcelDto> list = (List<OwnerParkExcelDto>) result1.getData();

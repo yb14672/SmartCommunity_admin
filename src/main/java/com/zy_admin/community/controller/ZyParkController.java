@@ -114,7 +114,6 @@ public class ZyParkController extends ApiController {
         SysUser user = requestUtil.getUser(request);
         zyPark.setCreateBy(user.getUserName());
         zyPark.setCreateTime(LocalDateTime.now().toString());
-        System.out.println(zyPark.toString());
         return zyParkService.batchInsert(zyPark, number);
     }
 

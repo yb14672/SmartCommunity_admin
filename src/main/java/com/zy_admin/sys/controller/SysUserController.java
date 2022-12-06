@@ -300,7 +300,6 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "登录", notes = "登录", httpMethod = "POST")
     @PostMapping("/login")
     public Result login(SysUser sysUser) {
-        System.out.println(sysUser.toString());
         return sysUserService.login(sysUser);
     }
     /**
