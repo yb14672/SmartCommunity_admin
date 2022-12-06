@@ -22,6 +22,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,6 +51,8 @@ public class SysUserController extends ApiController {
     private SysUserService sysUserService;
     @Resource
     private RequestUtil requestUtil;
+    @Resource
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     /**
      * 查询制定部门
      * @param communityId
@@ -439,6 +442,8 @@ public class SysUserController extends ApiController {
     @MyLog(title = "重置密码", optParam = "#{sysUser}", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAnyAuthority('system:user:resetPwd')")
     public Result resetPassword(HttpServletRequest request, @RequestBody SysUser sysUser) {
+        String encode = bCryptPasswordEncoder.encode(sysUser.getPassword());
+        sysUser.setPassword(encode);
         SysUser user = this.requestUtil.getUser(request);
         sysUser.setUpdateBy(user.getUserName());
         return sysUserService.resetPassword(sysUser);
