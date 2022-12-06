@@ -30,10 +30,15 @@ public class SysRoleMenuController extends ApiController {
     @Resource
     private SysRoleMenuService sysRoleMenuService;
 
+    /**
+     * 根据角色ID获取其菜单权限
+     *
+     * @param roleId 角色id
+     * @return {@link Result}
+     */
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "string", name = "roleId", value = "", required = true)
     })
-    @ApiOperation(value = "", notes = "", httpMethod = "GET")
     @GetMapping("/getMenuIds")
     public Result getMenuIds(String roleId){
         return sysRoleMenuService.getMenuIdsByRoleId(roleId);

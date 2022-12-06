@@ -67,7 +67,7 @@ public class ZyOwnerParkController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
     })
-    @ApiOperation(value = "查询记录所有车位记录", notes = "查询记录所有车位记录")
+    @ApiOperation(value = "查询记录所有车位记录", notes = "查询记录所有车位记录", httpMethod = "GET")
     @GetMapping("/queryOwnerParkRecord")
     public Result queryOwnerParkRecord(HttpServletRequest request){
         String ownerId = requestUtil.getOwnerId(request);
@@ -149,11 +149,19 @@ public class ZyOwnerParkController {
         return result;
     }
 
+    /**
+     * 解绑车位与业主
+     *
+     * @param request     请求
+     * @param ownerParkId 公园所有者id
+     * @return {@link Result}
+     * @throws Exception 异常
+     */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true),
-            @ApiImplicitParam(paramType = "query", dataType = "string", name = "ownerParkId", value = "", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true),
+            @ApiImplicitParam(paramType = "query", dataType = "string", name = "ownerParkId", value = "公园所有者id", required = true)
     })
-    @ApiOperation(value = "", notes = "", httpMethod = "DELETE")
+    @ApiOperation(value = "解绑车位与业主", notes = "解绑车位与业主", httpMethod = "DELETE")
     @DeleteMapping("/deleteOwnerPark")
     public Result deleteOwnerPark(HttpServletRequest request,String ownerParkId) throws Exception {
         return zyOwnerParkService.deleteOwnerPark(ownerParkId,request);
@@ -178,11 +186,18 @@ public class ZyOwnerParkController {
         zyOwnerPark.setUpdateTime(LocalDateTime.now().toString());
         return zyOwnerParkService.updateOwnerPark(zyOwnerPark);
     }
+
+    /**
+     * 得到业主车位关联列表
+     *
+     * @param ownerParkListDto 业主车位关联
+     * @param page             页面
+     * @return {@link Result}
+     */
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "OwnerParkListDto", name = "ownerParkListDto", value = "", required = true),
             @ApiImplicitParam(paramType = "query", dataType = "Page", name = "page", value = "", required = true)
     })
-    @ApiOperation(value = "", notes = "", httpMethod = "GET")
     @GetMapping("/getOwnerParkList")
     public Result getOwnerParkList(OwnerParkListDto ownerParkListDto, Page page ) {
         return zyOwnerParkService.getOwnerParkList(ownerParkListDto, page);

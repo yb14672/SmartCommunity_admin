@@ -44,10 +44,16 @@ public class ZyOwnerRoomController extends ApiController {
     @Resource
     private RequestUtil requestUtil;
 
+    /**
+     * 通过业主id获取业主房间关联信息系
+     *
+     * @param request 请求
+     * @return {@link Result}
+     */
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "", required = true)
+            @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
     })
-    @ApiOperation(value = "", notes = "", httpMethod = "GET")
+    @ApiOperation(value = "通过业主id获取业主房间关联信息系", notes = "通过业主id获取业主房间关联信息系", httpMethod = "GET")
     @GetMapping("/selectOwnerRoomByOwnerId")
     public Result selectOwnerRoomByOwnerId(HttpServletRequest request){
         String ownerId = requestUtil.getOwnerId(request);
