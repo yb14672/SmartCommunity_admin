@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 
 @Configuration
 @EnableWebSecurity
@@ -42,8 +43,6 @@ public class SercurityConfig extends WebSecurityConfigurerAdapter {
             "/sysUser/logout",
             "sysMenu/getMenus",
             "sysUser/getAvatarById"
-
-
     };
 
     /**
@@ -72,6 +71,10 @@ public class SercurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         //开启跨域 crsf攻击关闭
         http
+                .headers()
+                .frameOptions()
+                .disable()
+                .and()
                 .cors()
                 .and()
                 .csrf().disable()
@@ -109,7 +112,6 @@ public class SercurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(jwtAuthenticationFilter());
 
-                //无权访问
-//
+        //无权访问
     }
 }
