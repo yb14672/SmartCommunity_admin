@@ -50,7 +50,6 @@ public class ZyCommunityInteractionController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('system:interaction:query')")
     public Result selectAll(ZyCommunityInteractionDto zyCommunityInteraction) {
         Page page = new Page<>(0,0);
         return this.zyCommunityInteractionService.selectAllLimit(page,zyCommunityInteraction);
@@ -67,7 +66,6 @@ public class ZyCommunityInteractionController extends ApiController {
     })
     @ApiOperation(value = "通过文章ID查询详情和评论列表", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
-    @PreAuthorize("hasAnyAuthority('system:interaction:query')")
     public Result selectOne(@PathVariable String id) {
         return this.zyCommunityInteractionService.getInteractionInfoById(id);
     }
@@ -84,7 +82,6 @@ public class ZyCommunityInteractionController extends ApiController {
     })
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('system:interaction:add')")
     public Result insert(@RequestBody ZyCommunityInteractionDto zyCommunityInteraction, HttpServletRequest request) throws Exception {
         zyCommunityInteraction.setCreateBy(requestUtil.getOwner(request).getOwnerNickname());
         zyCommunityInteraction.setUserId(requestUtil.getOwnerId(request));
@@ -103,7 +100,6 @@ public class ZyCommunityInteractionController extends ApiController {
     })
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping
-    @PreAuthorize("hasAnyAuthority('system:interaction:remove')")
     public Result delete(@RequestParam("id") String id) throws Exception {
         List<String> idList = new ArrayList<>();
         idList.add(id);

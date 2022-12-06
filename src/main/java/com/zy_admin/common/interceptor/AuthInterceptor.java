@@ -1,6 +1,7 @@
 package com.zy_admin.common.interceptor;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.zy_admin.sys.service.RedisService;
 import com.zy_admin.util.JwtUtil;
@@ -32,7 +33,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (token == null || StringUtil.isEmpty(token)) {
             token = request.getHeader("Authorization");
         }
-        if (request.getMethod().toUpperCase().equals("OPTIONS")) {
+        if ("OPTIONS".equals(request.getMethod().toUpperCase())) {
             return true;
         }
         //验证token的有效性
@@ -45,7 +46,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             return false;
         }
         Object loginStatus = redisService.get(token);
-        if (Objects.isNull(loginStatus)) {
+        if (ObjectUtil.isNull(loginStatus)) {
             response.getWriter().print(JSON.toJSONString(new Result(null, ResultTool.fail(ResultCode.USER_LOGIN_EXPIRED))));
             return false;
         }

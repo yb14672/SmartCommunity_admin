@@ -67,12 +67,12 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "更新业主头像", notes = "更新业主头像", httpMethod = "PUT")
     @PutMapping("/updateOwnerPortrait")
-    @PreAuthorize("hasAnyAuthority('system:owner:edit')")
+
     public Result updateOwnerPortrait(@RequestBody ZyOwner zyOwner, HttpServletRequest request){
         return zyOwnerService.updateOwnerPortrait(zyOwner, request);
     }
 
-    /**
+    /**]l
      * 用户修改密码
      * @param zyOwner 新密码
      * @param request 请求
@@ -84,7 +84,6 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "用户修改密码", notes = "用户修改密码", httpMethod = "PUT")
     @PutMapping("/updatePassword")
-    @PreAuthorize("hasAnyAuthority('system:owner:edit')")
     public Result updatePassword(@RequestBody ZyOwner zyOwner, HttpServletRequest request){
         return zyOwnerService.updatePassword(zyOwner, request);
     }
@@ -100,7 +99,6 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "获取业主信息", notes = "获取业主信息", httpMethod = "GET")
     @GetMapping("/getOwner")
-    @PreAuthorize("hasAnyAuthority('system:owner:list')")
     public Result getOwner(HttpServletRequest request){
         String ownerId = requestUtil.getOwnerId(request);
         return this.zyOwnerService.getOwnerById(ownerId);
@@ -118,7 +116,6 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "修改数据", notes = "修改数据", httpMethod = "PUT")
     @PutMapping("/update")
-    @PreAuthorize("hasAnyAuthority('system:owner:edit')")
     public Result update(@RequestBody ZyOwner zyOwner, HttpServletRequest request) {
         ZyOwner owner = requestUtil.getOwner(request);
         zyOwner.setOwnerId(owner.getOwnerId());
@@ -150,7 +147,6 @@ public class ZyOwnerController extends ApiController {
     })
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping("/register")
-    @PreAuthorize("hasAnyAuthority('system:owner:add')")
     public Result insert(@RequestBody ZyOwner zyOwner) throws Exception {
         zyOwner.setOwnerType("qt");
         return zyOwnerService.ownerRegister(zyOwner);

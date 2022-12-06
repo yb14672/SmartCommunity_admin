@@ -67,7 +67,7 @@ public class ZyOwnerParkController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", dataType = "HttpServletRequest", name = "request", value = "请求", required = true)
     })
-    @ApiOperation(value = "查询记录所有者公园", notes = "查询记录所有者公园")
+    @ApiOperation(value = "查询记录所有车位记录", notes = "查询记录所有车位记录")
     @GetMapping("/queryOwnerParkRecord")
     public Result queryOwnerParkRecord(HttpServletRequest request){
         String ownerId = requestUtil.getOwnerId(request);
@@ -200,7 +200,6 @@ public class ZyOwnerParkController {
     })
     @ApiOperation(value = "新增车位审核", notes = "新增车位审核", httpMethod = "POST")
     @PostMapping("/insertOwnerPark")
-    @PreAuthorize("hasAnyAuthority('system:parkOwner:add')")
     public Result insertOwnerPark(@RequestBody ZyOwnerPark zyOwnerPark, HttpServletRequest request) throws Exception {
         System.err.println(zyOwnerPark);
         ZyOwner owner = this.requestUtil.getOwner(request);

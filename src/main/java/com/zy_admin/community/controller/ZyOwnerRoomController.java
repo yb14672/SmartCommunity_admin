@@ -49,7 +49,6 @@ public class ZyOwnerRoomController extends ApiController {
     })
     @ApiOperation(value = "", notes = "", httpMethod = "GET")
     @GetMapping("/selectOwnerRoomByOwnerId")
-    @PreAuthorize("hasAnyAuthority('system:ownerRoom:list')")
     public Result selectOwnerRoomByOwnerId(HttpServletRequest request){
         String ownerId = requestUtil.getOwnerId(request);
         return this.zyOwnerRoomService.selectOwnerRoomByOwnerId(ownerId);
@@ -65,7 +64,6 @@ public class ZyOwnerRoomController extends ApiController {
     })
     @ApiOperation(value = "根据业主ID获取其房屋绑定列表", notes = "根据业主ID获取其房屋绑定列表", httpMethod = "GET")
     @GetMapping("/getOwnerRoomByOwnerId")
-    @PreAuthorize("hasAnyAuthority('system:ownerRoom:query')")
     public Result getOwnerRoomByOwnerId(HttpServletRequest request){
         return this.zyOwnerRoomService.getOwnerRoomByOwnerId(requestUtil.getOwnerId(request));
     }
@@ -84,7 +82,7 @@ public class ZyOwnerRoomController extends ApiController {
     })
     @ApiOperation(value = "插入 新增数据", notes = "插入 新增数据", httpMethod = "POST")
     @PostMapping("/insert")
-    @PreAuthorize("hasAnyAuthority('system:ownerRoom:add')")
+
     public Result insert(@RequestBody ZyOwnerRoom ownerRoom, HttpServletRequest request) throws Exception {
         ZyOwner owner = requestUtil.getOwner(request);
         ownerRoom.setOwnerId(owner.getOwnerId());

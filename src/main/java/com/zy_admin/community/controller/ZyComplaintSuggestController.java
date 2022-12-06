@@ -152,7 +152,6 @@ public class ZyComplaintSuggestController extends ApiController {
     })
     @ApiOperation(value = "新增投诉建议", notes = "新增投诉建议", httpMethod = "POST")
     @PostMapping("/insertSuggest")
-    @PreAuthorize("hasAnyAuthority('system:suggest:add')")
     public Result insertSuggest(@RequestBody ZyComplaintSuggestDto zyComplaintSuggest, HttpServletRequest request) throws Exception {
         ZyOwner owner = this.requestUtil.getOwner(request);
         zyComplaintSuggest.setCreateBy(owner.getOwnerNickname());

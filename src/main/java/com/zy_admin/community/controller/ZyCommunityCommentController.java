@@ -44,7 +44,6 @@ public class ZyCommunityCommentController {
     })
     @ApiOperation(value = "新增数据", notes = "新增数据", httpMethod = "POST")
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('system:interaction:add')")
     public Result insert(@RequestBody ZyComment zyComment, HttpServletRequest request) throws Exception {
         ZyOwner owner = requestUtil.getOwner(request);
         zyComment.setCreateBy(owner.getOwnerRealName());
@@ -63,7 +62,6 @@ public class ZyCommunityCommentController {
     })
     @ApiOperation(value = "删除数据", notes = "删除数据", httpMethod = "DELETE")
     @DeleteMapping("/{commentId}")
-    @PreAuthorize("hasAnyAuthority('system:interaction:remove')")
     public Result delete(@PathVariable String commentId) {
         return this.zyCommentService.delCommentById(commentId);
     }

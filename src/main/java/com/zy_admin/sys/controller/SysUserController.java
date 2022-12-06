@@ -402,6 +402,8 @@ public class SysUserController extends ApiController {
     @MyLog(title = "用户管理", optParam = "#{sysUserDto}", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAnyAuthority('system:user:add')")
     public Result insertUser(HttpServletRequest request, @RequestBody UserDto sysUserDto) {
+        String encode = bCryptPasswordEncoder.encode(sysUserDto.getPassword());
+        sysUserDto.setPassword(encode);
         sysUserDto.setCreateTime(LocalDateTime.now().toString());
         SysUser user = this.requestUtil.getUser(request);
         sysUserDto.setCreateBy(user.getUserName());

@@ -138,7 +138,6 @@ public class ZyVisitorController extends ApiController {
     })
     @ApiOperation(value = "插入访客", notes = "插入访客", httpMethod = "POST")
     @PostMapping("/insertVisitor")
-    @PreAuthorize("hasAnyAuthority('system:visitor:add')")
     public Result insertVisitor(HttpServletRequest request,   @RequestBody ZyVisitor zyVisitor) throws Exception {
         ZyOwner owner = this.requestUtil.getOwner(request);
         zyVisitor.setCreateBy(owner.getOwnerRealName());
