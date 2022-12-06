@@ -1,5 +1,6 @@
 package com.zy_admin.community.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zy_admin.common.Page;
 import com.zy_admin.common.Pageable;
@@ -156,24 +157,28 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
             if (i == 1) {
                 List<String> urlList = zyComplaintSuggest.getFilesUrl();
                 //如果有添加文件或者图片则添加
-                if (urlList!=null) {
+                if (urlList != null && !urlList.isEmpty()) {
                     List<ZyFiles> files = new ArrayList<>();
                     for (String url : urlList) {
-                        ZyFiles zyFile = new ZyFiles();
-                        zyFile.setFilesUrl(url);
-                        zyFile.setFilesId(snowflakeManager.nextId() + "");
-                        zyFile.setCreateTime(LocalDateTime.now().toString());
-                        zyFile.setCreateBy(zyComplaintSuggest.getCreateBy());
-                        zyFile.setDelFlag(0);
-                        zyFile.setSource(0);
-                        zyFile.setRemark("ComplaintSuggest");
-                        zyFile.setParentId(zyComplaintSuggest.getComplaintSuggestId());
-                        zyFile.setUserId(zyComplaintSuggest.getUserId());
-                        files.add(zyFile);
+                        if (ObjectUtil.isNotEmpty(url)) {
+                            ZyFiles zyFile = new ZyFiles();
+                            zyFile.setFilesUrl(url);
+                            zyFile.setFilesId(snowflakeManager.nextId() + "");
+                            zyFile.setCreateTime(LocalDateTime.now().toString());
+                            zyFile.setCreateBy(zyComplaintSuggest.getCreateBy());
+                            zyFile.setDelFlag(0);
+                            zyFile.setSource(0);
+                            zyFile.setRemark("ComplaintSuggest");
+                            zyFile.setParentId(zyComplaintSuggest.getComplaintSuggestId());
+                            zyFile.setUserId(zyComplaintSuggest.getUserId());
+                            files.add(zyFile);
+                        }
                     }
-                    int j = this.zyFilesDao.insertBatch(files);
-                    if (j < 1) {
-                        return result;
+                    if (files != null && !files.isEmpty()) {
+                        int j = this.zyFilesDao.insertBatch(files);
+                        if (j < 1) {
+                            return result;
+                        }
                     }
                 }
                 result.setData("添加成功");

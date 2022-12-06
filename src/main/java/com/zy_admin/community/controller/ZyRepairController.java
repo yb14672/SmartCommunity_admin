@@ -63,7 +63,6 @@ public class ZyRepairController extends ApiController {
     })
     @ApiOperation(value = "查看报修", notes = "查看报修", httpMethod = "GET")
     @GetMapping("/getRepairByOwnerId")
-    @PreAuthorize("hasAnyAuthority('system:repair:query')")
     public Result getRepairByOwnerId(ZyRepair repair, HttpServletRequest request){
         repair.setUserId(requestUtil.getOwnerId(request));
         return this.zyRepairService.getRepairByOwnerId(repair);
@@ -149,7 +148,6 @@ public class ZyRepairController extends ApiController {
     })
     @ApiOperation(value = "新增报修", notes = "新增报修", httpMethod = "POST")
     @PostMapping("/insertRepair")
-    @PreAuthorize("hasAnyAuthority('system:repair:add')")
     public Result insertRepair(@RequestBody ZyRepair zyRepair, HttpServletRequest request) {
         return this.zyRepairService.insertRepair(zyRepair,request);
     }

@@ -57,7 +57,7 @@ public class SysDictDataController extends ApiController {
     })
     @ApiOperation(value = "根据查询条件获取字典数据并分页", notes = "分页查询所有字典数据", httpMethod = "GET")
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('system:config:query')")
+//    @PreAuthorize("hasAnyAuthority('system:config:query')")
     public Result selectAll(SysDictData sysDictData, Page page) {
         return this.sysDictDataService.selectDictDataLimit(sysDictData, page);
     }

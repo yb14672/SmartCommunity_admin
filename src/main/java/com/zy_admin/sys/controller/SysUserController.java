@@ -22,6 +22,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,6 +51,9 @@ public class SysUserController extends ApiController {
     private SysUserService sysUserService;
     @Resource
     private RequestUtil requestUtil;
+
+    @Resource
+    BCryptPasswordEncoder bCryptPasswordEncoder;
     /**
      * 查询制定部门
      * @param communityId
@@ -400,6 +404,8 @@ public class SysUserController extends ApiController {
     @MyLog(title = "用户管理", optParam = "#{sysUserDto}", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAnyAuthority('system:user:add')")
     public Result insertUser(HttpServletRequest request, @RequestBody UserDto sysUserDto) {
+        String encode = bCryptPasswordEncoder.encode(sysUserDto.getPassword());
+        sysUserDto.setPassword(encode);
         sysUserDto.setCreateTime(LocalDateTime.now().toString());
         SysUser user = this.requestUtil.getUser(request);
         sysUserDto.setCreateBy(user.getUserName());

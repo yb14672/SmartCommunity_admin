@@ -1,5 +1,6 @@
 package com.zy_admin.community.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -261,24 +262,28 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
             if (insert == 1) {
                 List<String> urlList = interactionDto.getUrlList();
                 //如果有添加文件或者图片则添加
-                if (urlList != null) {
+                if (urlList != null && !urlList.isEmpty()) {
                     List<ZyFiles> files = new ArrayList<>();
                     for (String url : urlList) {
-                        ZyFiles zyFile = new ZyFiles();
-                        zyFile.setFilesUrl(url);
-                        zyFile.setFilesId(snowflakeManager.nextId() + "");
-                        zyFile.setCreateTime(LocalDateTime.now().toString());
-                        zyFile.setCreateBy(interactionDto.getCreateBy());
-                        zyFile.setDelFlag(0);
-                        zyFile.setSource(0);
-                        zyFile.setRemark("CommunityInteraction");
-                        zyFile.setParentId(interactionId);
-                        zyFile.setUserId(interactionDto.getUserId());
-                        files.add(zyFile);
+                        if(ObjectUtil.isNotEmpty(url)){
+                            ZyFiles zyFile = new ZyFiles();
+                            zyFile.setFilesUrl(url);
+                            zyFile.setFilesId(snowflakeManager.nextId() + "");
+                            zyFile.setCreateTime(LocalDateTime.now().toString());
+                            zyFile.setCreateBy(interactionDto.getCreateBy());
+                            zyFile.setDelFlag(0);
+                            zyFile.setSource(0);
+                            zyFile.setRemark("CommunityInteraction");
+                            zyFile.setParentId(interactionId);
+                            zyFile.setUserId(interactionDto.getUserId());
+                            files.add(zyFile);
+                        }
                     }
-                    int i = this.zyFilesDao.insertBatch(files);
-                    if (i < 1) {
-                        return result;
+                    if(files != null && !files.isEmpty()){
+                        int i = this.zyFilesDao.insertBatch(files);
+                        if (i < 1) {
+                            return result;
+                        }
                     }
                 }
                 result.setData("添加成功");

@@ -38,12 +38,35 @@ public class SercurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] URL_WHITELIST = {
             "/sysUser/login",
             "/sysUser/logout",
-//            "/user/profile",
-            "/sysUser/logout",
+            "/user/profile",
             "sysMenu/getMenus",
-            "sysUser/getAvatarById"
-
-
+            "sysUser/getAvatarById",
+            "/zyOwner/login",
+            "/zyOwner/getOwner",
+            "/tool/swagger",
+            "/tool/swagger",
+            "/**/swagger-ui.html",
+            "/**/doc.html",
+            "/**/doc.html#/**",
+            "/swagger-ui/**",
+            "/swagger-resources/**",
+            "/webjars/**",
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/zyOwnerRoom/getTree",
+            "/zyOwnerRoom/selectOwnerRoomByOwnerId",
+            "/zyOwnerPark/selectNoBindingAndStatusPark",
+            "/zyOwnerPark/queryOwnerParkRecord",
+            "/zyComplaintSuggest/insertSuggest",
+            "/zyOwnerRoom/insert",
+            "/zyOwnerRoom/getOwnerRoomByOwnerId",
+            "/mini/interaction/**",
+            "/mini/comment/**",
+            "/zyRepair/insertRepair",
+            "/zyVisitor/insertVisitor",
+            "/zyVisitor/queryVisitorRecord",
+            "/zyRepair/getRepairByOwnerId",
+            "/upload"
     };
 
     /**
@@ -72,6 +95,10 @@ public class SercurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         //开启跨域 crsf攻击关闭
         http
+                .headers()
+                .frameOptions()
+                .disable()
+                .and()
                 .cors()
                 .and()
                 .csrf().disable()
