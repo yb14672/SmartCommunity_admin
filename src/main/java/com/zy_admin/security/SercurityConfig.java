@@ -42,7 +42,8 @@ public class SercurityConfig extends WebSecurityConfigurerAdapter {
 //            "/user/profile",
             "/sysUser/logout",
             "sysMenu/getMenus",
-            "sysUser/getAvatarById"
+            "sysUser/getAvatarById",
+            "localhost:8080/druid"
     };
 
     /**
