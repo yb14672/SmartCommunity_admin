@@ -50,10 +50,12 @@ public interface ZyCommunityInteractionService extends IService<ZyCommunityInter
     Result selectAllLimit(Page page, ZyCommunityInteractionDto interactionDto);
 
     /**
+     * 删除交互通过id列表
      * 通过id列表删除社区互动
      *
      * @param idList id列表
      * @return {@link Result}
+     * @throws Exception 异常
      */
     Result deleteInteractionByIdList(List<String> idList) throws Exception;
 

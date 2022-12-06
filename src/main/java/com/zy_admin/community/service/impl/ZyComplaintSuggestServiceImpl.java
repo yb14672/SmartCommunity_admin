@@ -156,7 +156,7 @@ public class ZyComplaintSuggestServiceImpl extends ServiceImpl<ZyComplaintSugges
             if (i == 1) {
                 List<String> urlList = zyComplaintSuggest.getFilesUrl();
                 //如果有添加文件或者图片则添加
-                if (urlList!=null) {
+                if (urlList != null && !urlList.isEmpty()) {
                     List<ZyFiles> files = new ArrayList<>();
                     for (String url : urlList) {
                         ZyFiles zyFile = new ZyFiles();

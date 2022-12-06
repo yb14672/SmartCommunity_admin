@@ -224,7 +224,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
         int i = this.baseMapper.deleteInteractionByIdList(idList);
         if (i > 0) {
             //删除文件表
-            this.zyFilesDao.deleteByInteractionIdList(idList);
+            this.zyFilesDao.deleteFileByInteractionId(idList);
             //删除评论
             this.zyCommentDao.deleteByInteractionIdList(idList);
             result.setData("删除成功");
@@ -261,7 +261,7 @@ public class ZyCommunityInteractionServiceImpl extends ServiceImpl<ZyCommunityIn
             if (insert == 1) {
                 List<String> urlList = interactionDto.getUrlList();
                 //如果有添加文件或者图片则添加
-                if (urlList != null) {
+                if (urlList != null && !urlList.isEmpty()) {
                     List<ZyFiles> files = new ArrayList<>();
                     for (String url : urlList) {
                         ZyFiles zyFile = new ZyFiles();
