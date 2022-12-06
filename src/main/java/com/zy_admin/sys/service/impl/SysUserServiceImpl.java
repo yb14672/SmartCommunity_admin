@@ -25,6 +25,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,6 +66,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     private RequestUtil requestUtil;
     @Resource
     private SysMenuDao sysMenuDao;
+    @Resource
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     @Resource
@@ -693,16 +696,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     /**
      * 重置密码
      *
-     * @param user 用户对象
+     * @param user   用户对象
+     * @param oldPwd 旧密码
      * @return 修改用户密码结果集
      */
     @Override
-    public Result resetPwd(SysUser user) {
+    public Result resetPwd(SysUser user,String oldPwd) {
         //加密密码--未来写
         SysUser sysUser = baseMapper.queryById(user.getUserId() + "");
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
         //判断旧密码是否一致
-        if (!sysUser.getPassword().equals(user.getPassword())) {
+        if (bCryptPasswordEncoder.matches(oldPwd,sysUser.getPassword())) {
+            //加密后的新密码
+            String newPassword = bCryptPasswordEncoder.encode(user.getPassword());
+            user.setPassword(newPassword);
             int i = baseMapper.updateUser(user);
             if (i == 1) {
                 result.setData("用户ID为" + user.getUserId() + "的信息修改成功");

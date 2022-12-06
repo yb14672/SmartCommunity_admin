@@ -98,12 +98,15 @@ public interface SysUserService extends IService<SysUser> {
      * @return 修改用户结果集
      */
     Result updateUser(SysUser user);
+
     /**
      * 重置密码
-     * @param user 用户对象
+     *
+     * @param user   用户对象
+     * @param oldPwd 旧密码
      * @return 修改用户密码结果集
      */
-    Result resetPwd(SysUser user);
+    Result resetPwd(SysUser user,String oldPwd);
     /**
      * 查询所有用户
      * @param page    分页对象

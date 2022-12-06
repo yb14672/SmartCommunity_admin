@@ -382,10 +382,10 @@ public class SysUserController extends ApiController {
             @ApiImplicitParam(paramType = "body", dataType = "SysUser", name = "sysUser", value = "用户对象", required = true)
     })
     @ApiOperation(value = "修改密码", notes = "修改密码", httpMethod = "PUT")
-    @PutMapping("/resetPwd")
+    @PutMapping("/resetPwd/{oldPwd}")
     @MyLog(title = "重置密码", optParam = "#{sysUser}", businessType = BusinessType.UPDATE)
-    public Result resetPwd(@RequestBody SysUser sysUser) {
-        return this.sysUserService.resetPwd(sysUser);
+    public Result resetPwd(@RequestBody SysUser sysUser,@PathVariable String oldPwd) {
+        return this.sysUserService.resetPwd(sysUser,oldPwd);
     }
     /**
      * 新增用户
