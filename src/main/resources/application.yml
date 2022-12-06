@@ -4,52 +4,95 @@ spring:
     multipart:
       max-file-size: 200MB
       max-request-size: 200MB
+  #数据源
   datasource:
-    type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/zy-community?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+    url: jdbc:mysql://localhost:3306/zy-community?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true&allowMultiQueries=true
     username: root
     password: root
-    hikari:
-      minimum-idle: 5
-      idle-timeout: 600000
-      maximum-pool-size: 10
-      auto-commit: true
-      pool-name: MyHikariCP
-      max-lifetime: 1800000
-      connection-timeout: 30000
-      connection-test-query: SELECT 1
+    #使用druid连接池
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    # 超过时间限制是否回收
+    removeAbandoned: true
+    # 超时时间；单位为秒。180秒=3分钟
+    removeAbandonedTimeout: 180
+    # 关闭abanded连接时输出错误日志
+    logAbandoned: true
+
+    # 配置连接池信息
     druid:
-      ##################    连接池配置    ################
-      #连接池建立时创建的初始化连接数
+      ## 初始化大小，最小，最大
       initial-size: 5
-      #连接池中最大的活跃连接数
-      max-active: 20
-      #连接池中最小的活跃连接数
       min-idle: 5
-      # 配置获取连接等待超时的时间
+      max-active: 30
+      ## 配置获取连接等待超时的时间
       max-wait: 60000
-      max-pool-prepared-statement-per-connection-size: 20
-      # 打开PSCache，并且指定每个连接上PSCache的大小
-      pool-prepared-statements: true
-      validation-query: SELECT 1 FROM DUAL
-      query-timeout: 30000
-      #是否在获得连接后检测其可用性
-      test-on-borrow: false
-      #是否在连接放回连接池后检测其可用性
-      test-on-return: false
-      #是否在连接空闲一段时间后检测其可用性
-      test-while-idle: true
       # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
       time-between-eviction-runs-millis: 60000
       # 配置一个连接在池中最小生存的时间，单位是毫秒
       min-evictable-idle-time-millis: 300000
-      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
-      filter: stat,wall
-      #设置监控页面的登录名和密码
+      max-pool-prepared-statement-per-connection-size: 20
+      pool-prepared-statements: true
+      # 用来测试连接是否可用的SQL语句
+      validation-query: SELECT 1 FROM DUAL
+      # 应用向连接池申请连接，并且testOnBorrow为false时，连接池将会判断连接是否处于空闲状态，如果是，则验证这条连接是否可用
+      test-while-idle: true
+      # 如果为true，默认是false，应用向连接池申请连接时，连接池会判断这条连接是否是可用的
+      test-on-borrow: false
+      # 如果为true（默认false），当应用使用完连接，连接池回收连接的时候会判断该连接是否还可用
+      test-on-return: false
+
+      ######### 配置statViewFilter（配置Druid后台管理Servlet页面），用于展示Druid的统计信息
       stat-view-servlet:
+        # sql监控开关
+        enabled: true
+        # 访问内置监控页面的路径，内置监控页面的首页是/druid/index.html
+        url-pattern: /druid/*
+        # 是否允许清空统计数据，重新计算  true:允许  false:不允许
+        reset-enable: true
+        # 配置监控页面访问账号密码
         login-username: admin
-        login-password: admin
+        login-password: 123456
+        # 允许访问的地址，如果allow没有配置或者为空，则允许所有访问
+        allow: 127.0.0.1
+        # 拒绝访问的地址，deny优先于allow，如果在deny列表中，就算在allow列表中，也会被拒绝
+        deny:
+
+      ######### 配置WebStatFilter，用于采集web关联监控的数据#########
+      web-stat-filter:
+        # web url监控
+        enabled: true
+        # session监控
+        session-stat-enable: true
+        # session的最大个数，默认100
+        session-stat-max-count: 1000
+        # 过滤所有url
+        url-pattern: /*
+        # 排除一些不必要的url
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+
+      # 自己配置监控统计拦截的filter
+      filter:
+        wall:
+          config:
+            none-base-statement-allow: true
+            multi-statement-allow: true
+        # 开启DruidDataSource的状态监控
+        stat:
+          enabled: true
+          db-type: mysql
+          # 开启慢sql监控，超过2s 就认为是慢sql，记录到日志中
+          log-slow-sql: true
+          slow-sql-millis: 2000
+    # 日志配置（xml扩展配置）
+#    logPath: D:/logs/
+#    logName: admin
+#    logBusinessLevel: debug
+#    logRootLevel: info
 server:
   port: 8080
 

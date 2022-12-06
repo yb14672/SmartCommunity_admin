@@ -37,12 +37,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 房屋绑定表 (ZyOwnerPark)表控制层
+ * 车位绑定表 (ZyOwnerPark)表控制层
  *
  * @author makejava
  * @since 2022-12-01 15:50:35
  */
-@Api(value = "zyOwnerPark", tags = {"房屋绑定表 (ZyOwnerPark)表控制层"})
+@Api(value = "zyOwnerPark", tags = {"车位绑定表 (ZyOwnerPark)表控制层"})
 @RestController
 @RequestMapping("zyOwnerPark")
 public class ZyOwnerParkController {

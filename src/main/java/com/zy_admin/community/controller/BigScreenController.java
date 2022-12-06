@@ -24,7 +24,7 @@ import javax.annotation.Resource;
  * Time:2022 - 2022/12/4 - 16:48
  * @date 2022/12/05
  */
-@Api(value = "/bigScreen", tags = {"大屏幕控制器 Time:2022 - 2022/12/4 - 16:48"})
+@Api(value = "/bigScreen", tags = {"大屏幕控制器"})
 @RestController
 @RequestMapping("/bigScreen")
 public class BigScreenController {

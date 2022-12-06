@@ -66,7 +66,9 @@ public class SercurityConfig extends WebSecurityConfigurerAdapter {
             "/zyVisitor/insertVisitor",
             "/zyVisitor/queryVisitorRecord",
             "/zyRepair/getRepairByOwnerId",
-            "/upload"
+            "/upload",
+            "/**/druid/index.html",
+            "/**/druid/**",
     };
 
     /**
