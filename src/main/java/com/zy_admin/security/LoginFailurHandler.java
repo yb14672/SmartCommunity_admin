@@ -6,6 +6,7 @@ import com.zy_admin.common.core.Result.Result;
 import com.zy_admin.common.enums.ResultCode;
 
 import com.zy_admin.util.ResultTool;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -32,8 +33,6 @@ public class LoginFailurHandler implements AuthenticationFailureHandler {
         Result result = new Result();
         httpServletResponse.setContentType("application/json;charset=UTF-8");
         ServletOutputStream outputStream = httpServletResponse.getOutputStream();
-
-
         if (e instanceof BadCredentialsException){
             result.setMeta(ResultTool.fail(ResultCode.USER_WRONG_ACCOUNT_OR_PASSWORD));
         }else if(e instanceof InternalAuthenticationServiceException){
@@ -42,14 +41,13 @@ public class LoginFailurHandler implements AuthenticationFailureHandler {
             }else{
                 result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_EXPIRED));
             }
+        }else if(e instanceof AuthenticationServiceException){
+            result.setMeta(ResultTool.fail(ResultCode.USER_ACCOUNT_EXPIRED));
         }
-
-
-
         outputStream.write(JSONUtil.toJsonStr(result).getBytes());
         outputStream.flush();
         outputStream.close();
-
+        httpServletResponse.getWriter().write(result.toString());
     }
 }
 

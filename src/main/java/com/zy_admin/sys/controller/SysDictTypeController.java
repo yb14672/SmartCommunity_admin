@@ -101,7 +101,7 @@ public class SysDictTypeController extends ApiController {
     @ApiOperation(value = "删除字典类型", notes = "删除字典类型", httpMethod = "DELETE")
     @DeleteMapping
     @MyLog(title = "字典类型", optParam = "#{idList}", businessType = BusinessType.DELETE)
-    @PreAuthorize("hasAnyAuthority('system:config:remove')")
+    @PreAuthorize("hasAnyAuthority('system:dict:remove')")
     public Result delete(@RequestParam String[] idList) {
         List<Integer> idList1 = new ArrayList<>();
         Result result = new Result(null, ResultTool.fail(ResultCode.COMMON_FAIL));
@@ -129,7 +129,7 @@ public class SysDictTypeController extends ApiController {
     @PutMapping("/updateDict")
     @Transactional(rollbackFor = Exception.class)
     @MyLog(title = "字典类型", optParam = "#{sysDictType}", businessType = BusinessType.UPDATE)
-    @PreAuthorize("hasAnyAuthority('system:config:edit')")
+    @PreAuthorize("hasAnyAuthority('system:dict:edit')")
     public Result updateDict(@RequestBody SysDictType sysDictType) {
         return sysDictTypeService.updateDict(sysDictType);
     }
@@ -144,7 +144,7 @@ public class SysDictTypeController extends ApiController {
     @ApiOperation(value = "新增字典", notes = "新增字典", httpMethod = "POST")
     @PostMapping("/addSysDict")
     @MyLog(title = "字典类型", optParam = "#{sysDictType}", businessType = BusinessType.INSERT)
-    @PreAuthorize("hasAnyAuthority('system:config:add')")
+    @PreAuthorize("hasAnyAuthority('system:dict:add')")
     public Result insertDictType(@RequestBody SysDictType sysDictType, HttpServletRequest request) {
         SysUser user = requestUtil.getUser(request);
         sysDictType.setCreateTime(LocalDateTime.now().toString());

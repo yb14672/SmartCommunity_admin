@@ -38,7 +38,7 @@ public class RedisServiceImpl implements RedisService {
         redisTemplate.setKeySerializer(redisSerializer);
         ValueOperations<String, Object> vo = redisTemplate.opsForValue();
         //设置key并且设置有效时间
-        vo.set(key, value, 30, TimeUnit.MINUTES);
+        vo.set(key, value, 5, TimeUnit.SECONDS);
     }
 
     /**

@@ -13,6 +13,7 @@ import com.zy_admin.community.service.ZyRepairService;
 import com.zy_admin.sys.entity.SysUser;
 import com.zy_admin.util.RequestUtil;
 import com.zy_admin.util.ResultTool;
+import com.zy_admin.util.StringUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -129,6 +130,7 @@ public class ZyRepairServiceImpl extends ServiceImpl<ZyRepairDao, ZyRepair> impl
         zyRepair.setUserId(owner.getOwnerId());
         zyRepair.setCreateBy(owner.getOwnerRealName());
         zyRepair.setCreateTime(LocalDateTime.now().toString());
+        zyRepair.setReceivingOrdersTime(LocalDateTime.now().toString());
         zyRepair.setAssignmentTime(LocalDateTime.now().toString());
         long now = System.currentTimeMillis();
         zyRepair.setRepairNum("BX_" + Long.toString(now).substring(0, 13));
@@ -154,23 +156,23 @@ public class ZyRepairServiceImpl extends ServiceImpl<ZyRepairDao, ZyRepair> impl
         zyRepair.setUpdateBy(user.getUserName());
         zyRepair.setUpdateTime(LocalDateTime.now().toString());
         //派单时间repair_state
-        if ("Allocated".equals(zyRepair.getRepairState())){
+        if ("Allocated".equals(zyRepair.getRepairState()) && StringUtil.isEmpty(zyRepair.getAssignmentTime())){
             zyRepair.setAssignmentId(user.getUserId()+"");
             String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
             zyRepair.setAssignmentTime(format);
         }
-//        //已处理时间complete_time
-//        if ("Processed".equals(zyRepair.getRepairState())){
+        //已处理时间complete_time
+        if ("Processed".equals(zyRepair.getRepairState()) && StringUtil.isEmpty(zyRepair.getCompleteTime())){
 //            zyRepair.setCompletePhone(user.getPhonenumber()+"");
 //            zyRepair.setCompleteName(user.getUserName()+"");
-//            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
-//            zyRepair.setCompleteTime(format);
-//        }
-//        //已取消cancel_time
-//        if ("Cancelled".equals(zyRepair.getRepairState())){
-//            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
-//            zyRepair.setCancelTime(format);
-//        }
+            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+            zyRepair.setCompleteTime(format);
+        }
+        //已取消cancel_time
+        if ("Cancelled".equals(zyRepair.getRepairState()) && StringUtil.isEmpty(zyRepair.getCancelTime())){
+            String format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+            zyRepair.setCancelTime(format);
+        }
         //更新报修
         int num = this.baseMapper.updateRepair(zyRepair);
         if (num == 1) {
