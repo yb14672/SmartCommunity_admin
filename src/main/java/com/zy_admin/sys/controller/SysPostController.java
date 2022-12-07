@@ -52,7 +52,6 @@ public class SysPostController extends ApiController {
      */
     @ApiOperation(value = "获取所有的岗位", notes = "获取所有的岗位", httpMethod = "GET")
     @GetMapping("/getAllPost")
-    @PreAuthorize("hasAnyAuthority('system:post:query')")
     public Result getAllPost() {
         return sysPostService.getAllPost();
     }
@@ -68,7 +67,6 @@ public class SysPostController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有岗位数据", notes = "分页查询所有岗位数据", httpMethod = "GET")
     @GetMapping("/getPostList")
-    @PreAuthorize("hasAnyAuthority('system:post:query')")
     public Result getPostList(SysPost sysPost, Pageable pageable) {
         return this.sysPostService.selectPostByLimit(sysPost, pageable);
     }
@@ -85,7 +83,7 @@ public class SysPostController extends ApiController {
     @ApiOperation(value = "添加岗位信息", notes = "添加岗位信息", httpMethod = "POST")
     @PostMapping("/addPost")
     @MyLog(title = "岗位管理", optParam = "#{sysPost}", businessType = BusinessType.INSERT)
-    @PreAuthorize("hasAnyAuthority('system:post:add')")
+        @PreAuthorize("hasAnyAuthority('system:post:add')")
     public Result addPost(HttpServletRequest request, @RequestBody SysPost sysPost) {
         SysUser user = this.requestUtil.getUser(request);
         sysPost.setCreateTime(LocalDateTime.now().toString());

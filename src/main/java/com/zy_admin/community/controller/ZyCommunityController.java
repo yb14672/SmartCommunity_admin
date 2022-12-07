@@ -64,7 +64,6 @@ public class ZyCommunityController extends ApiController {
     })
     @ApiOperation(value = "根据登录的管理员获取所在公司负责的小区", notes = "根据登录的管理员获取所在公司负责的小区", httpMethod = "GET")
     @GetMapping("/getCommunityIdByUserId")
-    @PreAuthorize("hasAnyAuthority('system:community:query')")
     public Result getCommunityIdByUserId(HttpServletRequest request){
         String userId = requestUtil.getUserId(request);
         return this.zyCommunityService.getCommunityIdByUserId(userId);
@@ -155,7 +154,6 @@ public class ZyCommunityController extends ApiController {
     })
     @ApiOperation(value = "分页查询所有数据", notes = "分页查询所有数据", httpMethod = "GET")
     @GetMapping("/selectAll")
-    @PreAuthorize("hasAnyAuthority('system:community:query')")
     public Result selectAll(ZyCommunity community, Pageable pageable){
         return zyCommunityService.selectAllByLimit(community,pageable);
     }
@@ -169,7 +167,6 @@ public class ZyCommunityController extends ApiController {
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("{id}")
-    @PreAuthorize("hasAnyAuthority('system:community:query')")
     public Result selectOne(@PathVariable Serializable id) {
         return new Result(this.zyCommunityService.getById(id),ResultTool.fail(ResultCode.SUCCESS));
     }

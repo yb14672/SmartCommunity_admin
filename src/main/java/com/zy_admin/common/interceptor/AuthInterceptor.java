@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.util.Objects;
 
 /**
@@ -37,21 +38,31 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
         //验证token的有效性
-        if (!JwtUtil.checkToken(token)) {
-            response.getWriter().print(JSON.toJSONString(new Result(null, ResultTool.fail(ResultCode.USER_TOKEN_INVALID))));
-            return false;
+        PrintWriter writer = null;
+        try {
+            if (!JwtUtil.checkToken(token)) {
+                writer = response.getWriter();
+                writer.print(JSON.toJSONString(new Result(null, ResultTool.fail(ResultCode.USER_TOKEN_INVALID))));
+                return false;
+            }
+            if (StringUtils.isEmpty(token)) {
+                writer = response.getWriter();
+                writer.print(JSON.toJSONString(new Result(null, ResultTool.fail(ResultCode.USER_LOGIN_EXPIRED))));
+                return false;
+            }
+            Object loginStatus = redisService.get(token);
+            if (ObjectUtil.isNull(loginStatus)) {
+                writer = response.getWriter();
+                writer.print(JSON.toJSONString(new Result(null, ResultTool.fail(ResultCode.USER_LOGIN_EXPIRED))));
+                return false;
+            }
+            redisService.update(token);
+            return true;
+        } finally {
+            if (writer != null){
+                writer.close();
+            }
         }
-        if (StringUtils.isEmpty(token)) {
-            response.getWriter().print(JSON.toJSONString(new Result(null, ResultTool.fail(ResultCode.USER_LOGIN_EXPIRED))));
-            return false;
-        }
-        Object loginStatus = redisService.get(token);
-        if (ObjectUtil.isNull(loginStatus)) {
-            response.getWriter().print(JSON.toJSONString(new Result(null, ResultTool.fail(ResultCode.USER_LOGIN_EXPIRED))));
-            return false;
-        }
-        redisService.update(token);
-        return true;
     }
 
     @Override

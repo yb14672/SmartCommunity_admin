@@ -170,7 +170,6 @@ public class ZyBuildingController extends ApiController {
     })
     @ApiOperation(value = "分页查询", notes = "分页查询", httpMethod = "GET")
     @GetMapping("/selectBuildLimit")
-    @PreAuthorize("hasAnyAuthority('system:building:query')")
     public Result selectBuildLimit(ZyBuilding zyBuilding, Pageable pageable){
         return zyBuildingService.selectBuildLimit(zyBuilding, pageable);
     }
@@ -185,7 +184,6 @@ public class ZyBuildingController extends ApiController {
     })
     @ApiOperation(value = "通过主键查询单条数据", notes = "通过主键查询单条数据", httpMethod = "GET")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('system:building:query')")
     public Result selectOne(@PathVariable String id) {
         return zyBuildingService.queryById(id);
     }

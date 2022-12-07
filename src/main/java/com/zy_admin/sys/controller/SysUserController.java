@@ -369,7 +369,6 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "修改用户基本信息", notes = "修改用户基本信息", httpMethod = "PUT")
     @PutMapping("/updateUser")
     @MyLog(title = "用户管理", optParam = "#{sysUser}", businessType = BusinessType.UPDATE)
-    @PreAuthorize("hasAnyAuthority('system:user:edit')")
     public Result updateUser(@RequestBody SysUser sysUser) {
         return this.sysUserService.updateUser(sysUser);
     }
